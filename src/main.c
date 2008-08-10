@@ -328,7 +328,7 @@ on_about_selected(GtkMenuItem *menu_item, gpointer user_data)
                                   _("Lightweight GTK+ clipboard manager."));
     
     gtk_about_dialog_set_website(GTK_ABOUT_DIALOG(about_dialog),
-                                 "http://code.google.com/p/xyhthyx/");
+                                 "http://parcellite.sourceforge.net");
     
     gtk_about_dialog_set_copyright(GTK_ABOUT_DIALOG(about_dialog), "Copyright (C) 2007 Xyhthyx");
     gtk_about_dialog_set_authors(GTK_ABOUT_DIALOG(about_dialog), authors);
