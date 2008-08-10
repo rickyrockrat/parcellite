@@ -1,0 +1,39 @@
+.TH PARCELLITE 1 "March 17 2008"
+.SH NAME
+Parcellite \- Lightweight GTK+ Clipboard Manager
+.SH SYNOPSIS
+.B parcellite
+[\fIOPTION\fR]
+.SH DESCRIPTION
+\fBParcellite\fR is a lightweight GTK+ clipboard manager. This is a stripped down,
+basic-features-only clipboard manager with a small memory footprint for those
+who like simplicity.
+
+\fBParcellite\fR features a clipboard CLI. Unrecognized options and the contents
+of your standard input get copied to your clipboard. See CLI EXAMPLES.
+.SH
+.B OPTIONS
+.TP
+.B \-?\fR, \fB\-\-help
+Show help options
+.TP
+.B \-d\fR, \fB\-\-daemon
+Run as daemon. Use this mode if you just want Parcellite to keep your clipboard
+and primary contents safe
+.TP
+.B \-n\fR, \fB\-\-no-icon
+Do not use status icon (Ctrl-Alt-P for menu)
+.TP
+.B \-o\fR, \fB\-\-output
+Print clipboard contents
+.SH CLI EXAMPLES
+echo "copied to clipboard" | parcellite
+
+parcellite "copied to clipboard"
+
+echo "copied to clipboard" | parcellite -o
+.SH "SEE ALSO"
+.PP
+Website: http://code.google.com/p/xyhthyx/
+.SH AUTHOR
+Written by Gilberto "Xyhthyx" Miralla <xyhthyx@gmail.com>.

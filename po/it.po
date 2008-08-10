@@ -1,0 +1,274 @@
+# Italian translation of parcellite.
+# Copyright (C) 2008 Xyhthyx <xyhthyx@gmail.com>
+# This file is distributed under the same license as the parcellite package.
+# Davide Truffa <davide@catoblepa.org>, 2008.
+#
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Parcellite\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2008-07-28 21:21-0400\n"
+"PO-Revision-Date: 2008-07-17 14:35+0200\n"
+"Last-Translator: Davide Truffa <davide@catoblepa.org>\n"
+"Language-Team: Italian <tp@lists.linux.it>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=iso-8859-1\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../src/main.c:109
+msgid "Executing action..."
+msgstr "Sto eseguendo l'azione..."
+
+#: ../src/main.c:112 ../src/main.c:735
+msgid "Clipboard Manager"
+msgstr "Gestore degli appunti"
+
+#: ../src/main.c:132
+msgid "Could not create thread for executed action\n"
+msgstr "Impossibile creare il processo per l'azione eseguita\n"
+
+#: ../src/main.c:183
+msgid "Editing Clipboard"
+msgstr "Modifica Appunti"
+
+#: ../src/main.c:200
+msgid "<b>Clipboard</b>"
+msgstr "<b>Appunti</b>"
+
+#: ../src/main.c:244
+msgid "Save changes"
+msgstr "Salva le modifiche"
+
+#: ../src/main.c:254
+msgid "Close"
+msgstr "Chiudi"
+
+#: ../src/main.c:328
+msgid "Lightweight GTK+ clipboard manager."
+msgstr "Gestore degli Appunti leggero in GTK+"
+
+#: ../src/main.c:403
+msgid "<b>None</b>"
+msgstr "<b>Nessuno</b>"
+
+#. File contained no actions so adding empty
+#. File did not open so adding empty
+#. Nothing in history so adding empty
+#: ../src/main.c:424 ../src/main.c:453 ../src/main.c:559
+msgid "Empty"
+msgstr "Vuoto"
+
+#. Edit actions
+#: ../src/main.c:460
+msgid "_Edit actions"
+msgstr "_Modifica azioni"
+
+#. Edit clipboard
+#: ../src/main.c:484
+msgid "_Edit Clipboard"
+msgstr "_Modifica Appunti"
+
+#: ../src/utils.c:35 ../src/utils.c:42
+#, c-format
+msgid "Couldn't create directory: %s\n"
+msgstr "Impossibile creare la directory: %s\n"
+
+#: ../src/utils.c:81
+msgid "Run as daemon"
+msgstr "Esegui come demone"
+
+#: ../src/utils.c:88
+msgid "Do not use status icon (Ctrl-Alt-P for menu)"
+msgstr "Non usare l'icona di stato (Ctrl-Alt-P per il menù)"
+
+#: ../src/utils.c:95
+msgid "Print clipboard contents"
+msgstr "Stampa il contenuto degli appunti"
+
+#: ../src/utils.c:107
+msgid ""
+"Clipboard CLI usage examples:\n"
+"\n"
+"  echo \"copied to clipboard\" | parcellite\n"
+"  parcellite \"copied to clipboard\"\n"
+"  echo \"copied to clipboard\" | parcellite -o"
+msgstr ""
+"Esempi d'uso degli Appunti da terminale:\n"
+"\n"
+"  echo \"copiato negli appunti\" | parcellite\n"
+"  parcellite \"copiato negli appunti\"\n"
+"  echo \"copiato negli appunti\" | parcellite -o"
+
+#: ../src/utils.c:113
+msgid ""
+"Written by Xyhthyx.\n"
+"Report bugs to <xyhthyx@gmail.com>."
+msgstr ""
+"Scritto da Xyhthyx.\n"
+"Segnala i bug a <xyhthyx@gmail.com>."
+
+#. Create the dialog
+#: ../src/preferences.c:234
+msgid "New Action"
+msgstr "Nuova Azione"
+
+#: ../src/preferences.c:249 ../src/preferences.c:312
+msgid "<b>Name:</b>"
+msgstr "<b>Nome:</b>"
+
+#: ../src/preferences.c:254 ../src/preferences.c:317
+msgid "Name your action"
+msgstr "Dai un nome alla tua azione"
+
+#: ../src/preferences.c:261 ../src/preferences.c:324
+msgid "<b>Command:</b>"
+msgstr "<b>Comando:</b>"
+
+#: ../src/preferences.c:267 ../src/preferences.c:330
+#, c-format
+msgid "\"%s\" will be replaced with the clipboard contents"
+msgstr "\"%s\" verrà sostituito con il contenuto degli appunti"
+
+#. Create the dialog
+#: ../src/preferences.c:295
+msgid "Edit Action"
+msgstr "Modifica Azione"
+
+#. Create the dialog
+#: ../src/preferences.c:431
+msgid "Preferences"
+msgstr "Preferenze"
+
+#: ../src/preferences.c:449
+msgid "General"
+msgstr "Generale"
+
+#: ../src/preferences.c:457
+msgid "<b>History</b>"
+msgstr "<b>Cronologia</b>"
+
+#: ../src/preferences.c:464
+msgid "Amount of items to keep in history:"
+msgstr "Numero di elementi nella cronologia:"
+
+#: ../src/preferences.c:477
+msgid "<b>Display</b>"
+msgstr "<b>Visualizza</b>"
+
+#: ../src/preferences.c:486
+msgid "Length in characters of history items:"
+msgstr "Lunghezza in caratteri elementi cronologia:"
+
+#: ../src/preferences.c:495
+msgid "Long items omitted in the:"
+msgstr "Gli elementi lunghi verranno troncati al:"
+
+#: ../src/preferences.c:499
+msgid "Beginning"
+msgstr "Inizio"
+
+#: ../src/preferences.c:500
+msgid "Middle"
+msgstr "Centro"
+
+#: ../src/preferences.c:501
+msgid "End"
+msgstr "Fine"
+
+#: ../src/preferences.c:509
+msgid "<b>Hotkeys</b>"
+msgstr "<b>Scorciatoie da tastiera</b>"
+
+#: ../src/preferences.c:518
+msgid "History menu global hotkey:"
+msgstr "Scorciatoia per il menù Cronologia:"
+
+#: ../src/preferences.c:526
+msgid "Actions menu global hotkey:"
+msgstr "Scorciatoia per il menù Azioni:"
+
+#: ../src/preferences.c:538
+msgid "<b>Behaviour</b>"
+msgstr "<b>Comportamento</b>"
+
+#: ../src/preferences.c:545
+msgid "_Save history"
+msgstr "_Salva cronologia"
+
+#: ../src/preferences.c:546
+msgid "Keep and restore history in between sessions"
+msgstr "Salva e ripristina cronologia fra le sessioni"
+
+#: ../src/preferences.c:549
+msgid "_Reverse history"
+msgstr "_Inverti cronologia"
+
+#: ../src/preferences.c:550
+msgid "Show history items in reverse order"
+msgstr "Inverti l'ordine della cronologia"
+
+#: ../src/preferences.c:553
+msgid "Single _line mode"
+msgstr "Modalità a _linea singola"
+
+#: ../src/preferences.c:554
+msgid "Show entries in a single line"
+msgstr "Mostra gli elementi su una singola riga"
+
+#: ../src/preferences.c:556
+msgid "_Capture hyperlinks only"
+msgstr "_Cattura solo gli hyperlink"
+
+#: ../src/preferences.c:557
+msgid "Ignore all non-hyperlink text"
+msgstr "Ignora tutto tranne gli hyperlink"
+
+#: ../src/preferences.c:564
+msgid "Actions"
+msgstr "Azioni"
+
+#. Build the actions label
+#: ../src/preferences.c:569
+msgid "Control-click Parcellite's tray icon to use actions"
+msgstr "Control-click sull'icona della tray per usare le azioni"
+
+#: ../src/preferences.c:590
+msgid "Action"
+msgstr "Azione"
+
+#: ../src/preferences.c:598
+msgid "Command"
+msgstr "Comando"
+
+#: ../src/preferences.c:613
+msgid "New"
+msgstr "Nuovo"
+
+#: ../src/preferences.c:617
+msgid "New action"
+msgstr "Nuova azione"
+
+#: ../src/preferences.c:620
+msgid "Edit"
+msgstr "Modifica"
+
+#: ../src/preferences.c:624
+msgid "Edit selected"
+msgstr "Modifica selezionato"
+
+#: ../src/preferences.c:627
+msgid "Delete"
+msgstr "Cancella"
+
+#: ../src/preferences.c:631
+msgid "Delete selected"
+msgstr "Cancella selezionato"
+
+#: ../src/preferences.c:638
+msgid "Move selected up"
+msgstr "Muovi la selezione verso l'alto"
+
+#: ../src/preferences.c:645
+msgid "Move selected down"
+msgstr "Muovi la selezione verso il basso"
