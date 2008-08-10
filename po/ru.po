@@ -1,0 +1,277 @@
+# Russian translation of parcellite.
+# Copyright (C) 2008 Xyhthyx <xyhthyx@gmail.com>
+# This file is distributed under the same license as the parcellite package.
+# Gultyaev Alexey <hokum83@gmail.com>, 2008.
+#
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Parcellite\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2008-08-04 21:54-0400\n"
+"PO-Revision-Date: 2008-08-01 09:35+0500\n"
+"Last-Translator: Gultyaev Alexey <hokum83@gmail.com>\n"
+"Language-Team: Russian\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../src/main.c:109
+msgid "Executing action..."
+msgstr "Выполнение действия..."
+
+#: ../src/main.c:112 ../src/main.c:739
+msgid "Clipboard Manager"
+msgstr "Менеджер буфера обмена"
+
+#: ../src/main.c:132
+msgid "Could not create thread for executed action\n"
+msgstr "Не могу создать подпроцесс для выполненного действия\n"
+
+#: ../src/main.c:183
+msgid "Editing Clipboard"
+msgstr "Редактирование буфера обмена"
+
+#: ../src/main.c:200
+msgid "<b>Clipboard</b>"
+msgstr "<b>Буфер обмена</b>"
+
+#: ../src/main.c:244
+msgid "Save changes"
+msgstr "Сохранить изменения"
+
+#: ../src/main.c:254
+msgid "Close"
+msgstr "Закрыть"
+
+#: ../src/main.c:328
+msgid "Lightweight GTK+ clipboard manager."
+msgstr "Легкий менеджер буфера обмена"
+
+#: ../src/main.c:407
+msgid "<b>None</b>"
+msgstr "<b>Ничего</b>"
+
+#. File contained no actions so adding empty
+#. File did not open so adding empty
+#. Nothing in history so adding empty
+#: ../src/main.c:428 ../src/main.c:457 ../src/main.c:563
+msgid "Empty"
+msgstr "Очистить"
+
+#. Edit actions
+#: ../src/main.c:464
+msgid "_Edit actions"
+msgstr "_Редактировть действия"
+
+#. Edit clipboard
+#: ../src/main.c:488
+msgid "_Edit Clipboard"
+msgstr "_Редактировать буфер обмена"
+
+#: ../src/utils.c:35 ../src/utils.c:42
+#, c-format
+msgid "Couldn't create directory: %s\n"
+msgstr "Невозможно создать папку: %s\n"
+
+#: ../src/utils.c:81
+msgid "Run as daemon"
+msgstr "Запустить как демон"
+
+#: ../src/utils.c:88
+msgid "Do not use status icon (Ctrl-Alt-P for menu)"
+msgstr "Не использовать иконку статуса (Ctrl-Alt-P для меню)"
+
+#: ../src/utils.c:95
+msgid "Print clipboard contents"
+msgstr "Распечатать содержимое буфера обмена"
+
+#: ../src/utils.c:107
+msgid ""
+"Clipboard CLI usage examples:\n"
+"\n"
+"  echo \"copied to clipboard\" | parcellite\n"
+"  parcellite \"copied to clipboard\"\n"
+"  echo \"copied to clipboard\" | parcellite -o"
+msgstr ""
+"Примеры использования командного интерфейса буфера обмена:\n"
+"\n"
+"  echo \"copied to clipboard\" | parcellite\n"
+"  parcellite \"copied to clipboard\"\n"
+"  echo \"copied to clipboard\" | parcellite -o"
+
+#: ../src/utils.c:113
+msgid ""
+"Written by Xyhthyx.\n"
+"Report bugs to <xyhthyx@gmail.com>."
+msgstr ""
+"Программа написана Xyhthyx.\n"
+"О найденных ошибках сообщать на адрес <xyhthyx@gmail.com>."
+
+#. Create the dialog
+#: ../src/preferences.c:234
+msgid "New Action"
+msgstr "Новое действие"
+
+#: ../src/preferences.c:249 ../src/preferences.c:312
+msgid "<b>Name:</b>"
+msgstr "<b>Имя:</b>"
+
+#: ../src/preferences.c:254 ../src/preferences.c:317
+msgid "Name your action"
+msgstr "Назовите ваше действие"
+
+#: ../src/preferences.c:261 ../src/preferences.c:324
+msgid "<b>Command:</b>"
+msgstr "<b>Команда:</b>"
+
+#: ../src/preferences.c:267 ../src/preferences.c:330
+#, c-format
+msgid "\"%s\" will be replaced with the clipboard contents"
+msgstr "\"%s\" будет заменено содержимым буфера обмена"
+
+#. Create the dialog
+#: ../src/preferences.c:295
+msgid "Edit Action"
+msgstr "Редактировать действие"
+
+#. Create the dialog
+#: ../src/preferences.c:431
+msgid "Preferences"
+msgstr "Параметры"
+
+#: ../src/preferences.c:449
+msgid "General"
+msgstr "Основные"
+
+#: ../src/preferences.c:457
+msgid "<b>History</b>"
+msgstr "<b>История</b>"
+
+#: ../src/preferences.c:464
+msgid "Amount of items to keep in history:"
+msgstr "Количество позиций, хранимых в истории:"
+
+#: ../src/preferences.c:477
+msgid "<b>Display</b>"
+msgstr "<b>Вид</b>"
+
+#: ../src/preferences.c:486
+msgid "Length in characters of history items:"
+msgstr "Длина в знаках для позиции в истории:"
+
+#: ../src/preferences.c:495
+msgid "Long items omitted in the:"
+msgstr "Для длинных позиций не показывать:"
+
+#: ../src/preferences.c:499
+msgid "Beginning"
+msgstr "Начало"
+
+#: ../src/preferences.c:500
+msgid "Middle"
+msgstr "Середину"
+
+#: ../src/preferences.c:501
+msgid "End"
+msgstr "Конец"
+
+#: ../src/preferences.c:509
+msgid "<b>Hotkeys</b>"
+msgstr "<b>Горячие клавиши</b>"
+
+#: ../src/preferences.c:518
+msgid "History menu global hotkey:"
+msgstr "Глобальное сочетание клавиш для меню истории"
+
+#: ../src/preferences.c:526
+msgid "Actions menu global hotkey:"
+msgstr "Глобальное сочетание клавиш для меню действий"
+
+#: ../src/preferences.c:538
+msgid "<b>Behaviour</b>"
+msgstr "<b>Поведение</b>"
+
+#: ../src/preferences.c:545
+msgid "_Save history"
+msgstr "_Сохранять историю"
+
+#: ../src/preferences.c:546
+msgid "Keep and restore history in between sessions"
+msgstr "Хранить и восстанавливать историю между сеансами"
+
+#: ../src/preferences.c:549
+msgid "_Reverse history"
+msgstr "_Обратить историю"
+
+#: ../src/preferences.c:550
+msgid "Show history items in reverse order"
+msgstr "Показывать позиции истории в обратном порядке"
+
+#: ../src/preferences.c:553
+msgid "Single _line mode"
+msgstr "Одно_строчный режим"
+
+#: ../src/preferences.c:554
+#, fuzzy
+msgid "Show items in a single line"
+msgstr "Показывать позиции в одну строку"
+
+#: ../src/preferences.c:556
+msgid "_Capture hyperlinks only"
+msgstr "_Захватывать только гиперссылки"
+
+#: ../src/preferences.c:557
+msgid "Ignore all non-hyperlink text"
+msgstr "Игнорировать весь текст кроме гиперссылок"
+
+#: ../src/preferences.c:564
+msgid "Actions"
+msgstr "Действия"
+
+#. Build the actions label
+#: ../src/preferences.c:569
+msgid "Control-click Parcellite's tray icon to use actions"
+msgstr ""
+"Control-клик на иконке Parcellite в области уведомлений для использования "
+"действий"
+
+#: ../src/preferences.c:590
+msgid "Action"
+msgstr "Действие"
+
+#: ../src/preferences.c:598
+msgid "Command"
+msgstr "Команда"
+
+#: ../src/preferences.c:613
+msgid "New"
+msgstr "Новое"
+
+#: ../src/preferences.c:617
+msgid "New action"
+msgstr "Новое действие"
+
+#: ../src/preferences.c:620
+msgid "Edit"
+msgstr "Правка"
+
+#: ../src/preferences.c:624
+msgid "Edit selected"
+msgstr "Редактировать выделенное"
+
+#: ../src/preferences.c:627
+msgid "Delete"
+msgstr "Удалить"
+
+#: ../src/preferences.c:631
+msgid "Delete selected"
+msgstr "Удалить выделенное"
+
+#: ../src/preferences.c:638
+msgid "Move selected up"
+msgstr "Переместить выделенное выше"
+
+#: ../src/preferences.c:645
+msgid "Move selected down"
+msgstr "Переместить выделенное ниже"

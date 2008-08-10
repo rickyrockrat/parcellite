@@ -1,0 +1,109 @@
+v0.8   Pending...
+
+	New
+	+ Daemon mode.
+	+ Reverse history option.
+	+ Internationalization support.
+	+ German, Russian, Italian and Spanish translations.
+	+ No-icon option (uses Ctrl-Alt-P for the menu).
+	
+	Changes
+	+ Menu generation and display is quicker.
+	+ Selected items also get copied to primary.
+	+ History shows newest item first by default.
+	+ Performance and overall improvement on action executions.
+
+v0.7  Sunday, March 30 2008
+
+	New
+	+ Added man page.
+	+ Option to disable/enable saving history.
+
+	Changes
+	+ Removed startup option.
+	+ Performance improvements.
+	+ Runs at startup by default in GNOME (remove via GNOME's Sessions application).
+	+ Config now saves in ~/.config/parcellite following freedesktop.org specifications.
+	+ Data now saves in ~/.local/share/parcellite following freedesktop.org specifications.
+	+ Bugfix: Assertion error on first run.
+
+v0.6.1  Sunday, February 24 2008
+
+	Changes
+	+ Renamed uninstall.py to uninstall-pre-0.5.py to clear up that it
+	  only uninstalls pre-0.5 versions of parcellite.
+	+ Bugfix: Edit clipboard window skipping taskbar prevented quitting
+	  if it was open and the window manager minized all windows.
+
+v0.6  Sunday, February 03 2008
+
+	New
+	+ Added global hotkeys for history and actions menu.
+	  <Ctrl><Alt>C for clipboard and <Ctrl><Alt>A for actions by default.
+
+	Changes
+	+ Changed icon tooltip text to generic "Clipboard Manager."
+	+ Added additional verbose comments in code.
+	+ Bugfix: Edit clipboard not destroying window when finished.
+
+v0.5.1  Monday, January 21 2008
+
+	Changes
+	+ Fixed memory leak.
+
+v0.5  Saturday, January 19 2008
+
+	Notes
+	+ Remove your old .parcellite directory when upgrading to this version.
+	+ Run "python uninstall.py" as root to uninstall pre-0.5 versions of parcellite.
+
+	New
+	+ Translated to C. Faster, leaner, etc.
+	+ Parcellite now features command line access to the clipboard. Example uses:
+	  	echo "Hello World" | parcellite   (copies Hello World to clipboard)
+	  	parcellite Hello World   (copies Hello World to clipboard)
+	  	parcellite -o   (prints clipboard contents)
+	  	echo "Hello World" | parcellite -o   (copies Hello World to clipboard and prints it)
+	
+	Changes
+	+ Added icon in about dialog.
+	+ Allow multiple instances (though I don't see why you would; could experience problems).
+
+v0.4.1  Thursday, December 13 2007
+
+	+ Updated how items get captured.
+	+ Bugfix: Files couldn't save if .parcellite folder was deleted while Parcellite was running.
+	+ Bugfix: Clear was emptying clipboard contents.
+
+v0.4  Thursday, November 15 2007
+
+	New feature: Clipboard Actions
+	+ Control-clicking the tray icon brings up the new actions menu for quick shell commands
+	  using the clipboard contents (similar but simpler than Klipper actions).
+	
+	Changes
+	+ Added new control-click menu (actions) to the tray icon.
+	+ Added new tab in the preferences dialog for editing actions.
+	+ Minor changes to some GTK+ code, mostly variable name changes and cleanup.
+
+v0.3.2  Thursday, November 08 2007
+
+	+ Minor changes to conform to Debian policies.
+
+v0.3.1  Thursday, November 01 2007
+
+	+ Fixed typo.
+
+v0.3  Thursday, November 01 2007
+
+	+ Added various options to change the way items are displayed.
+
+v0.2  Friday, October 05 2007
+	
+	+ Removed dependancy on glade.
+	+ Bugfix: Quit with open dialogs produced strange behaviour because the app does not
+	  have a main window.
+
+v0.1  Wednesday, September 19 2007
+
+	+ First release.

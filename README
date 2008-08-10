@@ -1,0 +1,39 @@
+Parcellite - Lightweight GTK+ Clipboard Manager
+-------------------------------------------------------------------------------
+
+Copyright (C) 2007-2008 Xyhthyx <xyhthyx@gmail.com>
+
+
+
+Introduction
+-------------------------------------------------------------------------------
+
+Parcellite is a lightweight GTK+ clipboard manager. This is a stripped down,
+basic-features-only clipboard manager with a small memory footprint for those
+who like simplicity. 
+
+Project website: http://code.google.com/p/xyhthyx/
+
+
+
+How to compile and install parcellite
+-------------------------------------------------------------------------------
+
+Requirements:
+	* gtk+ >= 2.10.0 
+
+Download the parcellite source code, then:
+	$ tar zxvf parcellite-x.y.z.tar.gz
+	$ cd parcellite-x.y.z
+	$ ./autogen.sh
+	$ ./configure
+	$ make
+	$ sudo make install
+
+or from the subversion checkout:
+	$ svn co http://xyhthyx.googlecode.com/svn/trunk/parcellite parcellite
+	$ cd parcellite
+	$ ./autogen.sh
+	$ ./configure
+	$ make
+	$ sudo make install
