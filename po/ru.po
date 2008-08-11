@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Parcellite\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-08-04 21:54-0400\n"
+"POT-Creation-Date: 2008-08-11 18:30-0400\n"
 "PO-Revision-Date: 2008-08-01 09:35+0500\n"
 "Last-Translator: Gultyaev Alexey <hokum83@gmail.com>\n"
 "Language-Team: Russian\n"
@@ -20,7 +20,7 @@ msgstr ""
 msgid "Executing action..."
 msgstr "Выполнение действия..."
 
-#: ../src/main.c:112 ../src/main.c:739
+#: ../src/main.c:112 ../src/main.c:740
 msgid "Clipboard Manager"
 msgstr "Менеджер буфера обмена"
 
@@ -48,24 +48,24 @@ msgstr "Закрыть"
 msgid "Lightweight GTK+ clipboard manager."
 msgstr "Легкий менеджер буфера обмена"
 
-#: ../src/main.c:407
+#: ../src/main.c:408
 msgid "<b>None</b>"
 msgstr "<b>Ничего</b>"
 
 #. File contained no actions so adding empty
 #. File did not open so adding empty
 #. Nothing in history so adding empty
-#: ../src/main.c:428 ../src/main.c:457 ../src/main.c:563
+#: ../src/main.c:429 ../src/main.c:458 ../src/main.c:564
 msgid "Empty"
 msgstr "Очистить"
 
 #. Edit actions
-#: ../src/main.c:464
+#: ../src/main.c:465
 msgid "_Edit actions"
 msgstr "_Редактировть действия"
 
 #. Edit clipboard
-#: ../src/main.c:488
+#: ../src/main.c:489
 msgid "_Edit Clipboard"
 msgstr "_Редактировать буфер обмена"
 

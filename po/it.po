@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Parcellite\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-07-28 21:21-0400\n"
+"POT-Creation-Date: 2008-08-11 18:30-0400\n"
 "PO-Revision-Date: 2008-07-17 14:35+0200\n"
 "Last-Translator: Davide Truffa <davide@catoblepa.org>\n"
 "Language-Team: Italian <tp@lists.linux.it>\n"
@@ -20,7 +20,7 @@ msgstr ""
 msgid "Executing action..."
 msgstr "Sto eseguendo l'azione..."
 
-#: ../src/main.c:112 ../src/main.c:735
+#: ../src/main.c:112 ../src/main.c:740
 msgid "Clipboard Manager"
 msgstr "Gestore degli appunti"
 
@@ -48,24 +48,24 @@ msgstr "Chiudi"
 msgid "Lightweight GTK+ clipboard manager."
 msgstr "Gestore degli Appunti leggero in GTK+"
 
-#: ../src/main.c:403
+#: ../src/main.c:408
 msgid "<b>None</b>"
 msgstr "<b>Nessuno</b>"
 
 #. File contained no actions so adding empty
 #. File did not open so adding empty
 #. Nothing in history so adding empty
-#: ../src/main.c:424 ../src/main.c:453 ../src/main.c:559
+#: ../src/main.c:429 ../src/main.c:458 ../src/main.c:564
 msgid "Empty"
 msgstr "Vuoto"
 
 #. Edit actions
-#: ../src/main.c:460
+#: ../src/main.c:465
 msgid "_Edit actions"
 msgstr "_Modifica azioni"
 
 #. Edit clipboard
-#: ../src/main.c:484
+#: ../src/main.c:489
 msgid "_Edit Clipboard"
 msgstr "_Modifica Appunti"
 
@@ -213,7 +213,8 @@ msgid "Single _line mode"
 msgstr "Modalità a _linea singola"
 
 #: ../src/preferences.c:554
-msgid "Show entries in a single line"
+#, fuzzy
+msgid "Show items in a single line"
 msgstr "Mostra gli elementi su una singola riga"
 
 #: ../src/preferences.c:556
