@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Parcellite\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-07-28 21:21-0400\n"
+"POT-Creation-Date: 2008-08-11 18:30-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Gilberto \"Xyhthyx\" Miralla <xyhthyx@gmail.com>\n"
 "Language-Team: Spanish\n"
@@ -20,7 +20,7 @@ msgstr ""
 msgid "Executing action..."
 msgstr "Ejecutando acción..."
 
-#: ../src/main.c:112 ../src/main.c:735
+#: ../src/main.c:112 ../src/main.c:740
 msgid "Clipboard Manager"
 msgstr "Manegador de Portapapeles"
 
@@ -48,24 +48,24 @@ msgstr "Cerrar"
 msgid "Lightweight GTK+ clipboard manager."
 msgstr "Manegador liviano de portapapeles en GTK+."
 
-#: ../src/main.c:403
+#: ../src/main.c:408
 msgid "<b>None</b>"
 msgstr "<b>Ninguno</b>"
 
 #. File contained no actions so adding empty
 #. File did not open so adding empty
 #. Nothing in history so adding empty
-#: ../src/main.c:424 ../src/main.c:453 ../src/main.c:559
+#: ../src/main.c:429 ../src/main.c:458 ../src/main.c:564
 msgid "Empty"
 msgstr "Vacío"
 
 #. Edit actions
-#: ../src/main.c:460
+#: ../src/main.c:465
 msgid "_Edit actions"
 msgstr "_Editar acciones"
 
 #. Edit clipboard
-#: ../src/main.c:484
+#: ../src/main.c:489
 msgid "_Edit Clipboard"
 msgstr "_Editar Portapapeles"
 
@@ -104,9 +104,7 @@ msgstr ""
 msgid ""
 "Written by Xyhthyx.\n"
 "Report bugs to <xyhthyx@gmail.com>."
-msgstr ""
-"Escrito por Xyhthyx"
-"Reportar errors a <xyhthyx@gmail.com>."
+msgstr "Escrito por XyhthyxReportar errors a <xyhthyx@gmail.com>."
 
 #. Create the dialog
 #: ../src/preferences.c:234

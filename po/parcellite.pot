@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-08-04 21:54-0400\n"
+"POT-Creation-Date: 2008-08-11 18:30-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -20,7 +20,7 @@ msgstr ""
 msgid "Executing action..."
 msgstr ""
 
-#: ../src/main.c:112 ../src/main.c:739
+#: ../src/main.c:112 ../src/main.c:740
 msgid "Clipboard Manager"
 msgstr ""
 
@@ -48,24 +48,24 @@ msgstr ""
 msgid "Lightweight GTK+ clipboard manager."
 msgstr ""
 
-#: ../src/main.c:407
+#: ../src/main.c:408
 msgid "<b>None</b>"
 msgstr ""
 
 #. File contained no actions so adding empty
 #. File did not open so adding empty
 #. Nothing in history so adding empty
-#: ../src/main.c:428 ../src/main.c:457 ../src/main.c:563
+#: ../src/main.c:429 ../src/main.c:458 ../src/main.c:564
 msgid "Empty"
 msgstr ""
 
 #. Edit actions
-#: ../src/main.c:464
+#: ../src/main.c:465
 msgid "_Edit actions"
 msgstr ""
 
 #. Edit clipboard
-#: ../src/main.c:488
+#: ../src/main.c:489
 msgid "_Edit Clipboard"
 msgstr ""
 
