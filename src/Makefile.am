@@ -8,6 +8,7 @@ DISTCLEANFILES = *.bak *.log *~ .deps/*.P
 
 parcellite_SOURCES = main.c main.h \
                      utils.c utils.h \
+                     parcellite-i18n.h\
                      history.c history.h \
                      keybinder.c keybinder.h \
                      preferences.c preferences.h \
