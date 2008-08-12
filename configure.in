@@ -32,9 +32,9 @@ AM_GNU_GETTEXT([external])
 # -------------------------------------------------------------------------------
 # Checks for programs.
 # -------------------------------------------------------------------------------
-AC_PROG_CC
-AC_PROG_INSTALL
-AC_PROG_MAKE_SET
+AC_PROG_CC()
+AC_PROG_INSTALL()
+AC_PROG_MAKE_SET()
 
 # -------------------------------------------------------------------------------
 # Checks for libraries.
@@ -50,12 +50,12 @@ AC_CHECK_HEADERS([stdlib.h string.h pthread.h])
 # -------------------------------------------------------------------------------
 # Checks for typedefs, structures, and compiler characteristics.
 # -------------------------------------------------------------------------------
-AC_C_CONST
+AC_C_CONST()
 
 # -------------------------------------------------------------------------------
 # Checks for library functions.
 # -------------------------------------------------------------------------------
-AC_TYPE_SIGNAL
+AC_TYPE_SIGNAL()
 
 AC_CONFIG_FILES([Makefile
                 doc/Makefile

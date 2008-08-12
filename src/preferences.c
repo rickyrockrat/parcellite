@@ -16,6 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <glib.h>
 #include <gtk/gtk.h>
 #include "main.h"
 #include "utils.h"
