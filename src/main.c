@@ -20,6 +20,7 @@
 #include <config.h>
 #endif
 
+#include <glib.h>
 #include <stdlib.h>
 #include <gtk/gtk.h>
 #include <pthread.h>
