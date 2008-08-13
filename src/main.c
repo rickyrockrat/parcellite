@@ -39,23 +39,11 @@ static gchar* clipboard_last_item;
 static GtkWidget* history_menu;
 static GtkStatusIcon* status_icon;
 
-/* Declare preferences */
-/*gint      history_limit    = 25;
-gint      character_length = 50;
-gint      ellipsize        = 2;
-gchar*    history_key      = NULL;
-gchar*    actions_key      = NULL;
-gboolean  save_list        = TRUE;
-gboolean  reverse_history  = FALSE;
-gboolean  single_line_mode = TRUE;
-gboolean  hyperlinks_mode  = FALSE;
-gboolean  no_icon          = FALSE;*/
-
 /* This variable locks actions when one is being executed */
 static gboolean executing_action = FALSE;
 
 /* Test */
-prefs_t prefs = {25, 50, 2, NULL, NULL, TRUE, FALSE, TRUE, FALSE, FALSE};
+prefs_t prefs = {25, 50, 2, NULL, NULL, TRUE, FALSE, FALSE, TRUE, FALSE, FALSE};
 
 
 /* Called every time user copies something to the clipboard (Ctrl-V) */
@@ -285,6 +273,7 @@ on_item_selected(GtkMenuItem *menu_item, gpointer user_data)
 static void
 on_clear_selected(GtkMenuItem *menu_item, gpointer user_data)
 {
+  if (prefs.confclear) { g_print("Confirm clear is true.\n"); }
   /* Clear history and free history-related variables */
   g_free(clipboard_text);
   clipboard_text = NULL;

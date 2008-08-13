@@ -29,8 +29,9 @@
 GtkWidget *preferences_dialog, *history_spin,
           *charlength_spin,    *ellipsize_combo,
           *history_key_entry,  *actions_key_entry,
-          *save_check,         *reverse_check,
-          *linemode_check,     *hyperlinks_check;
+          *save_check,         *confirm_check,
+          *reverse_check,      *linemode_check,
+          *hyperlinks_check;
 
 GtkListStore* actions_list;
 GtkTreeSelection* actions_selection;
@@ -54,6 +55,7 @@ apply_preferences()
   prefs.histkey = g_strdup(gtk_entry_get_text(GTK_ENTRY(history_key_entry)));
   prefs.actionkey = g_strdup(gtk_entry_get_text(GTK_ENTRY(actions_key_entry)));
   prefs.savehist = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(save_check));
+  prefs.confclear = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(confirm_check));
   prefs.revhist = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(reverse_check));
   prefs.singleline = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(linemode_check));
   prefs.hyperlinks = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(hyperlinks_check));
@@ -78,6 +80,7 @@ save_preferences()
   g_key_file_set_string(rc_key, "rc", "history_key", prefs.histkey);
   g_key_file_set_string(rc_key, "rc", "actions_key", prefs.actionkey);
   g_key_file_set_boolean(rc_key, "rc", "save_history", prefs.savehist);
+  g_key_file_set_boolean(rc_key, "rc", "confirm_clear", prefs.confclear);
   g_key_file_set_boolean(rc_key, "rc", "reverse_history", prefs.revhist);
   g_key_file_set_boolean(rc_key, "rc", "single_line_mode", prefs.singleline);
   g_key_file_set_boolean(rc_key, "rc", "hyperlinks_mode", prefs.hyperlinks);
@@ -107,6 +110,7 @@ read_preferences()
     prefs.histkey = g_key_file_get_string(rc_key, "rc", "history_key", NULL);
     prefs.actionkey = g_key_file_get_string(rc_key, "rc", "actions_key", NULL);
     prefs.savehist = g_key_file_get_boolean(rc_key, "rc", "save_history", NULL);
+    prefs.confclear = g_key_file_get_boolean(rc_key, "rc", "confirm_clear", NULL);
     prefs.revhist = g_key_file_get_boolean(rc_key, "rc", "reverse_history", NULL);
     prefs.singleline = g_key_file_get_boolean(rc_key, "rc", "single_line_mode", NULL);
     prefs.hyperlinks = g_key_file_get_boolean(rc_key, "rc", "hyperlinks_mode", NULL);
@@ -546,11 +550,12 @@ show_preferences(gint tab)
   save_check = gtk_check_button_new_with_mnemonic(_("_Save history"));
   gtk_widget_set_tooltip_text(save_check, _("Keep and restore history in between sessions"));
   gtk_box_pack_start(GTK_BOX(vbox), save_check, FALSE, FALSE, 0);
-  
+  confirm_check = gtk_check_button_new_with_mnemonic(_("C_onfirm clear"));
+  gtk_widget_set_tooltip_text(confirm_check, _("Confirm before clearing history"));
+  gtk_box_pack_start(GTK_BOX(vbox), confirm_check, FALSE, FALSE, 0);
   reverse_check = gtk_check_button_new_with_mnemonic(_("_Reverse history"));
   gtk_widget_set_tooltip_text(reverse_check, _("Show history items in reverse order"));
   gtk_box_pack_start(GTK_BOX(vbox), reverse_check, FALSE, FALSE, 0);
-  
   linemode_check = gtk_check_button_new_with_mnemonic(_("Single _line mode"));
   gtk_widget_set_tooltip_text(linemode_check, _("Show items in a single line"));
   gtk_box_pack_start(GTK_BOX(vbox), linemode_check, FALSE, FALSE, 0);
@@ -655,6 +660,7 @@ show_preferences(gint tab)
   gtk_entry_set_text(GTK_ENTRY(history_key_entry), prefs.histkey);
   gtk_entry_set_text(GTK_ENTRY(actions_key_entry), prefs.actionkey);
   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(save_check), prefs.savehist);
+  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(confirm_check), prefs.confclear);
   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(reverse_check), prefs.revhist);
   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(linemode_check), prefs.singleline);
   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(hyperlinks_check), prefs.hyperlinks);
