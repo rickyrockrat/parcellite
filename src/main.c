@@ -273,13 +273,35 @@ on_item_selected(GtkMenuItem *menu_item, gpointer user_data)
 static void
 on_clear_selected(GtkMenuItem *menu_item, gpointer user_data)
 {
-  if (prefs.confclear) { g_print("Confirm clear is true.\n"); }
-  /* Clear history and free history-related variables */
-  g_free(clipboard_text);
-  clipboard_text = NULL;
-  g_slist_free(history);
-  history = NULL;
-  save_history();
+  /* Check for confirm clear option */
+  if (prefs.confclear)
+  {
+    GtkWidget* confirm_dialog = gtk_message_dialog_new(NULL,
+                                                       GTK_DIALOG_MODAL,
+                                                       GTK_MESSAGE_OTHER,
+                                                       GTK_BUTTONS_OK_CANCEL,
+                                                       _("Clear the history?"));
+    
+    if (gtk_dialog_run(GTK_DIALOG(confirm_dialog)) == GTK_RESPONSE_OK)
+    {
+      /* Clear history and free history-related variables */
+      g_free(clipboard_text);
+      clipboard_text = NULL;
+      g_slist_free(history);
+      history = NULL;
+      save_history();
+    }
+    gtk_widget_destroy(confirm_dialog);
+  }
+  else
+  {
+    /* Clear history and free history-related variables */
+    g_free(clipboard_text);
+    clipboard_text = NULL;
+    g_slist_free(history);
+    history = NULL;
+    save_history();
+  }
 }
 
 /* Called when About is selected from right-click menu */
@@ -320,12 +342,13 @@ on_about_selected(GtkMenuItem *menu_item, gpointer user_data)
     gtk_about_dialog_set_website(GTK_ABOUT_DIALOG(about_dialog),
                                  "http://parcellite.sourceforge.net");
     
-    gtk_about_dialog_set_copyright(GTK_ABOUT_DIALOG(about_dialog), "Copyright (C) 2007 Xyhthyx");
+    gtk_about_dialog_set_copyright(GTK_ABOUT_DIALOG(about_dialog), "Copyright (C) 2007, 2008 Xyhthyx");
     gtk_about_dialog_set_authors(GTK_ABOUT_DIALOG(about_dialog), authors);
     gtk_about_dialog_set_translator_credits (GTK_ABOUT_DIALOG(about_dialog),
                                              "Davide Truffa <davide@catoblepa.org>\n"
                                              "Eckhard M. Jäger <bart@neeneenee.de>\n"
-                                             "Gultyaev Alexey <hokum83@gmail.com>");
+                                             "Gultyaev Alexey <hokum83@gmail.com>\n"
+                                             "Gilberto \"Xyhthyx\" Miralla <xyhthyx@gmail.com>");
     
     gtk_about_dialog_set_license(GTK_ABOUT_DIALOG(about_dialog), license);
     gtk_about_dialog_set_logo_icon_name(GTK_ABOUT_DIALOG(about_dialog), GTK_STOCK_PASTE);

@@ -1,7 +1,7 @@
 # -------------------------------------------------------------------------------
 # Autoconf/automake.
 # -------------------------------------------------------------------------------
-AC_INIT([parcellite], [0.8], [xyhthyx@gmail.com])
+AC_INIT([parcellite], [svn], [xyhthyx@gmail.com])
 AM_INIT_AUTOMAKE([AC_PACKAGE_TARNAME()], [AC_PACKAGE_VERSION()])
 
 AC_CONFIG_SRCDIR([src/main.c])
