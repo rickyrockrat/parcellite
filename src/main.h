@@ -36,6 +36,7 @@ typedef struct
   gchar*    histkey;     /* History menu hotkey */
   gchar*    actionkey;   /* Actions menu hotkey */
   gboolean  savehist;    /* Save history */
+  gboolean  confclear;   /* Confirm clear option */
   gboolean  revhist;     /* Reverse history */
   gboolean  singleline;  /* Single line mode */
   gboolean  hyperlinks;  /* Hyperlinks only */
