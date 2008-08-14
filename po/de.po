@@ -2,6 +2,7 @@
 # Copyright (C) 2008 Xyhthyx <xyhthyx@gmail.com>
 # This file is distributed under the same license as the parcellite package.
 # Eckhard M. Jäger <bart@neeneenee.de>, 2008.
+# Michael <mstempin@web.de>, 2008.
 #
 #
 msgid ""
