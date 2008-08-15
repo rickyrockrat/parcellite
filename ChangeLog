@@ -2,6 +2,10 @@ v0.9   Pending...
 
   New
   + Confirm clear option.
+  
+  Changes
+  + Fixed parcellite-startup.desktop to include "Type=Application" to prevent
+    desktop-file-validate from failing.
 
 v0.8   Monday, August 11 2008
 
