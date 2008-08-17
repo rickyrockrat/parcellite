@@ -41,6 +41,7 @@ AC_PROG_MAKE_SET()
 # -------------------------------------------------------------------------------
 AC_CHECK_LIB(pthread, pthread_create)
 AM_PATH_GTK_2_0(2.10.0,,AC_MSG_ERROR(Need GTK+ >= 2.10.0))
+AM_PATH_GLIB_2_0(2.14.0,,AC_MSG_ERROR(Need Glib >= 2.14.0))
 
 # -------------------------------------------------------------------------------
 # Checks for header files.
