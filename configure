@@ -9588,8 +9588,8 @@ rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
      fi
      GTK_CFLAGS=""
      GTK_LIBS=""
-     { { echo "$as_me:$LINENO: error: Need GTK+ >= 2.10.0" >&5
-echo "$as_me: error: Need GTK+ >= 2.10.0" >&2;}
+     { { echo "$as_me:$LINENO: error: requirement not met: gtk >= 2.10.0" >&5
+echo "$as_me: error: requirement not met: gtk >= 2.10.0" >&2;}
    { (exit 1); exit 1; }; }
   fi
 
@@ -9993,8 +9993,8 @@ rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
      GLIB_GENMARSHAL=""
      GOBJECT_QUERY=""
      GLIB_MKENUMS=""
-     { { echo "$as_me:$LINENO: error: Need Glib >= 2.14.0" >&5
-echo "$as_me: error: Need Glib >= 2.14.0" >&2;}
+     { { echo "$as_me:$LINENO: error: requirement not met: glib >= 2.14.0" >&5
+echo "$as_me: error: requirement not met: glib >= 2.14.0" >&2;}
    { (exit 1); exit 1; }; }
   fi
 
