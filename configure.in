@@ -15,7 +15,7 @@ GETTEXT_PACKAGE=parcellite
 AC_SUBST(GETTEXT_PACKAGE)
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, "$GETTEXT_PACKAGE", [gettext package])
 
-ALL_LINGUAS="de es it ru"
+ALL_LINGUAS="de es hu it ru"
 AM_GLIB_GNU_GETTEXT
 AC_PROG_INTLTOOL([0.23])
 
@@ -40,8 +40,8 @@ AC_PROG_MAKE_SET()
 # Checks for libraries.
 # -------------------------------------------------------------------------------
 AC_CHECK_LIB(pthread, pthread_create)
-AM_PATH_GTK_2_0(2.10.0, [], AC_MSG_ERROR(requirement not met: gtk >= 2.10.0))
-AM_PATH_GLIB_2_0(2.14.0, [], AC_MSG_ERROR(requirement not met: glib >= 2.14.0))
+AM_PATH_GTK_2_0(2.10.0, [], AC_MSG_ERROR(Requirement not met: gtk >= 2.10.0))
+AM_PATH_GLIB_2_0(2.14.0, [], AC_MSG_ERROR(Requirement not met: glib >= 2.14.0))
 
 # -------------------------------------------------------------------------------
 # Checks for header files.
