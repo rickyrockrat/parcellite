@@ -1,94 +1,95 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# Hungarian translation of Parcellite.
+# Copyright (C) 2008 Xyhthyx <xyhthyx@gmail.com>
+# This file is distributed under the same license as the parcellite package.
+# Németh Tamás <ntomasz@vipmail.hu>, 2008.
 #
-#, fuzzy
+#
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: Parcellite\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-08-20 20:50-0400\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"PO-Revision-Date: 2008-08-15 16:58+0100\n"
+"Last-Translator: Németh Tamás <ntomasz@vipmail.hu>\n"
+"Language-Team: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: ../src/main.c:98
 msgid "Executing action..."
-msgstr ""
+msgstr "Művelet végrehajtása..."
 
 #: ../src/main.c:101 ../src/main.c:754
 msgid "Clipboard Manager"
-msgstr ""
+msgstr "Vágólapkezelő"
 
 #: ../src/main.c:121
 msgid "Could not create thread for executed action\n"
-msgstr ""
+msgstr "A végrehajtott művelethez nem hozható létre szál\n"
 
 #: ../src/main.c:172
 msgid "Editing Clipboard"
-msgstr ""
+msgstr "Vágólap szerkesztése"
 
 #: ../src/main.c:189
 msgid "<b>Clipboard</b>"
-msgstr ""
+msgstr "<b>Vágólap</b>"
 
 #: ../src/main.c:233
 msgid "Save changes"
-msgstr ""
+msgstr "Változások mentése"
 
 #: ../src/main.c:243
 msgid "Close"
-msgstr ""
+msgstr "Bezárás"
 
 #: ../src/main.c:283
+#, fuzzy
 msgid "Clear the history?"
-msgstr ""
+msgstr "_Fordított előzmény"
 
 #: ../src/main.c:340
 msgid "Lightweight GTK+ clipboard manager."
-msgstr ""
+msgstr "GTK+ alapú, könnyen kezelhető vágólapkezelő."
 
 #: ../src/main.c:422
 msgid "<b>None</b>"
-msgstr ""
+msgstr "<b>Nincs</b>"
 
 #. File contained no actions so adding empty
 #. File did not open so adding empty
 #. Nothing in history so adding empty
 #: ../src/main.c:443 ../src/main.c:472 ../src/main.c:578
 msgid "Empty"
-msgstr ""
+msgstr "Üres"
 
 #. Edit actions
 #: ../src/main.c:479
 msgid "_Edit actions"
-msgstr ""
+msgstr "_Műveletek szerkesztése"
 
 #. Edit clipboard
 #: ../src/main.c:503
 msgid "_Edit Clipboard"
-msgstr ""
+msgstr "_Vágólap szerkesztése"
 
 #: ../src/utils.c:36 ../src/utils.c:43
 #, c-format
 msgid "Couldn't create directory: %s\n"
-msgstr ""
+msgstr "A könyvtár nem hozható létre: %s\n"
 
 #: ../src/utils.c:82
 msgid "Run as daemon"
-msgstr ""
+msgstr "Futtatás démonként"
 
 #: ../src/utils.c:89
 msgid "Do not use status icon (Ctrl-Alt-P for menu)"
-msgstr ""
+msgstr "Ne használjon állapot ikont (Ctrl+Alt+P)"
 
 #: ../src/utils.c:96
 msgid "Print clipboard contents"
-msgstr ""
+msgstr "Vágólap tartalmak nyomtatása"
 
 #: ../src/utils.c:108
 msgid ""
@@ -98,104 +99,111 @@ msgid ""
 "  parcellite \"copied to clipboard\"\n"
 "  echo \"copied to clipboard\" | parcellite -o"
 msgstr ""
+"A vágólapkezelő CLI (konzolos) használatára példa:\n"
+"\n"
+"  echo \"másolás a vágólapra\" | parcellite\n"
+"  parcellite \"másolás a vágólapra\"\n"
+"  echo \"másolás a vágólapra\" | parcellite -o"
 
 #: ../src/utils.c:114
 msgid ""
 "Written by Xyhthyx.\n"
 "Report bugs to <xyhthyx@gmail.com>."
 msgstr ""
+"Programozó: Xyhthyx\n"
+"Hibajelentő emailcím: <xyhthyx@gmail.com>"
 
 #. Create the dialog
 #: ../src/preferences.c:239
 msgid "New Action"
-msgstr ""
+msgstr "Új művelet"
 
 #: ../src/preferences.c:254 ../src/preferences.c:317
 msgid "<b>Name:</b>"
-msgstr ""
+msgstr "<b>Név:</b>"
 
 #: ../src/preferences.c:259 ../src/preferences.c:322
 msgid "Name your action"
-msgstr ""
+msgstr "A művelet neve"
 
 #: ../src/preferences.c:266 ../src/preferences.c:329
 msgid "<b>Command:</b>"
-msgstr ""
+msgstr "<b>Parancs:</b>"
 
 #: ../src/preferences.c:272 ../src/preferences.c:335
 #, c-format
 msgid "\"%s\" will be replaced with the clipboard contents"
-msgstr ""
+msgstr "\"%s\" helyére kerül a vágólap tartalma"
 
 #. Create the dialog
 #: ../src/preferences.c:300
 msgid "Edit Action"
-msgstr ""
+msgstr "Művelet szerkesztése"
 
 #. Create the dialog
 #: ../src/preferences.c:436
 msgid "Preferences"
-msgstr ""
+msgstr "Beállítások"
 
 #: ../src/preferences.c:454
 msgid "General"
-msgstr ""
+msgstr "Általános"
 
 #: ../src/preferences.c:462
 msgid "<b>History</b>"
-msgstr ""
+msgstr "<b>Előzmény</b>"
 
 #: ../src/preferences.c:469
 msgid "Amount of items to keep in history:"
-msgstr ""
+msgstr "Az előzményben megtartott elemek száma:"
 
 #: ../src/preferences.c:482
 msgid "<b>Display</b>"
-msgstr ""
+msgstr "<b>Megjelenítés</b>"
 
 #: ../src/preferences.c:491
 msgid "Length in characters of history items:"
-msgstr ""
+msgstr "Karakterek száma az előzmény elemeinél:"
 
 #: ../src/preferences.c:500
 msgid "Long items omitted in the:"
-msgstr ""
+msgstr "Hosszabb elemekből kihagyja:"
 
 #: ../src/preferences.c:504
 msgid "Beginning"
-msgstr ""
+msgstr "az elejét"
 
 #: ../src/preferences.c:505
 msgid "Middle"
-msgstr ""
+msgstr "a közepét"
 
 #: ../src/preferences.c:506
 msgid "End"
-msgstr ""
+msgstr "a végét"
 
 #: ../src/preferences.c:514
 msgid "<b>Hotkeys</b>"
-msgstr ""
+msgstr "<b>Gyorsbillentyűk</b>"
 
 #: ../src/preferences.c:523
 msgid "History menu global hotkey:"
-msgstr ""
+msgstr "Előzmény gyorsbillentyűje:"
 
 #: ../src/preferences.c:531
 msgid "Actions menu global hotkey:"
-msgstr ""
+msgstr "Műveletek gyorsbillentyűje:"
 
 #: ../src/preferences.c:543
 msgid "<b>Behaviour</b>"
-msgstr ""
+msgstr "<b>Viselkedés</b>"
 
 #: ../src/preferences.c:550
 msgid "_Save history"
-msgstr ""
+msgstr "Előzmény _mentése"
 
 #: ../src/preferences.c:551
 msgid "Keep and restore history in between sessions"
-msgstr ""
+msgstr "Tartsa meg és állítsa helyre az előzményt a munkamenetek között"
 
 #: ../src/preferences.c:553
 msgid "C_onfirm clear"
@@ -207,73 +215,73 @@ msgstr ""
 
 #: ../src/preferences.c:556
 msgid "_Reverse history"
-msgstr ""
+msgstr "_Fordított előzmény"
 
 #: ../src/preferences.c:557
 msgid "Show history items in reverse order"
-msgstr ""
+msgstr "Előzmény elemeinek mutatása fordított sorrendben"
 
 #: ../src/preferences.c:559
 msgid "Single _line mode"
-msgstr ""
+msgstr "_Egysoros mód"
 
 #: ../src/preferences.c:560
 msgid "Show items in a single line"
-msgstr ""
+msgstr "Elemek mutatása egyetlen sorban"
 
 #: ../src/preferences.c:562
 msgid "_Capture hyperlinks only"
-msgstr ""
+msgstr "Csak az internetes _hivatkozások elkapása"
 
 #: ../src/preferences.c:563
 msgid "Ignore all non-hyperlink text"
-msgstr ""
+msgstr "Minden nem-internetes hivatkozás mellőzése"
 
 #: ../src/preferences.c:570
 msgid "Actions"
-msgstr ""
+msgstr "Műveletek"
 
 #. Build the actions label
 #: ../src/preferences.c:575
 msgid "Control-click Parcellite's tray icon to use actions"
-msgstr ""
+msgstr "Műveletek használatához Ctrl+kattintás a Parcellite állapotikonjára"
 
 #: ../src/preferences.c:596
 msgid "Action"
-msgstr ""
+msgstr "Művelet"
 
 #: ../src/preferences.c:604
 msgid "Command"
-msgstr ""
+msgstr "Parancs"
 
 #: ../src/preferences.c:619
 msgid "New"
-msgstr ""
+msgstr "Új"
 
 #: ../src/preferences.c:623
 msgid "New action"
-msgstr ""
+msgstr "Új művelet"
 
 #: ../src/preferences.c:626
 msgid "Edit"
-msgstr ""
+msgstr "Szerkesztés"
 
 #: ../src/preferences.c:630
 msgid "Edit selected"
-msgstr ""
+msgstr "Kiválasztott szerkesztése"
 
 #: ../src/preferences.c:633
 msgid "Delete"
-msgstr ""
+msgstr "Törlés"
 
 #: ../src/preferences.c:637
 msgid "Delete selected"
-msgstr ""
+msgstr "Kiválasztott törlése"
 
 #: ../src/preferences.c:644
 msgid "Move selected up"
-msgstr ""
+msgstr "Kiválasztott mozgatása felfelé"
 
 #: ../src/preferences.c:651
 msgid "Move selected down"
-msgstr ""
+msgstr "Kiválasztott mozgatása lefelé"
