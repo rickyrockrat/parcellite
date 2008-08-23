@@ -35,6 +35,7 @@ typedef struct
   gint      ellipsize;   /* Omit long items */
   gchar*    histkey;     /* History menu hotkey */
   gchar*    actionkey;   /* Actions menu hotkey */
+  gchar*    menukey;     /* Parcellite menu hotkey */
   gboolean  savehist;    /* Save history */
   gboolean  confclear;   /* Confirm clear option */
   gboolean  revhist;     /* Reverse history */
@@ -52,6 +53,9 @@ on_history_hotkey(char *keystring, gpointer user_data);
 
 void
 on_actions_hotkey(char *keystring, gpointer user_data);
+
+void
+on_menu_hotkey(char *keystring, gpointer user_data);
 
 G_END_DECLS
 

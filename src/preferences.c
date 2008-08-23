@@ -29,9 +29,10 @@
 GtkWidget *preferences_dialog, *history_spin,
           *charlength_spin,    *ellipsize_combo,
           *history_key_entry,  *actions_key_entry,
-          *save_check,         *confirm_check,
-          *reverse_check,      *linemode_check,
-          *hyperlinks_check;
+          *menu_key_entry,     *save_check,
+          *confirm_check,      *reverse_check,
+          *linemode_check,     *hyperlinks_check;
+          
 
 GtkListStore* actions_list;
 GtkTreeSelection* actions_selection;
@@ -47,6 +48,9 @@ apply_preferences()
   keybinder_unbind(prefs.actionkey, on_actions_hotkey);
   g_free(prefs.actionkey);
   prefs.actionkey = NULL;
+  keybinder_unbind(prefs.menukey, on_menu_hotkey);
+  g_free(prefs.menukey);
+  prefs.menukey = NULL;
   
   /* Get the new preferences */
   prefs.histlim = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(history_spin));
@@ -54,6 +58,7 @@ apply_preferences()
   prefs.ellipsize = gtk_combo_box_get_active(GTK_COMBO_BOX(ellipsize_combo)) + 1;
   prefs.histkey = g_strdup(gtk_entry_get_text(GTK_ENTRY(history_key_entry)));
   prefs.actionkey = g_strdup(gtk_entry_get_text(GTK_ENTRY(actions_key_entry)));
+  prefs.menukey = g_strdup(gtk_entry_get_text(GTK_ENTRY(menu_key_entry)));
   prefs.savehist = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(save_check));
   prefs.confclear = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(confirm_check));
   prefs.revhist = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(reverse_check));
@@ -63,6 +68,7 @@ apply_preferences()
   /* Bind keys and apply the new history limit */
   keybinder_bind(prefs.histkey, on_history_hotkey, NULL);
   keybinder_bind(prefs.actionkey, on_actions_hotkey, NULL);
+  keybinder_bind(prefs.menukey, on_menu_hotkey, NULL);
   truncate_history();
 }
 
@@ -79,6 +85,7 @@ save_preferences()
   g_key_file_set_integer(rc_key, "rc", "ellipsize", prefs.ellipsize);
   g_key_file_set_string(rc_key, "rc", "history_key", prefs.histkey);
   g_key_file_set_string(rc_key, "rc", "actions_key", prefs.actionkey);
+  g_key_file_set_string(rc_key, "rc", "menu_key", prefs.menukey);
   g_key_file_set_boolean(rc_key, "rc", "save_history", prefs.savehist);
   g_key_file_set_boolean(rc_key, "rc", "confirm_clear", prefs.confclear);
   g_key_file_set_boolean(rc_key, "rc", "reverse_history", prefs.revhist);
@@ -109,6 +116,7 @@ read_preferences()
     prefs.ellipsize = g_key_file_get_integer(rc_key, "rc", "ellipsize", NULL);
     prefs.histkey = g_key_file_get_string(rc_key, "rc", "history_key", NULL);
     prefs.actionkey = g_key_file_get_string(rc_key, "rc", "actions_key", NULL);
+    prefs.menukey = g_key_file_get_string(rc_key, "rc", "menu_key", NULL);
     prefs.savehist = g_key_file_get_boolean(rc_key, "rc", "save_history", NULL);
     prefs.confclear = g_key_file_get_boolean(rc_key, "rc", "confirm_clear", NULL);
     prefs.revhist = g_key_file_get_boolean(rc_key, "rc", "reverse_history", NULL);
@@ -126,12 +134,15 @@ read_preferences()
       prefs.histkey = g_strdup(DEFHISTORYKEY);
     if (!prefs.actionkey)
       prefs.actionkey = g_strdup(DEFACTIONSKEY);
+    if (!prefs.menukey)
+      prefs.menukey = g_strdup(DEFMENUKEY);
   }
   else
   {
     /* Init default keys on error */
     prefs.histkey = g_strdup(DEFHISTORYKEY);
     prefs.actionkey = g_strdup(DEFACTIONSKEY);
+    prefs.menukey = g_strdup(DEFMENUKEY);
   }
   g_key_file_free(rc_key);
   g_free(rc_file);
@@ -518,7 +529,7 @@ show_preferences(gint tab)
   gtk_container_add(GTK_CONTAINER(frame), alignment);
   vbox = gtk_vbox_new(FALSE, 2);
   gtk_container_add(GTK_CONTAINER(alignment), vbox);
-  hbox = gtk_hbox_new(FALSE, 6);
+  hbox = gtk_hbox_new(FALSE, 2);
   gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
   label = gtk_label_new(_("History menu global hotkey:"));
   gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.50);
@@ -526,7 +537,7 @@ show_preferences(gint tab)
   history_key_entry = gtk_entry_new();
   gtk_entry_set_width_chars(GTK_ENTRY(history_key_entry), 10);
   gtk_box_pack_end(GTK_BOX(hbox), history_key_entry, TRUE, TRUE, 0);
-  hbox = gtk_hbox_new(FALSE, 6);
+  hbox = gtk_hbox_new(FALSE, 2);
   gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
   label = gtk_label_new(_("Actions menu global hotkey:"));
   gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.50);
@@ -534,6 +545,14 @@ show_preferences(gint tab)
   actions_key_entry = gtk_entry_new();
   gtk_entry_set_width_chars(GTK_ENTRY(actions_key_entry), 10);
   gtk_box_pack_end(GTK_BOX(hbox), actions_key_entry, TRUE, TRUE, 0);
+  hbox = gtk_hbox_new(FALSE, 2);
+  gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
+  label = gtk_label_new(_("Parcellite menu global hotkey:"));
+  gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.50);
+  gtk_box_pack_start(GTK_BOX(hbox), label, TRUE, TRUE, 0);
+  menu_key_entry = gtk_entry_new();
+  gtk_entry_set_width_chars(GTK_ENTRY(menu_key_entry), 10);
+  gtk_box_pack_end(GTK_BOX(hbox), menu_key_entry, TRUE, TRUE, 0);
   gtk_box_pack_start(GTK_BOX(vbox_general), frame, FALSE, FALSE, 0);
   
   /* Build the behaviour frame */
@@ -659,6 +678,7 @@ show_preferences(gint tab)
   gtk_combo_box_set_active(GTK_COMBO_BOX(ellipsize_combo), prefs.ellipsize - 1);
   gtk_entry_set_text(GTK_ENTRY(history_key_entry), prefs.histkey);
   gtk_entry_set_text(GTK_ENTRY(actions_key_entry), prefs.actionkey);
+  gtk_entry_set_text(GTK_ENTRY(menu_key_entry), prefs.menukey);
   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(save_check), prefs.savehist);
   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(confirm_check), prefs.confclear);
   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(reverse_check), prefs.revhist);
