@@ -27,7 +27,9 @@ G_BEGIN_DECLS
 #define DEFCHARLENGTH      50
 #define DEFACTIONSKEY      "<Ctrl><Alt>A"
 #define DEFHISTORYKEY      "<Ctrl><Alt>H"
-#define DEFSAVELIST        TRUE
+#define DEFMENUKEY         "<Ctrl><Alt>P"
+#define DEFSAVEHIST        TRUE
+#define DEFCONFIRMCLEAR    FALSE
 #define DEFREVHISTORY      FALSE
 #define DEFSINGLELINEMODE  TRUE
 #define DEFHYPERLINKSMODE  FALSE

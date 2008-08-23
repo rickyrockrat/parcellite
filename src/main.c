@@ -42,8 +42,13 @@ static GtkStatusIcon* status_icon;
 /* This variable locks actions when one is being executed */
 static gboolean executing_action = FALSE;
 
-/* Test */
-prefs_t prefs = {25, 50, 2, NULL, NULL, TRUE, FALSE, FALSE, TRUE, FALSE, FALSE};
+/* Create preferences */
+prefs_t prefs = {DEFHISTORYLIM,      DEFCHARLENGTH,
+                 DEFELLIPSIZE,       NULL,
+                 NULL,               NULL,
+                 DEFSAVEHIST,        DEFCONFIRMCLEAR,
+                 DEFREVHISTORY,      DEFSINGLELINEMODE,
+                 DEFHYPERLINKSMODE,  DEFNOICON};
 
 
 /* Called every time user copies something to the clipboard (Ctrl-V) */
@@ -657,7 +662,7 @@ on_actions_hotkey(char *keystring, gpointer user_data)
 }
 
 /* Called when actions global hotkey is pressed */
-static void
+void
 on_menu_hotkey(char *keystring, gpointer user_data)
 {
   on_right_click(status_icon, 0, 0, NULL);
