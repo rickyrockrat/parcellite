@@ -20,6 +20,7 @@
 #include <gtk/gtk.h>
 #include "main.h"
 #include "utils.h"
+#include "daemon.h"
 #include "parcellite-i18n.h"
 
 /* Creates program related directories if needed */
@@ -128,13 +129,7 @@ parse_options(int argc, char* argv[])
   /* Run as daemon option */
   else if (daemon)
   {
-    /* Daemon mode basically just creates clipboard and primary objects
-     * and keeps them alive until the program is killed
-     */
-    GtkClipboard* cb = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);
-    GtkClipboard* prim = gtk_clipboard_get(GDK_SELECTION_PRIMARY);
-    gtk_main();
-    /* Result true so program exits when finished parsing */
+    init_daemon_mode();
     result = TRUE;
   }
   /* Print clipboard option */
