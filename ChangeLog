@@ -2,8 +2,11 @@ v0.9   Pending...
 
   New
   + Confirm clear option.
+  + Hungarian translation.
+  + Parcellite menu hotkey.
   
   Changes
+  + Fixed daemon mode.
   + Fixed parcellite-startup.desktop to include "Type=Application" to prevent
     desktop-file-validate from failing.
 
