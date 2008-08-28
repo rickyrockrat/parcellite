@@ -432,9 +432,9 @@ AMDEP_TRUE="" ac_aux_dir="."
 # Capture the value of obsolete ALL_LINGUAS because we need it to compute
     # POFILES, UPDATEPOFILES, DUMMYPOFILES, GMOFILES, CATALOGS. But hide it
     # from automake < 1.5.
-    eval 'OBSOLETE_ALL_LINGUAS''="de es it ru"'
+    eval 'OBSOLETE_ALL_LINGUAS''="de es hu it ru"'
     # Capture the value of LINGUAS because we need it to compute CATALOGS.
-    LINGUAS=" de es it ru"
+    LINGUAS=" de es hu it ru"
 
 
 
@@ -591,15 +591,15 @@ s,@MSGFMT@,|#_!!_#|/usr/bin/msgfmt,g
 s,@MSGFMT_OPTS@,|#_!!_#|-c,g
 s,@GMSGFMT@,|#_!!_#|/usr/bin/msgfmt,g
 s,@XGETTEXT@,|#_!!_#|/usr/bin/xgettext,g
-s,@CATALOGS@,|#_!!_#| de.gmo es.gmo it.gmo ru.gmo,g
+s,@CATALOGS@,|#_!!_#| de.gmo es.gmo hu.gmo it.gmo ru.gmo,g
 s,@CATOBJEXT@,|#_!!_#|.gmo,g
 s,@DATADIRNAME@,|#_!!_#|share,g
-s,@GMOFILES@,|#_!!_#| de.gmo es.gmo it.gmo ru.gmo,g
+s,@GMOFILES@,|#_!!_#| de.gmo es.gmo hu.gmo it.gmo ru.gmo,g
 s,@INSTOBJEXT@,|#_!!_#|.mo,g
 s,@INTLLIBS@,|#_!!_#|,g
 s,@PO_IN_DATADIR_TRUE@,|#_!!_#|,g
 s,@PO_IN_DATADIR_FALSE@,|#_!!_#|,g
-s,@POFILES@,|#_!!_#| de.po es.po it.po ru.po,g
+s,@POFILES@,|#_!!_#| de.po es.po hu.po it.po ru.po,g
 s,@POSUB@,|#_!!_#|po,g
 s,@MKINSTALLDIRS@,|#_!!_#|./mkinstalldirs,g
 s,@INTLTOOL_UPDATE@,|#_!!_#|/usr/bin/intltool-update,g
@@ -629,7 +629,7 @@ s,@INTLTOOL_SERVICE_RULE@,|#_!!_#|%.service: %.service.in   $(INTLTOOL_MERGE) $(
 s,@INTLTOOL_POLICY_RULE@,|#_!!_#|%.policy:    %.policy.in    $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; LC_ALL=C $(INTLTOOL_MERGE) -x -u -c $(top_builddir)/po/.intltool-merge-cache $(top_srcdir)/po $< $@|#_!!_#|,g
 s,@MSGMERGE@,|#_!!_#|/usr/bin/msgmerge,g
 s,@INTLTOOL_PERL@,|#_!!_#|/usr/bin/perl,g
-s,@ALL_LINGUAS@,|#_!!_#|de es it ru,g
+s,@ALL_LINGUAS@,|#_!!_#|de es hu it ru,g
 s,@parcellitelocaledir@,|#_!!_#|${prefix}/${DATADIRNAME}/locale,g
 s,@GETTEXT_MACRO_VERSION@,|#_!!_#|0.17,g
 s,@MSGFMT_015@,|#_!!_#|/usr/bin/msgfmt,g
