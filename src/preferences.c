@@ -42,13 +42,13 @@ static void
 apply_preferences()
 {
   /* Unbind the keys before binding new ones */
-  keybinder_unbind(prefs.histkey, on_history_hotkey);
+  keybinder_unbind(prefs.histkey, history_hotkey);
   g_free(prefs.histkey);
   prefs.histkey = NULL;
-  keybinder_unbind(prefs.actionkey, on_actions_hotkey);
+  keybinder_unbind(prefs.actionkey, actions_hotkey);
   g_free(prefs.actionkey);
   prefs.actionkey = NULL;
-  keybinder_unbind(prefs.menukey, on_menu_hotkey);
+  keybinder_unbind(prefs.menukey, menu_hotkey);
   g_free(prefs.menukey);
   prefs.menukey = NULL;
   
@@ -66,9 +66,9 @@ apply_preferences()
   prefs.hyperlinks = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(hyperlinks_check));
   
   /* Bind keys and apply the new history limit */
-  keybinder_bind(prefs.histkey, on_history_hotkey, NULL);
-  keybinder_bind(prefs.actionkey, on_actions_hotkey, NULL);
-  keybinder_bind(prefs.menukey, on_menu_hotkey, NULL);
+  keybinder_bind(prefs.histkey, history_hotkey, NULL);
+  keybinder_bind(prefs.actionkey, actions_hotkey, NULL);
+  keybinder_bind(prefs.menukey, menu_hotkey, NULL);
   truncate_history();
 }
 

@@ -49,13 +49,13 @@ extern prefs_t prefs;
 
 /* Functions */
 void
-on_history_hotkey(char *keystring, gpointer user_data);
+history_hotkey(char *keystring, gpointer user_data);
 
 void
-on_actions_hotkey(char *keystring, gpointer user_data);
+actions_hotkey(char *keystring, gpointer user_data);
 
 void
-on_menu_hotkey(char *keystring, gpointer user_data);
+menu_hotkey(char *keystring, gpointer user_data);
 
 G_END_DECLS
 

@@ -112,7 +112,7 @@ execute_action(void *command)
 
 /* Called when an action is selected from actions menu */
 static void
-on_action_selected(GtkButton *button, gpointer user_data)
+action_selected(GtkButton *button, gpointer user_data)
 {
   /* Insert clipboard into command (user_data), execute and free */
   gchar* command = g_markup_printf_escaped((gchar*)user_data, clipboard_text);
@@ -129,7 +129,7 @@ on_action_selected(GtkButton *button, gpointer user_data)
 
 /* Called when Edit Actions is selected from actions menu */
 static void
-on_edit_actions_selected(GtkButton *button, gpointer user_data)
+edit_actions_selected(GtkButton *button, gpointer user_data)
 {
   /* This helps prevent multiple instances */
   if (!gtk_grab_get_current())
@@ -139,7 +139,7 @@ on_edit_actions_selected(GtkButton *button, gpointer user_data)
 
 /* Called when the save button is clicked from the edit window */
 static void
-on_save_clicked(GtkButton *button, gpointer user_data)
+save_clicked(GtkButton *button, gpointer user_data)
 {
   /* Get the text buffer, its text and set as clipboard */
   GtkTextBuffer* text_buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(user_data));
@@ -156,7 +156,7 @@ on_save_clicked(GtkButton *button, gpointer user_data)
 
 /* Called when Edit is selected from history menu */
 static void
-on_edit_selected(GtkMenuItem *menu_item, gpointer user_data)
+edit_selected(GtkMenuItem *menu_item, gpointer user_data)
 {
   /* This helps prevent multiple instances */
   if (!gtk_grab_get_current())
@@ -236,7 +236,7 @@ on_edit_selected(GtkMenuItem *menu_item, gpointer user_data)
                                                   GTK_ICON_SIZE_MENU));
     
     gtk_widget_set_tooltip_text(button_save, _("Save changes"));
-    g_signal_connect(G_OBJECT(button_save), "clicked", G_CALLBACK(on_save_clicked), text_view);
+    g_signal_connect(G_OBJECT(button_save), "clicked", G_CALLBACK(save_clicked), text_view);
     gtk_box_pack_end(GTK_BOX(hbox), button_save, FALSE, FALSE, 0);
     /* Close button */
     GtkWidget* button_close = gtk_button_new();
@@ -264,7 +264,7 @@ on_edit_selected(GtkMenuItem *menu_item, gpointer user_data)
 
 /* Called when an item is selected from history menu */
 static void
-on_item_selected(GtkMenuItem *menu_item, gpointer user_data)
+item_selected(GtkMenuItem *menu_item, gpointer user_data)
 {
   /* Get the text from the right element and set as clipboard */
   GSList* element = g_slist_nth(history, (guint)user_data);
@@ -276,7 +276,7 @@ on_item_selected(GtkMenuItem *menu_item, gpointer user_data)
 
 /* Called when Clear is selected from history menu */
 static void
-on_clear_selected(GtkMenuItem *menu_item, gpointer user_data)
+clear_selected(GtkMenuItem *menu_item, gpointer user_data)
 {
   /* Check for confirm clear option */
   if (prefs.confclear)
@@ -311,7 +311,7 @@ on_clear_selected(GtkMenuItem *menu_item, gpointer user_data)
 
 /* Called when About is selected from right-click menu */
 static void
-on_about_selected(GtkMenuItem *menu_item, gpointer user_data)
+show_about_dialog(GtkMenuItem *menu_item, gpointer user_data)
 {
   /* This helps prevent multiple instances */
   if (!gtk_grab_get_current())
@@ -367,7 +367,7 @@ on_about_selected(GtkMenuItem *menu_item, gpointer user_data)
 
 /* Called when Preferences is selected from right-click menu */
 static void
-on_preferences_selected(GtkMenuItem *menu_item, gpointer user_data)
+preferences_selected(GtkMenuItem *menu_item, gpointer user_data)
 {
   /* This helps prevent multiple instances */
   if (!gtk_grab_get_current())
@@ -377,7 +377,7 @@ on_preferences_selected(GtkMenuItem *menu_item, gpointer user_data)
 
 /* Called when Quit is selected from right-click menu */
 static void
-on_quit_selected(GtkMenuItem *menu_item, gpointer user_data)
+quit_selected(GtkMenuItem *menu_item, gpointer user_data)
 {
   /* Prevent quit with dialogs open */
   if (!gtk_grab_get_current())
@@ -386,8 +386,8 @@ on_quit_selected(GtkMenuItem *menu_item, gpointer user_data)
 }
 
 /* Called when status icon is control-clicked */
-static
-gboolean show_actions_menu(gpointer data)
+static gboolean
+show_actions_menu(gpointer data)
 {
   /* Declare some variables */
   GtkWidget *menu,       *menu_item,
@@ -467,8 +467,8 @@ gboolean show_actions_menu(gpointer data)
       fread(&size, 4, 1, actions_file);
       /* Append the action */
       gtk_menu_shell_append(GTK_MENU_SHELL(menu), menu_item);
-      g_signal_connect(G_OBJECT(menu_item),            "activate",
-                       G_CALLBACK(on_action_selected), (gpointer)command);      
+      g_signal_connect(G_OBJECT(menu_item),         "activate",
+                       G_CALLBACK(action_selected), (gpointer)command);      
     }
     fclose(actions_file);
   }
@@ -485,7 +485,7 @@ gboolean show_actions_menu(gpointer data)
   menu_item = gtk_image_menu_item_new_with_mnemonic(_("_Edit actions"));
   menu_image = gtk_image_new_from_stock(GTK_STOCK_EDIT, GTK_ICON_SIZE_MENU);
   gtk_image_menu_item_set_image(GTK_IMAGE_MENU_ITEM(menu_item), menu_image);
-  g_signal_connect(G_OBJECT(menu_item), "activate", G_CALLBACK(on_edit_actions_selected), NULL);
+  g_signal_connect(G_OBJECT(menu_item), "activate", G_CALLBACK(edit_actions_selected), NULL);
   gtk_menu_shell_append(GTK_MENU_SHELL(menu), menu_item);
   /* Popup the menu... */
   gtk_widget_show_all(menu);
@@ -509,7 +509,7 @@ show_history_menu(gpointer data)
   menu_item = gtk_image_menu_item_new_with_mnemonic(_("_Edit Clipboard"));
   menu_image = gtk_image_new_from_stock(GTK_STOCK_EDIT, GTK_ICON_SIZE_MENU);
   gtk_image_menu_item_set_image(GTK_IMAGE_MENU_ITEM(menu_item), menu_image);
-  g_signal_connect(G_OBJECT(menu_item), "activate", G_CALLBACK(on_edit_selected), NULL);
+  g_signal_connect(G_OBJECT(menu_item), "activate", G_CALLBACK(edit_selected), NULL);
   gtk_menu_shell_append(GTK_MENU_SHELL(menu), menu_item);
   /* -------------------- */
   gtk_menu_shell_append(GTK_MENU_SHELL(menu), gtk_separator_menu_item_new());
@@ -552,7 +552,7 @@ show_history_menu(gpointer data)
       }
       menu_item = gtk_menu_item_new_with_label(string->str);
       g_signal_connect(G_OBJECT(menu_item),          "activate",
-                       G_CALLBACK(on_item_selected), (gpointer)element_number);
+                       G_CALLBACK(item_selected), (gpointer)element_number);
       
       /* Modify menu item label properties */
       item_label = gtk_bin_get_child(GTK_BIN(menu_item));
@@ -589,7 +589,7 @@ show_history_menu(gpointer data)
   gtk_menu_shell_append(GTK_MENU_SHELL(menu), gtk_separator_menu_item_new());
   /* Clear */
   menu_item = gtk_image_menu_item_new_from_stock(GTK_STOCK_CLEAR, NULL);
-  g_signal_connect(G_OBJECT(menu_item), "activate", G_CALLBACK(on_clear_selected), NULL);
+  g_signal_connect(G_OBJECT(menu_item), "activate", G_CALLBACK(clear_selected), NULL);
   gtk_menu_shell_append(GTK_MENU_SHELL(menu), menu_item);
   /* Popup the menu... */
   gtk_widget_show_all(menu);
@@ -600,8 +600,8 @@ show_history_menu(gpointer data)
 
 /* Called when status icon is right-clicked */
 static void
-on_right_click(GtkStatusIcon *status_icon, guint button,
-               guint activate_time,  gpointer user_data)
+show_parcellite_menu(GtkStatusIcon *status_icon, guint button,
+                     guint activate_time,  gpointer user_data)
 {
   /* Declare some variables */
   GtkWidget *menu, *menu_item;
@@ -611,17 +611,17 @@ on_right_click(GtkStatusIcon *status_icon, guint button,
   g_signal_connect(G_OBJECT(menu), "selection-done", G_CALLBACK(gtk_widget_destroy), NULL);
   /* About */
   menu_item = gtk_image_menu_item_new_from_stock(GTK_STOCK_ABOUT, NULL);
-  g_signal_connect(G_OBJECT(menu_item), "activate", G_CALLBACK(on_about_selected), NULL);
+  g_signal_connect(G_OBJECT(menu_item), "activate", G_CALLBACK(show_about_dialog), NULL);
   gtk_menu_shell_append(GTK_MENU_SHELL(menu), menu_item);
   /* Preferences */
   menu_item = gtk_image_menu_item_new_from_stock(GTK_STOCK_PREFERENCES, NULL);
-  g_signal_connect(G_OBJECT(menu_item), "activate", G_CALLBACK(on_preferences_selected), NULL);
+  g_signal_connect(G_OBJECT(menu_item), "activate", G_CALLBACK(preferences_selected), NULL);
   gtk_menu_shell_append(GTK_MENU_SHELL(menu), menu_item);
   /* -------------------- */
   gtk_menu_shell_append(GTK_MENU_SHELL(menu), gtk_separator_menu_item_new());
   /* Quit */
   menu_item = gtk_image_menu_item_new_from_stock(GTK_STOCK_QUIT, NULL);
-  g_signal_connect(G_OBJECT(menu_item), "activate", G_CALLBACK(on_quit_selected), NULL);
+  g_signal_connect(G_OBJECT(menu_item), "activate", G_CALLBACK(quit_selected), NULL);
   gtk_menu_shell_append(GTK_MENU_SHELL(menu), menu_item);
   /* Popup the menu... */
   gtk_widget_show_all(menu);
@@ -630,7 +630,7 @@ on_right_click(GtkStatusIcon *status_icon, guint button,
 
 /* Called when status icon is left-clicked */
 static void
-on_left_click(GtkStatusIcon *status_icon, gpointer user_data)
+check_click(GtkStatusIcon *status_icon, gpointer user_data)
 {
   /* Check what type of click was recieved */
   GdkEvent* current_event = gtk_get_current_event();
@@ -649,23 +649,23 @@ on_left_click(GtkStatusIcon *status_icon, gpointer user_data)
 
 /* Called when history global hotkey is pressed */
 void
-on_history_hotkey(char *keystring, gpointer user_data)
+history_hotkey(char *keystring, gpointer user_data)
 {
   g_timeout_add(POPUPDELAY, show_history_menu, NULL);
 }
 
 /* Called when actions global hotkey is pressed */
 void
-on_actions_hotkey(char *keystring, gpointer user_data)
+actions_hotkey(char *keystring, gpointer user_data)
 {
   g_timeout_add(POPUPDELAY, show_actions_menu, NULL);
 }
 
 /* Called when actions global hotkey is pressed */
 void
-on_menu_hotkey(char *keystring, gpointer user_data)
+menu_hotkey(char *keystring, gpointer user_data)
 {
-  on_right_click(status_icon, 0, 0, NULL);
+  show_parcellite_menu(status_icon, 0, 0, NULL);
 }
 
 /* Initialize some variables among other things */
@@ -748,30 +748,30 @@ main(int argc, char *argv[])
   
   /* Bind global keys */
   keybinder_init();
-  keybinder_bind(prefs.histkey, on_history_hotkey, NULL);
-  keybinder_bind(prefs.actionkey, on_actions_hotkey, NULL);
+  keybinder_bind(prefs.histkey, history_hotkey, NULL);
+  keybinder_bind(prefs.actionkey, actions_hotkey, NULL);
+  keybinder_bind(prefs.menukey, menu_hotkey, NULL);
   
   /* Create status icon */
-  if (prefs.noicon)
-    keybinder_bind(g_strdup("<Ctrl><Alt>P"), on_menu_hotkey, NULL);
-  else
+  if (!prefs.noicon)
   {
     status_icon = gtk_status_icon_new_from_stock(GTK_STOCK_PASTE);
     gtk_status_icon_set_tooltip(GTK_STATUS_ICON(status_icon), _("Clipboard Manager"));
-    g_signal_connect(G_OBJECT(status_icon), "activate", G_CALLBACK(on_left_click), NULL);
-    g_signal_connect(G_OBJECT(status_icon), "popup-menu", G_CALLBACK(on_right_click), NULL);
+    g_signal_connect(G_OBJECT(status_icon), "activate", G_CALLBACK(check_click), NULL);
+    g_signal_connect(G_OBJECT(status_icon), "popup-menu", G_CALLBACK(show_parcellite_menu), NULL);
   }
   
   /* Run GTK+ loop */
   gtk_main();
   
   /* Unbind keys */
-  keybinder_unbind(prefs.histkey, on_history_hotkey);
-  keybinder_unbind(prefs.actionkey, on_actions_hotkey);
-  keybinder_unbind("<Ctrl><Alt>P", on_menu_hotkey);
+  keybinder_unbind(prefs.histkey, history_hotkey);
+  keybinder_unbind(prefs.actionkey, actions_hotkey);
+  keybinder_unbind(prefs.menukey, menu_hotkey);
   /* Free memory */
   g_free(prefs.histkey);
   g_free(prefs.actionkey);
+  g_free(prefs.menukey);
   g_slist_free(history);
   g_free(clipboard_text);
   g_free(clipboard_last_item);

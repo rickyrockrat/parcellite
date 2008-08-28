@@ -54,8 +54,8 @@ am__installdirs = "$(DESTDIR)$(bindir)"
 binPROGRAMS_INSTALL = $(INSTALL_PROGRAM)
 PROGRAMS = $(bin_PROGRAMS)
 am_parcellite_OBJECTS = main.$(OBJEXT) utils.$(OBJEXT) \
-	history.$(OBJEXT) keybinder.$(OBJEXT) preferences.$(OBJEXT) \
-	eggaccelerators.$(OBJEXT)
+	daemon.$(OBJEXT) history.$(OBJEXT) keybinder.$(OBJEXT) \
+	preferences.$(OBJEXT) eggaccelerators.$(OBJEXT)
 parcellite_OBJECTS = $(am_parcellite_OBJECTS)
 parcellite_LDADD = $(LDADD)
 am__DEPENDENCIES_1 =
@@ -226,6 +226,7 @@ DISTCLEANFILES = *.bak *.log *~ .deps/*.P
 parcellite_SOURCES = main.c main.h \
                      utils.c utils.h \
                      parcellite-i18n.h\
+                     daemon.c daemon.h \
                      history.c history.h \
                      keybinder.c keybinder.h \
                      preferences.c preferences.h \
@@ -297,6 +298,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/daemon.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/eggaccelerators.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/history.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/keybinder.Po@am__quote@
