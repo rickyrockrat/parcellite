@@ -94,6 +94,8 @@ clipboard_new_item(GtkClipboard *clipboard,
   g_free(text);
 }
 
+
+
 /* Thread function called for each action performed */
 void *
 execute_action(void *command)
@@ -551,7 +553,7 @@ show_history_menu(gpointer data)
         }
       }
       menu_item = gtk_menu_item_new_with_label(string->str);
-      g_signal_connect(G_OBJECT(menu_item),          "activate",
+      g_signal_connect(G_OBJECT(menu_item),       "activate",
                        G_CALLBACK(item_selected), (gpointer)element_number);
       
       /* Modify menu item label properties */
@@ -601,7 +603,7 @@ show_history_menu(gpointer data)
 /* Called when status icon is right-clicked */
 static void
 show_parcellite_menu(GtkStatusIcon *status_icon, guint button,
-                     guint activate_time,  gpointer user_data)
+                     guint activate_time,        gpointer user_data)
 {
   /* Declare some variables */
   GtkWidget *menu, *menu_item;
@@ -668,11 +670,44 @@ menu_hotkey(char *keystring, gpointer user_data)
   show_parcellite_menu(status_icon, 0, 0, NULL);
 }
 
-/* Initialize some variables among other things */
+/* Startup calls and initializations */
 static void
 parcellite_init()
 {
+  /* Create clipboard */
+  clipboard = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);
+  primary = gtk_clipboard_get(GDK_SELECTION_PRIMARY);
+  g_signal_connect(G_OBJECT(clipboard), "owner-change", G_CALLBACK(clipboard_new_item), NULL);
+  /*g_timeout_add(PRIMARYDELAY, primary_new_item, NULL);*/
   
+  /* Read preferences */
+  read_preferences();
+  
+  /* Read history and get last item */
+  if (prefs.savehist)
+    read_history();
+  
+  clipboard_last_item = g_strdup((gchar*)get_last_item());
+  
+  /* Add current clipboard contents */
+  GdkEvent* owner_change_event = gdk_event_new(GDK_OWNER_CHANGE);
+  g_signal_emit_by_name(clipboard, "owner-change", owner_change_event);
+  gdk_event_free(owner_change_event);
+  
+  /* Bind global keys */
+  keybinder_init();
+  keybinder_bind(prefs.histkey, history_hotkey, NULL);
+  keybinder_bind(prefs.actionkey, actions_hotkey, NULL);
+  keybinder_bind(prefs.menukey, menu_hotkey, NULL);
+  
+  /* Create status icon */
+  if (!prefs.noicon)
+  {
+    status_icon = gtk_status_icon_new_from_stock(GTK_STOCK_PASTE);
+    gtk_status_icon_set_tooltip(GTK_STATUS_ICON(status_icon), _("Clipboard Manager"));
+    g_signal_connect(G_OBJECT(status_icon), "activate", G_CALLBACK(check_click), NULL);
+    g_signal_connect(G_OBJECT(status_icon), "popup-menu", G_CALLBACK(show_parcellite_menu), NULL);
+  }
 }
 
 /* This is Sparta! */
@@ -727,39 +762,8 @@ main(int argc, char *argv[])
     }
   }
   
-  /* Create clipboard */
-  clipboard = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);
-  primary = gtk_clipboard_get(GDK_SELECTION_PRIMARY);
-  g_signal_connect(G_OBJECT(clipboard), "owner-change", G_CALLBACK(clipboard_new_item), NULL);
-  
-  /* Read preferences */
-  read_preferences();
-  
-  /* Read history and get last item */
-  if (prefs.savehist)
-    read_history();
-  
-  clipboard_last_item = g_strdup((gchar*)get_last_item());
-  
-  /* Add current clipboard contents */
-  GdkEvent* owner_change_event = gdk_event_new(GDK_OWNER_CHANGE);
-  g_signal_emit_by_name(clipboard, "owner-change", owner_change_event);
-  gdk_event_free(owner_change_event);
-  
-  /* Bind global keys */
-  keybinder_init();
-  keybinder_bind(prefs.histkey, history_hotkey, NULL);
-  keybinder_bind(prefs.actionkey, actions_hotkey, NULL);
-  keybinder_bind(prefs.menukey, menu_hotkey, NULL);
-  
-  /* Create status icon */
-  if (!prefs.noicon)
-  {
-    status_icon = gtk_status_icon_new_from_stock(GTK_STOCK_PASTE);
-    gtk_status_icon_set_tooltip(GTK_STATUS_ICON(status_icon), _("Clipboard Manager"));
-    g_signal_connect(G_OBJECT(status_icon), "activate", G_CALLBACK(check_click), NULL);
-    g_signal_connect(G_OBJECT(status_icon), "popup-menu", G_CALLBACK(show_parcellite_menu), NULL);
-  }
+  /* Init Parcellite */
+  parcellite_init();
   
   /* Run GTK+ loop */
   gtk_main();
@@ -768,7 +772,7 @@ main(int argc, char *argv[])
   keybinder_unbind(prefs.histkey, history_hotkey);
   keybinder_unbind(prefs.actionkey, actions_hotkey);
   keybinder_unbind(prefs.menukey, menu_hotkey);
-  /* Free memory */
+  /* Cleanup */
   g_free(prefs.histkey);
   g_free(prefs.actionkey);
   g_free(prefs.menukey);
