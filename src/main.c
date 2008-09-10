@@ -357,6 +357,7 @@ show_about_dialog(GtkMenuItem *menu_item, gpointer user_data)
                                              "Gultyaev Alexey <hokum83@gmail.com>\n"
                                              "Michael Stempin <mstempin@web.de>\n"
                                              "Németh Tamás <ntomasz@vipmail.hu>\n"
+                                             "Hasan Yılmaz <iletisim@hasanyilmaz.net>\n"
                                              "Gilberto \"Xyhthyx\" Miralla <xyhthyx@gmail.com>");
     
     gtk_about_dialog_set_license(GTK_ABOUT_DIALOG(about_dialog), license);
