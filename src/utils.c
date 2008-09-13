@@ -21,6 +21,7 @@
 #include "main.h"
 #include "utils.h"
 #include "daemon.h"
+#include "history.h"
 #include "parcellite-i18n.h"
 
 /* Creates program related directories if needed */
@@ -62,7 +63,6 @@ is_hyperlink(gchar* text)
   g_regex_unref(regex);
   return result;
 }
-
 
 /* Parses the program arguments. Returns TRUE if program needs
  * to exit after parsing is complete

@@ -94,10 +94,15 @@ clipboard_new_item(GtkClipboard *clipboard,
   g_free(text);
 }
 
-
+/* Called every 3 seconds to check for new primary items */
+static gboolean
+primary_new_item()
+{
+  
+}
 
 /* Thread function called for each action performed */
-void *
+static void *
 execute_action(void *command)
 {
   executing_action = TRUE;
@@ -344,7 +349,7 @@ show_about_dialog(GtkMenuItem *menu_item, gpointer user_data)
     gtk_about_dialog_set_name(GTK_ABOUT_DIALOG(about_dialog), "Parcellite");
     gtk_about_dialog_set_version(GTK_ABOUT_DIALOG(about_dialog), VERSION);
     gtk_about_dialog_set_comments(GTK_ABOUT_DIALOG(about_dialog),
-                                  _("Lightweight GTK+ clipboard manager."));
+                                _("Lightweight GTK+ clipboard manager."));
     
     gtk_about_dialog_set_website(GTK_ABOUT_DIALOG(about_dialog),
                                  "http://parcellite.sourceforge.net");
@@ -519,18 +524,17 @@ show_history_menu(gpointer data)
   /* Items */
   if ((history) && (history->data))
   {
-    /* Keeps track of item number */
+    /* Declare some variables */
+    GSList* element;
     gint element_number = 0;
     
-    /* Reverse history */
+    /* Reverse history if enabled */
     if (prefs.revhist)
     {
       history = g_slist_reverse(history);
       element_number = g_slist_length(history) - 1;
     }
-    
-    GSList* element = history;
-    /* Go through each element and add each */
+    /* Go through each element and adding each */
     for (element = history; element != NULL; element = element->next)
     {
       GString* string = g_string_new((gchar*)element->data);
@@ -553,6 +557,7 @@ show_history_menu(gpointer data)
             break;
         }
       }
+      /* Make new item with ellipsized text */
       menu_item = gtk_menu_item_new_with_label(string->str);
       g_signal_connect(G_OBJECT(menu_item),       "activate",
                        G_CALLBACK(item_selected), (gpointer)element_number);
@@ -570,7 +575,6 @@ show_history_menu(gpointer data)
       }
       /* Append item */
       gtk_menu_shell_append(GTK_MENU_SHELL(menu), menu_item);
-      
       /* Prepare for next item */
       g_string_free(string, TRUE);
       if (prefs.revhist)
@@ -578,6 +582,7 @@ show_history_menu(gpointer data)
       else
         element_number++;
     }
+    /* Return history to normal if reversed */
     if (prefs.revhist)
       history = g_slist_reverse(history);
   }
@@ -633,7 +638,7 @@ show_parcellite_menu(GtkStatusIcon *status_icon, guint button,
 
 /* Called when status icon is left-clicked */
 static void
-check_click(GtkStatusIcon *status_icon, gpointer user_data)
+status_icon_clicked(GtkStatusIcon *status_icon, gpointer user_data)
 {
   /* Check what type of click was recieved */
   GdkEvent* current_event = gtk_get_current_event();
@@ -706,7 +711,7 @@ parcellite_init()
   {
     status_icon = gtk_status_icon_new_from_stock(GTK_STOCK_PASTE);
     gtk_status_icon_set_tooltip(GTK_STATUS_ICON(status_icon), _("Clipboard Manager"));
-    g_signal_connect(G_OBJECT(status_icon), "activate", G_CALLBACK(check_click), NULL);
+    g_signal_connect(G_OBJECT(status_icon), "activate", G_CALLBACK(status_icon_clicked), NULL);
     g_signal_connect(G_OBJECT(status_icon), "popup-menu", G_CALLBACK(show_parcellite_menu), NULL);
   }
 }
