@@ -36,11 +36,10 @@
 static GtkClipboard *clipboard, *primary;
 static gchar* clipboard_text;
 static gchar* clipboard_last_item;
-static GtkWidget* history_menu;
 static GtkStatusIcon* status_icon;
 
 /* This variable locks actions when one is being executed */
-static gboolean executing_action = FALSE;
+static gboolean actions_lock = FALSE;
 
 /* Create preferences */
 prefs_t prefs = {DEFHISTORYLIM,      DEFCHARLENGTH,
@@ -61,8 +60,7 @@ clipboard_new_item(GtkClipboard *clipboard,
   /* Empty text check */
   if (!text)
   {
-    g_free(clipboard_text);
-    clipboard_text = NULL;
+    gtk_clipboard_set_text(clipboard, clipboard_text, -1);
   }
   /* Duplicate text check */
   else if ((clipboard_text) && (g_ascii_strcasecmp(text, clipboard_text) == 0))
@@ -96,22 +94,24 @@ clipboard_new_item(GtkClipboard *clipboard,
 
 /* Called every 3 seconds to check for new primary items */
 static gboolean
-primary_new_item()
+primary_new_item(gpointer data)
 {
-  
+  gchar* text = gtk_clipboard_wait_for_text(clipboard);
+  g_free(text);
 }
 
 /* Thread function called for each action performed */
 static void *
 execute_action(void *command)
 {
-  executing_action = TRUE;
+  /* Execute action */
+  actions_lock = TRUE;
   gtk_status_icon_set_from_stock(GTK_STATUS_ICON(status_icon), GTK_STOCK_EXECUTE);
   gtk_status_icon_set_tooltip(GTK_STATUS_ICON(status_icon), _("Executing action..."));
   system((gchar*)command);
   gtk_status_icon_set_from_stock(GTK_STATUS_ICON(status_icon), GTK_STOCK_PASTE);
   gtk_status_icon_set_tooltip(GTK_STATUS_ICON(status_icon), _("Clipboard Manager"));
-  executing_action = FALSE;
+  actions_lock = FALSE;
   g_free((gchar*)command);
   /* Exit this thread */
   pthread_exit(NULL);
@@ -157,8 +157,8 @@ save_clicked(GtkButton *button, gpointer user_data)
   gtk_clipboard_set_text(clipboard, new_clipboard_text, -1);
   /* Get top-most window widget and destroy it */
   GtkWidget* window = gtk_widget_get_ancestor(GTK_WIDGET(user_data), GTK_TYPE_WINDOW);
-  g_free(new_clipboard_text);
   gtk_widget_destroy(window);
+  g_free(new_clipboard_text);
 }
 
 /* Called when Edit is selected from history menu */
@@ -239,7 +239,7 @@ edit_selected(GtkMenuItem *menu_item, gpointer user_data)
     
     gtk_button_set_relief(GTK_BUTTON(button_save), GTK_RELIEF_NONE);
     gtk_button_set_image(GTK_BUTTON(button_save),
-                         gtk_image_new_from_stock(GTK_STOCK_SAVE,
+                         gtk_image_new_from_stock(GTK_STOCK_OK,
                                                   GTK_ICON_SIZE_MENU));
     
     gtk_widget_set_tooltip_text(button_save, _("Save changes"));
@@ -249,10 +249,10 @@ edit_selected(GtkMenuItem *menu_item, gpointer user_data)
     GtkWidget* button_close = gtk_button_new();
     gtk_button_set_relief(GTK_BUTTON(button_close), GTK_RELIEF_NONE);
     gtk_button_set_image(GTK_BUTTON(button_close),
-                         gtk_image_new_from_stock(GTK_STOCK_CLOSE,
+                         gtk_image_new_from_stock(GTK_STOCK_CANCEL,
                                                   GTK_ICON_SIZE_MENU));
     
-    gtk_widget_set_tooltip_text(button_close, _("Close"));
+    gtk_widget_set_tooltip_text(button_close, _("Discard changes"));
     g_signal_connect_swapped(G_OBJECT(button_close), "clicked",
                              G_CALLBACK(gtk_widget_destroy), window);
     
@@ -347,7 +347,9 @@ show_about_dialog(GtkMenuItem *menu_item, gpointer user_data)
                                                NULL));
     
     gtk_about_dialog_set_name(GTK_ABOUT_DIALOG(about_dialog), "Parcellite");
+    #ifdef HAVE_CONFIG_H
     gtk_about_dialog_set_version(GTK_ABOUT_DIALOG(about_dialog), VERSION);
+    #endif
     gtk_about_dialog_set_comments(GTK_ABOUT_DIALOG(about_dialog),
                                 _("Lightweight GTK+ clipboard manager."));
     
@@ -645,7 +647,7 @@ status_icon_clicked(GtkStatusIcon *status_icon, gpointer user_data)
   /* Control click */
   if (current_event->button.state == (GDK_MOD2_MASK | GDK_CONTROL_MASK))
   {
-    if (!executing_action)
+    if (!actions_lock)
       g_timeout_add(POPUPDELAY, show_actions_menu, NULL);
   }
   /* Normal click */
@@ -681,8 +683,8 @@ static void
 parcellite_init()
 {
   /* Create clipboard */
-  clipboard = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);
   primary = gtk_clipboard_get(GDK_SELECTION_PRIMARY);
+  clipboard = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);
   g_signal_connect(G_OBJECT(clipboard), "owner-change", G_CALLBACK(clipboard_new_item), NULL);
   /*g_timeout_add(PRIMARYDELAY, primary_new_item, NULL);*/
   

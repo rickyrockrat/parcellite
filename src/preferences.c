@@ -483,7 +483,7 @@ show_preferences(gint tab)
   adjustment = gtk_adjustment_new(25, 5, 100, 1, 10, 0);
   history_spin = gtk_spin_button_new(GTK_ADJUSTMENT(adjustment), 0.0, 0);
   gtk_spin_button_set_update_policy(GTK_SPIN_BUTTON(history_spin), GTK_UPDATE_IF_VALID);
-  gtk_box_pack_start(GTK_BOX(hbox), history_spin, FALSE, FALSE, 0);
+  gtk_box_pack_end(GTK_BOX(hbox), history_spin, FALSE, FALSE, 0);
   gtk_box_pack_start(GTK_BOX(vbox_general), frame, FALSE, FALSE, 0);
   
   /* Build the display frame */
@@ -499,7 +499,7 @@ show_preferences(gint tab)
   gtk_container_add(GTK_CONTAINER(alignment), vbox);
   hbox = gtk_hbox_new(FALSE, 6);
   gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
-  label = gtk_label_new(_("Length in characters of history items:"));
+  label = gtk_label_new(_("Length of each history item:"));
   gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.50);
   gtk_box_pack_start(GTK_BOX(hbox), label, TRUE, TRUE, 0);
   adjustment = gtk_adjustment_new(50, 25, 75, 1, 5, 0);
@@ -529,25 +529,25 @@ show_preferences(gint tab)
   gtk_container_add(GTK_CONTAINER(frame), alignment);
   vbox = gtk_vbox_new(FALSE, 2);
   gtk_container_add(GTK_CONTAINER(alignment), vbox);
-  hbox = gtk_hbox_new(FALSE, 2);
+  hbox = gtk_hbox_new(TRUE, 2);
   gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
-  label = gtk_label_new(_("History menu global hotkey:"));
+  label = gtk_label_new(_("History menu hotkey:"));
   gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.50);
   gtk_box_pack_start(GTK_BOX(hbox), label, TRUE, TRUE, 0);
   history_key_entry = gtk_entry_new();
   gtk_entry_set_width_chars(GTK_ENTRY(history_key_entry), 10);
   gtk_box_pack_end(GTK_BOX(hbox), history_key_entry, TRUE, TRUE, 0);
-  hbox = gtk_hbox_new(FALSE, 2);
+  hbox = gtk_hbox_new(TRUE, 2);
   gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
-  label = gtk_label_new(_("Actions menu global hotkey:"));
+  label = gtk_label_new(_("Actions menu hotkey:"));
   gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.50);
   gtk_box_pack_start(GTK_BOX(hbox), label, TRUE, TRUE, 0);
   actions_key_entry = gtk_entry_new();
   gtk_entry_set_width_chars(GTK_ENTRY(actions_key_entry), 10);
   gtk_box_pack_end(GTK_BOX(hbox), actions_key_entry, TRUE, TRUE, 0);
-  hbox = gtk_hbox_new(FALSE, 2);
+  hbox = gtk_hbox_new(TRUE, 2);
   gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
-  label = gtk_label_new(_("Parcellite menu global hotkey:"));
+  label = gtk_label_new(_("Parcellite menu hotkey:"));
   gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.50);
   gtk_box_pack_start(GTK_BOX(hbox), label, TRUE, TRUE, 0);
   menu_key_entry = gtk_entry_new();
