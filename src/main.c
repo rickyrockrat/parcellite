@@ -60,7 +60,8 @@ clipboard_new_item(GtkClipboard *clipboard,
   /* Empty text check */
   if (!text)
   {
-    gtk_clipboard_set_text(clipboard, clipboard_text, -1);
+    g_free(clipboard_text);
+    clipboard_text = NULL;
   }
   /* Duplicate text check */
   else if ((clipboard_text) && (g_ascii_strcasecmp(text, clipboard_text) == 0))
