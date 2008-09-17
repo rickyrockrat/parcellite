@@ -244,7 +244,7 @@ save_actions()
 
 /* Called when New button is clicked */
 static void
-on_new_clicked(GtkButton *button, gpointer user_data)
+new_action(GtkButton *button, gpointer user_data)
 {
   /* Create the dialog */
   GtkWidget* new_dialog = gtk_dialog_new_with_buttons(_("New Action"),
@@ -301,7 +301,7 @@ on_new_clicked(GtkButton *button, gpointer user_data)
 
 /* Called when Edit button is clicked */
 static void
-on_edit_clicked(GtkButton *button, gpointer user_data)
+edit_selected(GtkButton *button, gpointer user_data)
 {
   GtkTreeIter sel_iter;
   /* Check if selected */
@@ -372,7 +372,7 @@ on_edit_clicked(GtkButton *button, gpointer user_data)
 
 /* Called when Delete button is clicked */
 static void
-on_delete_clicked(GtkButton *button, gpointer user_data)
+delete_selected(GtkButton *button, gpointer user_data)
 {
   GtkTreeIter sel_iter;
   /* Check if selected */
@@ -394,7 +394,7 @@ on_delete_clicked(GtkButton *button, gpointer user_data)
 
 /* Called when Up button is clicked */
 static void
-on_up_clicked(GtkButton *button, gpointer user_data)
+move_selected_up(GtkButton *button, gpointer user_data)
 {
   GtkTreeIter sel_iter;
   /* Check if selected */
@@ -416,7 +416,7 @@ on_up_clicked(GtkButton *button, gpointer user_data)
 
 /* Called when Down button is clicked */
 static void
-on_down_clicked(GtkButton *button, gpointer user_data)
+move_selected_down(GtkButton *button, gpointer user_data)
 {
   GtkTreeIter sel_iter;
   /* Check if selected */
@@ -429,6 +429,15 @@ on_down_clicked(GtkButton *button, gpointer user_data)
       /* Swap rows */
       gtk_list_store_swap(actions_list, &sel_iter, &next_iter);
   }
+}
+
+/* Called when delete key is pressed */
+static void
+delete_key_pressed(GtkWidget *widget, GdkEventKey *event, gpointer user_data)
+{
+  /* Check if DEL key was pressed (keyval: 65535) */
+  if (event->keyval = 65535)
+    delete_selected(NULL, NULL);
 }
 
 /* Shows the preferences dialog on the given tab */
@@ -630,6 +639,9 @@ show_preferences(gint tab)
   gtk_tree_selection_set_mode(actions_selection, GTK_SELECTION_BROWSE);
   gtk_box_pack_start(GTK_BOX(vbox_actions), scrolled_window, TRUE, TRUE, 0);
   
+  /* Connect tree signals */
+  g_signal_connect(G_OBJECT(treeview), "key-press-event", G_CALLBACK(delete_key_pressed), NULL);
+  
   /* Build the buttons */
   GtkWidget* hbutton_box = gtk_hbutton_box_new();
   gtk_button_box_set_layout(GTK_BUTTON_BOX(hbutton_box), GTK_BUTTONBOX_SPREAD);
@@ -640,35 +652,35 @@ show_preferences(gint tab)
                        gtk_image_new_from_stock(GTK_STOCK_NEW, GTK_ICON_SIZE_MENU));
   
   gtk_widget_set_tooltip_text(button_new, _("New action"));
-  g_signal_connect(G_OBJECT(button_new), "clicked", G_CALLBACK(on_new_clicked), NULL);
+  g_signal_connect(G_OBJECT(button_new), "clicked", G_CALLBACK(new_action), NULL);
   gtk_box_pack_start(GTK_BOX(hbox), button_new, FALSE, TRUE, 0);
   GtkWidget* button_edit = gtk_button_new_with_label(_("Edit"));
   gtk_button_set_image(GTK_BUTTON(button_edit),
                        gtk_image_new_from_stock(GTK_STOCK_EDIT, GTK_ICON_SIZE_MENU));
   
   gtk_widget_set_tooltip_text(button_edit, _("Edit selected"));
-  g_signal_connect(G_OBJECT(button_edit), "clicked", G_CALLBACK(on_edit_clicked), NULL);
+  g_signal_connect(G_OBJECT(button_edit), "clicked", G_CALLBACK(edit_selected), NULL);
   gtk_box_pack_start(GTK_BOX(hbox), button_edit, FALSE, TRUE, 0);
   GtkWidget* button_delete = gtk_button_new_with_label(_("Delete"));
   gtk_button_set_image(GTK_BUTTON(button_delete),
                        gtk_image_new_from_stock(GTK_STOCK_DELETE, GTK_ICON_SIZE_MENU));
   
   gtk_widget_set_tooltip_text(button_delete, _("Delete selected"));
-  g_signal_connect(G_OBJECT(button_delete), "clicked", G_CALLBACK(on_delete_clicked), NULL);
+  g_signal_connect(G_OBJECT(button_delete), "clicked", G_CALLBACK(delete_selected), NULL);
   gtk_box_pack_start(GTK_BOX(hbox), button_delete, FALSE, TRUE, 0);
   GtkWidget* button_up = gtk_button_new();
   gtk_button_set_image(GTK_BUTTON(button_up),
                        gtk_image_new_from_stock(GTK_STOCK_GO_UP, GTK_ICON_SIZE_MENU));
   
   gtk_widget_set_tooltip_text(button_up, _("Move selected up"));
-  g_signal_connect(G_OBJECT(button_up), "clicked", G_CALLBACK(on_up_clicked), NULL);
+  g_signal_connect(G_OBJECT(button_up), "clicked", G_CALLBACK(move_selected_up), NULL);
   gtk_box_pack_start(GTK_BOX(hbox), button_up, FALSE, TRUE, 0);
   GtkWidget* button_down = gtk_button_new();
   gtk_button_set_image(GTK_BUTTON(button_down),
                        gtk_image_new_from_stock(GTK_STOCK_GO_DOWN, GTK_ICON_SIZE_MENU));
   
   gtk_widget_set_tooltip_text(button_down, _("Move selected down"));
-  g_signal_connect(G_OBJECT(button_down), "clicked", G_CALLBACK(on_down_clicked), NULL);
+  g_signal_connect(G_OBJECT(button_down), "clicked", G_CALLBACK(move_selected_down), NULL);
   gtk_box_pack_start(GTK_BOX(hbox), button_down, FALSE, TRUE, 0);
   gtk_box_pack_start(GTK_BOX(vbox_actions), hbutton_box, FALSE, FALSE, 0);
   
