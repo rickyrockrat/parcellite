@@ -436,8 +436,23 @@ static void
 delete_key_pressed(GtkWidget *widget, GdkEventKey *event, gpointer user_data)
 {
   /* Check if DEL key was pressed (keyval: 65535) */
-  if (event->keyval = 65535)
+  if (event->keyval == 65535)
     delete_selected(NULL, NULL);
+}
+
+/* Called when a cell is edited */
+static void
+edit_cell(GtkCellRendererText *renderer, gchar *path,
+          gchar *new_text,               gpointer cell)
+{
+  GtkTreeIter sel_iter;
+  /* Check if selected */
+  if (gtk_tree_selection_get_selected(actions_selection, NULL, &sel_iter))
+  {
+    /* Apply changes */
+    g_print("New text: %s\n", new_text);
+    gtk_list_store_set(actions_list, &sel_iter, (gint)cell, new_text, -1);
+  }
 }
 
 /* Shows the preferences dialog on the given tab */
@@ -621,15 +636,20 @@ show_preferences(gint tab)
   gtk_tree_view_set_rules_hint(GTK_TREE_VIEW(treeview), TRUE);
   actions_list = gtk_list_store_new(2, G_TYPE_STRING, G_TYPE_STRING);
   gtk_tree_view_set_model(GTK_TREE_VIEW(treeview), GTK_TREE_MODEL(actions_list));
+  GtkCellRenderer* name_renderer = gtk_cell_renderer_text_new();
+  g_object_set(name_renderer, "editable", TRUE, NULL);
+  g_signal_connect(G_OBJECT(name_renderer), "edited", G_CALLBACK(edit_cell), (gpointer)0);
   tree_column = gtk_tree_view_column_new_with_attributes(_("Action"),
-                                                         gtk_cell_renderer_text_new(),
+                                                         name_renderer,
                                                          "text", 0, NULL);
   
   gtk_tree_view_column_set_resizable(tree_column, TRUE);
   gtk_tree_view_append_column(GTK_TREE_VIEW(treeview), tree_column);
-  GtkCellRenderer* cell_renderer = gtk_cell_renderer_text_new();
-  g_object_set(cell_renderer, "ellipsize-set", TRUE, "ellipsize", PANGO_ELLIPSIZE_END, NULL);
-  tree_column = gtk_tree_view_column_new_with_attributes(_("Command"), cell_renderer,
+  GtkCellRenderer* command_renderer = gtk_cell_renderer_text_new();
+  g_object_set(command_renderer, "editable", TRUE, NULL);
+  g_object_set(command_renderer, "ellipsize-set", TRUE, "ellipsize", PANGO_ELLIPSIZE_END, NULL);
+  g_signal_connect(G_OBJECT(command_renderer), "edited", G_CALLBACK(edit_cell), (gpointer)1);
+  tree_column = gtk_tree_view_column_new_with_attributes(_("Command"), command_renderer,
                                                          "text", 1, NULL);
   
   gtk_tree_view_column_set_expand(tree_column, TRUE);
