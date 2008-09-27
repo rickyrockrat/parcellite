@@ -246,57 +246,14 @@ save_actions()
 static void
 new_action(GtkButton *button, gpointer user_data)
 {
-  /* Create the dialog */
-  GtkWidget* new_dialog = gtk_dialog_new_with_buttons(_("New Action"),
-             GTK_WINDOW(preferences_dialog),
-             (GTK_DIALOG_MODAL + GTK_DIALOG_NO_SEPARATOR + GTK_DIALOG_DESTROY_WITH_PARENT),
-             GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT, GTK_STOCK_OK, GTK_RESPONSE_ACCEPT, NULL);
-  
-  gtk_window_set_icon(GTK_WINDOW(new_dialog),
-                      gtk_widget_render_icon(new_dialog, GTK_STOCK_NEW,
-                                             GTK_ICON_SIZE_MENU, NULL));
-  
-  gtk_box_set_spacing(GTK_BOX(GTK_DIALOG(new_dialog)->vbox), 6);
-  gtk_window_set_resizable(GTK_WINDOW(new_dialog), FALSE);
-  
-  /* Build the name entry */
-  GtkWidget* name_hbox = gtk_hbox_new(FALSE, 6);
-  GtkWidget* name_label = gtk_label_new(NULL);
-  gtk_label_set_markup(GTK_LABEL(name_label), _("<b>Name:</b>"));
-  gtk_misc_set_alignment(GTK_MISC(name_label), 1.0, 0.50);
-  gtk_label_set_width_chars(GTK_LABEL(name_label), 10);
-  gtk_box_pack_start(GTK_BOX(name_hbox), name_label, TRUE, TRUE, 0);
-  GtkWidget* name_entry = gtk_entry_new();
-  gtk_widget_set_tooltip_text(name_entry, _("Name your action"));
-  gtk_box_pack_end(GTK_BOX(name_hbox), name_entry, TRUE, TRUE, 0);
-  gtk_box_pack_start(GTK_BOX(GTK_DIALOG(new_dialog)->vbox), name_hbox, FALSE, FALSE, 0);
-  
-  /* Build the command entry */
-  GtkWidget* command_hbox = gtk_hbox_new(FALSE, 6);
-  GtkWidget* command_label = gtk_label_new(NULL);
-  gtk_label_set_markup(GTK_LABEL(command_label), _("<b>Command:</b>"));
-  gtk_misc_set_alignment(GTK_MISC(command_label), 1.0, 0.50);
-  gtk_label_set_width_chars(GTK_LABEL(command_label), 10);
-  gtk_box_pack_start(GTK_BOX(command_hbox), command_label, TRUE, TRUE, 0);
-  GtkWidget* command_entry = gtk_entry_new();
-  gtk_widget_set_tooltip_text(command_entry,
-                              _("\"%s\" will be replaced with the clipboard contents"));
-  
-  gtk_box_pack_end(GTK_BOX(command_hbox), command_entry, TRUE, TRUE, 0);
-  gtk_box_pack_start(GTK_BOX(GTK_DIALOG(new_dialog)->vbox), command_hbox, FALSE, FALSE, 0);
-  
-  /* Run the dialog */
-  gtk_widget_show_all(new_dialog);
-  if (gtk_dialog_run(GTK_DIALOG(new_dialog)) == GTK_RESPONSE_ACCEPT)
-  {
-    /* Append new item */
-    GtkTreeIter row_iter;
-    gtk_list_store_append(actions_list, &row_iter);
-    gtk_list_store_set(actions_list, &row_iter, 0,
-                       gtk_entry_get_text(GTK_ENTRY(name_entry)), 1,
-                       gtk_entry_get_text(GTK_ENTRY(command_entry)), -1);
-  }
-  gtk_widget_destroy(new_dialog);
+  /* Append new item */
+  GtkTreeIter row_iter;
+  gtk_list_store_append(actions_list, &row_iter);
+  GtkTreePath* row_path = gtk_tree_model_get_path(GTK_TREE_MODEL(actions_list), &row_iter);
+  GtkTreeView* treeview = gtk_tree_selection_get_tree_view(actions_selection);
+  GtkTreeViewColumn* column = gtk_tree_view_get_column(treeview, 0);
+  gtk_tree_view_set_cursor(treeview, row_path, column, TRUE);
+  gtk_tree_path_free(row_path);
 }
 
 /* Called when Edit button is clicked */
@@ -450,7 +407,6 @@ edit_cell(GtkCellRendererText *renderer, gchar *path,
   if (gtk_tree_selection_get_selected(actions_selection, NULL, &sel_iter))
   {
     /* Apply changes */
-    g_print("New text: %s\n", new_text);
     gtk_list_store_set(actions_list, &sel_iter, (gint)cell, new_text, -1);
   }
 }
