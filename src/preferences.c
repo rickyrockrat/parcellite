@@ -264,66 +264,11 @@ edit_selected(GtkButton *button, gpointer user_data)
   /* Check if selected */
   if (gtk_tree_selection_get_selected(actions_selection, NULL, &sel_iter))
   {
-    /* Create the dialog */
-    GtkWidget* edit_dialog = gtk_dialog_new_with_buttons(_("Edit Action"),
-               GTK_WINDOW(preferences_dialog),
-               (GTK_DIALOG_MODAL + GTK_DIALOG_NO_SEPARATOR + GTK_DIALOG_DESTROY_WITH_PARENT),
-               GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT,
-               GTK_STOCK_OK, GTK_RESPONSE_ACCEPT, NULL);
-    
-    gtk_window_set_icon(GTK_WINDOW(edit_dialog),
-                        gtk_widget_render_icon(edit_dialog,
-                                               GTK_STOCK_NEW,
-                                               GTK_ICON_SIZE_MENU, NULL));
-    
-    gtk_box_set_spacing(GTK_BOX(GTK_DIALOG(edit_dialog)->vbox), 6);
-    gtk_window_set_resizable(GTK_WINDOW(edit_dialog), FALSE);
-    
-    /* Build the name entry */
-    GtkWidget* name_hbox = gtk_hbox_new(FALSE, 6);
-    GtkWidget* name_label = gtk_label_new(NULL);
-    gtk_label_set_markup(GTK_LABEL(name_label), _("<b>Name:</b>"));
-    gtk_misc_set_alignment(GTK_MISC(name_label), 1.0, 0.50);
-    gtk_label_set_width_chars(GTK_LABEL(name_label), 10);
-    gtk_box_pack_start(GTK_BOX(name_hbox), name_label, TRUE, TRUE, 0);
-    GtkWidget* name_entry = gtk_entry_new();
-    gtk_widget_set_tooltip_text(name_entry, _("Name your action"));
-    gtk_box_pack_end(GTK_BOX(name_hbox), name_entry, TRUE, TRUE, 0);
-    gtk_box_pack_start(GTK_BOX(GTK_DIALOG(edit_dialog)->vbox), name_hbox, FALSE, FALSE, 0);
-    
-    /* Build the command entry */
-    GtkWidget* command_hbox = gtk_hbox_new(FALSE, 6);
-    GtkWidget* command_label = gtk_label_new(NULL);
-    gtk_label_set_markup(GTK_LABEL(command_label), _("<b>Command:</b>"));
-    gtk_misc_set_alignment(GTK_MISC(command_label), 1.0, 0.50);
-    gtk_label_set_width_chars(GTK_LABEL(command_label), 10);
-    gtk_box_pack_start(GTK_BOX(command_hbox), command_label, TRUE, TRUE, 0);
-    GtkWidget* command_entry = gtk_entry_new();
-    gtk_widget_set_tooltip_text(command_entry,
-                                _("\"%s\" will be replaced with the clipboard contents"));
-    
-    gtk_box_pack_end(GTK_BOX(command_hbox), command_entry, TRUE, TRUE, 0);
-    gtk_box_pack_start(GTK_BOX(GTK_DIALOG(edit_dialog)->vbox), command_hbox, FALSE, FALSE, 0);
-    
-    /* Set the values */
-    gchar* name;
-    gchar* command;
-    gtk_tree_model_get(GTK_TREE_MODEL(actions_list), &sel_iter, 0, &name, 1, &command, -1);
-    gtk_entry_set_text(GTK_ENTRY(name_entry), name);
-    gtk_entry_set_text(GTK_ENTRY(command_entry), command);
-    g_free(name);
-    g_free(command);
-    
-    /* Run the dialog */
-    gtk_widget_show_all(edit_dialog);
-    if (gtk_dialog_run(GTK_DIALOG(edit_dialog)) == GTK_RESPONSE_ACCEPT)
-    {
-      /* Apply changes */
-      gtk_list_store_set(actions_list, &sel_iter, 0,
-                         gtk_entry_get_text(GTK_ENTRY(name_entry)), 1,
-                         gtk_entry_get_text(GTK_ENTRY(command_entry)), -1);
-    }
-    gtk_widget_destroy(edit_dialog);
+    GtkTreePath* sel_path = gtk_tree_model_get_path(GTK_TREE_MODEL(actions_list), &sel_iter);
+    GtkTreeView* treeview = gtk_tree_selection_get_tree_view(actions_selection);
+    GtkTreeViewColumn* column = gtk_tree_view_get_column(treeview, 1);
+    gtk_tree_view_set_cursor(treeview, sel_path, column, TRUE);
+    gtk_tree_path_free(sel_path);
   }
 }
 
@@ -433,6 +378,7 @@ show_preferences(gint tab)
                       gtk_widget_render_icon(preferences_dialog, GTK_STOCK_PREFERENCES,
                                              GTK_ICON_SIZE_MENU, NULL));
   
+  /*gtk_window_resize(GTK_WINDOW(preferences_dialog), 415, 480);*/
   gtk_window_set_resizable(GTK_WINDOW(preferences_dialog), FALSE);
   
   /* Create notebook */
@@ -627,35 +573,35 @@ show_preferences(gint tab)
   gtk_button_set_image(GTK_BUTTON(button_new),
                        gtk_image_new_from_stock(GTK_STOCK_NEW, GTK_ICON_SIZE_MENU));
   
-  gtk_widget_set_tooltip_text(button_new, _("New action"));
+  /*gtk_widget_set_tooltip_text(button_new, _("New action"));*/
   g_signal_connect(G_OBJECT(button_new), "clicked", G_CALLBACK(new_action), NULL);
   gtk_box_pack_start(GTK_BOX(hbox), button_new, FALSE, TRUE, 0);
   GtkWidget* button_edit = gtk_button_new_with_label(_("Edit"));
   gtk_button_set_image(GTK_BUTTON(button_edit),
                        gtk_image_new_from_stock(GTK_STOCK_EDIT, GTK_ICON_SIZE_MENU));
   
-  gtk_widget_set_tooltip_text(button_edit, _("Edit selected"));
+  /*gtk_widget_set_tooltip_text(button_edit, _("Edit selected"));*/
   g_signal_connect(G_OBJECT(button_edit), "clicked", G_CALLBACK(edit_selected), NULL);
   gtk_box_pack_start(GTK_BOX(hbox), button_edit, FALSE, TRUE, 0);
   GtkWidget* button_delete = gtk_button_new_with_label(_("Delete"));
   gtk_button_set_image(GTK_BUTTON(button_delete),
                        gtk_image_new_from_stock(GTK_STOCK_DELETE, GTK_ICON_SIZE_MENU));
   
-  gtk_widget_set_tooltip_text(button_delete, _("Delete selected"));
+  /*gtk_widget_set_tooltip_text(button_delete, _("Delete selected"));*/
   g_signal_connect(G_OBJECT(button_delete), "clicked", G_CALLBACK(delete_selected), NULL);
   gtk_box_pack_start(GTK_BOX(hbox), button_delete, FALSE, TRUE, 0);
   GtkWidget* button_up = gtk_button_new();
   gtk_button_set_image(GTK_BUTTON(button_up),
                        gtk_image_new_from_stock(GTK_STOCK_GO_UP, GTK_ICON_SIZE_MENU));
   
-  gtk_widget_set_tooltip_text(button_up, _("Move selected up"));
+  /*gtk_widget_set_tooltip_text(button_up, _("Move selected up"));*/
   g_signal_connect(G_OBJECT(button_up), "clicked", G_CALLBACK(move_selected_up), NULL);
   gtk_box_pack_start(GTK_BOX(hbox), button_up, FALSE, TRUE, 0);
   GtkWidget* button_down = gtk_button_new();
   gtk_button_set_image(GTK_BUTTON(button_down),
                        gtk_image_new_from_stock(GTK_STOCK_GO_DOWN, GTK_ICON_SIZE_MENU));
   
-  gtk_widget_set_tooltip_text(button_down, _("Move selected down"));
+  /*gtk_widget_set_tooltip_text(button_down, _("Move selected down"));*/
   g_signal_connect(G_OBJECT(button_down), "clicked", G_CALLBACK(move_selected_down), NULL);
   gtk_box_pack_start(GTK_BOX(hbox), button_down, FALSE, TRUE, 0);
   gtk_box_pack_start(GTK_BOX(vbox_actions), hbutton_box, FALSE, FALSE, 0);
