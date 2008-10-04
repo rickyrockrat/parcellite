@@ -7,6 +7,8 @@ v0.9   Pending...
   
   Changes
   + Fixed daemon mode.
+  + Changed preferences dialog.
+  + Changed actions preferences to use GtkTreeView's built in editing mode.
   + Fixed parcellite-startup.desktop to include "Type=Application" to prevent
     desktop-file-validate from failing.
 
