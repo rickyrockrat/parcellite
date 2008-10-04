@@ -369,8 +369,8 @@ show_preferences(gint tab)
   GtkTreeViewColumn *tree_column;
   
   /* Create the dialog */
-  GtkWidget* dialog = gtk_dialog_new_with_buttons(_("Preferences"),    NULL,
-                                                    (GTK_DIALOG_MODAL + GTK_DIALOG_NO_SEPARATOR),
+  GtkWidget* dialog = gtk_dialog_new_with_buttons(_("Preferences"),     NULL,
+                                                   (GTK_DIALOG_MODAL  + GTK_DIALOG_NO_SEPARATOR),
                                                     GTK_STOCK_CANCEL,   GTK_RESPONSE_REJECT,
                                                     GTK_STOCK_OK,       GTK_RESPONSE_ACCEPT, NULL);
   
@@ -474,7 +474,7 @@ show_preferences(gint tab)
   GtkWidget* page_display = gtk_alignment_new(0.50, 0.50, 1.0, 1.0);
   gtk_alignment_set_padding((GtkAlignment*)page_display, 12, 6, 12, 6);
   gtk_notebook_append_page((GtkNotebook*)notebook, page_display, gtk_label_new(_("Display")));
-  GtkWidget* vbox_display = gtk_vbox_new(FALSE, 6);
+  GtkWidget* vbox_display = gtk_vbox_new(FALSE, 12);
   gtk_container_add((GtkContainer*)page_display, vbox_display);
   
   /* Build the items frame */
