@@ -460,16 +460,14 @@ show_preferences(gint tab)
   gtk_label_set_markup((GtkLabel*)label, _("<b>Miscellaneous</b>"));
   gtk_frame_set_label_widget((GtkFrame*)frame, label);
   alignment = gtk_alignment_new(0.50, 0.50, 1.0, 1.0);
-  gtk_alignment_set_padding((GtkAlignment*)alignment, 12, 0, 12, 0); /* Old: 0, 0, 12, 0 */
+  gtk_alignment_set_padding((GtkAlignment*)alignment, 12, 0, 12, 0);
   gtk_container_add((GtkContainer*)frame, alignment);
   vbox = gtk_vbox_new(FALSE, 2);
   gtk_container_add((GtkContainer*)alignment, vbox);
-  confirm_check = gtk_check_button_new_with_mnemonic(_("C_onfirm clear"));
-  gtk_widget_set_tooltip_text(confirm_check, _("Confirm before clearing history"));
-  gtk_box_pack_start((GtkBox*)vbox, confirm_check, FALSE, FALSE, 0);
   hyperlinks_check = gtk_check_button_new_with_mnemonic(_("_Capture hyperlinks only"));
-  gtk_widget_set_tooltip_text(hyperlinks_check, _("Ignore all non-hyperlink text"));
   gtk_box_pack_start((GtkBox*)vbox, hyperlinks_check, FALSE, FALSE, 0);
+  confirm_check = gtk_check_button_new_with_mnemonic(_("C_onfirm before clearing history"));
+  gtk_box_pack_start((GtkBox*)vbox, confirm_check, FALSE, FALSE, 0);
   gtk_box_pack_start((GtkBox*)vbox_behavior, frame, FALSE, FALSE, 0);
   
   /* Build the display page */
