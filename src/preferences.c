@@ -26,7 +26,7 @@
 #include "parcellite-i18n.h"
 
 /* Declare some widgets */
-GtkWidget *preferences_dialog, *history_spin,
+GtkWidget *history_spin,
           *charlength_spin,    *ellipsize_combo,
           *history_key_entry,  *actions_key_entry,
           *menu_key_entry,     *save_check,
@@ -53,17 +53,17 @@ apply_preferences()
   prefs.menukey = NULL;
   
   /* Get the new preferences */
-  prefs.histlim = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(history_spin));
-  prefs.charlength = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(charlength_spin));
-  prefs.ellipsize = gtk_combo_box_get_active(GTK_COMBO_BOX(ellipsize_combo)) + 1;
-  prefs.histkey = g_strdup(gtk_entry_get_text(GTK_ENTRY(history_key_entry)));
-  prefs.actionkey = g_strdup(gtk_entry_get_text(GTK_ENTRY(actions_key_entry)));
-  prefs.menukey = g_strdup(gtk_entry_get_text(GTK_ENTRY(menu_key_entry)));
-  prefs.savehist = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(save_check));
-  prefs.confclear = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(confirm_check));
-  prefs.revhist = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(reverse_check));
-  prefs.singleline = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(linemode_check));
-  prefs.hyperlinks = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(hyperlinks_check));
+  prefs.histlim = gtk_spin_button_get_value_as_int((GtkSpinButton*)history_spin);
+  prefs.charlength = gtk_spin_button_get_value_as_int((GtkSpinButton*)charlength_spin);
+  prefs.ellipsize = gtk_combo_box_get_active((GtkComboBox*)ellipsize_combo) + 1;
+  prefs.histkey = g_strdup(gtk_entry_get_text((GtkEntry*)history_key_entry));
+  prefs.actionkey = g_strdup(gtk_entry_get_text((GtkEntry*)actions_key_entry));
+  prefs.menukey = g_strdup(gtk_entry_get_text((GtkEntry*)menu_key_entry));
+  prefs.savehist = gtk_toggle_button_get_active((GtkToggleButton*)save_check);
+  prefs.confclear = gtk_toggle_button_get_active((GtkToggleButton*)confirm_check);
+  prefs.revhist = gtk_toggle_button_get_active((GtkToggleButton*)reverse_check);
+  prefs.singleline = gtk_toggle_button_get_active((GtkToggleButton*)linemode_check);
+  prefs.hyperlinks = gtk_toggle_button_get_active((GtkToggleButton*)hyperlinks_check);
   
   /* Bind keys and apply the new history limit */
   keybinder_bind(prefs.histkey, history_hotkey, NULL);
@@ -202,13 +202,13 @@ save_actions()
   {
     GtkTreeIter action_iter;
     /* Get and check if there's a first iter */
-    if (gtk_tree_model_get_iter_first(GTK_TREE_MODEL(actions_list), &action_iter))
+    if (gtk_tree_model_get_iter_first((GtkTreeModel*)actions_list, &action_iter))
     {
       do
       {
         /* Get name and command */
         gchar *name, *command;
-        gtk_tree_model_get(GTK_TREE_MODEL(actions_list), &action_iter, 0, &name, 1, &command, -1);
+        gtk_tree_model_get((GtkTreeModel*)actions_list, &action_iter, 0, &name, 1, &command, -1);
         GString* s_name = g_string_new(name);
         GString* s_command = g_string_new(command);
         g_free(name);
@@ -233,7 +233,7 @@ save_actions()
           g_string_free(s_command, TRUE);
         }
       }
-      while(gtk_tree_model_iter_next(GTK_TREE_MODEL(actions_list), &action_iter));
+      while(gtk_tree_model_iter_next((GtkTreeModel*)actions_list, &action_iter));
     }
     /* End of file write */
     gint end = 0;
@@ -242,14 +242,14 @@ save_actions()
   }
 }
 
-/* Called when New button is clicked */
+/* Called when Add... button is clicked */
 static void
-new_action(GtkButton *button, gpointer user_data)
+add_action(GtkButton *button, gpointer user_data)
 {
   /* Append new item */
   GtkTreeIter row_iter;
   gtk_list_store_append(actions_list, &row_iter);
-  GtkTreePath* row_path = gtk_tree_model_get_path(GTK_TREE_MODEL(actions_list), &row_iter);
+  GtkTreePath* row_path = gtk_tree_model_get_path((GtkTreeModel*)actions_list, &row_iter);
   GtkTreeView* treeview = gtk_tree_selection_get_tree_view(actions_selection);
   GtkTreeViewColumn* column = gtk_tree_view_get_column(treeview, 0);
   gtk_tree_view_set_cursor(treeview, row_path, column, TRUE);
@@ -258,13 +258,13 @@ new_action(GtkButton *button, gpointer user_data)
 
 /* Called when Edit button is clicked */
 static void
-edit_selected(GtkButton *button, gpointer user_data)
+edit_action(GtkButton *button, gpointer user_data)
 {
   GtkTreeIter sel_iter;
   /* Check if selected */
   if (gtk_tree_selection_get_selected(actions_selection, NULL, &sel_iter))
   {
-    GtkTreePath* sel_path = gtk_tree_model_get_path(GTK_TREE_MODEL(actions_list), &sel_iter);
+    GtkTreePath* sel_path = gtk_tree_model_get_path((GtkTreeModel*)actions_list, &sel_iter);
     GtkTreeView* treeview = gtk_tree_selection_get_tree_view(actions_selection);
     GtkTreeViewColumn* column = gtk_tree_view_get_column(treeview, 1);
     gtk_tree_view_set_cursor(treeview, sel_path, column, TRUE);
@@ -272,16 +272,16 @@ edit_selected(GtkButton *button, gpointer user_data)
   }
 }
 
-/* Called when Delete button is clicked */
+/* Called when Remove button is clicked */
 static void
-delete_selected(GtkButton *button, gpointer user_data)
+remove_action(GtkButton *button, gpointer user_data)
 {
   GtkTreeIter sel_iter;
   /* Check if selected */
   if (gtk_tree_selection_get_selected(actions_selection, NULL, &sel_iter))
   {
     /* Delete selected and select next */
-    GtkTreePath* tree_path = gtk_tree_model_get_path(GTK_TREE_MODEL(actions_list), &sel_iter);
+    GtkTreePath* tree_path = gtk_tree_model_get_path((GtkTreeModel*)actions_list, &sel_iter);
     gtk_list_store_remove(actions_list, &sel_iter);
     gtk_tree_selection_select_path(actions_selection, tree_path);
     /* Select previous if the last row was deleted */
@@ -296,20 +296,20 @@ delete_selected(GtkButton *button, gpointer user_data)
 
 /* Called when Up button is clicked */
 static void
-move_selected_up(GtkButton *button, gpointer user_data)
+move_action_up(GtkButton *button, gpointer user_data)
 {
   GtkTreeIter sel_iter;
   /* Check if selected */
   if (gtk_tree_selection_get_selected(actions_selection, NULL, &sel_iter))
   {
     /* Create path to previous row */
-    GtkTreePath* tree_path = gtk_tree_model_get_path(GTK_TREE_MODEL(actions_list), &sel_iter);
+    GtkTreePath* tree_path = gtk_tree_model_get_path((GtkTreeModel*)actions_list, &sel_iter);
     /* Check if previous row exists */
     if (gtk_tree_path_prev(tree_path))
     {
       /* Swap rows */
       GtkTreeIter prev_iter;
-      gtk_tree_model_get_iter(GTK_TREE_MODEL(actions_list), &prev_iter, tree_path);
+      gtk_tree_model_get_iter((GtkTreeModel*)actions_list, &prev_iter, tree_path);
       gtk_list_store_swap(actions_list, &sel_iter, &prev_iter);
     }
     gtk_tree_path_free(tree_path);
@@ -318,7 +318,7 @@ move_selected_up(GtkButton *button, gpointer user_data)
 
 /* Called when Down button is clicked */
 static void
-move_selected_down(GtkButton *button, gpointer user_data)
+move_action_down(GtkButton *button, gpointer user_data)
 {
   GtkTreeIter sel_iter;
   /* Check if selected */
@@ -327,7 +327,7 @@ move_selected_down(GtkButton *button, gpointer user_data)
     /* Create iter to next row */
     GtkTreeIter next_iter = sel_iter;
     /* Check if next row exists */
-    if (gtk_tree_model_iter_next(GTK_TREE_MODEL(actions_list), &next_iter))
+    if (gtk_tree_model_iter_next((GtkTreeModel*)actions_list, &next_iter))
       /* Swap rows */
       gtk_list_store_swap(actions_list, &sel_iter, &next_iter);
   }
@@ -339,7 +339,7 @@ delete_key_pressed(GtkWidget *widget, GdkEventKey *event, gpointer user_data)
 {
   /* Check if DEL key was pressed (keyval: 65535) */
   if (event->keyval == 65535)
-    delete_selected(NULL, NULL);
+    remove_action(NULL, NULL);
 }
 
 /* Called when a cell is edited */
@@ -369,268 +369,269 @@ show_preferences(gint tab)
   GtkTreeViewColumn *tree_column;
   
   /* Create the dialog */
-  preferences_dialog = gtk_dialog_new_with_buttons(_("Preferences"),    NULL,
+  GtkWidget* dialog = gtk_dialog_new_with_buttons(_("Preferences"),    NULL,
                                                     (GTK_DIALOG_MODAL + GTK_DIALOG_NO_SEPARATOR),
                                                     GTK_STOCK_CANCEL,   GTK_RESPONSE_REJECT,
                                                     GTK_STOCK_OK,       GTK_RESPONSE_ACCEPT, NULL);
   
-  gtk_window_set_icon(GTK_WINDOW(preferences_dialog),
-                      gtk_widget_render_icon(preferences_dialog, GTK_STOCK_PREFERENCES,
+  gtk_window_set_icon((GtkWindow*)dialog,
+                      gtk_widget_render_icon(dialog, GTK_STOCK_PREFERENCES,
                                              GTK_ICON_SIZE_MENU, NULL));
   
-  /*gtk_window_resize(GTK_WINDOW(preferences_dialog), 415, 480);*/
-  gtk_window_set_resizable(GTK_WINDOW(preferences_dialog), FALSE);
+  gtk_window_set_resizable((GtkWindow*)dialog, FALSE);
   
   /* Create notebook */
   GtkWidget* notebook = gtk_notebook_new();
-  gtk_box_pack_start(GTK_BOX(GTK_DIALOG(preferences_dialog)->vbox), notebook, TRUE, TRUE, 2);
+  gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), notebook, TRUE, TRUE, 2);
   
-  /* Build the general page */  
-  GtkWidget* page_general = gtk_alignment_new(0.50, 0.50, 1.0, 1.0);
-  gtk_alignment_set_padding(GTK_ALIGNMENT(page_general), 6, 6, 6, 6);
-  gtk_notebook_append_page(GTK_NOTEBOOK(notebook), page_general, gtk_label_new(_("General")));
-  GtkWidget* vbox_general = gtk_vbox_new(FALSE, 6);
-  gtk_container_add(GTK_CONTAINER(page_general), vbox_general);
+  /* Build the behavior page */  
+  GtkWidget* page_behavior = gtk_alignment_new(0.50, 0.50, 1.0, 1.0);
+  gtk_alignment_set_padding((GtkAlignment*)page_behavior, 12, 6, 12, 6);
+  gtk_notebook_append_page((GtkNotebook*)notebook, page_behavior, gtk_label_new(_("Behavior")));
+  GtkWidget* vbox_behavior = gtk_vbox_new(FALSE, 12);
+  gtk_container_add((GtkContainer*)page_behavior, vbox_behavior);
   
   /* Build the history frame */
   frame = gtk_frame_new(NULL);
-  gtk_frame_set_shadow_type(GTK_FRAME(frame), GTK_SHADOW_NONE);
+  gtk_frame_set_shadow_type((GtkFrame*)frame, GTK_SHADOW_NONE);
   label = gtk_label_new(NULL);
-  gtk_label_set_markup(GTK_LABEL(label), _("<b>History</b>"));
-  gtk_frame_set_label_widget(GTK_FRAME(frame), label);
+  gtk_label_set_markup((GtkLabel*)label, _("<b>History</b>"));
+  gtk_frame_set_label_widget((GtkFrame*)frame, label);
   alignment = gtk_alignment_new(0.50, 0.50, 1.0, 1.0);
-  gtk_alignment_set_padding(GTK_ALIGNMENT(alignment), 0, 0, 12, 0);
-  gtk_container_add(GTK_CONTAINER(frame), alignment);
-  hbox = gtk_hbox_new(FALSE, 6);
-  gtk_container_add(GTK_CONTAINER(alignment), hbox);
-  label = gtk_label_new(_("Amount of items to keep in history:"));
-  gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.50);
-  gtk_box_pack_start(GTK_BOX(hbox), label, TRUE, TRUE, 0);
-  adjustment = gtk_adjustment_new(25, 5, 100, 1, 10, 0);
-  history_spin = gtk_spin_button_new(GTK_ADJUSTMENT(adjustment), 0.0, 0);
-  gtk_spin_button_set_update_policy(GTK_SPIN_BUTTON(history_spin), GTK_UPDATE_IF_VALID);
-  gtk_box_pack_end(GTK_BOX(hbox), history_spin, FALSE, FALSE, 0);
-  gtk_box_pack_start(GTK_BOX(vbox_general), frame, FALSE, FALSE, 0);
-  
-  /* Build the display frame */
-  frame = gtk_frame_new(NULL);
-  gtk_frame_set_shadow_type(GTK_FRAME(frame), GTK_SHADOW_NONE);
-  label = gtk_label_new(NULL);
-  gtk_label_set_markup(GTK_LABEL(label), _("<b>Display</b>"));
-  gtk_frame_set_label_widget(GTK_FRAME(frame), label);
-  alignment = gtk_alignment_new(0.50, 0.50, 1.0, 1.0);
-  gtk_alignment_set_padding(GTK_ALIGNMENT(alignment), 0, 0, 12, 0);
-  gtk_container_add(GTK_CONTAINER(frame), alignment);
+  gtk_alignment_set_padding((GtkAlignment*)alignment, 12, 0, 12, 0);
+  gtk_container_add((GtkContainer*)frame, alignment);
   vbox = gtk_vbox_new(FALSE, 2);
-  gtk_container_add(GTK_CONTAINER(alignment), vbox);
-  hbox = gtk_hbox_new(FALSE, 6);
-  gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
-  label = gtk_label_new(_("Length of each history item:"));
-  gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.50);
-  gtk_box_pack_start(GTK_BOX(hbox), label, TRUE, TRUE, 0);
-  adjustment = gtk_adjustment_new(50, 25, 75, 1, 5, 0);
-  charlength_spin = gtk_spin_button_new(GTK_ADJUSTMENT(adjustment), 0.0, 0);
-  gtk_spin_button_set_update_policy(GTK_SPIN_BUTTON(charlength_spin), GTK_UPDATE_IF_VALID);
-  gtk_box_pack_end(GTK_BOX(hbox), charlength_spin, FALSE, FALSE, 0);
-  hbox = gtk_hbox_new(FALSE, 20);
-  gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
-  label = gtk_label_new(_("Long items omitted in the:"));
-  gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.50);
-  gtk_box_pack_start(GTK_BOX(hbox), label, TRUE, TRUE, 0);
-  ellipsize_combo = gtk_combo_box_new_text();
-  gtk_combo_box_append_text(GTK_COMBO_BOX(ellipsize_combo), _("Beginning"));
-  gtk_combo_box_append_text(GTK_COMBO_BOX(ellipsize_combo), _("Middle"));
-  gtk_combo_box_append_text(GTK_COMBO_BOX(ellipsize_combo), _("End"));
-  gtk_box_pack_end(GTK_BOX(hbox), ellipsize_combo, FALSE, FALSE, 0);
-  gtk_box_pack_start(GTK_BOX(vbox_general), frame, FALSE, FALSE, 0);
+  gtk_container_add((GtkContainer*)alignment, vbox);
+  save_check = gtk_check_button_new_with_mnemonic(_("_Save history"));
+  gtk_widget_set_tooltip_text(save_check, _("Keep and restore history in between sessions"));
+  gtk_box_pack_start((GtkBox*)vbox, save_check, FALSE, FALSE, 0);
+  hbox = gtk_hbox_new(FALSE, 4);
+  gtk_box_pack_start((GtkBox*)vbox, hbox, FALSE, FALSE, 0);
+  label = gtk_label_new(_("Items in history:"));
+  gtk_misc_set_alignment((GtkMisc*)label, 0.0, 0.50);
+  gtk_box_pack_start((GtkBox*)hbox, label, FALSE, FALSE, 0);
+  adjustment = gtk_adjustment_new(25, 5, 100, 1, 10, 0);
+  history_spin = gtk_spin_button_new((GtkAdjustment*)adjustment, 0.0, 0);
+  gtk_spin_button_set_update_policy((GtkSpinButton*)history_spin, GTK_UPDATE_IF_VALID);
+  gtk_box_pack_start((GtkBox*)hbox, history_spin, FALSE, FALSE, 0);
+  gtk_box_pack_start((GtkBox*)vbox_behavior, frame, FALSE, FALSE, 0);
   
   /* Build the hotkeys frame */
   frame = gtk_frame_new(NULL);
-  gtk_frame_set_shadow_type(GTK_FRAME(frame), GTK_SHADOW_NONE);
+  gtk_frame_set_shadow_type((GtkFrame*)frame, GTK_SHADOW_NONE);
   label = gtk_label_new(NULL);
-  gtk_label_set_markup(GTK_LABEL(label), _("<b>Hotkeys</b>"));
-  gtk_frame_set_label_widget(GTK_FRAME(frame), label);
+  gtk_label_set_markup((GtkLabel*)label, _("<b>Hotkeys</b>"));
+  gtk_frame_set_label_widget((GtkFrame*)frame, label);
   alignment = gtk_alignment_new(0.50, 0.50, 1.0, 1.0);
-  gtk_alignment_set_padding(GTK_ALIGNMENT(alignment), 0, 0, 12, 0);
-  gtk_container_add(GTK_CONTAINER(frame), alignment);
+  gtk_alignment_set_padding((GtkAlignment*)alignment, 12, 0, 12, 0);
+  gtk_container_add((GtkContainer*)frame, alignment);
   vbox = gtk_vbox_new(FALSE, 2);
-  gtk_container_add(GTK_CONTAINER(alignment), vbox);
-  hbox = gtk_hbox_new(TRUE, 2);
-  gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
-  label = gtk_label_new(_("History menu hotkey:"));
-  gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.50);
-  gtk_box_pack_start(GTK_BOX(hbox), label, TRUE, TRUE, 0);
+  gtk_container_add((GtkContainer*)alignment, vbox);
+  hbox = gtk_hbox_new(TRUE, 4);
+  gtk_box_pack_start((GtkBox*)vbox, hbox, FALSE, FALSE, 0);
+  label = gtk_label_new(_("History key combination:"));
+  gtk_misc_set_alignment((GtkMisc*)label, 0.0, 0.50);
+  gtk_box_pack_start((GtkBox*)hbox, label, TRUE, TRUE, 0);
   history_key_entry = gtk_entry_new();
-  gtk_entry_set_width_chars(GTK_ENTRY(history_key_entry), 10);
-  gtk_box_pack_end(GTK_BOX(hbox), history_key_entry, TRUE, TRUE, 0);
-  hbox = gtk_hbox_new(TRUE, 2);
-  gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
-  label = gtk_label_new(_("Actions menu hotkey:"));
-  gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.50);
-  gtk_box_pack_start(GTK_BOX(hbox), label, TRUE, TRUE, 0);
+  gtk_entry_set_width_chars((GtkEntry*)history_key_entry, 10);
+  gtk_box_pack_end((GtkBox*)hbox, history_key_entry, TRUE, TRUE, 0);
+  hbox = gtk_hbox_new(TRUE, 4);
+  gtk_box_pack_start((GtkBox*)vbox, hbox, FALSE, FALSE, 0);
+  label = gtk_label_new(_("Actions key combination:"));
+  gtk_misc_set_alignment((GtkMisc*)label, 0.0, 0.50);
+  gtk_box_pack_start((GtkBox*)hbox, label, TRUE, TRUE, 0);
   actions_key_entry = gtk_entry_new();
-  gtk_entry_set_width_chars(GTK_ENTRY(actions_key_entry), 10);
-  gtk_box_pack_end(GTK_BOX(hbox), actions_key_entry, TRUE, TRUE, 0);
-  hbox = gtk_hbox_new(TRUE, 2);
-  gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
-  label = gtk_label_new(_("Parcellite menu hotkey:"));
-  gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.50);
-  gtk_box_pack_start(GTK_BOX(hbox), label, TRUE, TRUE, 0);
+  gtk_entry_set_width_chars((GtkEntry*)actions_key_entry, 10);
+  gtk_box_pack_end((GtkBox*)hbox, actions_key_entry, TRUE, TRUE, 0);
+  hbox = gtk_hbox_new(TRUE, 4);
+  gtk_box_pack_start((GtkBox*)vbox, hbox, FALSE, FALSE, 0);
+  label = gtk_label_new(_("Menu key combination:"));
+  gtk_misc_set_alignment((GtkMisc*)label, 0.0, 0.50);
+  gtk_box_pack_start((GtkBox*)hbox, label, TRUE, TRUE, 0);
   menu_key_entry = gtk_entry_new();
-  gtk_entry_set_width_chars(GTK_ENTRY(menu_key_entry), 10);
-  gtk_box_pack_end(GTK_BOX(hbox), menu_key_entry, TRUE, TRUE, 0);
-  gtk_box_pack_start(GTK_BOX(vbox_general), frame, FALSE, FALSE, 0);
+  gtk_entry_set_width_chars((GtkEntry*)menu_key_entry, 10);
+  gtk_box_pack_end((GtkBox*)hbox, menu_key_entry, TRUE, TRUE, 0);
+  gtk_box_pack_start((GtkBox*)vbox_behavior, frame, FALSE, FALSE, 0);
   
-  /* Build the behaviour frame */
+  /* Build the miscellaneous frame */
   frame = gtk_frame_new(NULL);
-  gtk_frame_set_shadow_type(GTK_FRAME(frame), GTK_SHADOW_NONE);
+  gtk_frame_set_shadow_type((GtkFrame*)frame, GTK_SHADOW_NONE);
   label = gtk_label_new(NULL);
-  gtk_label_set_markup(GTK_LABEL(label), _("<b>Behaviour</b>"));
-  gtk_frame_set_label_widget(GTK_FRAME(frame), label);
+  gtk_label_set_markup((GtkLabel*)label, _("<b>Miscellaneous</b>"));
+  gtk_frame_set_label_widget((GtkFrame*)frame, label);
   alignment = gtk_alignment_new(0.50, 0.50, 1.0, 1.0);
-  gtk_alignment_set_padding(GTK_ALIGNMENT(alignment), 0, 0, 12, 0);
-  gtk_container_add(GTK_CONTAINER(frame), alignment);
+  gtk_alignment_set_padding((GtkAlignment*)alignment, 12, 0, 12, 0); /* Old: 0, 0, 12, 0 */
+  gtk_container_add((GtkContainer*)frame, alignment);
   vbox = gtk_vbox_new(FALSE, 2);
-  gtk_container_add(GTK_CONTAINER(alignment), vbox);
-  save_check = gtk_check_button_new_with_mnemonic(_("_Save history"));
-  gtk_widget_set_tooltip_text(save_check, _("Keep and restore history in between sessions"));
-  gtk_box_pack_start(GTK_BOX(vbox), save_check, FALSE, FALSE, 0);
+  gtk_container_add((GtkContainer*)alignment, vbox);
   confirm_check = gtk_check_button_new_with_mnemonic(_("C_onfirm clear"));
   gtk_widget_set_tooltip_text(confirm_check, _("Confirm before clearing history"));
-  gtk_box_pack_start(GTK_BOX(vbox), confirm_check, FALSE, FALSE, 0);
-  reverse_check = gtk_check_button_new_with_mnemonic(_("_Reverse history"));
-  gtk_widget_set_tooltip_text(reverse_check, _("Show history items in reverse order"));
-  gtk_box_pack_start(GTK_BOX(vbox), reverse_check, FALSE, FALSE, 0);
-  linemode_check = gtk_check_button_new_with_mnemonic(_("Single _line mode"));
-  gtk_widget_set_tooltip_text(linemode_check, _("Show items in a single line"));
-  gtk_box_pack_start(GTK_BOX(vbox), linemode_check, FALSE, FALSE, 0);
+  gtk_box_pack_start((GtkBox*)vbox, confirm_check, FALSE, FALSE, 0);
   hyperlinks_check = gtk_check_button_new_with_mnemonic(_("_Capture hyperlinks only"));
   gtk_widget_set_tooltip_text(hyperlinks_check, _("Ignore all non-hyperlink text"));
-  gtk_box_pack_start(GTK_BOX(vbox), hyperlinks_check, FALSE, FALSE, 0);
-  gtk_box_pack_start(GTK_BOX(vbox_general), frame, FALSE, FALSE, 0);
+  gtk_box_pack_start((GtkBox*)vbox, hyperlinks_check, FALSE, FALSE, 0);
+  gtk_box_pack_start((GtkBox*)vbox_behavior, frame, FALSE, FALSE, 0);
+  
+  /* Build the display page */
+  GtkWidget* page_display = gtk_alignment_new(0.50, 0.50, 1.0, 1.0);
+  gtk_alignment_set_padding((GtkAlignment*)page_display, 12, 6, 12, 6);
+  gtk_notebook_append_page((GtkNotebook*)notebook, page_display, gtk_label_new(_("Display")));
+  GtkWidget* vbox_display = gtk_vbox_new(FALSE, 6);
+  gtk_container_add((GtkContainer*)page_display, vbox_display);
+  
+  /* Build the items frame */
+  frame = gtk_frame_new(NULL);
+  gtk_frame_set_shadow_type((GtkFrame*)frame, GTK_SHADOW_NONE);
+  label = gtk_label_new(NULL);
+  gtk_label_set_markup((GtkLabel*)label, _("<b>Items</b>"));
+  gtk_frame_set_label_widget((GtkFrame*)frame, label);
+  alignment = gtk_alignment_new(0.50, 0.50, 1.0, 1.0);
+  gtk_alignment_set_padding((GtkAlignment*)alignment, 12, 0, 12, 0);
+  gtk_container_add((GtkContainer*)frame, alignment);
+  vbox = gtk_vbox_new(FALSE, 2);
+  gtk_container_add((GtkContainer*)alignment, vbox);
+  linemode_check = gtk_check_button_new_with_mnemonic(_("Show in a _single line"));
+  gtk_box_pack_start((GtkBox*)vbox, linemode_check, FALSE, FALSE, 0);
+  reverse_check = gtk_check_button_new_with_mnemonic(_("Show in _reverse order"));
+  gtk_box_pack_start((GtkBox*)vbox, reverse_check, FALSE, FALSE, 0);
+  hbox = gtk_hbox_new(FALSE, 4);
+  gtk_box_pack_start((GtkBox*)vbox, hbox, FALSE, FALSE, 0);
+  label = gtk_label_new(_("Character length of items:"));
+  gtk_misc_set_alignment((GtkMisc*)label, 0.0, 0.50);
+  gtk_box_pack_start((GtkBox*)hbox, label, FALSE, FALSE, 0);
+  adjustment = gtk_adjustment_new(50, 25, 75, 1, 5, 0);
+  charlength_spin = gtk_spin_button_new((GtkAdjustment*)adjustment, 0.0, 0);
+  gtk_spin_button_set_update_policy((GtkSpinButton*)charlength_spin, GTK_UPDATE_IF_VALID);
+  gtk_box_pack_start((GtkBox*)hbox, charlength_spin, FALSE, FALSE, 0);
+  gtk_box_pack_start((GtkBox*)vbox_display, frame, FALSE, FALSE, 0);
+  
+  /* Build the omitting frame */
+  frame = gtk_frame_new(NULL);
+  gtk_frame_set_shadow_type((GtkFrame*)frame, GTK_SHADOW_NONE);
+  label = gtk_label_new(NULL);
+  gtk_label_set_markup((GtkLabel*)label, _("<b>Omitting</b>"));
+  gtk_frame_set_label_widget((GtkFrame*)frame, label);
+  alignment = gtk_alignment_new(0.50, 0.50, 1.0, 1.0);
+  gtk_alignment_set_padding((GtkAlignment*)alignment, 12, 0, 12, 0);
+  gtk_container_add((GtkContainer*)frame, alignment);
+  vbox = gtk_vbox_new(FALSE, 2);
+  gtk_container_add((GtkContainer*)alignment, vbox);
+  hbox = gtk_hbox_new(FALSE, 4);
+  gtk_box_pack_start((GtkBox*)vbox, hbox, FALSE, FALSE, 0);
+  label = gtk_label_new(_("Omit items in the:"));
+  gtk_misc_set_alignment((GtkMisc*)label, 0.0, 0.50);
+  gtk_box_pack_start((GtkBox*)hbox, label, FALSE, FALSE, 0);
+  ellipsize_combo = gtk_combo_box_new_text();
+  gtk_combo_box_append_text((GtkComboBox*)ellipsize_combo, _("Beginning"));
+  gtk_combo_box_append_text((GtkComboBox*)ellipsize_combo, _("Middle"));
+  gtk_combo_box_append_text((GtkComboBox*)ellipsize_combo, _("End"));
+  gtk_box_pack_start((GtkBox*)hbox, ellipsize_combo, FALSE, FALSE, 0);
+  gtk_box_pack_start((GtkBox*)vbox_display, frame, FALSE, FALSE, 0);
   
   /* Build the actions page */
   GtkWidget* page_actions = gtk_alignment_new(0.50, 0.50, 1.0, 1.0);
-  gtk_alignment_set_padding(GTK_ALIGNMENT(page_actions), 6, 6, 6, 6);
-  gtk_notebook_append_page(GTK_NOTEBOOK(notebook), page_actions, gtk_label_new(_("Actions")));
+  gtk_alignment_set_padding((GtkAlignment*)page_actions, 6, 6, 6, 6);
+  gtk_notebook_append_page((GtkNotebook*)notebook, page_actions, gtk_label_new(_("Actions")));
   GtkWidget* vbox_actions = gtk_vbox_new(FALSE, 6);
-  gtk_container_add(GTK_CONTAINER(page_actions), vbox_actions);
+  gtk_container_add((GtkContainer*)page_actions, vbox_actions);
   
   /* Build the actions label */
   label = gtk_label_new(_("Control-click Parcellite\'s tray icon to use actions"));
-  gtk_label_set_line_wrap(GTK_LABEL(label), TRUE);
-  gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.50);
-  gtk_box_pack_start(GTK_BOX(vbox_actions), label, FALSE, FALSE, 0);
+  gtk_label_set_line_wrap((GtkLabel*)label, TRUE);
+  gtk_misc_set_alignment((GtkMisc*)label, 0.0, 0.50);
+  gtk_box_pack_start((GtkBox*)vbox_actions, label, FALSE, FALSE, 0);
   
   /* Build the actions treeview */
   GtkWidget* scrolled_window = gtk_scrolled_window_new(
-                               GTK_ADJUSTMENT(gtk_adjustment_new(0, 0, 0, 0, 0, 0)),
-                               GTK_ADJUSTMENT(gtk_adjustment_new(0, 0, 0, 0, 0, 0)));
+                               (GtkAdjustment*)gtk_adjustment_new(0, 0, 0, 0, 0, 0),
+                               (GtkAdjustment*)gtk_adjustment_new(0, 0, 0, 0, 0, 0));
   
-  gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_window),
+  gtk_scrolled_window_set_policy((GtkScrolledWindow*)scrolled_window,
                                  GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
   
-  gtk_scrolled_window_set_shadow_type(GTK_SCROLLED_WINDOW(scrolled_window),
+  gtk_scrolled_window_set_shadow_type((GtkScrolledWindow*)scrolled_window,
                                       GTK_SHADOW_ETCHED_OUT);
   
   GtkWidget* treeview = gtk_tree_view_new();
-  gtk_tree_view_set_reorderable(GTK_TREE_VIEW(treeview), TRUE);
-  gtk_tree_view_set_rules_hint(GTK_TREE_VIEW(treeview), TRUE);
+  gtk_tree_view_set_reorderable((GtkTreeView*)treeview, TRUE);
+  gtk_tree_view_set_rules_hint((GtkTreeView*)treeview, TRUE);
   actions_list = gtk_list_store_new(2, G_TYPE_STRING, G_TYPE_STRING);
-  gtk_tree_view_set_model(GTK_TREE_VIEW(treeview), GTK_TREE_MODEL(actions_list));
+  gtk_tree_view_set_model((GtkTreeView*)treeview, (GtkTreeModel*)actions_list);
   GtkCellRenderer* name_renderer = gtk_cell_renderer_text_new();
   g_object_set(name_renderer, "editable", TRUE, NULL);
-  g_signal_connect(G_OBJECT(name_renderer), "edited", G_CALLBACK(edit_cell), (gpointer)0);
+  g_signal_connect((GObject*)name_renderer, "edited", (GCallback)edit_cell, (gpointer)0);
   tree_column = gtk_tree_view_column_new_with_attributes(_("Action"),
                                                          name_renderer,
                                                          "text", 0, NULL);
   
   gtk_tree_view_column_set_resizable(tree_column, TRUE);
-  gtk_tree_view_append_column(GTK_TREE_VIEW(treeview), tree_column);
+  gtk_tree_view_append_column((GtkTreeView*)treeview, tree_column);
   GtkCellRenderer* command_renderer = gtk_cell_renderer_text_new();
   g_object_set(command_renderer, "editable", TRUE, NULL);
   g_object_set(command_renderer, "ellipsize-set", TRUE, "ellipsize", PANGO_ELLIPSIZE_END, NULL);
-  g_signal_connect(G_OBJECT(command_renderer), "edited", G_CALLBACK(edit_cell), (gpointer)1);
+  g_signal_connect((GObject*)command_renderer, "edited", (GCallback)edit_cell, (gpointer)1);
   tree_column = gtk_tree_view_column_new_with_attributes(_("Command"), command_renderer,
                                                          "text", 1, NULL);
   
   gtk_tree_view_column_set_expand(tree_column, TRUE);
-  gtk_tree_view_append_column(GTK_TREE_VIEW(treeview), tree_column);
-  gtk_container_add(GTK_CONTAINER(scrolled_window), treeview);
-  actions_selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(treeview));
+  gtk_tree_view_append_column((GtkTreeView*)treeview, tree_column);
+  gtk_container_add((GtkContainer*)scrolled_window, treeview);
+  actions_selection = gtk_tree_view_get_selection((GtkTreeView*)treeview);
   gtk_tree_selection_set_mode(actions_selection, GTK_SELECTION_BROWSE);
-  gtk_box_pack_start(GTK_BOX(vbox_actions), scrolled_window, TRUE, TRUE, 0);
+  gtk_box_pack_start((GtkBox*)vbox_actions, scrolled_window, TRUE, TRUE, 0);
   
   /* Connect tree signals */
-  g_signal_connect(G_OBJECT(treeview), "key-press-event", G_CALLBACK(delete_key_pressed), NULL);
+  g_signal_connect((GObject*)treeview, "key-press-event", (GCallback)delete_key_pressed, NULL);
   
   /* Build the buttons */
-  GtkWidget* hbutton_box = gtk_hbutton_box_new();
-  gtk_button_box_set_layout(GTK_BUTTON_BOX(hbutton_box), GTK_BUTTONBOX_SPREAD);
-  hbox = gtk_hbox_new(TRUE, 6);
-  gtk_box_pack_start(GTK_BOX(hbutton_box), hbox, TRUE, TRUE, 0);
-  GtkWidget* button_new = gtk_button_new_with_label(_("New"));
-  gtk_button_set_image(GTK_BUTTON(button_new),
-                       gtk_image_new_from_stock(GTK_STOCK_NEW, GTK_ICON_SIZE_MENU));
-  
-  /*gtk_widget_set_tooltip_text(button_new, _("New action"));*/
-  g_signal_connect(G_OBJECT(button_new), "clicked", G_CALLBACK(new_action), NULL);
-  gtk_box_pack_start(GTK_BOX(hbox), button_new, FALSE, TRUE, 0);
-  GtkWidget* button_edit = gtk_button_new_with_label(_("Edit"));
-  gtk_button_set_image(GTK_BUTTON(button_edit),
-                       gtk_image_new_from_stock(GTK_STOCK_EDIT, GTK_ICON_SIZE_MENU));
-  
-  /*gtk_widget_set_tooltip_text(button_edit, _("Edit selected"));*/
-  g_signal_connect(G_OBJECT(button_edit), "clicked", G_CALLBACK(edit_selected), NULL);
-  gtk_box_pack_start(GTK_BOX(hbox), button_edit, FALSE, TRUE, 0);
-  GtkWidget* button_delete = gtk_button_new_with_label(_("Delete"));
-  gtk_button_set_image(GTK_BUTTON(button_delete),
-                       gtk_image_new_from_stock(GTK_STOCK_DELETE, GTK_ICON_SIZE_MENU));
-  
-  /*gtk_widget_set_tooltip_text(button_delete, _("Delete selected"));*/
-  g_signal_connect(G_OBJECT(button_delete), "clicked", G_CALLBACK(delete_selected), NULL);
-  gtk_box_pack_start(GTK_BOX(hbox), button_delete, FALSE, TRUE, 0);
-  GtkWidget* button_up = gtk_button_new();
-  gtk_button_set_image(GTK_BUTTON(button_up),
-                       gtk_image_new_from_stock(GTK_STOCK_GO_UP, GTK_ICON_SIZE_MENU));
-  
-  /*gtk_widget_set_tooltip_text(button_up, _("Move selected up"));*/
-  g_signal_connect(G_OBJECT(button_up), "clicked", G_CALLBACK(move_selected_up), NULL);
-  gtk_box_pack_start(GTK_BOX(hbox), button_up, FALSE, TRUE, 0);
-  GtkWidget* button_down = gtk_button_new();
-  gtk_button_set_image(GTK_BUTTON(button_down),
-                       gtk_image_new_from_stock(GTK_STOCK_GO_DOWN, GTK_ICON_SIZE_MENU));
-  
-  /*gtk_widget_set_tooltip_text(button_down, _("Move selected down"));*/
-  g_signal_connect(G_OBJECT(button_down), "clicked", G_CALLBACK(move_selected_down), NULL);
-  gtk_box_pack_start(GTK_BOX(hbox), button_down, FALSE, TRUE, 0);
-  gtk_box_pack_start(GTK_BOX(vbox_actions), hbutton_box, FALSE, FALSE, 0);
+  GtkWidget* hbbox = gtk_hbutton_box_new();
+  gtk_box_set_spacing((GtkBox*)hbbox, 6);
+  gtk_button_box_set_layout((GtkButtonBox*)hbbox, GTK_BUTTONBOX_START);
+  GtkWidget* add_button = gtk_button_new_with_label(_("Add..."));
+  gtk_button_set_image((GtkButton*)add_button, gtk_image_new_from_stock(GTK_STOCK_ADD, GTK_ICON_SIZE_MENU));
+  g_signal_connect((GObject*)add_button, "clicked", (GCallback)add_action, NULL);
+  gtk_box_pack_start((GtkBox*)hbbox, add_button, FALSE, TRUE, 0);
+  GtkWidget* remove_button = gtk_button_new_with_label(_("Remove"));
+  gtk_button_set_image((GtkButton*)remove_button, gtk_image_new_from_stock(GTK_STOCK_REMOVE, GTK_ICON_SIZE_MENU));
+  g_signal_connect((GObject*)remove_button, "clicked", (GCallback)remove_action, NULL);
+  gtk_box_pack_start((GtkBox*)hbbox, remove_button, FALSE, TRUE, 0);
+  GtkWidget* up_button = gtk_button_new();
+  gtk_button_set_image((GtkButton*)up_button, gtk_image_new_from_stock(GTK_STOCK_GO_UP, GTK_ICON_SIZE_MENU));
+  gtk_widget_set_tooltip_text(up_button, _("Move selected action up"));
+  g_signal_connect((GObject*)up_button, "clicked", (GCallback)move_action_up, NULL);
+  gtk_box_pack_start((GtkBox*)hbbox, up_button, FALSE, TRUE, 0);
+  GtkWidget* down_button = gtk_button_new();
+  gtk_button_set_image((GtkButton*)down_button, gtk_image_new_from_stock(GTK_STOCK_GO_DOWN, GTK_ICON_SIZE_MENU));
+  gtk_widget_set_tooltip_text(down_button, _("Move selected action down"));
+  g_signal_connect((GObject*)down_button, "clicked", (GCallback)move_action_down, NULL);
+  gtk_box_pack_start((GtkBox*)hbbox, down_button, FALSE, TRUE, 0);
+  gtk_box_pack_start((GtkBox*)vbox_actions, hbbox, FALSE, FALSE, 0);
   
   /* Make widgets reflect current preferences */
-  gtk_spin_button_set_value(GTK_SPIN_BUTTON(history_spin), (gdouble)prefs.histlim);
-  gtk_spin_button_set_value(GTK_SPIN_BUTTON(charlength_spin), (gdouble)prefs.charlength);
-  gtk_combo_box_set_active(GTK_COMBO_BOX(ellipsize_combo), prefs.ellipsize - 1);
-  gtk_entry_set_text(GTK_ENTRY(history_key_entry), prefs.histkey);
-  gtk_entry_set_text(GTK_ENTRY(actions_key_entry), prefs.actionkey);
-  gtk_entry_set_text(GTK_ENTRY(menu_key_entry), prefs.menukey);
-  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(save_check), prefs.savehist);
-  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(confirm_check), prefs.confclear);
-  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(reverse_check), prefs.revhist);
-  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(linemode_check), prefs.singleline);
-  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(hyperlinks_check), prefs.hyperlinks);
+  gtk_spin_button_set_value((GtkSpinButton*)history_spin, (gdouble)prefs.histlim);
+  gtk_spin_button_set_value((GtkSpinButton*)charlength_spin, (gdouble)prefs.charlength);
+  gtk_combo_box_set_active((GtkComboBox*)ellipsize_combo, prefs.ellipsize - 1);
+  gtk_entry_set_text((GtkEntry*)history_key_entry, prefs.histkey);
+  gtk_entry_set_text((GtkEntry*)actions_key_entry, prefs.actionkey);
+  gtk_entry_set_text((GtkEntry*)menu_key_entry, prefs.menukey);
+  gtk_toggle_button_set_active((GtkToggleButton*)save_check, prefs.savehist);
+  gtk_toggle_button_set_active((GtkToggleButton*)confirm_check, prefs.confclear);
+  gtk_toggle_button_set_active((GtkToggleButton*)reverse_check, prefs.revhist);
+  gtk_toggle_button_set_active((GtkToggleButton*)linemode_check, prefs.singleline);
+  gtk_toggle_button_set_active((GtkToggleButton*)hyperlinks_check, prefs.hyperlinks);
   
   /* Read actions */
   read_actions();
   
   /* Run the dialog */
-  gtk_widget_show_all(preferences_dialog);
-  gtk_notebook_set_current_page(GTK_NOTEBOOK(notebook), tab);
-  if (gtk_dialog_run(GTK_DIALOG(preferences_dialog)) == GTK_RESPONSE_ACCEPT)
+  gtk_widget_show_all(dialog);
+  gtk_notebook_set_current_page((GtkNotebook*)notebook, tab);
+  if (gtk_dialog_run((GtkDialog*)dialog) == GTK_RESPONSE_ACCEPT)
   {
     /* Apply and save preferences */
     apply_preferences();
     save_preferences();
     save_actions();
   }
-  gtk_widget_destroy(preferences_dialog);
+  gtk_widget_destroy(dialog);
 }
