@@ -42,12 +42,13 @@ static GtkStatusIcon* status_icon;
 static gboolean actions_lock = FALSE;
 
 /* Create preferences */
-prefs_t prefs = {DEFHISTORYLIM,      DEFCHARLENGTH,
-                 DEFELLIPSIZE,       NULL,
-                 NULL,               NULL,
-                 DEFSAVEHIST,        DEFCONFIRMCLEAR,
-                 DEFREVHISTORY,      DEFSINGLELINEMODE,
-                 DEFHYPERLINKSMODE,  DEFNOICON};
+prefs_t prefs = {DEFUSECOPY,        DEFUSEPRIM,
+                 DEFSAVEHIST,       DEFHISTORYLIM,
+                 DEFHYPERLINKSMODE, DEFCONFIRMCLEAR,
+                 DEFSINGLELINEMODE, DEFREVHISTORY,
+                 DEFCHARLENGTH,     DEFELLIPSIZE,
+                 NULL,              NULL,
+                 NULL,              DEFNOICON};
 
 
 /* Called every time user copies something to the clipboard (Ctrl-V) */
@@ -107,11 +108,11 @@ execute_action(void *command)
 {
   /* Execute action */
   actions_lock = TRUE;
-  gtk_status_icon_set_from_stock(GTK_STATUS_ICON(status_icon), GTK_STOCK_EXECUTE);
-  gtk_status_icon_set_tooltip(GTK_STATUS_ICON(status_icon), _("Executing action..."));
+  gtk_status_icon_set_from_stock((GtkStatusIcon*)status_icon, GTK_STOCK_EXECUTE);
+  gtk_status_icon_set_tooltip((GtkStatusIcon*)status_icon, _("Executing action..."));
   system((gchar*)command);
-  gtk_status_icon_set_from_stock(GTK_STATUS_ICON(status_icon), GTK_STOCK_PASTE);
-  gtk_status_icon_set_tooltip(GTK_STATUS_ICON(status_icon), _("Clipboard Manager"));
+  gtk_status_icon_set_from_stock((GtkStatusIcon*)status_icon, GTK_STOCK_PASTE);
+  gtk_status_icon_set_tooltip((GtkStatusIcon*)status_icon, _("Clipboard Manager"));
   actions_lock = FALSE;
   g_free((gchar*)command);
   /* Exit this thread */
@@ -150,14 +151,14 @@ static void
 save_clicked(GtkButton *button, gpointer user_data)
 {
   /* Get the text buffer, its text and set as clipboard */
-  GtkTextBuffer* text_buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(user_data));
+  GtkTextBuffer* text_buffer = gtk_text_view_get_buffer((GtkTextView*)user_data);
   GtkTextIter start, end;
   gtk_text_buffer_get_start_iter(text_buffer, &start);
   gtk_text_buffer_get_end_iter(text_buffer, &end);
   gchar* new_clipboard_text = gtk_text_buffer_get_text(text_buffer, &start, &end, TRUE);
   gtk_clipboard_set_text(clipboard, new_clipboard_text, -1);
   /* Get top-most window widget and destroy it */
-  GtkWidget* window = gtk_widget_get_ancestor(GTK_WIDGET(user_data), GTK_TYPE_WINDOW);
+  GtkWidget* window = gtk_widget_get_ancestor((GtkWidget*)user_data, GTK_TYPE_WINDOW);
   gtk_widget_destroy(window);
   g_free(new_clipboard_text);
 }
@@ -179,56 +180,56 @@ edit_selected(GtkMenuItem *menu_item, gpointer user_data)
     /* Create window */
     GtkWidget* window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     gtk_grab_add(window);
-    gtk_window_set_decorated(GTK_WINDOW(window), FALSE);
-    gtk_window_set_default_size(GTK_WINDOW(window), 450, 300);
-    gtk_window_set_keep_above(GTK_WINDOW(window), TRUE);
-    gtk_window_set_title(GTK_WINDOW(window), _("Editing Clipboard"));
-    gtk_window_set_icon(GTK_WINDOW(window), gtk_widget_render_icon(window,
+    gtk_window_set_decorated((GtkWindow*)window, FALSE);
+    gtk_window_set_default_size((GtkWindow*)window, 450, 300);
+    gtk_window_set_keep_above((GtkWindow*)window, TRUE);
+    gtk_window_set_title((GtkWindow*)window, _("Editing Clipboard"));
+    gtk_window_set_icon((GtkWindow*)window, gtk_widget_render_icon(window,
                                                                    GTK_STOCK_EDIT,
                                                                    GTK_ICON_SIZE_MENU,
                                                                    NULL));
     
     /* Add viewport, frame and alignment */
-    GtkWidget* viewport = gtk_viewport_new(GTK_ADJUSTMENT(gtk_adjustment_new(0, 0, 0, 0, 0, 0)), 
-                                           GTK_ADJUSTMENT(gtk_adjustment_new(0, 0, 0, 0, 0, 0)));
+    GtkWidget* viewport = gtk_viewport_new((GtkAdjustment*)gtk_adjustment_new(0, 0, 0, 0, 0, 0), 
+                                           (GtkAdjustment*)gtk_adjustment_new(0, 0, 0, 0, 0, 0));
     
-    /* gtk_viewport_set_shadow_type(GTK_VIEWPORT(viewport), GTK_SHADOW_ETCHED_OUT); */
-    gtk_viewport_set_shadow_type(GTK_VIEWPORT(viewport), GTK_SHADOW_NONE);
-    gtk_container_add(GTK_CONTAINER(window), viewport);
+    /* gtk_viewport_set_shadow_type((GtkViewport*)viewport, GTK_SHADOW_ETCHED_OUT); */
+    gtk_viewport_set_shadow_type((GtkViewport*)viewport, GTK_SHADOW_NONE);
+    gtk_container_add((GtkContainer*)window, viewport);
     GtkWidget* frame = gtk_frame_new(NULL);
-    gtk_frame_set_shadow_type(GTK_FRAME(frame), GTK_SHADOW_NONE);
+    gtk_frame_set_shadow_type((GtkFrame*)frame, GTK_SHADOW_NONE);
     GtkWidget* label = gtk_label_new("Clipboard");
-    gtk_misc_set_padding(GTK_MISC(label), 0, 2);
-    gtk_label_set_markup(GTK_LABEL(label), _("<b>Clipboard</b>"));
-    gtk_frame_set_label_widget(GTK_FRAME(frame), label);
-    gtk_container_add(GTK_CONTAINER(viewport), frame);
+    gtk_misc_set_padding((GtkMisc*)label, 0, 2);
+    gtk_label_set_markup((GtkLabel*)label, _("<b>Clipboard</b>"));
+    gtk_frame_set_label_widget((GtkFrame*)frame, label);
+    gtk_container_add((GtkContainer*)viewport, frame);
     GtkWidget* alignment = gtk_alignment_new(0.50, 0.50, 1.0, 1.0);
-    gtk_alignment_set_padding(GTK_ALIGNMENT(alignment), 2, 0, 2, 2);
-    gtk_container_add(GTK_CONTAINER(frame), alignment);
+    gtk_alignment_set_padding((GtkAlignment*)alignment, 2, 0, 2, 2);
+    gtk_container_add((GtkContainer*)frame, alignment);
     /* Add vbox for two rows of widgets */
     GtkWidget* vbox = gtk_vbox_new(FALSE, 0);
-    gtk_container_add(GTK_CONTAINER(alignment), vbox);
+    gtk_container_add((GtkContainer*)alignment, vbox);
     /* Add inner viewport and textview */
-    GtkWidget* inner_viewport = gtk_viewport_new(GTK_ADJUSTMENT(
-                                                 gtk_adjustment_new(0, 0, 0, 0, 0, 0)),
-                                                 GTK_ADJUSTMENT(
-                                                 gtk_adjustment_new(0, 0, 0, 0, 0, 0)));
+    GtkWidget* inner_viewport = gtk_viewport_new((GtkAdjustment*)
+                                                 gtk_adjustment_new(0, 0, 0, 0, 0, 0),
+                                                 (GtkAdjustment*)
+                                                 gtk_adjustment_new(0, 0, 0, 0, 0, 0));
     
-    gtk_viewport_set_shadow_type(GTK_VIEWPORT(inner_viewport), GTK_SHADOW_ETCHED_OUT);
+    gtk_viewport_set_shadow_type((GtkViewport*)inner_viewport, GTK_SHADOW_ETCHED_OUT);
     gtk_box_pack_start(GTK_BOX(vbox), inner_viewport, TRUE, TRUE, 0);
-    GtkWidget* scrolled_window = gtk_scrolled_window_new(GTK_ADJUSTMENT(
-                                                         gtk_adjustment_new(0, 0, 0, 0, 0, 0)),
-                                                         GTK_ADJUSTMENT(
-                                                         gtk_adjustment_new(0, 0, 0, 0, 0, 0)));
+    GtkWidget* scrolled_window = gtk_scrolled_window_new((GtkAdjustment*)
+                                                         gtk_adjustment_new(0, 0, 0, 0, 0, 0),
+                                                         (GtkAdjustment*)
+                                                         gtk_adjustment_new(0, 0, 0, 0, 0, 0));
     
-    gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_window),
+    gtk_scrolled_window_set_policy((GtkScrolledWindow*)scrolled_window,
                                    GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
     
-    gtk_container_add(GTK_CONTAINER(inner_viewport), scrolled_window);
+    gtk_container_add((GtkContainer*)inner_viewport, scrolled_window);
     GtkWidget* text_view = gtk_text_view_new_with_buffer(clipboard_buffer);
-    gtk_text_view_set_left_margin(GTK_TEXT_VIEW(text_view), 2);
-    gtk_text_view_set_right_margin(GTK_TEXT_VIEW(text_view), 2);
-    gtk_container_add(GTK_CONTAINER(scrolled_window), text_view);
+    gtk_text_view_set_left_margin((GtkTextView*)text_view, 2);
+    gtk_text_view_set_right_margin((GtkTextView*)text_view, 2);
+    gtk_container_add((GtkContainer*)scrolled_window, text_view);
     /* Button box underneath textview */
     GtkWidget* hbutton_box = gtk_hbutton_box_new();
     gtk_button_box_set_layout(GTK_BUTTON_BOX(hbutton_box), GTK_BUTTONBOX_END);
@@ -238,24 +239,24 @@ edit_selected(GtkMenuItem *menu_item, gpointer user_data)
     /* Save button */
     GtkWidget* button_save = gtk_button_new();
     
-    gtk_button_set_relief(GTK_BUTTON(button_save), GTK_RELIEF_NONE);
-    gtk_button_set_image(GTK_BUTTON(button_save),
+    gtk_button_set_relief((GtkButton*)button_save, GTK_RELIEF_NONE);
+    gtk_button_set_image((GtkButton*)button_save,
                          gtk_image_new_from_stock(GTK_STOCK_OK,
                                                   GTK_ICON_SIZE_MENU));
     
     gtk_widget_set_tooltip_text(button_save, _("Save changes"));
-    g_signal_connect(G_OBJECT(button_save), "clicked", G_CALLBACK(save_clicked), text_view);
+    g_signal_connect((GObject*)button_save, "clicked", (GCallback)save_clicked, text_view);
     gtk_box_pack_end(GTK_BOX(hbox), button_save, FALSE, FALSE, 0);
     /* Close button */
     GtkWidget* button_close = gtk_button_new();
-    gtk_button_set_relief(GTK_BUTTON(button_close), GTK_RELIEF_NONE);
-    gtk_button_set_image(GTK_BUTTON(button_close),
+    gtk_button_set_relief((GtkButton*)button_close, GTK_RELIEF_NONE);
+    gtk_button_set_image((GtkButton*)button_close,
                          gtk_image_new_from_stock(GTK_STOCK_CANCEL,
                                                   GTK_ICON_SIZE_MENU));
     
     gtk_widget_set_tooltip_text(button_close, _("Discard changes"));
-    g_signal_connect_swapped(G_OBJECT(button_close), "clicked",
-                             G_CALLBACK(gtk_widget_destroy), window);
+    g_signal_connect_swapped((GObject*)button_close, "clicked",
+                             (GCallback)gtk_widget_destroy, window);
     
     gtk_box_pack_end(GTK_BOX(hbox), button_close, FALSE, FALSE, 0);
     
@@ -264,7 +265,7 @@ edit_selected(GtkMenuItem *menu_item, gpointer user_data)
     {
       GdkRectangle area;
       gtk_status_icon_get_geometry(status_icon, NULL, &area, NULL);
-      gtk_window_move(GTK_WINDOW(window), area.x, area.y);
+      gtk_window_move((GtkWindow*)window, area.x, area.y);
     }
     gtk_widget_show_all(window);
   }
@@ -295,7 +296,7 @@ clear_selected(GtkMenuItem *menu_item, gpointer user_data)
                                                        GTK_BUTTONS_OK_CANCEL,
                                                        _("Clear the history?"));
     
-    if (gtk_dialog_run(GTK_DIALOG(confirm_dialog)) == GTK_RESPONSE_OK)
+    if (gtk_dialog_run((GtkDialog*)confirm_dialog) == GTK_RESPONSE_OK)
     {
       /* Clear history and free history-related variables */
       g_free(clipboard_text);
@@ -341,25 +342,25 @@ show_about_dialog(GtkMenuItem *menu_item, gpointer user_data)
     
     /* Create the about dialog */
     GtkWidget* about_dialog = gtk_about_dialog_new();
-    gtk_window_set_icon(GTK_WINDOW(about_dialog),
+    gtk_window_set_icon((GtkWindow*)about_dialog,
                         gtk_widget_render_icon(about_dialog,
                                                GTK_STOCK_ABOUT,
                                                GTK_ICON_SIZE_MENU,
                                                NULL));
     
-    gtk_about_dialog_set_name(GTK_ABOUT_DIALOG(about_dialog), "Parcellite");
+    gtk_about_dialog_set_name((GtkAboutDialog*)about_dialog, "Parcellite");
     #ifdef HAVE_CONFIG_H
-    gtk_about_dialog_set_version(GTK_ABOUT_DIALOG(about_dialog), VERSION);
+    gtk_about_dialog_set_version((GtkAboutDialog*)about_dialog, VERSION);
     #endif
-    gtk_about_dialog_set_comments(GTK_ABOUT_DIALOG(about_dialog),
+    gtk_about_dialog_set_comments((GtkAboutDialog*)about_dialog,
                                 _("Lightweight GTK+ clipboard manager."));
     
-    gtk_about_dialog_set_website(GTK_ABOUT_DIALOG(about_dialog),
+    gtk_about_dialog_set_website((GtkAboutDialog*)about_dialog,
                                  "http://parcellite.sourceforge.net");
     
-    gtk_about_dialog_set_copyright(GTK_ABOUT_DIALOG(about_dialog), "Copyright (C) 2007, 2008 Xyhthyx");
-    gtk_about_dialog_set_authors(GTK_ABOUT_DIALOG(about_dialog), authors);
-    gtk_about_dialog_set_translator_credits (GTK_ABOUT_DIALOG(about_dialog),
+    gtk_about_dialog_set_copyright((GtkAboutDialog*)about_dialog, "Copyright (C) 2007, 2008 Xyhthyx");
+    gtk_about_dialog_set_authors((GtkAboutDialog*)about_dialog, authors);
+    gtk_about_dialog_set_translator_credits ((GtkAboutDialog*)about_dialog,
                                              "Davide Truffa <davide@catoblepa.org>\n"
                                              "Eckhard M. Jäger <bart@neeneenee.de>\n"
                                              "Gultyaev Alexey <hokum83@gmail.com>\n"
@@ -368,10 +369,10 @@ show_about_dialog(GtkMenuItem *menu_item, gpointer user_data)
                                              "Hasan Yılmaz <iletisim@hasanyilmaz.net>\n"
                                              "Gilberto \"Xyhthyx\" Miralla <xyhthyx@gmail.com>");
     
-    gtk_about_dialog_set_license(GTK_ABOUT_DIALOG(about_dialog), license);
-    gtk_about_dialog_set_logo_icon_name(GTK_ABOUT_DIALOG(about_dialog), GTK_STOCK_PASTE);
+    gtk_about_dialog_set_license((GtkAboutDialog*)about_dialog, license);
+    gtk_about_dialog_set_logo_icon_name((GtkAboutDialog*)about_dialog, GTK_STOCK_PASTE);
     /* Run the about dialog */
-    gtk_dialog_run(GTK_DIALOG(about_dialog));
+    gtk_dialog_run((GtkDialog*)about_dialog);
     gtk_widget_destroy(about_dialog);
   }
 }
@@ -406,44 +407,44 @@ show_actions_menu(gpointer data)
   
   /* Create menu */
   menu = gtk_menu_new();
-  g_signal_connect(G_OBJECT(menu), "selection-done", G_CALLBACK(gtk_widget_destroy), NULL);
+  g_signal_connect((GObject*)menu, "selection-done", (GCallback)gtk_widget_destroy, NULL);
   /* Actions using: */
   menu_item = gtk_image_menu_item_new_with_label("Actions using:");
   menu_image = gtk_image_new_from_stock(GTK_STOCK_EXECUTE, GTK_ICON_SIZE_MENU);
-  gtk_image_menu_item_set_image(GTK_IMAGE_MENU_ITEM(menu_item), menu_image);
-  g_signal_connect(G_OBJECT(menu_item), "select", G_CALLBACK(gtk_menu_item_deselect), NULL);
-  gtk_menu_shell_append(GTK_MENU_SHELL(menu), menu_item);
+  gtk_image_menu_item_set_image((GtkImageMenuItem*)menu_item, menu_image);
+  g_signal_connect((GObject*)menu_item, "select", (GCallback)gtk_menu_item_deselect, NULL);
+  gtk_menu_shell_append((GtkMenuShell*)menu, menu_item);
   /* Clipboard contents */
   if (clipboard_text)
   {
     menu_item = gtk_menu_item_new_with_label("None");
     /* Modify menu item label properties */
-    item_label = gtk_bin_get_child(GTK_BIN(menu_item));
-    gtk_label_set_single_line_mode(GTK_LABEL(item_label), TRUE);
-    gtk_label_set_ellipsize(GTK_LABEL(item_label), prefs.ellipsize);
-    gtk_label_set_width_chars(GTK_LABEL(item_label), 30);
+    item_label = gtk_bin_get_child((GtkBin*)menu_item);
+    gtk_label_set_single_line_mode((GtkLabel*)item_label, TRUE);
+    gtk_label_set_ellipsize((GtkLabel*)item_label, prefs.ellipsize);
+    gtk_label_set_width_chars((GtkLabel*)item_label, 30);
     /* Making bold... */
     gchar* bold_text = g_markup_printf_escaped("<b>%s</b>", clipboard_text);
-    gtk_label_set_markup(GTK_LABEL(item_label), bold_text);
+    gtk_label_set_markup((GtkLabel*)item_label, bold_text);
     g_free(bold_text);
     /* Append menu item */
-    g_signal_connect(G_OBJECT(menu_item), "select", G_CALLBACK(gtk_menu_item_deselect), NULL);
-    gtk_menu_shell_append(GTK_MENU_SHELL(menu), menu_item);
+    g_signal_connect((GObject*)menu_item, "select", (GCallback)gtk_menu_item_deselect, NULL);
+    gtk_menu_shell_append((GtkMenuShell*)menu, menu_item);
   }
   else
   {
     /* Create menu item for empty clipboard contents */
     menu_item = gtk_menu_item_new_with_label("None");
     /* Modify menu item label properties */
-    item_label = gtk_bin_get_child(GTK_BIN(menu_item));
-    gtk_label_set_markup(GTK_LABEL(item_label), _("<b>None</b>"));
+    item_label = gtk_bin_get_child((GtkBin*)menu_item);
+    gtk_label_set_markup((GtkLabel*)item_label, _("<b>None</b>"));
     /* Append menu item */
-    g_signal_connect(G_OBJECT(menu_item), "select", G_CALLBACK(gtk_menu_item_deselect), NULL);
+    g_signal_connect((GObject*)menu_item, "select", (GCallback)gtk_menu_item_deselect, NULL);
     
-    gtk_menu_shell_append(GTK_MENU_SHELL(menu), menu_item);
+    gtk_menu_shell_append((GtkMenuShell*)menu, menu_item);
   }
   /* -------------------- */
-  gtk_menu_shell_append(GTK_MENU_SHELL(menu), gtk_separator_menu_item_new());
+  gtk_menu_shell_append((GtkMenuShell*)menu, gtk_separator_menu_item_new());
   /* Actions */
   gchar* path = g_build_filename(g_get_home_dir(), ACTIONSFILE, NULL);
   FILE* actions_file = fopen(path, "rb");
@@ -459,7 +460,7 @@ show_actions_menu(gpointer data)
       /* File contained no actions so adding empty */
       menu_item = gtk_menu_item_new_with_label(_("Empty"));
       gtk_widget_set_sensitive(menu_item, FALSE);
-      gtk_menu_shell_append(GTK_MENU_SHELL(menu), menu_item);
+      gtk_menu_shell_append((GtkMenuShell*)menu, menu_item);
     }
     /* Continue reading items until size is 0 */
     while (size)
@@ -477,9 +478,9 @@ show_actions_menu(gpointer data)
       command[size] = '\0';
       fread(&size, 4, 1, actions_file);
       /* Append the action */
-      gtk_menu_shell_append(GTK_MENU_SHELL(menu), menu_item);
-      g_signal_connect(G_OBJECT(menu_item),         "activate",
-                       G_CALLBACK(action_selected), (gpointer)command);      
+      gtk_menu_shell_append((GtkMenuShell*)menu, menu_item);
+      g_signal_connect((GObject*)menu_item,         "activate",
+                       (GCallback)action_selected, (gpointer)command);      
     }
     fclose(actions_file);
   }
@@ -488,19 +489,19 @@ show_actions_menu(gpointer data)
     /* File did not open so adding empty */
     menu_item = gtk_menu_item_new_with_label(_("Empty"));
     gtk_widget_set_sensitive(menu_item, FALSE);
-    gtk_menu_shell_append(GTK_MENU_SHELL(menu), menu_item);
+    gtk_menu_shell_append((GtkMenuShell*)menu, menu_item);
   }
   /* -------------------- */
-  gtk_menu_shell_append(GTK_MENU_SHELL(menu), gtk_separator_menu_item_new());
+  gtk_menu_shell_append((GtkMenuShell*)menu, gtk_separator_menu_item_new());
   /* Edit actions */
   menu_item = gtk_image_menu_item_new_with_mnemonic(_("_Edit actions"));
   menu_image = gtk_image_new_from_stock(GTK_STOCK_EDIT, GTK_ICON_SIZE_MENU);
-  gtk_image_menu_item_set_image(GTK_IMAGE_MENU_ITEM(menu_item), menu_image);
-  g_signal_connect(G_OBJECT(menu_item), "activate", G_CALLBACK(edit_actions_selected), NULL);
-  gtk_menu_shell_append(GTK_MENU_SHELL(menu), menu_item);
+  gtk_image_menu_item_set_image((GtkImageMenuItem*)menu_item, menu_image);
+  g_signal_connect((GObject*)menu_item, "activate", (GCallback)edit_actions_selected, NULL);
+  gtk_menu_shell_append((GtkMenuShell*)menu, menu_item);
   /* Popup the menu... */
   gtk_widget_show_all(menu);
-  gtk_menu_popup(GTK_MENU(menu), NULL, NULL, NULL, NULL, 1, gtk_get_current_event_time());
+  gtk_menu_popup((GtkMenu*)menu, NULL, NULL, NULL, NULL, 1, gtk_get_current_event_time());
   /* Return false so the g_timeout_add() function is called only once */
   return FALSE;
 }
@@ -515,15 +516,15 @@ show_history_menu(gpointer data)
   
   /* Create the menu */
   menu = gtk_menu_new();
-  g_signal_connect(G_OBJECT(menu), "selection-done", G_CALLBACK(gtk_widget_destroy), NULL);
+  g_signal_connect((GObject*)menu, "selection-done", (GCallback)gtk_widget_destroy, NULL);
   /* Edit clipboard */
   menu_item = gtk_image_menu_item_new_with_mnemonic(_("_Edit Clipboard"));
   menu_image = gtk_image_new_from_stock(GTK_STOCK_EDIT, GTK_ICON_SIZE_MENU);
-  gtk_image_menu_item_set_image(GTK_IMAGE_MENU_ITEM(menu_item), menu_image);
-  g_signal_connect(G_OBJECT(menu_item), "activate", G_CALLBACK(edit_selected), NULL);
-  gtk_menu_shell_append(GTK_MENU_SHELL(menu), menu_item);
+  gtk_image_menu_item_set_image((GtkImageMenuItem*)menu_item, menu_image);
+  g_signal_connect((GObject*)menu_item, "activate", (GCallback)edit_selected, NULL);
+  gtk_menu_shell_append((GtkMenuShell*)menu, menu_item);
   /* -------------------- */
-  gtk_menu_shell_append(GTK_MENU_SHELL(menu), gtk_separator_menu_item_new());
+  gtk_menu_shell_append((GtkMenuShell*)menu, gtk_separator_menu_item_new());
   /* Items */
   if ((history) && (history->data))
   {
@@ -562,22 +563,22 @@ show_history_menu(gpointer data)
       }
       /* Make new item with ellipsized text */
       menu_item = gtk_menu_item_new_with_label(string->str);
-      g_signal_connect(G_OBJECT(menu_item),       "activate",
-                       G_CALLBACK(item_selected), (gpointer)element_number);
+      g_signal_connect((GObject*)menu_item,       "activate",
+                       (GCallback)item_selected, (gpointer)element_number);
       
       /* Modify menu item label properties */
-      item_label = gtk_bin_get_child(GTK_BIN(menu_item));
-      gtk_label_set_single_line_mode(GTK_LABEL(item_label), prefs.singleline);
+      item_label = gtk_bin_get_child((GtkBin*)menu_item);
+      gtk_label_set_single_line_mode((GtkLabel*)item_label, prefs.singleline);
       
       /* Check if item is also clipboard text and make bold */
       if ((clipboard_text) && (g_ascii_strcasecmp((gchar*)element->data, clipboard_text) == 0))
       {
         gchar* bold_text = g_markup_printf_escaped("<b>%s</b>", string->str);
-        gtk_label_set_markup(GTK_LABEL(item_label), bold_text);
+        gtk_label_set_markup((GtkLabel*)item_label, bold_text);
         g_free(bold_text);
       }
       /* Append item */
-      gtk_menu_shell_append(GTK_MENU_SHELL(menu), menu_item);
+      gtk_menu_shell_append((GtkMenuShell*)menu, menu_item);
       /* Prepare for next item */
       g_string_free(string, TRUE);
       if (prefs.revhist)
@@ -594,17 +595,17 @@ show_history_menu(gpointer data)
     /* Nothing in history so adding empty */
     menu_item = gtk_menu_item_new_with_label(_("Empty"));
     gtk_widget_set_sensitive(menu_item, FALSE);
-    gtk_menu_shell_append(GTK_MENU_SHELL(menu), menu_item);
+    gtk_menu_shell_append((GtkMenuShell*)menu, menu_item);
   }
   /* -------------------- */
-  gtk_menu_shell_append(GTK_MENU_SHELL(menu), gtk_separator_menu_item_new());
+  gtk_menu_shell_append((GtkMenuShell*)menu, gtk_separator_menu_item_new());
   /* Clear */
   menu_item = gtk_image_menu_item_new_from_stock(GTK_STOCK_CLEAR, NULL);
-  g_signal_connect(G_OBJECT(menu_item), "activate", G_CALLBACK(clear_selected), NULL);
-  gtk_menu_shell_append(GTK_MENU_SHELL(menu), menu_item);
+  g_signal_connect((GObject*)menu_item, "activate", (GCallback)clear_selected, NULL);
+  gtk_menu_shell_append((GtkMenuShell*)menu, menu_item);
   /* Popup the menu... */
   gtk_widget_show_all(menu);
-  gtk_menu_popup(GTK_MENU(menu), NULL, NULL, NULL, NULL, 1, gtk_get_current_event_time());
+  gtk_menu_popup((GtkMenu*)menu, NULL, NULL, NULL, NULL, 1, gtk_get_current_event_time());
   /* Return FALSE so the g_timeout_add() function is called only once */
   return FALSE;
 }
@@ -619,24 +620,24 @@ show_parcellite_menu(GtkStatusIcon *status_icon, guint button,
   
   /* Create the menu */
   menu = gtk_menu_new();
-  g_signal_connect(G_OBJECT(menu), "selection-done", G_CALLBACK(gtk_widget_destroy), NULL);
+  g_signal_connect((GObject*)menu, "selection-done", (GCallback)gtk_widget_destroy, NULL);
   /* About */
   menu_item = gtk_image_menu_item_new_from_stock(GTK_STOCK_ABOUT, NULL);
-  g_signal_connect(G_OBJECT(menu_item), "activate", G_CALLBACK(show_about_dialog), NULL);
-  gtk_menu_shell_append(GTK_MENU_SHELL(menu), menu_item);
+  g_signal_connect((GObject*)menu_item, "activate", (GCallback)show_about_dialog, NULL);
+  gtk_menu_shell_append((GtkMenuShell*)menu, menu_item);
   /* Preferences */
   menu_item = gtk_image_menu_item_new_from_stock(GTK_STOCK_PREFERENCES, NULL);
-  g_signal_connect(G_OBJECT(menu_item), "activate", G_CALLBACK(preferences_selected), NULL);
-  gtk_menu_shell_append(GTK_MENU_SHELL(menu), menu_item);
+  g_signal_connect((GObject*)menu_item, "activate", (GCallback)preferences_selected, NULL);
+  gtk_menu_shell_append((GtkMenuShell*)menu, menu_item);
   /* -------------------- */
-  gtk_menu_shell_append(GTK_MENU_SHELL(menu), gtk_separator_menu_item_new());
+  gtk_menu_shell_append((GtkMenuShell*)menu, gtk_separator_menu_item_new());
   /* Quit */
   menu_item = gtk_image_menu_item_new_from_stock(GTK_STOCK_QUIT, NULL);
-  g_signal_connect(G_OBJECT(menu_item), "activate", G_CALLBACK(quit_selected), NULL);
-  gtk_menu_shell_append(GTK_MENU_SHELL(menu), menu_item);
+  g_signal_connect((GObject*)menu_item, "activate", (GCallback)quit_selected, NULL);
+  gtk_menu_shell_append((GtkMenuShell*)menu, menu_item);
   /* Popup the menu... */
   gtk_widget_show_all(menu);
-  gtk_menu_popup(GTK_MENU(menu), NULL, NULL, NULL, user_data, button, activate_time);
+  gtk_menu_popup((GtkMenu*)menu, NULL, NULL, NULL, user_data, button, activate_time);
 }
 
 /* Called when status icon is left-clicked */
@@ -686,7 +687,7 @@ parcellite_init()
   /* Create clipboard */
   primary = gtk_clipboard_get(GDK_SELECTION_PRIMARY);
   clipboard = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);
-  g_signal_connect(G_OBJECT(clipboard), "owner-change", G_CALLBACK(clipboard_new_item), NULL);
+  g_signal_connect((GObject*)clipboard, "owner-change", (GCallback)clipboard_new_item, NULL);
   /*g_timeout_add(PRIMARYDELAY, primary_new_item, NULL);*/
   
   /* Read preferences */
@@ -713,9 +714,9 @@ parcellite_init()
   if (!prefs.noicon)
   {
     status_icon = gtk_status_icon_new_from_stock(GTK_STOCK_PASTE);
-    gtk_status_icon_set_tooltip(GTK_STATUS_ICON(status_icon), _("Clipboard Manager"));
-    g_signal_connect(G_OBJECT(status_icon), "activate", G_CALLBACK(status_icon_clicked), NULL);
-    g_signal_connect(G_OBJECT(status_icon), "popup-menu", G_CALLBACK(show_parcellite_menu), NULL);
+    gtk_status_icon_set_tooltip((GtkStatusIcon*)status_icon, _("Clipboard Manager"));
+    g_signal_connect((GObject*)status_icon, "activate", (GCallback)status_icon_clicked, NULL);
+    g_signal_connect((GObject*)status_icon, "popup-menu", (GCallback)show_parcellite_menu, NULL);
   }
 }
 
