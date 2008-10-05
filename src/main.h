@@ -25,22 +25,31 @@ G_BEGIN_DECLS
 
 /* Defines */
 #define POPUPDELAY    100
-#define PRIMARYDELAY  500
+#define CLIPINTERVAL  500
+#define PRIMINTERVAL  500
 
 /* Typedefs */
 typedef struct
 {
-  gint      histlim;     /* History items */
+  gboolean  usecopy;     /* Use copy */
+  gboolean  useprim;     /* Use primary */
+  
+  gboolean  savehist;    /* Save history */
+  gint      histlim;     /* Items in history */
+  
+  gboolean  hyperlinks;  /* Hyperlinks only */
+  gboolean  confclear;   /* Confirm clear */
+  
+  gboolean  singleline;  /* Show in a single line */
+  gboolean  revhist;     /* Show in reverse order */
   gint      charlength;  /* Character length of items */
-  gint      ellipsize;   /* Omit long items */
+  
+  gint      ellipsize;   /* Omitting */
+  
   gchar*    histkey;     /* History menu hotkey */
   gchar*    actionkey;   /* Actions menu hotkey */
   gchar*    menukey;     /* Parcellite menu hotkey */
-  gboolean  savehist;    /* Save history */
-  gboolean  confclear;   /* Confirm clear option */
-  gboolean  revhist;     /* Reverse history */
-  gboolean  singleline;  /* Single line mode */
-  gboolean  hyperlinks;  /* Hyperlinks only */
+  
   gboolean  noicon;      /* No icon */
 }
 prefs_t;

@@ -22,17 +22,19 @@
 G_BEGIN_DECLS
 
 /* Defines: default preferences */
-#define DEFELLIPSIZE       2
+#define DEFUSECOPY         TRUE
+#define DEFUSEPRIM         FALSE
+#define DEFSAVEHIST        TRUE
 #define DEFHISTORYLIM      25
+#define DEFHYPERLINKSMODE  FALSE
+#define DEFCONFIRMCLEAR    FALSE
+#define DEFSINGLELINEMODE  TRUE
+#define DEFREVHISTORY      FALSE
 #define DEFCHARLENGTH      50
+#define DEFELLIPSIZE       2
 #define DEFACTIONSKEY      "<Ctrl><Alt>A"
 #define DEFHISTORYKEY      "<Ctrl><Alt>H"
 #define DEFMENUKEY         "<Ctrl><Alt>P"
-#define DEFSAVEHIST        TRUE
-#define DEFCONFIRMCLEAR    FALSE
-#define DEFREVHISTORY      FALSE
-#define DEFSINGLELINEMODE  TRUE
-#define DEFHYPERLINKSMODE  FALSE
 #define DEFNOICON          FALSE
 
 /* Defines: others */
