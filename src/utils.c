@@ -112,7 +112,7 @@ parse_options(int argc, char* argv[])
                                "  echo \"copied to clipboard\" | parcellite -o"));
   /* Set description */
   g_option_context_set_description(context,
-                                 _("Written by Xyhthyx.\n"
+                                 _("Written by Gilberto \"Xyhthyx\" Miralla.\n"
                                    "Report bugs to <xyhthyx@gmail.com>."));
   /* Add entries and parse options */
   g_option_context_add_main_entries(context, main_entries, NULL);
