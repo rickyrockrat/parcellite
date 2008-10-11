@@ -143,7 +143,7 @@ edit_actions_selected(GtkButton *button, gpointer user_data)
   /* This helps prevent multiple instances */
   if (!gtk_grab_get_current())
     /* Show the preferences dialog on the actions tab */
-    show_preferences(1);
+    show_preferences(3);
 }
 
 /* Called when the save button is clicked from the edit window */
