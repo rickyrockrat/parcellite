@@ -32,16 +32,17 @@
 #include "parcellite-i18n.h"
 
 
-/* Declare clipboard, menu and status icon */
-static GtkClipboard *clipboard, *primary;
+/* Declare some variables */
+static gchar* primary_text;
 static gchar* clipboard_text;
-static gchar* clipboard_last_item;
+static gchar* history_last_item;
 static GtkStatusIcon* status_icon;
+static GtkClipboard *clipboard, *primary;
 
 /* This variable locks actions when one is being executed */
 static gboolean actions_lock = FALSE;
 
-/* Create preferences */
+/* Create preferences structure */
 prefs_t prefs = {DEFUSECOPY,        DEFUSEPRIM,
                  DEFSAVEHIST,       DEFHISTORYLIM,
                  DEFHYPERLINKSMODE, DEFCONFIRMCLEAR,
@@ -71,7 +72,7 @@ clipboard_new_item(GtkClipboard *clipboard,
     clipboard_text = g_strdup(text);
   }
   /* Duplicate text check */
-  else if ((clipboard_last_item) && (g_ascii_strcasecmp(text, clipboard_last_item) == 0))
+  else if ((history_last_item) && (g_ascii_strcasecmp(text, history_last_item) == 0))
   {
     g_free(clipboard_text);
     clipboard_text = g_strdup(text);
@@ -87,19 +88,69 @@ clipboard_new_item(GtkClipboard *clipboard,
   {
     g_free(clipboard_text);
     clipboard_text = g_strdup(text);
-    g_free(clipboard_last_item);
-    clipboard_last_item = g_strdup(text);
+    g_free(history_last_item);
+    history_last_item = g_strdup(text);
     append_item(text);
   }
   g_free(text);
 }
 
-/* Called every 3 seconds to check for new primary items */
+/* Goes through each in history and returns TRUE if item exists in history */
 static gboolean
-primary_new_item(gpointer data)
+item_exists(gchar* text)
 {
-  gchar* text = gtk_clipboard_wait_for_text(clipboard);
-  g_free(text);
+  GSList* element;
+  /* Go through each element compare each */
+  for (element = history; element != NULL; element = element->next)
+  {
+    if (g_ascii_strcasecmp((gchar*)element->data, text) == 0)
+    {
+      return TRUE;
+    }
+  }
+  return FALSE;
+}
+
+/* Called every CHECKINTERVAL seconds to check for new items */
+static gboolean
+item_check(gpointer data)
+{
+  if (prefs.useprim)
+  {
+    gchar* primary_text = gtk_clipboard_wait_for_text(primary);
+    /* Check item */
+    if (primary_text)
+    {
+      if (prefs.hyperlinks && is_hyperlink(primary_text) && !item_exists(primary_text))
+      {
+        append_item(primary_text);
+      }
+      else if (!item_exists(primary_text))
+      {
+        append_item(primary_text);
+      }
+    }
+    g_free(primary_text);
+  }
+  
+  if (prefs.usecopy)
+  {
+    gchar* clipboard_text = gtk_clipboard_wait_for_text(clipboard);
+    /* Check item */
+    if (clipboard_text)
+    {
+      if (prefs.hyperlinks && is_hyperlink(clipboard_text) && !item_exists(clipboard_text))
+      {
+        append_item(clipboard_text);
+      }
+      else if (!item_exists(clipboard_text))
+      {
+        append_item(clipboard_text);
+      }
+    }
+    g_free(clipboard_text);
+  }
+  return TRUE;
 }
 
 /* Thread function called for each action performed */
@@ -143,7 +194,7 @@ edit_actions_selected(GtkButton *button, gpointer user_data)
   /* This helps prevent multiple instances */
   if (!gtk_grab_get_current())
     /* Show the preferences dialog on the actions tab */
-    show_preferences(3);
+    show_preferences(ACTIONSTAB);
 }
 
 /* Called when the save button is clicked from the edit window */
@@ -479,7 +530,7 @@ show_actions_menu(gpointer data)
       fread(&size, 4, 1, actions_file);
       /* Append the action */
       gtk_menu_shell_append((GtkMenuShell*)menu, menu_item);
-      g_signal_connect((GObject*)menu_item,         "activate",
+      g_signal_connect((GObject*)menu_item,        "activate",
                        (GCallback)action_selected, (gpointer)command);      
     }
     fclose(actions_file);
@@ -531,7 +582,8 @@ show_history_menu(gpointer data)
     /* Declare some variables */
     GSList* element;
     gint element_number = 0;
-    
+    gchar* primary_text = gtk_clipboard_wait_for_text(primary);
+    gchar* clipboard_text = gtk_clipboard_wait_for_text(clipboard);
     /* Reverse history if enabled */
     if (prefs.revhist)
     {
@@ -576,6 +628,12 @@ show_history_menu(gpointer data)
         gchar* bold_text = g_markup_printf_escaped("<b>%s</b>", string->str);
         gtk_label_set_markup((GtkLabel*)item_label, bold_text);
         g_free(bold_text);
+      }
+      else if ((primary_text) && (g_ascii_strcasecmp((gchar*)element->data, primary_text) == 0))
+      {
+        gchar* italic_text = g_markup_printf_escaped("<i>%s</i>", string->str);
+        gtk_label_set_markup((GtkLabel*)item_label, italic_text);
+        g_free(italic_text);
       }
       /* Append item */
       gtk_menu_shell_append((GtkMenuShell*)menu, menu_item);
@@ -687,8 +745,8 @@ parcellite_init()
   /* Create clipboard */
   primary = gtk_clipboard_get(GDK_SELECTION_PRIMARY);
   clipboard = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);
-  g_signal_connect((GObject*)clipboard, "owner-change", (GCallback)clipboard_new_item, NULL);
-  /*g_timeout_add(PRIMARYDELAY, primary_new_item, NULL);*/
+  //g_signal_connect((GObject*)clipboard, "owner-change", (GCallback)clipboard_new_item, NULL);
+  g_timeout_add(500, item_check, NULL);
   
   /* Read preferences */
   read_preferences();
@@ -697,12 +755,12 @@ parcellite_init()
   if (prefs.savehist)
     read_history();
   
-  clipboard_last_item = g_strdup((gchar*)get_last_item());
+  history_last_item = g_strdup((gchar*)get_last_item());
   
   /* Add current clipboard contents */
-  GdkEvent* owner_change_event = gdk_event_new(GDK_OWNER_CHANGE);
-  g_signal_emit_by_name(clipboard, "owner-change", owner_change_event);
-  gdk_event_free(owner_change_event);
+  //GdkEvent* owner_change_event = gdk_event_new(GDK_OWNER_CHANGE);
+  //g_signal_emit_by_name(clipboard, "owner-change", owner_change_event);
+  //gdk_event_free(owner_change_event);
   
   /* Bind global keys */
   keybinder_init();
@@ -788,7 +846,7 @@ main(int argc, char *argv[])
   g_free(prefs.menukey);
   g_slist_free(history);
   g_free(clipboard_text);
-  g_free(clipboard_last_item);
+  g_free(history_last_item);
   
   /* Exit */
   return 0;

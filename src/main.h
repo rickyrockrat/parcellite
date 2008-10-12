@@ -24,9 +24,9 @@
 G_BEGIN_DECLS
 
 /* Defines */
+#define ACTIONSTAB    3
 #define POPUPDELAY    100
-#define CLIPINTERVAL  500
-#define PRIMINTERVAL  500
+#define CHECKINTERVAL 500
 
 /* Typedefs */
 typedef struct
@@ -54,6 +54,7 @@ typedef struct
 }
 prefs_t;
 
+/* Declare options structure global */
 extern prefs_t prefs;
 
 /* Functions */
