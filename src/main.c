@@ -125,7 +125,7 @@ item_check(gpointer data)
       {
         append_item(primary_text);
       }
-      else if (!item_exists(primary_text))
+      else if (!prefs.hyperlinks && !item_exists(primary_text))
       {
         append_item(primary_text);
       }
@@ -143,7 +143,7 @@ item_check(gpointer data)
       {
         append_item(clipboard_text);
       }
-      else if (!item_exists(clipboard_text))
+      else if (!prefs.hyperlinks && !item_exists(clipboard_text))
       {
         append_item(clipboard_text);
       }
