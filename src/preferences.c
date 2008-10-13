@@ -26,13 +26,19 @@
 #include "parcellite-i18n.h"
 
 /* Declare some widgets */
-GtkWidget *history_spin,
-          *charlength_spin,    *ellipsize_combo,
-          *history_key_entry,  *actions_key_entry,
-          *menu_key_entry,     *save_check,
-          *confirm_check,      *reverse_check,
-          *linemode_check,     *hyperlinks_check;
-          
+GtkWidget *copy_check,
+          *primary_check,
+          *history_spin,
+          *charlength_spin,
+          *ellipsize_combo,
+          *history_key_entry,
+          *actions_key_entry,
+          *menu_key_entry,
+          *save_check,
+          *confirm_check,
+          *reverse_check,
+          *linemode_check,
+          *hyperlinks_check;
 
 GtkListStore* actions_list;
 GtkTreeSelection* actions_selection;
@@ -53,17 +59,19 @@ apply_preferences()
   prefs.menukey = NULL;
   
   /* Get the new preferences */
+  prefs.usecopy = gtk_toggle_button_get_active((GtkToggleButton*)copy_check);
+  prefs.useprim = gtk_toggle_button_get_active((GtkToggleButton*)primary_check);
+  prefs.savehist = gtk_toggle_button_get_active((GtkToggleButton*)save_check);
   prefs.histlim = gtk_spin_button_get_value_as_int((GtkSpinButton*)history_spin);
+  prefs.hyperlinks = gtk_toggle_button_get_active((GtkToggleButton*)hyperlinks_check);
+  prefs.confclear = gtk_toggle_button_get_active((GtkToggleButton*)confirm_check);
+  prefs.singleline = gtk_toggle_button_get_active((GtkToggleButton*)linemode_check);
+  prefs.revhist = gtk_toggle_button_get_active((GtkToggleButton*)reverse_check);
   prefs.charlength = gtk_spin_button_get_value_as_int((GtkSpinButton*)charlength_spin);
   prefs.ellipsize = gtk_combo_box_get_active((GtkComboBox*)ellipsize_combo) + 1;
   prefs.histkey = g_strdup(gtk_entry_get_text((GtkEntry*)history_key_entry));
   prefs.actionkey = g_strdup(gtk_entry_get_text((GtkEntry*)actions_key_entry));
   prefs.menukey = g_strdup(gtk_entry_get_text((GtkEntry*)menu_key_entry));
-  prefs.savehist = gtk_toggle_button_get_active((GtkToggleButton*)save_check);
-  prefs.confclear = gtk_toggle_button_get_active((GtkToggleButton*)confirm_check);
-  prefs.revhist = gtk_toggle_button_get_active((GtkToggleButton*)reverse_check);
-  prefs.singleline = gtk_toggle_button_get_active((GtkToggleButton*)linemode_check);
-  prefs.hyperlinks = gtk_toggle_button_get_active((GtkToggleButton*)hyperlinks_check);
   
   /* Bind keys and apply the new history limit */
   keybinder_bind(prefs.histkey, history_hotkey, NULL);
@@ -80,17 +88,19 @@ save_preferences()
   GKeyFile* rc_key = g_key_file_new();
   
   /* Add values */
+  g_key_file_set_boolean(rc_key, "rc", "use_copy", prefs.usecopy);
+  g_key_file_set_boolean(rc_key, "rc", "use_primary", prefs.useprim);
+  g_key_file_set_boolean(rc_key, "rc", "save_history", prefs.savehist);
   g_key_file_set_integer(rc_key, "rc", "history_limit", prefs.histlim);
+  g_key_file_set_boolean(rc_key, "rc", "hyperlinks_mode", prefs.hyperlinks);
+  g_key_file_set_boolean(rc_key, "rc", "confirm_clear", prefs.confclear);
+  g_key_file_set_boolean(rc_key, "rc", "single_line_mode", prefs.singleline);
+  g_key_file_set_boolean(rc_key, "rc", "reverse_history", prefs.revhist);
   g_key_file_set_integer(rc_key, "rc", "character_length", prefs.charlength);
   g_key_file_set_integer(rc_key, "rc", "ellipsize", prefs.ellipsize);
   g_key_file_set_string(rc_key, "rc", "history_key", prefs.histkey);
   g_key_file_set_string(rc_key, "rc", "actions_key", prefs.actionkey);
   g_key_file_set_string(rc_key, "rc", "menu_key", prefs.menukey);
-  g_key_file_set_boolean(rc_key, "rc", "save_history", prefs.savehist);
-  g_key_file_set_boolean(rc_key, "rc", "confirm_clear", prefs.confclear);
-  g_key_file_set_boolean(rc_key, "rc", "reverse_history", prefs.revhist);
-  g_key_file_set_boolean(rc_key, "rc", "single_line_mode", prefs.singleline);
-  g_key_file_set_boolean(rc_key, "rc", "hyperlinks_mode", prefs.hyperlinks);
   
   /* Check config and data directories */
   check_dirs();
@@ -111,17 +121,19 @@ read_preferences()
   if (g_key_file_load_from_file(rc_key, rc_file, G_KEY_FILE_NONE, NULL))
   {
     /* Load values */
+    prefs.usecopy = g_key_file_get_boolean(rc_key, "rc", "use_copy", NULL);
+    prefs.useprim = g_key_file_get_boolean(rc_key, "rc", "use_primary", NULL);
+    prefs.savehist = g_key_file_get_boolean(rc_key, "rc", "save_history", NULL);
     prefs.histlim = g_key_file_get_integer(rc_key, "rc", "history_limit", NULL);
+    prefs.hyperlinks = g_key_file_get_boolean(rc_key, "rc", "hyperlinks_mode", NULL);
+    prefs.confclear = g_key_file_get_boolean(rc_key, "rc", "confirm_clear", NULL);
+    prefs.singleline = g_key_file_get_boolean(rc_key, "rc", "single_line_mode", NULL);
+    prefs.revhist = g_key_file_get_boolean(rc_key, "rc", "reverse_history", NULL);
     prefs.charlength = g_key_file_get_integer(rc_key, "rc", "character_length", NULL);
     prefs.ellipsize = g_key_file_get_integer(rc_key, "rc", "ellipsize", NULL);
     prefs.histkey = g_key_file_get_string(rc_key, "rc", "history_key", NULL);
     prefs.actionkey = g_key_file_get_string(rc_key, "rc", "actions_key", NULL);
     prefs.menukey = g_key_file_get_string(rc_key, "rc", "menu_key", NULL);
-    prefs.savehist = g_key_file_get_boolean(rc_key, "rc", "save_history", NULL);
-    prefs.confclear = g_key_file_get_boolean(rc_key, "rc", "confirm_clear", NULL);
-    prefs.revhist = g_key_file_get_boolean(rc_key, "rc", "reverse_history", NULL);
-    prefs.singleline = g_key_file_get_boolean(rc_key, "rc", "single_line_mode", NULL);
-    prefs.hyperlinks = g_key_file_get_boolean(rc_key, "rc", "hyperlinks_mode", NULL);
     
     /* Check for errors and set default values if any */
     if ((!prefs.histlim) || (prefs.histlim > 100) || (prefs.histlim < 0))
@@ -399,9 +411,9 @@ show_preferences(gint tab)
   gtk_container_add((GtkContainer*)frame, alignment);
   vbox = gtk_vbox_new(FALSE, 2);
   gtk_container_add((GtkContainer*)alignment, vbox);
-  GtkWidget* copy_check = gtk_check_button_new_with_mnemonic(_("Use copy (Ctrl-C)"));
+  copy_check = gtk_check_button_new_with_mnemonic(_("Use copy (Ctrl-C)"));
   gtk_box_pack_start((GtkBox*)vbox, copy_check, FALSE, FALSE, 0);
-  GtkWidget* primary_check = gtk_check_button_new_with_mnemonic(_("Use primary (selection)"));
+  primary_check = gtk_check_button_new_with_mnemonic(_("Use primary (selection)"));
   gtk_box_pack_start((GtkBox*)vbox, primary_check, FALSE, FALSE, 0);
   gtk_box_pack_start((GtkBox*)vbox_behavior, frame, FALSE, FALSE, 0);
   
