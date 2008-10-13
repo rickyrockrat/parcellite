@@ -123,7 +123,7 @@ item_check(gpointer data)
     if (button_state & GDK_BUTTON1_MASK)
       g_print("Some state...");
     /* Check item */
-    if ((primary_text &&) !(button_state & GDK_BUTTON1_MASK))
+    if ((primary_text) && !(button_state & GDK_BUTTON1_MASK))
     {
       if (prefs.hyperlinks && is_hyperlink(primary_text) && !item_exists(primary_text))
       {
