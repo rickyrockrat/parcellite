@@ -117,9 +117,13 @@ item_check(gpointer data)
 {
   if (prefs.useprim)
   {
+    GdkModifierType button_state;
+    gdk_window_get_pointer(NULL, NULL, NULL, &button_state);
     gchar* primary_text = gtk_clipboard_wait_for_text(primary);
+    if (button_state & GDK_BUTTON1_MASK)
+      g_print("Some state...");
     /* Check item */
-    if (primary_text)
+    if ((primary_text &&) !(button_state & GDK_BUTTON1_MASK))
     {
       if (prefs.hyperlinks && is_hyperlink(primary_text) && !item_exists(primary_text))
       {
