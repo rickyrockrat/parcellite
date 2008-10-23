@@ -2,91 +2,98 @@
 # Copyright (C) 2008 Xyhthyx <xyhthyx@gmail.com>
 # This file is distributed under the same license as the parcellite package.
 # Gilberto "Xyhthyx" Miralla <xyhthyx@gmail.com>, 2008.
+# David Martínez <root@davidmartinez.net>, 2008.
 #
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: Parcellite\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-08-11 18:30-0400\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Gilberto \"Xyhthyx\" Miralla <xyhthyx@gmail.com>\n"
+"POT-Creation-Date: 2008-10-18 11:53-0400\n"
+"PO-Revision-Date: 2008-10-06 12:57+0100\n"
+"Last-Translator: David Martínez <root@davidmartinez.net>\n"
 "Language-Team: Spanish\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../src/main.c:109
+#: ../src/main.c:166
 msgid "Executing action..."
 msgstr "Ejecutando acción..."
 
-#: ../src/main.c:112 ../src/main.c:740
+#: ../src/main.c:169 ../src/main.c:778
 msgid "Clipboard Manager"
-msgstr "Manegador de Portapapeles"
+msgstr "Gestor de Portapapeles"
 
-#: ../src/main.c:132
+#: ../src/main.c:189
 msgid "Could not create thread for executed action\n"
 msgstr "No se pudo crear hilo para la acción ejecutada\n"
 
-#: ../src/main.c:183
+#: ../src/main.c:240
 msgid "Editing Clipboard"
 msgstr "Editando Portapapeles"
 
-#: ../src/main.c:200
+#: ../src/main.c:257
 msgid "<b>Clipboard</b>"
 msgstr "<b>Portapapeles</b>"
 
-#: ../src/main.c:244
+#: ../src/main.c:301
 msgid "Save changes"
 msgstr "Guardar cambios"
 
-#: ../src/main.c:254
-msgid "Close"
-msgstr "Cerrar"
+#: ../src/main.c:311
+#, fuzzy
+msgid "Discard changes"
+msgstr "Guardar cambios"
 
-#: ../src/main.c:328
+#: ../src/main.c:351
+#, fuzzy
+msgid "Clear the history?"
+msgstr "_Invertir historial"
+
+#: ../src/main.c:410
 msgid "Lightweight GTK+ clipboard manager."
-msgstr "Manegador liviano de portapapeles en GTK+."
+msgstr "Gestor ligero de portapapeles en GTK+."
 
-#: ../src/main.c:408
+#: ../src/main.c:494
 msgid "<b>None</b>"
 msgstr "<b>Ninguno</b>"
 
 #. File contained no actions so adding empty
 #. File did not open so adding empty
 #. Nothing in history so adding empty
-#: ../src/main.c:429 ../src/main.c:458 ../src/main.c:564
+#: ../src/main.c:515 ../src/main.c:544 ../src/main.c:657
 msgid "Empty"
 msgstr "Vacío"
 
 #. Edit actions
-#: ../src/main.c:465
+#: ../src/main.c:551
 msgid "_Edit actions"
 msgstr "_Editar acciones"
 
 #. Edit clipboard
-#: ../src/main.c:489
+#: ../src/main.c:575
 msgid "_Edit Clipboard"
 msgstr "_Editar Portapapeles"
 
-#: ../src/utils.c:35 ../src/utils.c:42
+#: ../src/utils.c:38 ../src/utils.c:45
 #, c-format
 msgid "Couldn't create directory: %s\n"
-msgstr ""
+msgstr "No se puede crear el directorio: %s\n"
 
-#: ../src/utils.c:81
+#: ../src/utils.c:83
 msgid "Run as daemon"
-msgstr "Correr como demonio"
+msgstr "Ejecutar como demonio"
 
-#: ../src/utils.c:88
+#: ../src/utils.c:90
 msgid "Do not use status icon (Ctrl-Alt-P for menu)"
 msgstr "No usar icono de estado (Ctrl-Alt-P para el menú)"
 
-#: ../src/utils.c:95
+#: ../src/utils.c:97
 msgid "Print clipboard contents"
 msgstr "Imprimir contenido del portapapeles"
 
-#: ../src/utils.c:107
+#: ../src/utils.c:109
 msgid ""
 "Clipboard CLI usage examples:\n"
 "\n"
@@ -100,66 +107,98 @@ msgstr ""
 "  parcellite \"copiado a portapapeles\"\n"
 "  echo \"copiado a portapapeles\" | parcellite -o"
 
-#: ../src/utils.c:113
+#: ../src/utils.c:115
+#, fuzzy
 msgid ""
-"Written by Xyhthyx.\n"
+"Written by Gilberto \"Xyhthyx\" Miralla.\n"
 "Report bugs to <xyhthyx@gmail.com>."
-msgstr "Escrito por XyhthyxReportar errors a <xyhthyx@gmail.com>."
+msgstr "Escrito por Xyhthyx. Reportar errores a <xyhthyx@gmail.com>."
 
 #. Create the dialog
-#: ../src/preferences.c:234
-msgid "New Action"
-msgstr "Acción Nueva"
-
-#: ../src/preferences.c:249 ../src/preferences.c:312
-msgid "<b>Name:</b>"
-msgstr "<b>Nombre:</b>"
-
-#: ../src/preferences.c:254 ../src/preferences.c:317
-msgid "Name your action"
-msgstr "Nombra tu acción"
-
-#: ../src/preferences.c:261 ../src/preferences.c:324
-msgid "<b>Command:</b>"
-msgstr "<b>Commando:</b>"
-
-#: ../src/preferences.c:267 ../src/preferences.c:330
-#, c-format
-msgid "\"%s\" will be replaced with the clipboard contents"
-msgstr "\"%s\" será sustituido por el contenido del portapapeles"
-
-#. Create the dialog
-#: ../src/preferences.c:295
-msgid "Edit Action"
-msgstr "Editar Acción"
-
-#. Create the dialog
-#: ../src/preferences.c:431
+#: ../src/preferences.c:371
 msgid "Preferences"
 msgstr "Preferencias"
 
-#: ../src/preferences.c:449
-msgid "General"
-msgstr "General"
+#: ../src/preferences.c:386
+#, fuzzy
+msgid "Behavior"
+msgstr "<b>Comportamiento</b>"
 
-#: ../src/preferences.c:457
+#: ../src/preferences.c:394
+#, fuzzy
+msgid "<b>Clipboards</b>"
+msgstr "<b>Portapapeles</b>"
+
+#: ../src/preferences.c:401
+msgid "Use copy (Ctrl-C)"
+msgstr ""
+
+#: ../src/preferences.c:403
+msgid "Use primary (selection)"
+msgstr ""
+
+#: ../src/preferences.c:411
 msgid "<b>History</b>"
-msgstr "<b>Historia</b>"
+msgstr "<b>Historial</b>"
 
-#: ../src/preferences.c:464
-msgid "Amount of items to keep in history:"
-msgstr "Cantitdad de artículos guardados en la historia:"
+#: ../src/preferences.c:418
+msgid "_Save history"
+msgstr "_Guardar historial"
 
-#: ../src/preferences.c:477
-msgid "<b>Display</b>"
+#: ../src/preferences.c:419
+msgid "Keep and restore history in between sessions"
+msgstr "Mantener y restaurar historial entre sesiones"
+
+#: ../src/preferences.c:423
+#, fuzzy
+msgid "Items in history:"
+msgstr "Número de artículos guardados en el historial:"
+
+#: ../src/preferences.c:436
+#, fuzzy
+msgid "<b>Miscellaneous</b>"
 msgstr "<b>Muestra</b>"
 
+#: ../src/preferences.c:443
+msgid "_Capture hyperlinks only"
+msgstr "_Capturar hipervínculos solamente"
+
+#: ../src/preferences.c:445
+msgid "C_onfirm before clearing history"
+msgstr ""
+
+#: ../src/preferences.c:452
+#, fuzzy
+msgid "Display"
+msgstr "<b>Muestra</b>"
+
+#: ../src/preferences.c:460
+#, fuzzy
+msgid "<b>Items</b>"
+msgstr "<b>Atajos</b>"
+
+#: ../src/preferences.c:467
+#, fuzzy
+msgid "Show in a _single line"
+msgstr "Mostrar articulos en líneas únicas"
+
+#: ../src/preferences.c:469
+#, fuzzy
+msgid "Show in _reverse order"
+msgstr "Mostrar artículos del historial en orden invertido"
+
+#: ../src/preferences.c:473
+msgid "Character length of items:"
+msgstr ""
+
 #: ../src/preferences.c:486
-msgid "Length in characters of history items:"
-msgstr "Longitud en caracteres de artículos en la historia:"
+#, fuzzy
+msgid "<b>Omitting</b>"
+msgstr "<b>Historial</b>"
 
 #: ../src/preferences.c:495
-msgid "Long items omitted in the:"
+#, fuzzy
+msgid "Omit items in the:"
 msgstr "Artículos largos omitidos en:"
 
 #: ../src/preferences.c:499
@@ -174,99 +213,118 @@ msgstr "Medio"
 msgid "End"
 msgstr "Final"
 
-#: ../src/preferences.c:509
+#: ../src/preferences.c:508
+msgid "Extras"
+msgstr ""
+
+#: ../src/preferences.c:516
 msgid "<b>Hotkeys</b>"
 msgstr "<b>Atajos</b>"
 
-#: ../src/preferences.c:518
-msgid "History menu global hotkey:"
-msgstr "Atajo para el menú de historia:"
+#: ../src/preferences.c:525
+msgid "History key combination:"
+msgstr ""
 
-#: ../src/preferences.c:526
-msgid "Actions menu global hotkey:"
-msgstr "Atajo para el menu de acciones:"
+#: ../src/preferences.c:533
+msgid "Actions key combination:"
+msgstr ""
 
-#: ../src/preferences.c:538
-msgid "<b>Behaviour</b>"
-msgstr "<b>Comportamiento</b>"
+#: ../src/preferences.c:541
+msgid "Menu key combination:"
+msgstr ""
 
-#: ../src/preferences.c:545
-msgid "_Save history"
-msgstr "_Guardar historia"
-
-#: ../src/preferences.c:546
-msgid "Keep and restore history in between sessions"
-msgstr "Mantener y restaurar historia entre sesiones"
-
-#: ../src/preferences.c:549
-msgid "_Reverse history"
-msgstr "_Invertir historia"
-
-#: ../src/preferences.c:550
-msgid "Show history items in reverse order"
-msgstr "Mostrar artículos de historia en orden invertido"
-
-#: ../src/preferences.c:553
-msgid "Single _line mode"
-msgstr "Modo de _línea única"
-
-#: ../src/preferences.c:554
-msgid "Show items in a single line"
-msgstr "Mostrar articulos en líneas únicas"
-
-#: ../src/preferences.c:556
-msgid "_Capture hyperlinks only"
-msgstr "_Capturar hipervínculos solamente"
-
-#: ../src/preferences.c:557
-msgid "Ignore all non-hyperlink text"
-msgstr "Ignorar texto que no es un hipervínculo"
-
-#: ../src/preferences.c:564
+#: ../src/preferences.c:552
 msgid "Actions"
 msgstr "Acciones"
 
 #. Build the actions label
-#: ../src/preferences.c:569
+#: ../src/preferences.c:557
 msgid "Control-click Parcellite's tray icon to use actions"
 msgstr "Control-clic en el icono de Parcellite para usar acciones"
 
-#: ../src/preferences.c:590
+#: ../src/preferences.c:577
 msgid "Action"
 msgstr "Acción"
 
-#: ../src/preferences.c:598
+#: ../src/preferences.c:584
 msgid "Command"
 msgstr "Comando"
 
-#: ../src/preferences.c:613
-msgid "New"
-msgstr "Nuevo"
+#: ../src/preferences.c:599
+msgid "Add..."
+msgstr "Añadir..."
 
-#: ../src/preferences.c:617
-msgid "New action"
-msgstr "Nueva acción"
+#: ../src/preferences.c:601
+#, fuzzy, c-format
+msgid ""
+"Add a new action\n"
+"\"%s\" in a command is replaced with the clipboard contents"
+msgstr "\"%s\" será sustituido por el contenido del portapapeles"
 
-#: ../src/preferences.c:620
-msgid "Edit"
-msgstr "Editar"
+#: ../src/preferences.c:606
+msgid "Remove"
+msgstr ""
 
-#: ../src/preferences.c:624
-msgid "Edit selected"
-msgstr "Editar seleccionado"
-
-#: ../src/preferences.c:627
-msgid "Delete"
-msgstr "Borrar"
-
-#: ../src/preferences.c:631
-msgid "Delete selected"
-msgstr "Borrar seleccionado"
-
-#: ../src/preferences.c:638
-msgid "Move selected up"
+#: ../src/preferences.c:612
+#, fuzzy
+msgid "Move selected action up"
 msgstr "Mover seleccionado hacia arriba"
 
-#: ../src/preferences.c:645
-msgid "Move selected down"
+#: ../src/preferences.c:617
+#, fuzzy
+msgid "Move selected action down"
 msgstr "Mover seleccionado hacia abajo"
+
+#~ msgid "Close"
+#~ msgstr "Cerrar"
+
+#~ msgid "New Action"
+#~ msgstr "Nueva acción"
+
+#~ msgid "<b>Name:</b>"
+#~ msgstr "<b>Nombre:</b>"
+
+#~ msgid "Name your action"
+#~ msgstr "Nombra tu acción"
+
+#~ msgid "<b>Command:</b>"
+#~ msgstr "<b>Comando:</b>"
+
+#~ msgid "Edit Action"
+#~ msgstr "Editar acción"
+
+#~ msgid "General"
+#~ msgstr "General"
+
+#~ msgid "Length in characters of history items:"
+#~ msgstr "Longitud en caracteres de artículos en el historial:"
+
+#~ msgid "History menu global hotkey:"
+#~ msgstr "Atajo para el menú de historial:"
+
+#~ msgid "Actions menu global hotkey:"
+#~ msgstr "Atajo para el menu de acciones:"
+
+#~ msgid "Single _line mode"
+#~ msgstr "Modo de _línea única"
+
+#~ msgid "Ignore all non-hyperlink text"
+#~ msgstr "Ignorar texto que no es un hipervínculo"
+
+#~ msgid "New"
+#~ msgstr "Nuevo"
+
+#~ msgid "New action"
+#~ msgstr "Nueva acción"
+
+#~ msgid "Edit"
+#~ msgstr "Editar"
+
+#~ msgid "Edit selected"
+#~ msgstr "Editar seleccionado"
+
+#~ msgid "Delete"
+#~ msgstr "Borrar"
+
+#~ msgid "Delete selected"
+#~ msgstr "Borrar seleccionado"

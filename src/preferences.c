@@ -261,27 +261,14 @@ add_action(GtkButton *button, gpointer user_data)
   /* Append new item */
   GtkTreeIter row_iter;
   gtk_list_store_append(actions_list, &row_iter);
+  /* Add a %s to the command */
+  gtk_list_store_set(actions_list, &row_iter, 1, "%s", -1);
+  /* Set the first column to editing */
   GtkTreePath* row_path = gtk_tree_model_get_path((GtkTreeModel*)actions_list, &row_iter);
   GtkTreeView* treeview = gtk_tree_selection_get_tree_view(actions_selection);
   GtkTreeViewColumn* column = gtk_tree_view_get_column(treeview, 0);
   gtk_tree_view_set_cursor(treeview, row_path, column, TRUE);
   gtk_tree_path_free(row_path);
-}
-
-/* Called when Edit button is clicked */
-static void
-edit_action(GtkButton *button, gpointer user_data)
-{
-  GtkTreeIter sel_iter;
-  /* Check if selected */
-  if (gtk_tree_selection_get_selected(actions_selection, NULL, &sel_iter))
-  {
-    GtkTreePath* sel_path = gtk_tree_model_get_path((GtkTreeModel*)actions_list, &sel_iter);
-    GtkTreeView* treeview = gtk_tree_selection_get_tree_view(actions_selection);
-    GtkTreeViewColumn* column = gtk_tree_view_get_column(treeview, 1);
-    gtk_tree_view_set_cursor(treeview, sel_path, column, TRUE);
-    gtk_tree_path_free(sel_path);
-  }
 }
 
 /* Called when Remove button is clicked */
@@ -356,7 +343,7 @@ delete_key_pressed(GtkWidget *widget, GdkEventKey *event, gpointer user_data)
 
 /* Called when a cell is edited */
 static void
-edit_cell(GtkCellRendererText *renderer, gchar *path,
+edit_action(GtkCellRendererText *renderer, gchar *path,
           gchar *new_text,               gpointer cell)
 {
   GtkTreeIter sel_iter;
@@ -586,14 +573,14 @@ show_preferences(gint tab)
   gtk_tree_view_set_model((GtkTreeView*)treeview, (GtkTreeModel*)actions_list);
   GtkCellRenderer* name_renderer = gtk_cell_renderer_text_new();
   g_object_set(name_renderer, "editable", TRUE, NULL);
-  g_signal_connect((GObject*)name_renderer, "edited", (GCallback)edit_cell, (gpointer)0);
+  g_signal_connect((GObject*)name_renderer, "edited", (GCallback)edit_action, (gpointer)0);
   tree_column = gtk_tree_view_column_new_with_attributes(_("Action"), name_renderer, "text", 0, NULL);
   gtk_tree_view_column_set_resizable(tree_column, TRUE);
   gtk_tree_view_append_column((GtkTreeView*)treeview, tree_column);
   GtkCellRenderer* command_renderer = gtk_cell_renderer_text_new();
   g_object_set(command_renderer, "editable", TRUE, NULL);
   g_object_set(command_renderer, "ellipsize-set", TRUE, "ellipsize", PANGO_ELLIPSIZE_END, NULL);
-  g_signal_connect((GObject*)command_renderer, "edited", (GCallback)edit_cell, (gpointer)1);
+  g_signal_connect((GObject*)command_renderer, "edited", (GCallback)edit_action, (gpointer)1);
   tree_column = gtk_tree_view_column_new_with_attributes(_("Command"), command_renderer, "text", 1, NULL);
   gtk_tree_view_column_set_expand(tree_column, TRUE);
   gtk_tree_view_append_column((GtkTreeView*)treeview, tree_column);
@@ -611,6 +598,9 @@ show_preferences(gint tab)
   gtk_button_box_set_layout((GtkButtonBox*)hbbox, GTK_BUTTONBOX_START);
   GtkWidget* add_button = gtk_button_new_with_label(_("Add..."));
   gtk_button_set_image((GtkButton*)add_button, gtk_image_new_from_stock(GTK_STOCK_ADD, GTK_ICON_SIZE_MENU));
+  gtk_widget_set_tooltip_text(add_button, _("Add a new action\n"
+                                           "\"%s\" in a command is replaced with the clipboard contents"));
+  
   g_signal_connect((GObject*)add_button, "clicked", (GCallback)add_action, NULL);
   gtk_box_pack_start((GtkBox*)hbbox, add_button, FALSE, TRUE, 0);
   GtkWidget* remove_button = gtk_button_new_with_label(_("Remove"));
