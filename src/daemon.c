@@ -20,46 +20,58 @@
 #include <gtk/gtk.h>
 #include "daemon.h"
 
-/* Called during daemon mode to safeguard clipboard contents */
+/* Declare some variables */
+gint timeout_id;
+GtkClipboard* clipboard;
+GtkClipboard* primary;
+
 static void
-clipboard_daemon(GtkClipboard *clipboard,
-                 GdkEvent     *event,
-                 gpointer      user_data)
+daemon_check()
 {
-  static gchar* clipboard_contents = NULL;
-  gchar* text = gtk_clipboard_wait_for_text(clipboard);
-  /* Check if clipboard contents were lost */
-  if (!text)
+  static gchar* primary_last = NULL;
+  static gchar* clipboard_last = NULL;
+  /* Get current primary/clipboard contents */
+  gchar* p_text = gtk_clipboard_wait_for_text(primary);
+  gchar* c_text = gtk_clipboard_wait_for_text(clipboard);
+  /* Check if primary contents were lost */
+  if (!p_text)
   {
-    if (clipboard_contents)
-      gtk_clipboard_set_text(clipboard, clipboard_contents, -1);
+    if (primary_last)
+      gtk_clipboard_set_text(primary, primary_last, -1);
   }
   else
   {
-    g_free(clipboard_contents);
-    clipboard_contents = g_strdup(text);
+    g_free(primary_last);
+    primary_last = g_strdup(p_text);
   }
-  g_free(text);
+  /* Check if clipboard contents were lost */
+  if (!c_text)
+  {
+    if (clipboard_last)
+      gtk_clipboard_set_text(clipboard, clipboard_last, -1);
+  }
+  else
+  {
+    g_free(clipboard_last);
+    clipboard_last = g_strdup(c_text);
+  }
+  /* Cleanup */
+  g_free(p_text);
+  g_free(c_text);
 }
 
-/* Called during daemon mode to safeguard primary contents */
-static gboolean
-primary_daemon(gpointer primary)
+/* Called if timeout was destroyed */
+static void
+reset_daemon(gpointer data)
 {
-  static gchar* primary_contents = NULL;
-  gchar* text = gtk_clipboard_wait_for_text((GtkClipboard*)primary);
-  /* Check if primary contents were lost */
-  if (!text)
-  {
-    if (primary_contents)
-      gtk_clipboard_set_text((GtkClipboard*)primary, primary_contents, -1);
-  }
-  else
-  {
-    g_free(primary_contents);
-    primary_contents = g_strdup(text);
-  }
-  g_free(text);
+  if (timeout_id != 0)
+    g_source_remove(timeout_id);
+  
+  timeout_id = g_timeout_add_full(G_PRIORITY_LOW,
+                                  CHECKINTERVAL,
+                                  (GSourceFunc)daemon_check,
+                                  NULL,
+                                  (GDestroyNotify)reset_daemon);
 }
 
 /* Initializes daemon mode */
@@ -67,10 +79,14 @@ void
 init_daemon_mode()
 {
   /* Create clipboard and primary and connect signals */
-  GtkClipboard* clipboard = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);
-  g_signal_connect(G_OBJECT(clipboard), "owner-change", G_CALLBACK(clipboard_daemon), NULL);
-  GtkClipboard* primary = gtk_clipboard_get(GDK_SELECTION_PRIMARY);
-  g_timeout_add(PRIMCHECKDELAY, primary_daemon, (gpointer)primary);
+  primary = gtk_clipboard_get(GDK_SELECTION_PRIMARY);
+  clipboard = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);
+  /* Add the daemon loop */
+  timeout_id = g_timeout_add_full(G_PRIORITY_LOW,
+                                  CHECKINTERVAL,
+                                  (GSourceFunc)daemon_check,
+                                  NULL,
+                                  (GDestroyNotify)reset_daemon);
   
   /* Start daemon loop */
   gtk_main();

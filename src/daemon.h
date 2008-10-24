@@ -22,7 +22,7 @@
 G_BEGIN_DECLS
 
 /* Defines */
-#define PRIMCHECKDELAY 3000
+#define CHECKINTERVAL 500
 
 /* Functions */
 void

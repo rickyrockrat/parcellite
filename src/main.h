@@ -54,6 +54,12 @@ typedef struct
 }
 prefs_t;
 
+typedef struct
+{
+  gchar* primary_last;
+  gchar* clipboard_last;
+} last_t;
+
 /* Declare options structure global */
 extern prefs_t prefs;
 
