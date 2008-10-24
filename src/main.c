@@ -59,7 +59,7 @@ item_exists(gchar* text)
   /* Go through each element compare each */
   for (element = history; element != NULL; element = element->next)
   {
-    if (g_ascii_strcasecmp((gchar*)element->data, text) == 0)
+    if (g_strcmp0((gchar*)element->data, text) == 0)
     {
       return TRUE;
     }
@@ -603,13 +603,13 @@ show_history_menu(gpointer data)
       gtk_label_set_single_line_mode((GtkLabel*)item_label, prefs.singleline);
       
       /* Check if item is also clipboard text and make bold */
-      if ((clipboard_text) && (g_ascii_strcasecmp((gchar*)element->data, clipboard_text) == 0))
+      if ((clipboard_text) && (g_strcmp0((gchar*)element->data, clipboard_text) == 0))
       {
         gchar* bold_text = g_markup_printf_escaped("<b>%s</b>", string->str);
         gtk_label_set_markup((GtkLabel*)item_label, bold_text);
         g_free(bold_text);
       }
-      else if ((primary_text) && (g_ascii_strcasecmp((gchar*)element->data, primary_text) == 0))
+      else if ((primary_text) && (g_strcmp0((gchar*)element->data, primary_text) == 0))
       {
         gchar* italic_text = g_markup_printf_escaped("<i>%s</i>", string->str);
         gtk_label_set_markup((GtkLabel*)item_label, italic_text);
