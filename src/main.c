@@ -33,9 +33,8 @@
 
 
 /* Declare some variables */
-static gchar* primary_text;
-static gchar* clipboard_text;
-static gchar* history_last_item;
+static gchar* primary_last;
+static gchar* clipboard_last;
 static GtkStatusIcon* status_icon;
 static GtkClipboard *clipboard, *primary;
 
@@ -51,49 +50,6 @@ prefs_t prefs = {DEFUSECOPY,        DEFUSEPRIM,
                  NULL,              NULL,
                  NULL,              DEFNOICON};
 
-
-/* Called every time user copies something to the clipboard (Ctrl-V) */
-static void
-clipboard_new_item(GtkClipboard *clipboard,
-                   GdkEvent     *event,
-                   gpointer      user_data)
-{
-  gchar* text = gtk_clipboard_wait_for_text(clipboard);
-  /* Empty text check */
-  if (!text)
-  {
-    g_free(clipboard_text);
-    clipboard_text = NULL;
-  }
-  /* Duplicate text check */
-  else if ((clipboard_text) && (g_ascii_strcasecmp(text, clipboard_text) == 0))
-  {
-    g_free(clipboard_text);
-    clipboard_text = g_strdup(text);
-  }
-  /* Duplicate text check */
-  else if ((history_last_item) && (g_ascii_strcasecmp(text, history_last_item) == 0))
-  {
-    g_free(clipboard_text);
-    clipboard_text = g_strdup(text);
-  }
-  /* Hyperlink check */
-  else if ((prefs.hyperlinks) && (!is_hyperlink(text)))
-  {
-    g_free(clipboard_text);
-    clipboard_text = g_strdup(text);
-  }
-  /* New item */
-  else
-  {
-    g_free(clipboard_text);
-    clipboard_text = g_strdup(text);
-    g_free(history_last_item);
-    history_last_item = g_strdup(text);
-    append_item(text);
-  }
-  g_free(text);
-}
 
 /* Goes through each in history and returns TRUE if item exists in history */
 static gboolean
@@ -115,12 +71,37 @@ item_exists(gchar* text)
 static gboolean
 item_check(gpointer data)
 {
+  gchar* primary_text = gtk_clipboard_wait_for_text(primary);
+  gchar* clipboard_text = gtk_clipboard_wait_for_text(clipboard);
+  /* Check if primary contents were lost */
+  if (!primary_text)
+  {
+    if (primary_last)
+      gtk_clipboard_set_text(primary, primary_last, -1);
+  }
+  else
+  {
+    g_free(primary_last);
+    primary_last = g_strdup(primary_text);
+  }
+  /* Check if clipboard contents were lost */
+  if (!clipboard_text)
+  {
+    if (clipboard_last)
+      gtk_clipboard_set_text(clipboard, clipboard_last, -1);
+  }
+  else
+  {
+    g_free(clipboard_last);
+    clipboard_last = g_strdup(clipboard_text);
+  }
+  
+  /* Primary check */
   if (prefs.useprim)
   {
     /* Get the button state to check if the mouse button is being held */
     GdkModifierType button_state;
     gdk_window_get_pointer(NULL, NULL, NULL, &button_state);
-    gchar* primary_text = gtk_clipboard_wait_for_text(primary);
     /* Check item */
     if ((primary_text) && !(button_state & GDK_BUTTON1_MASK))
     {
@@ -133,12 +114,10 @@ item_check(gpointer data)
         append_item(primary_text);
       }
     }
-    g_free(primary_text);
   }
-  
+  /* Clipboard check */
   if (prefs.usecopy)
   {
-    gchar* clipboard_text = gtk_clipboard_wait_for_text(clipboard);
     /* Check item */
     if (clipboard_text)
     {
@@ -151,8 +130,9 @@ item_check(gpointer data)
         append_item(clipboard_text);
       }
     }
-    g_free(clipboard_text);
   }
+  g_free(primary_text);
+  g_free(clipboard_text);
   return TRUE;
 }
 
@@ -178,7 +158,9 @@ static void
 action_selected(GtkButton *button, gpointer user_data)
 {
   /* Insert clipboard into command (user_data), execute and free */
-  gchar* command = g_markup_printf_escaped((gchar*)user_data, clipboard_text);
+  gchar* text = gtk_clipboard_wait_for_text(clipboard);
+  gchar* command = g_markup_printf_escaped((gchar*)user_data, text);
+  g_free(text);
   g_free(user_data);
   
   /* Create thread */
@@ -331,8 +313,6 @@ item_selected(GtkMenuItem *menu_item, gpointer user_data)
 {
   /* Get the text from the right element and set as clipboard */
   GSList* element = g_slist_nth(history, (guint)user_data);
-  g_free(clipboard_text);
-  clipboard_text = g_strdup((gchar*)element->data);
   gtk_clipboard_set_text(clipboard, (gchar*)element->data, -1);
   gtk_clipboard_set_text(primary, (gchar*)element->data, -1);
 }
@@ -353,8 +333,6 @@ clear_selected(GtkMenuItem *menu_item, gpointer user_data)
     if (gtk_dialog_run((GtkDialog*)confirm_dialog) == GTK_RESPONSE_OK)
     {
       /* Clear history and free history-related variables */
-      g_free(clipboard_text);
-      clipboard_text = NULL;
       g_slist_free(history);
       history = NULL;
       save_history();
@@ -364,8 +342,6 @@ clear_selected(GtkMenuItem *menu_item, gpointer user_data)
   else
   {
     /* Clear history and free history-related variables */
-    g_free(clipboard_text);
-    clipboard_text = NULL;
     g_slist_free(history);
     history = NULL;
     save_history();
@@ -469,7 +445,8 @@ show_actions_menu(gpointer data)
   g_signal_connect((GObject*)menu_item, "select", (GCallback)gtk_menu_item_deselect, NULL);
   gtk_menu_shell_append((GtkMenuShell*)menu, menu_item);
   /* Clipboard contents */
-  if (clipboard_text)
+  gchar* text = gtk_clipboard_wait_for_text(clipboard);
+  if (text)
   {
     menu_item = gtk_menu_item_new_with_label("None");
     /* Modify menu item label properties */
@@ -478,7 +455,7 @@ show_actions_menu(gpointer data)
     gtk_label_set_ellipsize((GtkLabel*)item_label, prefs.ellipsize);
     gtk_label_set_width_chars((GtkLabel*)item_label, 30);
     /* Making bold... */
-    gchar* bold_text = g_markup_printf_escaped("<b>%s</b>", clipboard_text);
+    gchar* bold_text = g_markup_printf_escaped("<b>%s</b>", text);
     gtk_label_set_markup((GtkLabel*)item_label, bold_text);
     g_free(bold_text);
     /* Append menu item */
@@ -748,22 +725,14 @@ parcellite_init()
   /* Create clipboard */
   primary = gtk_clipboard_get(GDK_SELECTION_PRIMARY);
   clipboard = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);
-  //g_signal_connect((GObject*)clipboard, "owner-change", (GCallback)clipboard_new_item, NULL);
-  g_timeout_add(500, item_check, NULL);
+  g_timeout_add(CHECKINTERVAL, item_check, NULL);
   
   /* Read preferences */
   read_preferences();
   
-  /* Read history and get last item */
+  /* Read history */
   if (prefs.savehist)
     read_history();
-  
-  history_last_item = g_strdup((gchar*)get_last_item());
-  
-  /* Add current clipboard contents */
-  //GdkEvent* owner_change_event = gdk_event_new(GDK_OWNER_CHANGE);
-  //g_signal_emit_by_name(clipboard, "owner-change", owner_change_event);
-  //gdk_event_free(owner_change_event);
   
   /* Bind global keys */
   keybinder_init();
@@ -848,8 +817,6 @@ main(int argc, char *argv[])
   g_free(prefs.actionkey);
   g_free(prefs.menukey);
   g_slist_free(history);
-  g_free(clipboard_text);
-  g_free(history_last_item);
   
   /* Exit */
   return 0;
