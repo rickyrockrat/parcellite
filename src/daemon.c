@@ -20,44 +20,51 @@
 #include <gtk/gtk.h>
 #include "daemon.h"
 
-/* Declare some variables */
-gint timeout_id;
-GtkClipboard* clipboard;
-GtkClipboard* primary;
 
+static gint timeout_id;
+static gchar* primary_last;
+static gchar* clipboard_last;
+static GtkClipboard* primary;
+static GtkClipboard* clipboard;
+
+
+/* Called during the daemon loop to protect primary/clipboard contents */
 static void
 daemon_check()
 {
-  static gchar* primary_last = NULL;
-  static gchar* clipboard_last = NULL;
   /* Get current primary/clipboard contents */
-  gchar* p_text = gtk_clipboard_wait_for_text(primary);
-  gchar* c_text = gtk_clipboard_wait_for_text(clipboard);
+  gchar* primary_text = gtk_clipboard_wait_for_text(primary);
+  gchar* clipboard_text = gtk_clipboard_wait_for_text(clipboard);
   /* Check if primary contents were lost */
-  if (!p_text)
+  if ((primary_text == NULL) && (primary_last != NULL))
   {
-    if (primary_last)
-      gtk_clipboard_set_text(primary, primary_last, -1);
+    gtk_clipboard_set_text(primary, primary_last, -1);
   }
   else
   {
-    g_free(primary_last);
-    primary_last = g_strdup(p_text);
+    /* Get the button state to check if the mouse button is being held */
+    GdkModifierType button_state;
+    gdk_window_get_pointer(NULL, NULL, NULL, &button_state);
+    if ((primary_text != NULL) && !(button_state & GDK_BUTTON1_MASK))
+    {
+      g_free(primary_last);
+      primary_last = primary_text;
+    }
+    else
+    {
+      g_free(primary_text);
+    }
   }
   /* Check if clipboard contents were lost */
-  if (!c_text)
+  if ((clipboard_text == NULL) && (clipboard_last != NULL))
   {
-    if (clipboard_last)
-      gtk_clipboard_set_text(clipboard, clipboard_last, -1);
+    gtk_clipboard_set_text(clipboard, clipboard_last, -1);
   }
   else
   {
     g_free(clipboard_last);
-    clipboard_last = g_strdup(c_text);
+    clipboard_last = clipboard_text;
   }
-  /* Cleanup */
-  g_free(p_text);
-  g_free(c_text);
 }
 
 /* Called if timeout was destroyed */
@@ -66,9 +73,9 @@ reset_daemon(gpointer data)
 {
   if (timeout_id != 0)
     g_source_remove(timeout_id);
-  
+  /* Add the daemon loop */
   timeout_id = g_timeout_add_full(G_PRIORITY_LOW,
-                                  CHECKINTERVAL,
+                                  DAEMON_INTERVAL,
                                   (GSourceFunc)daemon_check,
                                   NULL,
                                   (GDestroyNotify)reset_daemon);
@@ -83,12 +90,11 @@ init_daemon_mode()
   clipboard = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);
   /* Add the daemon loop */
   timeout_id = g_timeout_add_full(G_PRIORITY_LOW,
-                                  CHECKINTERVAL,
+                                  DAEMON_INTERVAL,
                                   (GSourceFunc)daemon_check,
                                   NULL,
                                   (GDestroyNotify)reset_daemon);
   
   /* Start daemon loop */
   gtk_main();
-  gtk_main_quit();
 }

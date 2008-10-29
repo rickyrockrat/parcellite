@@ -21,13 +21,10 @@
 
 G_BEGIN_DECLS
 
-/* Defines */
-#define HISTFILE ".local/share/parcellite/history"
+#define HISTORY_FILE ".local/share/parcellite/history"
 
-/* External variables */
 extern GSList* history;
 
-/* Functions */
 void
 read_history();
 

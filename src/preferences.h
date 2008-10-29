@@ -21,27 +21,28 @@
 
 G_BEGIN_DECLS
 
-/* Defines: default preferences */
-#define DEFUSECOPY         TRUE
-#define DEFUSEPRIM         FALSE
-#define DEFSAVEHIST        TRUE
-#define DEFHISTORYLIM      25
-#define DEFHYPERLINKSMODE  FALSE
-#define DEFCONFIRMCLEAR    FALSE
-#define DEFSINGLELINEMODE  TRUE
-#define DEFREVHISTORY      FALSE
-#define DEFCHARLENGTH      50
-#define DEFELLIPSIZE       2
-#define DEFACTIONSKEY      "<Ctrl><Alt>A"
-#define DEFHISTORYKEY      "<Ctrl><Alt>H"
-#define DEFMENUKEY         "<Ctrl><Alt>P"
-#define DEFNOICON          FALSE
+#define INIT_HISTORY_KEY      NULL
+#define INIT_ACTIONS_KEY      NULL
+#define INIT_MENU_KEY         NULL
 
-/* Defines: others */
-#define ACTIONSFILE  ".local/share/parcellite/actions"
-#define PREFFILE     ".config/parcellite/parcelliterc"
+#define DEF_USE_COPY          TRUE
+#define DEF_USE_PRIMARY       FALSE
+#define DEF_SAVE_HISTORY      TRUE
+#define DEF_HISTORY_LIMIT     25
+#define DEF_HYPERLINKS_ONLY   FALSE
+#define DEF_CONFIRM_CLEAR     FALSE
+#define DEF_SINGLE_LINE       TRUE
+#define DEF_REVERSE_HISTORY   FALSE
+#define DEF_ITEM_LENGTH       50
+#define DEF_ELLIPSIZE         2
+#define DEF_HISTORY_KEY       "<Ctrl><Alt>H"
+#define DEF_ACTIONS_KEY       "<Ctrl><Alt>A"
+#define DEF_MENU_KEY          "<Ctrl><Alt>P"
+#define DEF_NO_ICON           FALSE
 
-/* Functions */
+#define ACTIONS_FILE          ".local/share/parcellite/actions"
+#define PREFERENCES_FILE      ".config/parcellite/parcelliterc"
+
 void
 read_preferences();
 

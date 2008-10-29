@@ -23,47 +23,43 @@
 
 G_BEGIN_DECLS
 
-/* Defines */
-#define ACTIONSTAB    3
-#define POPUPDELAY    100
-#define CHECKINTERVAL 500
+#define ACTIONS_TAB    3
+#define POPUP_DELAY    100
+#define CHECK_INTERVAL 500
 
-/* Typedefs */
 typedef struct
 {
-  gboolean  usecopy;     /* Use copy */
-  gboolean  useprim;     /* Use primary */
+  gboolean  use_copy;         /* Use copy */
+  gboolean  use_primary;      /* Use primary */
   
-  gboolean  savehist;    /* Save history */
-  gint      histlim;     /* Items in history */
+  gboolean  save_history;     /* Save history */
+  gint      history_limit;    /* Items in history */
   
-  gboolean  hyperlinks;  /* Hyperlinks only */
-  gboolean  confclear;   /* Confirm clear */
+  gboolean  hyperlinks_only;  /* Hyperlinks only */
+  gboolean  confirm_clear;    /* Confirm clear */
   
-  gboolean  singleline;  /* Show in a single line */
-  gboolean  revhist;     /* Show in reverse order */
-  gint      charlength;  /* Character length of items */
+  gboolean  single_line;      /* Show in a single line */
+  gboolean  reverse_history;  /* Show in reverse order */
+  gint      item_length;      /* Length of items */
   
-  gint      ellipsize;   /* Omitting */
+  gint      ellipsize;        /* Omitting */
   
-  gchar*    histkey;     /* History menu hotkey */
-  gchar*    actionkey;   /* Actions menu hotkey */
-  gchar*    menukey;     /* Parcellite menu hotkey */
+  gchar*    history_key;      /* History menu hotkey */
+  gchar*    actions_key;      /* Actions menu hotkey */
+  gchar*    menu_key;         /* Parcellite menu hotkey */
   
-  gboolean  noicon;      /* No icon */
+  gboolean  no_icon;          /* No icon */
 }
 prefs_t;
 
-typedef struct
+struct last_item
 {
-  gchar* primary_last;
-  gchar* clipboard_last;
-} last_t;
+  gchar* primary;
+  gchar* clipboard;
+};
 
-/* Declare options structure global */
 extern prefs_t prefs;
 
-/* Functions */
 void
 history_hotkey(char *keystring, gpointer user_data);
 

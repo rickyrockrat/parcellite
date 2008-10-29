@@ -48,35 +48,35 @@ static void
 apply_preferences()
 {
   /* Unbind the keys before binding new ones */
-  keybinder_unbind(prefs.histkey, history_hotkey);
-  g_free(prefs.histkey);
-  prefs.histkey = NULL;
-  keybinder_unbind(prefs.actionkey, actions_hotkey);
-  g_free(prefs.actionkey);
-  prefs.actionkey = NULL;
-  keybinder_unbind(prefs.menukey, menu_hotkey);
-  g_free(prefs.menukey);
-  prefs.menukey = NULL;
+  keybinder_unbind(prefs.history_key, history_hotkey);
+  g_free(prefs.history_key);
+  prefs.history_key = NULL;
+  keybinder_unbind(prefs.actions_key, actions_hotkey);
+  g_free(prefs.actions_key);
+  prefs.actions_key = NULL;
+  keybinder_unbind(prefs.menu_key, menu_hotkey);
+  g_free(prefs.menu_key);
+  prefs.menu_key = NULL;
   
   /* Get the new preferences */
-  prefs.usecopy = gtk_toggle_button_get_active((GtkToggleButton*)copy_check);
-  prefs.useprim = gtk_toggle_button_get_active((GtkToggleButton*)primary_check);
-  prefs.savehist = gtk_toggle_button_get_active((GtkToggleButton*)save_check);
-  prefs.histlim = gtk_spin_button_get_value_as_int((GtkSpinButton*)history_spin);
-  prefs.hyperlinks = gtk_toggle_button_get_active((GtkToggleButton*)hyperlinks_check);
-  prefs.confclear = gtk_toggle_button_get_active((GtkToggleButton*)confirm_check);
-  prefs.singleline = gtk_toggle_button_get_active((GtkToggleButton*)linemode_check);
-  prefs.revhist = gtk_toggle_button_get_active((GtkToggleButton*)reverse_check);
-  prefs.charlength = gtk_spin_button_get_value_as_int((GtkSpinButton*)charlength_spin);
+  prefs.use_copy = gtk_toggle_button_get_active((GtkToggleButton*)copy_check);
+  prefs.use_primary = gtk_toggle_button_get_active((GtkToggleButton*)primary_check);
+  prefs.save_history = gtk_toggle_button_get_active((GtkToggleButton*)save_check);
+  prefs.history_limit = gtk_spin_button_get_value_as_int((GtkSpinButton*)history_spin);
+  prefs.hyperlinks_only = gtk_toggle_button_get_active((GtkToggleButton*)hyperlinks_check);
+  prefs.confirm_clear = gtk_toggle_button_get_active((GtkToggleButton*)confirm_check);
+  prefs.single_line = gtk_toggle_button_get_active((GtkToggleButton*)linemode_check);
+  prefs.reverse_history = gtk_toggle_button_get_active((GtkToggleButton*)reverse_check);
+  prefs.item_length = gtk_spin_button_get_value_as_int((GtkSpinButton*)charlength_spin);
   prefs.ellipsize = gtk_combo_box_get_active((GtkComboBox*)ellipsize_combo) + 1;
-  prefs.histkey = g_strdup(gtk_entry_get_text((GtkEntry*)history_key_entry));
-  prefs.actionkey = g_strdup(gtk_entry_get_text((GtkEntry*)actions_key_entry));
-  prefs.menukey = g_strdup(gtk_entry_get_text((GtkEntry*)menu_key_entry));
+  prefs.history_key = g_strdup(gtk_entry_get_text((GtkEntry*)history_key_entry));
+  prefs.actions_key = g_strdup(gtk_entry_get_text((GtkEntry*)actions_key_entry));
+  prefs.menu_key = g_strdup(gtk_entry_get_text((GtkEntry*)menu_key_entry));
   
   /* Bind keys and apply the new history limit */
-  keybinder_bind(prefs.histkey, history_hotkey, NULL);
-  keybinder_bind(prefs.actionkey, actions_hotkey, NULL);
-  keybinder_bind(prefs.menukey, menu_hotkey, NULL);
+  keybinder_bind(prefs.history_key, history_hotkey, NULL);
+  keybinder_bind(prefs.actions_key, actions_hotkey, NULL);
+  keybinder_bind(prefs.menu_key, menu_hotkey, NULL);
   truncate_history();
 }
 
@@ -88,24 +88,24 @@ save_preferences()
   GKeyFile* rc_key = g_key_file_new();
   
   /* Add values */
-  g_key_file_set_boolean(rc_key, "rc", "use_copy", prefs.usecopy);
-  g_key_file_set_boolean(rc_key, "rc", "use_primary", prefs.useprim);
-  g_key_file_set_boolean(rc_key, "rc", "save_history", prefs.savehist);
-  g_key_file_set_integer(rc_key, "rc", "history_limit", prefs.histlim);
-  g_key_file_set_boolean(rc_key, "rc", "hyperlinks_mode", prefs.hyperlinks);
-  g_key_file_set_boolean(rc_key, "rc", "confirm_clear", prefs.confclear);
-  g_key_file_set_boolean(rc_key, "rc", "single_line_mode", prefs.singleline);
-  g_key_file_set_boolean(rc_key, "rc", "reverse_history", prefs.revhist);
-  g_key_file_set_integer(rc_key, "rc", "character_length", prefs.charlength);
+  g_key_file_set_boolean(rc_key, "rc", "use_copy", prefs.use_copy);
+  g_key_file_set_boolean(rc_key, "rc", "use_primary", prefs.use_primary);
+  g_key_file_set_boolean(rc_key, "rc", "save_history", prefs.save_history);
+  g_key_file_set_integer(rc_key, "rc", "history_limit", prefs.history_limit);
+  g_key_file_set_boolean(rc_key, "rc", "hyperlinks_mode", prefs.hyperlinks_only);
+  g_key_file_set_boolean(rc_key, "rc", "confirm_clear", prefs.confirm_clear);
+  g_key_file_set_boolean(rc_key, "rc", "single_line_mode", prefs.single_line);
+  g_key_file_set_boolean(rc_key, "rc", "reverse_history", prefs.reverse_history);
+  g_key_file_set_integer(rc_key, "rc", "character_length", prefs.item_length);
   g_key_file_set_integer(rc_key, "rc", "ellipsize", prefs.ellipsize);
-  g_key_file_set_string(rc_key, "rc", "history_key", prefs.histkey);
-  g_key_file_set_string(rc_key, "rc", "actions_key", prefs.actionkey);
-  g_key_file_set_string(rc_key, "rc", "menu_key", prefs.menukey);
+  g_key_file_set_string(rc_key, "rc", "history_key", prefs.history_key);
+  g_key_file_set_string(rc_key, "rc", "actions_key", prefs.actions_key);
+  g_key_file_set_string(rc_key, "rc", "menu_key", prefs.menu_key);
   
   /* Check config and data directories */
   check_dirs();
   /* Save key to file */
-  gchar* rc_file = g_build_filename(g_get_home_dir(), ".config/parcellite/parcelliterc", NULL);
+  gchar* rc_file = g_build_filename(g_get_home_dir(), PREFERENCES_FILE, NULL);
   g_file_set_contents(rc_file, g_key_file_to_data(rc_key, NULL, NULL), -1, NULL);
   g_key_file_free(rc_key);
   g_free(rc_file);
@@ -115,46 +115,46 @@ save_preferences()
 void
 read_preferences()
 {
-  gchar* rc_file = g_build_filename(g_get_home_dir(), ".config/parcellite/parcelliterc", NULL);
+  gchar* rc_file = g_build_filename(g_get_home_dir(), PREFERENCES_FILE, NULL);
   /* Create key */
   GKeyFile* rc_key = g_key_file_new();
   if (g_key_file_load_from_file(rc_key, rc_file, G_KEY_FILE_NONE, NULL))
   {
     /* Load values */
-    prefs.usecopy = g_key_file_get_boolean(rc_key, "rc", "use_copy", NULL);
-    prefs.useprim = g_key_file_get_boolean(rc_key, "rc", "use_primary", NULL);
-    prefs.savehist = g_key_file_get_boolean(rc_key, "rc", "save_history", NULL);
-    prefs.histlim = g_key_file_get_integer(rc_key, "rc", "history_limit", NULL);
-    prefs.hyperlinks = g_key_file_get_boolean(rc_key, "rc", "hyperlinks_mode", NULL);
-    prefs.confclear = g_key_file_get_boolean(rc_key, "rc", "confirm_clear", NULL);
-    prefs.singleline = g_key_file_get_boolean(rc_key, "rc", "single_line_mode", NULL);
-    prefs.revhist = g_key_file_get_boolean(rc_key, "rc", "reverse_history", NULL);
-    prefs.charlength = g_key_file_get_integer(rc_key, "rc", "character_length", NULL);
+    prefs.use_copy = g_key_file_get_boolean(rc_key, "rc", "use_copy", NULL);
+    prefs.use_primary = g_key_file_get_boolean(rc_key, "rc", "use_primary", NULL);
+    prefs.save_history = g_key_file_get_boolean(rc_key, "rc", "save_history", NULL);
+    prefs.history_limit = g_key_file_get_integer(rc_key, "rc", "history_limit", NULL);
+    prefs.hyperlinks_only = g_key_file_get_boolean(rc_key, "rc", "hyperlinks_mode", NULL);
+    prefs.confirm_clear = g_key_file_get_boolean(rc_key, "rc", "confirm_clear", NULL);
+    prefs.single_line = g_key_file_get_boolean(rc_key, "rc", "single_line_mode", NULL);
+    prefs.reverse_history = g_key_file_get_boolean(rc_key, "rc", "reverse_history", NULL);
+    prefs.item_length = g_key_file_get_integer(rc_key, "rc", "character_length", NULL);
     prefs.ellipsize = g_key_file_get_integer(rc_key, "rc", "ellipsize", NULL);
-    prefs.histkey = g_key_file_get_string(rc_key, "rc", "history_key", NULL);
-    prefs.actionkey = g_key_file_get_string(rc_key, "rc", "actions_key", NULL);
-    prefs.menukey = g_key_file_get_string(rc_key, "rc", "menu_key", NULL);
+    prefs.history_key = g_key_file_get_string(rc_key, "rc", "history_key", NULL);
+    prefs.actions_key = g_key_file_get_string(rc_key, "rc", "actions_key", NULL);
+    prefs.menu_key = g_key_file_get_string(rc_key, "rc", "menu_key", NULL);
     
     /* Check for errors and set default values if any */
-    if ((!prefs.histlim) || (prefs.histlim > 100) || (prefs.histlim < 0))
-      prefs.histlim = DEFHISTORYLIM;
-    if ((!prefs.charlength) || (prefs.charlength > 75) || (prefs.charlength < 0))
-      prefs.charlength = DEFCHARLENGTH;
+    if ((!prefs.history_limit) || (prefs.history_limit > 100) || (prefs.history_limit < 0))
+      prefs.history_limit = DEF_HISTORY_LIMIT;
+    if ((!prefs.item_length) || (prefs.item_length > 75) || (prefs.item_length < 0))
+      prefs.item_length = DEF_ITEM_LENGTH;
     if ((!prefs.ellipsize) || (prefs.ellipsize > 3) || (prefs.ellipsize < 0))
-      prefs.ellipsize = DEFELLIPSIZE;
-    if (!prefs.histkey)
-      prefs.histkey = g_strdup(DEFHISTORYKEY);
-    if (!prefs.actionkey)
-      prefs.actionkey = g_strdup(DEFACTIONSKEY);
-    if (!prefs.menukey)
-      prefs.menukey = g_strdup(DEFMENUKEY);
+      prefs.ellipsize = DEF_ELLIPSIZE;
+    if (!prefs.history_key)
+      prefs.history_key = g_strdup(DEF_HISTORY_KEY);
+    if (!prefs.actions_key)
+      prefs.actions_key = g_strdup(DEF_ACTIONS_KEY);
+    if (!prefs.menu_key)
+      prefs.menu_key = g_strdup(DEF_MENU_KEY);
   }
   else
   {
     /* Init default keys on error */
-    prefs.histkey = g_strdup(DEFHISTORYKEY);
-    prefs.actionkey = g_strdup(DEFACTIONSKEY);
-    prefs.menukey = g_strdup(DEFMENUKEY);
+    prefs.history_key = g_strdup(DEF_HISTORY_KEY);
+    prefs.actions_key = g_strdup(DEF_ACTIONS_KEY);
+    prefs.menu_key = g_strdup(DEF_MENU_KEY);
   }
   g_key_file_free(rc_key);
   g_free(rc_file);
@@ -165,7 +165,7 @@ static void
 read_actions()
 {
   /* Open the file for reading */
-  gchar* path = g_build_filename(g_get_home_dir(), ACTIONSFILE, NULL);
+  gchar* path = g_build_filename(g_get_home_dir(), ACTIONS_FILE, NULL);
   FILE* actions_file = fopen(path, "rb");
   g_free(path);
   /* Check that it opened and begin read */
@@ -206,7 +206,7 @@ save_actions()
   /* Check config and data directories */
   check_dirs();
   /* Open the file for writing */
-  gchar* path = g_build_filename(g_get_home_dir(), ACTIONSFILE, NULL);
+  gchar* path = g_build_filename(g_get_home_dir(), ACTIONS_FILE, NULL);
   FILE* actions_file = fopen(path, "wb");
   g_free(path);
   /* Check that it opened and begin write */
@@ -398,9 +398,9 @@ show_preferences(gint tab)
   gtk_container_add((GtkContainer*)frame, alignment);
   vbox = gtk_vbox_new(FALSE, 2);
   gtk_container_add((GtkContainer*)alignment, vbox);
-  copy_check = gtk_check_button_new_with_mnemonic(_("Use copy (Ctrl-C)"));
+  copy_check = gtk_check_button_new_with_mnemonic(_("Use _Copy (Ctrl-C)"));
   gtk_box_pack_start((GtkBox*)vbox, copy_check, FALSE, FALSE, 0);
-  primary_check = gtk_check_button_new_with_mnemonic(_("Use primary (selection)"));
+  primary_check = gtk_check_button_new_with_mnemonic(_("Use _Primary (Selection)"));
   gtk_box_pack_start((GtkBox*)vbox, primary_check, FALSE, FALSE, 0);
   gtk_box_pack_start((GtkBox*)vbox_behavior, frame, FALSE, FALSE, 0);
   
@@ -416,7 +416,7 @@ show_preferences(gint tab)
   vbox = gtk_vbox_new(FALSE, 2);
   gtk_container_add((GtkContainer*)alignment, vbox);
   save_check = gtk_check_button_new_with_mnemonic(_("_Save history"));
-  gtk_widget_set_tooltip_text(save_check, _("Keep and restore history in between sessions"));
+  gtk_widget_set_tooltip_text(save_check, _("Save and restore history between sessions"));
   gtk_box_pack_start((GtkBox*)vbox, save_check, FALSE, FALSE, 0);
   hbox = gtk_hbox_new(FALSE, 4);
   gtk_box_pack_start((GtkBox*)vbox, hbox, FALSE, FALSE, 0);
@@ -440,7 +440,7 @@ show_preferences(gint tab)
   gtk_container_add((GtkContainer*)frame, alignment);
   vbox = gtk_vbox_new(FALSE, 2);
   gtk_container_add((GtkContainer*)alignment, vbox);
-  hyperlinks_check = gtk_check_button_new_with_mnemonic(_("_Capture hyperlinks only"));
+  hyperlinks_check = gtk_check_button_new_with_mnemonic(_("Capture _hyperlinks only"));
   gtk_box_pack_start((GtkBox*)vbox, hyperlinks_check, FALSE, FALSE, 0);
   confirm_check = gtk_check_button_new_with_mnemonic(_("C_onfirm before clearing history"));
   gtk_box_pack_start((GtkBox*)vbox, confirm_check, FALSE, FALSE, 0);
@@ -620,19 +620,19 @@ show_preferences(gint tab)
   gtk_box_pack_start((GtkBox*)vbox_actions, hbbox, FALSE, FALSE, 0);
   
   /* Make widgets reflect current preferences */
-  gtk_toggle_button_set_active((GtkToggleButton*)copy_check, prefs.usecopy);
-  gtk_toggle_button_set_active((GtkToggleButton*)primary_check, prefs.useprim);
-  gtk_toggle_button_set_active((GtkToggleButton*)save_check, prefs.savehist);
-  gtk_spin_button_set_value((GtkSpinButton*)history_spin, (gdouble)prefs.histlim);
-  gtk_toggle_button_set_active((GtkToggleButton*)hyperlinks_check, prefs.hyperlinks);
-  gtk_toggle_button_set_active((GtkToggleButton*)confirm_check, prefs.confclear);
-  gtk_toggle_button_set_active((GtkToggleButton*)linemode_check, prefs.singleline);
-  gtk_toggle_button_set_active((GtkToggleButton*)reverse_check, prefs.revhist);
-  gtk_spin_button_set_value((GtkSpinButton*)charlength_spin, (gdouble)prefs.charlength);
+  gtk_toggle_button_set_active((GtkToggleButton*)copy_check, prefs.use_copy);
+  gtk_toggle_button_set_active((GtkToggleButton*)primary_check, prefs.use_primary);
+  gtk_toggle_button_set_active((GtkToggleButton*)save_check, prefs.save_history);
+  gtk_spin_button_set_value((GtkSpinButton*)history_spin, (gdouble)prefs.history_limit);
+  gtk_toggle_button_set_active((GtkToggleButton*)hyperlinks_check, prefs.hyperlinks_only);
+  gtk_toggle_button_set_active((GtkToggleButton*)confirm_check, prefs.confirm_clear);
+  gtk_toggle_button_set_active((GtkToggleButton*)linemode_check, prefs.single_line);
+  gtk_toggle_button_set_active((GtkToggleButton*)reverse_check, prefs.reverse_history);
+  gtk_spin_button_set_value((GtkSpinButton*)charlength_spin, (gdouble)prefs.item_length);
   gtk_combo_box_set_active((GtkComboBox*)ellipsize_combo, prefs.ellipsize - 1);
-  gtk_entry_set_text((GtkEntry*)history_key_entry, prefs.histkey);
-  gtk_entry_set_text((GtkEntry*)actions_key_entry, prefs.actionkey);
-  gtk_entry_set_text((GtkEntry*)menu_key_entry, prefs.menukey);
+  gtk_entry_set_text((GtkEntry*)history_key_entry, prefs.history_key);
+  gtk_entry_set_text((GtkEntry*)actions_key_entry, prefs.actions_key);
+  gtk_entry_set_text((GtkEntry*)menu_key_entry, prefs.menu_key);
   
   /* Read actions */
   read_actions();
