@@ -28,8 +28,8 @@
 void
 check_dirs()
 {
-  gchar* data_dir = g_build_path("/", g_get_home_dir(), PARCDATADIR,  NULL);
-  gchar* config_dir = g_build_path("/", g_get_home_dir(), PARCCONFIGDIR,  NULL);
+  gchar* data_dir = g_build_path("/", g_get_home_dir(), DATA_DIR,  NULL);
+  gchar* config_dir = g_build_path("/", g_get_home_dir(), CONFIG_DIR,  NULL);
   /* Check if data directory exists */
   if (!g_file_test(data_dir, G_FILE_TEST_EXISTS))
   {
@@ -124,7 +124,7 @@ parse_options(int argc, char* argv[])
   /* Do not display icon option */
   if (icon)
   {
-    prefs.noicon = TRUE;
+    prefs.no_icon = TRUE;
   }
   /* Run as daemon option */
   else if (daemon)

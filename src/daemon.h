@@ -21,10 +21,8 @@
 
 G_BEGIN_DECLS
 
-/* Defines */
-#define CHECKINTERVAL 500
+#define DAEMON_INTERVAL 500
 
-/* Functions */
 void
 init_daemon_mode();
 

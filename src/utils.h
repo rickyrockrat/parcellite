@@ -21,11 +21,9 @@
 
 G_BEGIN_DECLS
 
-/* Defines */
-#define PARCCONFIGDIR  ".local/share/parcellite"
-#define PARCDATADIR    ".config/parcellite"
+#define CONFIG_DIR  ".local/share/parcellite"
+#define DATA_DIR    ".config/parcellite"
 
-/* Functions */
 void
 check_dirs();
 
