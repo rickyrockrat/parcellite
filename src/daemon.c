@@ -22,8 +22,8 @@
 
 
 static gint timeout_id;
-static gchar* primary_last;
-static gchar* clipboard_last;
+static gchar* primary_text;
+static gchar* clipboard_text;
 static GtkClipboard* primary;
 static GtkClipboard* clipboard;
 
@@ -33,38 +33,36 @@ static void
 daemon_check()
 {
   /* Get current primary/clipboard contents */
-  gchar* primary_text = gtk_clipboard_wait_for_text(primary);
-  gchar* clipboard_text = gtk_clipboard_wait_for_text(clipboard);
+  gchar* primary_temp = gtk_clipboard_wait_for_text(primary);
+  gchar* clipboard_temp = gtk_clipboard_wait_for_text(clipboard);
   /* Check if primary contents were lost */
-  if ((primary_text == NULL) && (primary_last != NULL))
+  if ((primary_temp == NULL) && (primary_text != NULL))
   {
-    gtk_clipboard_set_text(primary, primary_last, -1);
+    gtk_clipboard_set_text(primary, primary_text, -1);
   }
   else
   {
     /* Get the button state to check if the mouse button is being held */
     GdkModifierType button_state;
     gdk_window_get_pointer(NULL, NULL, NULL, &button_state);
-    if ((primary_text != NULL) && !(button_state & GDK_BUTTON1_MASK))
-    {
-      g_free(primary_last);
-      primary_last = primary_text;
-    }
-    else
+    if ((primary_temp != NULL) && !(button_state & GDK_BUTTON1_MASK))
     {
       g_free(primary_text);
+      primary_text = g_strdup(primary_temp);
     }
   }
   /* Check if clipboard contents were lost */
-  if ((clipboard_text == NULL) && (clipboard_last != NULL))
+  if ((clipboard_temp == NULL) && (clipboard_text != NULL))
   {
-    gtk_clipboard_set_text(clipboard, clipboard_last, -1);
+    gtk_clipboard_set_text(clipboard, clipboard_text, -1);
   }
   else
   {
-    g_free(clipboard_last);
-    clipboard_last = clipboard_text;
+    g_free(clipboard_text);
+    clipboard_text = g_strdup(clipboard_temp);
   }
+  g_free(primary_temp);
+  g_free(clipboard_temp);
 }
 
 /* Called if timeout was destroyed */
