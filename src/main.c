@@ -32,13 +32,12 @@
 #include "parcellite-i18n.h"
 
 
-static gchar* primary_last;
-static gchar* clipboard_last;
+static gchar* primary_text;
+static gchar* clipboard_text;
 static GtkClipboard* primary;
 static GtkClipboard* clipboard;
 static GtkStatusIcon* status_icon;
 
-/* This variable locks actions when one is being executed */
 static gboolean actions_lock = FALSE;
 
 /* Init preferences structure */
@@ -71,34 +70,38 @@ item_exists(gchar* text)
 static gboolean
 item_check(gpointer data)
 {
-  gchar* primary_text = gtk_clipboard_wait_for_text(primary);
-  gchar* clipboard_text = gtk_clipboard_wait_for_text(clipboard);
+  /* Process text and restore empty if needed */
+  gchar* primary_temp = gtk_clipboard_wait_for_text(primary);
+  gchar* clipboard_temp = gtk_clipboard_wait_for_text(clipboard);
   /* Check if primary contents were lost */
-  if (!primary_text)
+  if ((primary_temp == NULL) && (primary_text != NULL))
   {
-    if (primary_last)
-    {
-      gtk_clipboard_set_text(primary, primary_last, -1);
-    }
+    gtk_clipboard_set_text(primary, primary_text, -1);
   }
   else
   {
-    g_free(primary_last);
-    primary_last = g_strdup(primary_text);
+    /* Get the button state to check if the mouse button is being held */
+    GdkModifierType button_state;
+    gdk_window_get_pointer(NULL, NULL, NULL, &button_state);
+    if ((primary_temp != NULL) && !(button_state & GDK_BUTTON1_MASK))
+    {
+      g_free(primary_text);
+      primary_text = g_strdup(primary_temp);
+    }
   }
   /* Check if clipboard contents were lost */
-  if (!clipboard_text)
+  if ((clipboard_temp == NULL) && (clipboard_text != NULL))
   {
-    if (clipboard_last)
-    {
-      gtk_clipboard_set_text(clipboard, clipboard_last, -1);
-    }
+    gtk_clipboard_set_text(clipboard, clipboard_text, -1);
   }
   else
   {
-    g_free(clipboard_last);
-    clipboard_last = g_strdup(clipboard_text);
+    g_free(clipboard_text);
+    clipboard_text = g_strdup(clipboard_temp);
   }
+  g_free(primary_temp);
+  g_free(clipboard_temp);
+  /* Processing complete... */
   
   /* Primary check */
   if (prefs.use_primary)
@@ -135,8 +138,6 @@ item_check(gpointer data)
       }
     }
   }
-  g_free(primary_text);
-  g_free(clipboard_text);
   return TRUE;
 }
 
@@ -456,7 +457,7 @@ show_actions_menu(gpointer data)
   gtk_menu_shell_append((GtkMenuShell*)menu, menu_item);
   /* Clipboard contents */
   gchar* text = gtk_clipboard_wait_for_text(clipboard);
-  if (text)
+  if (text != NULL)
   {
     menu_item = gtk_menu_item_new_with_label("None");
     /* Modify menu item label properties */
@@ -567,13 +568,13 @@ show_history_menu(gpointer data)
   /* -------------------- */
   gtk_menu_shell_append((GtkMenuShell*)menu, gtk_separator_menu_item_new());
   /* Items */
-  if ((history) && (history->data))
+  if ((history != NULL) && (history->data != NULL))
   {
     /* Declare some variables */
     GSList* element;
     gint element_number = 0;
-    gchar* primary_text = gtk_clipboard_wait_for_text(primary);
-    gchar* clipboard_text = gtk_clipboard_wait_for_text(clipboard);
+    gchar* primary_temp = gtk_clipboard_wait_for_text(primary);
+    gchar* clipboard_temp = gtk_clipboard_wait_for_text(clipboard);
     /* Reverse history if enabled */
     if (prefs.reverse_history)
     {
@@ -605,7 +606,7 @@ show_history_menu(gpointer data)
       }
       /* Make new item with ellipsized text */
       menu_item = gtk_menu_item_new_with_label(string->str);
-      g_signal_connect((GObject*)menu_item,       "activate",
+      g_signal_connect((GObject*)menu_item,      "activate",
                        (GCallback)item_selected, (gpointer)element_number);
       
       /* Modify menu item label properties */
@@ -634,6 +635,8 @@ show_history_menu(gpointer data)
       else
         element_number++;
     }
+    g_free(primary_temp);
+    g_free(clipboard_temp);
     /* Return history to normal if reversed */
     if (prefs.reverse_history)
       history = g_slist_reverse(history);
@@ -827,6 +830,8 @@ main(int argc, char *argv[])
   g_free(prefs.actions_key);
   g_free(prefs.menu_key);
   g_slist_free(history);
+  g_free(primary_text);
+  g_free(clipboard_text);
   
   /* Exit */
   return 0;
