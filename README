@@ -31,7 +31,7 @@ Download the parcellite source code, then:
 	$ sudo make install
 
 or from the subversion checkout:
-	$ svn co http://xyhthyx.googlecode.com/svn/trunk/parcellite parcellite
+	$ svn co https://parcellite.svn.sourceforge.net/svnroot/parcellite/trunk parcellite
 	$ cd parcellite
 	$ ./autogen.sh
 	$ ./configure

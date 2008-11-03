@@ -4,11 +4,15 @@ v0.9   Pending...
   + Confirm clear option.
   + Parcellite menu hotkey.
   + Hungarian and turkish translation.
+  + Support for managing x-selection (primary).
+  + Prevent empty clipboard. Clipboard/Primary contents are backed up and recovered
+    if they ever become NULL.
   
   Changes
   + Fixed daemon mode.
   + Changed preferences dialog.
   + Changed actions preferences to use GtkTreeView's built in editing mode.
+  + Fixed bug with icon showing up in --no-icon mode when you execute an action.
   + Fixed parcellite-startup.desktop to include "Type=Application" to prevent
     desktop-file-validate from failing.
 
