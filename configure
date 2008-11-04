@@ -10327,7 +10327,7 @@ _ACEOF
 
 
 
-ac_config_files="$ac_config_files Makefile doc/Makefile src/Makefile"
+ac_config_files="$ac_config_files Makefile doc/Makefile src/Makefile data/Makefile"
 
 
 ac_config_files="$ac_config_files po/Makefile.in"
@@ -10934,6 +10934,7 @@ do
     "Makefile") CONFIG_FILES="$CONFIG_FILES Makefile" ;;
     "doc/Makefile") CONFIG_FILES="$CONFIG_FILES doc/Makefile" ;;
     "src/Makefile") CONFIG_FILES="$CONFIG_FILES src/Makefile" ;;
+    "data/Makefile") CONFIG_FILES="$CONFIG_FILES data/Makefile" ;;
     "po/Makefile.in") CONFIG_FILES="$CONFIG_FILES po/Makefile.in" ;;
     "po/stamp-it") CONFIG_COMMANDS="$CONFIG_COMMANDS po/stamp-it" ;;
 

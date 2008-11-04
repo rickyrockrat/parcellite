@@ -3,6 +3,7 @@ v0.9   Pending...
   New
   + Confirm clear option.
   + Parcellite menu hotkey.
+  + Translated .desktop files.
   + Hungarian and turkish translation.
   + Support for managing x-selection (primary).
   + Prevent empty clipboard. Clipboard/Primary contents are backed up and recovered

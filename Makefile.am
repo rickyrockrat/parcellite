@@ -1,12 +1,6 @@
 AUTOMAKE_OPTIONS = gnu
 
-desktopdir = $(datadir)/applications
-desktop_DATA = parcellite.desktop
-
-autostartdir = /etc/xdg/autostart
-autostart_DATA = parcellite-startup.desktop
-
-SUBDIRS = doc src po
+SUBDIRS = data doc src po
 
 DISTCLEANFILES = *.bak *.log *~
 

@@ -301,7 +301,7 @@ on `(hostname || uname -n) 2>/dev/null | sed 1q`
 "
 
 # Files that config.status was made for.
-config_files=" Makefile doc/Makefile src/Makefile po/Makefile.in"
+config_files=" Makefile doc/Makefile src/Makefile data/Makefile po/Makefile.in"
 config_headers=" config.h"
 config_commands=" depfiles default-1 po-directories po/stamp-it"
 
@@ -449,6 +449,7 @@ do
     "Makefile") CONFIG_FILES="$CONFIG_FILES Makefile" ;;
     "doc/Makefile") CONFIG_FILES="$CONFIG_FILES doc/Makefile" ;;
     "src/Makefile") CONFIG_FILES="$CONFIG_FILES src/Makefile" ;;
+    "data/Makefile") CONFIG_FILES="$CONFIG_FILES data/Makefile" ;;
     "po/Makefile.in") CONFIG_FILES="$CONFIG_FILES po/Makefile.in" ;;
     "po/stamp-it") CONFIG_COMMANDS="$CONFIG_COMMANDS po/stamp-it" ;;
 
@@ -650,7 +651,7 @@ s,@LTLIBICONV@,|#_!!_#|-liconv,g
 s,@LIBINTL@,|#_!!_#|,g
 s,@LTLIBINTL@,|#_!!_#|,g
 s,@PKG_CONFIG@,|#_!!_#|/usr/bin/pkg-config,g
-s,@GTK_CFLAGS@,|#_!!_#|-I/usr/include/gtk-2.0 -I/usr/lib/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/pango-1.0 -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include -I/usr/include/freetype2 -I/usr/include/libpng12 -I/usr/include/pixman-1  ,g
+s,@GTK_CFLAGS@,|#_!!_#|-D_REENTRANT -I/usr/include/gtk-2.0 -I/usr/lib/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/pango-1.0 -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include -I/usr/include/freetype2 -I/usr/include/directfb -I/usr/include/libpng12 -I/usr/include/pixman-1  ,g
 s,@GTK_LIBS@,|#_!!_#|-lgtk-x11-2.0 -lgdk-x11-2.0 -latk-1.0 -lgdk_pixbuf-2.0 -lm -lpangocairo-1.0 -lpango-1.0 -lcairo -lgobject-2.0 -lgmodule-2.0 -ldl -lglib-2.0  ,g
 s,@GLIB_CFLAGS@,|#_!!_#|-I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include  ,g
 s,@GLIB_LIBS@,|#_!!_#|-lglib-2.0  ,g

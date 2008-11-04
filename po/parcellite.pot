@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-10-18 11:53-0400\n"
+"POT-Creation-Date: 2008-11-04 14:56-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,60 +16,61 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../src/main.c:166
+#: ../src/main.c:153
 msgid "Executing action..."
 msgstr ""
 
-#: ../src/main.c:169 ../src/main.c:778
+#: ../src/main.c:159 ../src/main.c:760 ../data/parcellite.desktop.in.h:1
+#: ../data/parcellite-startup.desktop.in.h:1
 msgid "Clipboard Manager"
 msgstr ""
 
-#: ../src/main.c:189
+#: ../src/main.c:182
 msgid "Could not create thread for executed action\n"
 msgstr ""
 
-#: ../src/main.c:240
+#: ../src/main.c:233
 msgid "Editing Clipboard"
 msgstr ""
 
-#: ../src/main.c:257
+#: ../src/main.c:250
 msgid "<b>Clipboard</b>"
 msgstr ""
 
-#: ../src/main.c:301
+#: ../src/main.c:294
 msgid "Save changes"
 msgstr ""
 
-#: ../src/main.c:311
+#: ../src/main.c:304
 msgid "Discard changes"
 msgstr ""
 
-#: ../src/main.c:351
+#: ../src/main.c:342
 msgid "Clear the history?"
 msgstr ""
 
-#: ../src/main.c:410
+#: ../src/main.c:397
 msgid "Lightweight GTK+ clipboard manager."
 msgstr ""
 
-#: ../src/main.c:494
+#: ../src/main.c:482
 msgid "<b>None</b>"
 msgstr ""
 
 #. File contained no actions so adding empty
 #. File did not open so adding empty
 #. Nothing in history so adding empty
-#: ../src/main.c:515 ../src/main.c:544 ../src/main.c:657
+#: ../src/main.c:503 ../src/main.c:532 ../src/main.c:647
 msgid "Empty"
 msgstr ""
 
 #. Edit actions
-#: ../src/main.c:551
+#: ../src/main.c:539
 msgid "_Edit actions"
 msgstr ""
 
 #. Edit clipboard
-#: ../src/main.c:575
+#: ../src/main.c:563
 msgid "_Edit Clipboard"
 msgstr ""
 
@@ -119,11 +120,11 @@ msgid "<b>Clipboards</b>"
 msgstr ""
 
 #: ../src/preferences.c:401
-msgid "Use copy (Ctrl-C)"
+msgid "Use _Copy (Ctrl-C)"
 msgstr ""
 
 #: ../src/preferences.c:403
-msgid "Use primary (selection)"
+msgid "Use _Primary (Selection)"
 msgstr ""
 
 #: ../src/preferences.c:411
@@ -135,7 +136,7 @@ msgid "_Save history"
 msgstr ""
 
 #: ../src/preferences.c:419
-msgid "Keep and restore history in between sessions"
+msgid "Save and restore history between sessions"
 msgstr ""
 
 #: ../src/preferences.c:423
@@ -147,7 +148,7 @@ msgid "<b>Miscellaneous</b>"
 msgstr ""
 
 #: ../src/preferences.c:443
-msgid "_Capture hyperlinks only"
+msgid "Capture _hyperlinks only"
 msgstr ""
 
 #: ../src/preferences.c:445
@@ -252,4 +253,8 @@ msgstr ""
 
 #: ../src/preferences.c:617
 msgid "Move selected action down"
+msgstr ""
+
+#: ../data/parcellite.desktop.in.h:2 ../data/parcellite-startup.desktop.in.h:2
+msgid "Parcellite"
 msgstr ""
