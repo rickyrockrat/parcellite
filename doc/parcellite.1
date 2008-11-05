@@ -10,7 +10,7 @@ basic-features-only clipboard manager with a small memory footprint for those
 who like simplicity.
 
 \fBParcellite\fR features a clipboard CLI. Unrecognized options and the contents
-of your standard input get copied to your clipboard. See CLI EXAMPLES.
+of your standard input get copied to your clipboard. See \fBCLI EXAMPLES\fR.
 .SH
 .B OPTIONS
 .TP
@@ -18,20 +18,21 @@ of your standard input get copied to your clipboard. See CLI EXAMPLES.
 Show help options
 .TP
 .B \-d\fR, \fB\-\-daemon
-Run as daemon. Use this mode if you just want Parcellite to keep your clipboard
+Run as daemon. Use this mode if you just want \fBParcellite\fR to keep your clipboard
 and primary contents safe
 .TP
 .B \-n\fR, \fB\-\-no-icon
-Do not use status icon (Ctrl-Alt-P for menu)
+Do not use status icon
 .TP
 .B \-o\fR, \fB\-\-output
 Print clipboard contents
 .SH CLI EXAMPLES
-echo "copied to clipboard" | parcellite
-
-parcellite "copied to clipboard"
-
-echo "copied to clipboard" | parcellite -o
+ echo "copied to clipboard" | parcellite
+ parcellite "copied to clipboard"
+ echo "copied to clipboard" | parcellite -o
+.SH ACTIONS
+\fBParcellite's\fR actions perform commands using the contents of your clipboard. "\fB%s\fR" in the command
+is replaced with the clipboard contents.
 .SH "SEE ALSO"
 .PP
 Website: http://parcellite.sourceforge.net
