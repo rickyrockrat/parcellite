@@ -1,8 +1,7 @@
-# Spanish translation of parcellite
+# Japanese translation of parcellite
 # Copyright (C) 2008 Xyhthyx <xyhthyx@gmail.com>
 # This file is distributed under the same license as the parcellite package.
-# Gilberto "Xyhthyx" Miralla <xyhthyx@gmail.com>, 2008.
-# David Martínez <root@davidmartinez.net>, 2008.
+# Jiro Kawada <jiro.kawada@gmail.com>, 2008.
 #
 #
 msgid ""
@@ -10,89 +9,89 @@ msgstr ""
 "Project-Id-Version: Parcellite\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-11-05 20:47-0400\n"
-"PO-Revision-Date: 2008-10-06 12:57+0100\n"
-"Last-Translator: David Martínez <root@davidmartinez.net>\n"
-"Language-Team: Spanish\n"
+"PO-Revision-Date: 2008-11-03 19:26+0900\n"
+"Last-Translator: jiro kawada <jiro.kawada@gmail.com>\n"
+"Language-Team: JAPANESE\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: Japanese\n"
+"X-Poedit-Country: JAPAN\n"
 
 #: ../src/main.c:153
 msgid "Executing action..."
-msgstr "Ejecutando acción..."
+msgstr "アクション実行中..."
 
 #: ../src/main.c:159 ../src/main.c:758 ../data/parcellite.desktop.in.h:1
 #: ../data/parcellite-startup.desktop.in.h:1
 msgid "Clipboard Manager"
-msgstr "Gestor de Portapapeles"
+msgstr "クリップボード・マネージャ"
 
 #: ../src/main.c:182
 msgid "Could not create thread for executed action\n"
-msgstr "No se pudo crear hilo para la acción ejecutada\n"
+msgstr "実行されたアクションのためのスレッドが作成できませんでした。\n"
 
 #: ../src/main.c:233
 msgid "Editing Clipboard"
-msgstr "Editando Portapapeles"
+msgstr "クリップボード編集中"
 
 #: ../src/main.c:250
 msgid "<b>Clipboard</b>"
-msgstr "<b>Portapapeles</b>"
+msgstr "<b>クリップボード</b>"
 
 #: ../src/main.c:294
 msgid "Save changes"
-msgstr "Guardar cambios"
+msgstr "変更保存"
 
 #: ../src/main.c:304
-#, fuzzy
 msgid "Discard changes"
-msgstr "Guardar cambios"
+msgstr "変更破棄"
 
 #: ../src/main.c:342
-#, fuzzy
 msgid "Clear the history?"
-msgstr "_Invertir historial"
+msgstr "履歴を消去しますか？"
 
 #: ../src/main.c:394
 msgid "Lightweight GTK+ clipboard manager."
-msgstr "Gestor ligero de portapapeles en GTK+."
+msgstr "軽量な GTK+ クリップボード・マネージャ"
 
 #: ../src/main.c:480
 msgid "<b>None</b>"
-msgstr "<b>Ninguno</b>"
+msgstr "<b>なし</b>"
 
 #. File contained no actions so adding empty
 #. File did not open so adding empty
 #. Nothing in history so adding empty
 #: ../src/main.c:501 ../src/main.c:530 ../src/main.c:645
 msgid "Empty"
-msgstr "Vacío"
+msgstr "空"
 
 #. Edit actions
 #: ../src/main.c:537
 msgid "_Edit actions"
-msgstr "_Editar acciones"
+msgstr "アクション編集(_E)"
 
 #. Edit clipboard
 #: ../src/main.c:561
 msgid "_Edit Clipboard"
-msgstr "_Editar Portapapeles"
+msgstr "クリップボード編集(_E)"
 
 #: ../src/utils.c:38 ../src/utils.c:45
 #, c-format
 msgid "Couldn't create directory: %s\n"
-msgstr "No se puede crear el directorio: %s\n"
+msgstr "ディレクトリの作成ができませんでした。: %s\n"
 
 #: ../src/utils.c:83
 msgid "Run as daemon"
-msgstr "Ejecutar como demonio"
+msgstr "デーモンとして実行"
 
 #: ../src/utils.c:90
 msgid "Do not use status icon (Ctrl-Alt-P for menu)"
-msgstr "No usar icono de estado (Ctrl-Alt-P para el menú)"
+msgstr "ステータスアイコンを使用しない（Ctrl-Alt-P でメニュー）"
 
 #: ../src/utils.c:97
 msgid "Print clipboard contents"
-msgstr "Imprimir contenido del portapapeles"
+msgstr "クリップボード内容を出力"
 
 #: ../src/utils.c:109
 msgid ""
@@ -102,236 +101,171 @@ msgid ""
 "  parcellite \"copied to clipboard\"\n"
 "  echo \"copied to clipboard\" | parcellite -o"
 msgstr ""
-"Ejemplos del portapapeles por el terminal:\n"
+"クリップボードの CLI の使用例:\n"
 "\n"
-"  echo \"copiado a portapapeles\" | parcellite\n"
-"  parcellite \"copiado a portapapeles\"\n"
-"  echo \"copiado a portapapeles\" | parcellite -o"
+"  echo \"copied to clipboard\" | parcellite\n"
+"  parcellite \"copied to clipboard\"\n"
+"  echo \"copied to clipboard\" | parcellite -o"
 
 #: ../src/utils.c:115
-#, fuzzy
 msgid ""
 "Written by Gilberto \"Xyhthyx\" Miralla.\n"
 "Report bugs to <xyhthyx@gmail.com>."
-msgstr "Escrito por Xyhthyx. Reportar errores a <xyhthyx@gmail.com>."
+msgstr ""
+"Gilberto \"Xyhthyx\" Miralla による制作\n"
+"バグ報告はこちらに <xyhthyx@gmail.com>"
 
 #. Create the dialog
 #: ../src/preferences.c:371
 msgid "Preferences"
-msgstr "Preferencias"
+msgstr "設定"
 
 #: ../src/preferences.c:386
-#, fuzzy
 msgid "Behavior"
-msgstr "<b>Comportamiento</b>"
+msgstr "動作"
 
 #: ../src/preferences.c:394
-#, fuzzy
 msgid "<b>Clipboards</b>"
-msgstr "<b>Portapapeles</b>"
+msgstr "<b>クリップボード</b>"
 
 #: ../src/preferences.c:401
 msgid "Use _Copy (Ctrl-C)"
-msgstr ""
+msgstr "コピー(Ctrl-C)を使用(_C)"
 
 #: ../src/preferences.c:403
 msgid "Use _Primary (Selection)"
-msgstr ""
+msgstr "プライマリ・セレクション（マウスによる選択）を使用(_P)"
 
 #: ../src/preferences.c:411
 msgid "<b>History</b>"
-msgstr "<b>Historial</b>"
+msgstr "<b>履歴</b>"
 
 #: ../src/preferences.c:418
 msgid "_Save history"
-msgstr "_Guardar historial"
+msgstr "履歴を保存(_S)"
 
 #: ../src/preferences.c:419
-#, fuzzy
 msgid "Save and restore history between sessions"
-msgstr "Mantener y restaurar historial entre sesiones"
+msgstr "セッション間の履歴を保存して復元"
 
 #: ../src/preferences.c:423
-#, fuzzy
 msgid "Items in history:"
-msgstr "Número de artículos guardados en el historial:"
+msgstr "履歴アイテム数:"
 
 #: ../src/preferences.c:436
-#, fuzzy
 msgid "<b>Miscellaneous</b>"
-msgstr "<b>Muestra</b>"
+msgstr "<b>その他</b>"
 
 #: ../src/preferences.c:443
-#, fuzzy
 msgid "Capture _hyperlinks only"
-msgstr "_Capturar hipervínculos solamente"
+msgstr "ハイパーリンクのみを取り込み(_H)"
 
 #: ../src/preferences.c:445
 msgid "C_onfirm before clearing history"
-msgstr ""
+msgstr "履歴を消去する前に確認を取る(_C)"
 
 #: ../src/preferences.c:452
-#, fuzzy
 msgid "Display"
-msgstr "<b>Muestra</b>"
+msgstr "表示"
 
 #: ../src/preferences.c:460
-#, fuzzy
 msgid "<b>Items</b>"
-msgstr "<b>Atajos</b>"
+msgstr "<b>アイテム</b>"
 
 #: ../src/preferences.c:467
-#, fuzzy
 msgid "Show in a _single line"
-msgstr "Mostrar articulos en líneas únicas"
+msgstr "１行で表示(_S)"
 
 #: ../src/preferences.c:469
-#, fuzzy
 msgid "Show in _reverse order"
-msgstr "Mostrar artículos del historial en orden invertido"
+msgstr "逆順に表示(_R)"
 
 #: ../src/preferences.c:473
 msgid "Character length of items:"
-msgstr ""
+msgstr "アイテムの表示文字数:"
 
 #: ../src/preferences.c:486
-#, fuzzy
 msgid "<b>Omitting</b>"
-msgstr "<b>Historial</b>"
+msgstr "<b>省略</b>"
 
 #: ../src/preferences.c:495
-#, fuzzy
 msgid "Omit items in the:"
-msgstr "Artículos largos omitidos en:"
+msgstr "アイテムの省略表示:"
 
 #: ../src/preferences.c:499
 msgid "Beginning"
-msgstr "Principio"
+msgstr "文頭"
 
 #: ../src/preferences.c:500
 msgid "Middle"
-msgstr "Medio"
+msgstr "文中"
 
 #: ../src/preferences.c:501
 msgid "End"
-msgstr "Final"
+msgstr "文末"
 
 #: ../src/preferences.c:508
 msgid "Extras"
-msgstr ""
+msgstr "その他"
 
 #: ../src/preferences.c:516
 msgid "<b>Hotkeys</b>"
-msgstr "<b>Atajos</b>"
+msgstr "<b>ホットキー</b>"
 
 #: ../src/preferences.c:525
 msgid "History key combination:"
-msgstr ""
+msgstr "履歴キーの組み合せ:"
 
 #: ../src/preferences.c:533
 msgid "Actions key combination:"
-msgstr ""
+msgstr "アクションキーの組み合せ:"
 
 #: ../src/preferences.c:541
 msgid "Menu key combination:"
-msgstr ""
+msgstr "メニューキーの組み合せ:"
 
 #: ../src/preferences.c:552
 msgid "Actions"
-msgstr "Acciones"
+msgstr "アクション"
 
 #. Build the actions label
 #: ../src/preferences.c:557
 msgid "Control-click Parcellite's tray icon to use actions"
-msgstr "Control-clic en el icono de Parcellite para usar acciones"
+msgstr "アクションの使用は Ctrl + Parcellite トレイアイコンのクリック"
 
 #: ../src/preferences.c:577
 msgid "Action"
-msgstr "Acción"
+msgstr "アクション"
 
 #: ../src/preferences.c:584
 msgid "Command"
-msgstr "Comando"
+msgstr "コマンド"
 
 #: ../src/preferences.c:599
 msgid "Add..."
-msgstr "Añadir..."
+msgstr "追加..."
 
 #: ../src/preferences.c:601
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Add a new action\n"
 "\"%s\" in a command is replaced with the clipboard contents"
-msgstr "\"%s\" será sustituido por el contenido del portapapeles"
+msgstr ""
+"新しいアクションを追加\n"
+"コマンドの \"%s\" は、クリップボードの内容と置き換えられます。"
 
 #: ../src/preferences.c:606
 msgid "Remove"
-msgstr ""
+msgstr "削除"
 
 #: ../src/preferences.c:612
-#, fuzzy
 msgid "Move selected action up"
-msgstr "Mover seleccionado hacia arriba"
+msgstr "選択アクションを上に移動"
 
 #: ../src/preferences.c:617
-#, fuzzy
 msgid "Move selected action down"
-msgstr "Mover seleccionado hacia abajo"
+msgstr "選択アクションを下に移動"
 
 #: ../data/parcellite.desktop.in.h:2 ../data/parcellite-startup.desktop.in.h:2
 msgid "Parcellite"
 msgstr ""
-
-#~ msgid "Close"
-#~ msgstr "Cerrar"
-
-#~ msgid "New Action"
-#~ msgstr "Nueva acción"
-
-#~ msgid "<b>Name:</b>"
-#~ msgstr "<b>Nombre:</b>"
-
-#~ msgid "Name your action"
-#~ msgstr "Nombra tu acción"
-
-#~ msgid "<b>Command:</b>"
-#~ msgstr "<b>Comando:</b>"
-
-#~ msgid "Edit Action"
-#~ msgstr "Editar acción"
-
-#~ msgid "General"
-#~ msgstr "General"
-
-#~ msgid "Length in characters of history items:"
-#~ msgstr "Longitud en caracteres de artículos en el historial:"
-
-#~ msgid "History menu global hotkey:"
-#~ msgstr "Atajo para el menú de historial:"
-
-#~ msgid "Actions menu global hotkey:"
-#~ msgstr "Atajo para el menu de acciones:"
-
-#~ msgid "Single _line mode"
-#~ msgstr "Modo de _línea única"
-
-#~ msgid "Ignore all non-hyperlink text"
-#~ msgstr "Ignorar texto que no es un hipervínculo"
-
-#~ msgid "New"
-#~ msgstr "Nuevo"
-
-#~ msgid "New action"
-#~ msgstr "Nueva acción"
-
-#~ msgid "Edit"
-#~ msgstr "Editar"
-
-#~ msgid "Edit selected"
-#~ msgstr "Editar seleccionado"
-
-#~ msgid "Delete"
-#~ msgstr "Borrar"
-
-#~ msgid "Delete selected"
-#~ msgstr "Borrar seleccionado"

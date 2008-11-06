@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Parcellite\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-08-11 18:30-0400\n"
+"POT-Creation-Date: 2008-11-05 20:47-0400\n"
 "PO-Revision-Date: 2008-07-17 14:35+0200\n"
 "Last-Translator: Davide Truffa <davide@catoblepa.org>\n"
 "Language-Team: Italian <tp@lists.linux.it>\n"
@@ -16,77 +16,84 @@ msgstr ""
 "Content-Type: text/plain; charset=iso-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../src/main.c:109
+#: ../src/main.c:153
 msgid "Executing action..."
 msgstr "Sto eseguendo l'azione..."
 
-#: ../src/main.c:112 ../src/main.c:740
+#: ../src/main.c:159 ../src/main.c:758 ../data/parcellite.desktop.in.h:1
+#: ../data/parcellite-startup.desktop.in.h:1
 msgid "Clipboard Manager"
 msgstr "Gestore degli appunti"
 
-#: ../src/main.c:132
+#: ../src/main.c:182
 msgid "Could not create thread for executed action\n"
 msgstr "Impossibile creare il processo per l'azione eseguita\n"
 
-#: ../src/main.c:183
+#: ../src/main.c:233
 msgid "Editing Clipboard"
 msgstr "Modifica Appunti"
 
-#: ../src/main.c:200
+#: ../src/main.c:250
 msgid "<b>Clipboard</b>"
 msgstr "<b>Appunti</b>"
 
-#: ../src/main.c:244
+#: ../src/main.c:294
 msgid "Save changes"
 msgstr "Salva le modifiche"
 
-#: ../src/main.c:254
-msgid "Close"
-msgstr "Chiudi"
+#: ../src/main.c:304
+#, fuzzy
+msgid "Discard changes"
+msgstr "Salva le modifiche"
 
-#: ../src/main.c:328
+#: ../src/main.c:342
+#, fuzzy
+msgid "Clear the history?"
+msgstr "_Inverti cronologia"
+
+#: ../src/main.c:394
 msgid "Lightweight GTK+ clipboard manager."
 msgstr "Gestore degli Appunti leggero in GTK+"
 
-#: ../src/main.c:408
+#: ../src/main.c:480
 msgid "<b>None</b>"
 msgstr "<b>Nessuno</b>"
 
 #. File contained no actions so adding empty
 #. File did not open so adding empty
 #. Nothing in history so adding empty
-#: ../src/main.c:429 ../src/main.c:458 ../src/main.c:564
+#: ../src/main.c:501 ../src/main.c:530 ../src/main.c:645
 msgid "Empty"
 msgstr "Vuoto"
 
 #. Edit actions
-#: ../src/main.c:465
+#: ../src/main.c:537
 msgid "_Edit actions"
 msgstr "_Modifica azioni"
 
 #. Edit clipboard
-#: ../src/main.c:489
+#: ../src/main.c:561
 msgid "_Edit Clipboard"
 msgstr "_Modifica Appunti"
 
-#: ../src/utils.c:35 ../src/utils.c:42
+#: ../src/utils.c:38 ../src/utils.c:45
 #, c-format
 msgid "Couldn't create directory: %s\n"
 msgstr "Impossibile creare la directory: %s\n"
 
-#: ../src/utils.c:81
+#: ../src/utils.c:83
 msgid "Run as daemon"
 msgstr "Esegui come demone"
 
-#: ../src/utils.c:88
+#: ../src/utils.c:90
 msgid "Do not use status icon (Ctrl-Alt-P for menu)"
 msgstr "Non usare l'icona di stato (Ctrl-Alt-P per il menù)"
 
-#: ../src/utils.c:95
+#: ../src/utils.c:97
 msgid "Print clipboard contents"
 msgstr "Stampa il contenuto degli appunti"
 
-#: ../src/utils.c:107
+#: ../src/utils.c:109
 msgid ""
 "Clipboard CLI usage examples:\n"
 "\n"
@@ -100,68 +107,102 @@ msgstr ""
 "  parcellite \"copiato negli appunti\"\n"
 "  echo \"copiato negli appunti\" | parcellite -o"
 
-#: ../src/utils.c:113
+#: ../src/utils.c:115
+#, fuzzy
 msgid ""
-"Written by Xyhthyx.\n"
+"Written by Gilberto \"Xyhthyx\" Miralla.\n"
 "Report bugs to <xyhthyx@gmail.com>."
 msgstr ""
 "Scritto da Xyhthyx.\n"
 "Segnala i bug a <xyhthyx@gmail.com>."
 
 #. Create the dialog
-#: ../src/preferences.c:234
-msgid "New Action"
-msgstr "Nuova Azione"
-
-#: ../src/preferences.c:249 ../src/preferences.c:312
-msgid "<b>Name:</b>"
-msgstr "<b>Nome:</b>"
-
-#: ../src/preferences.c:254 ../src/preferences.c:317
-msgid "Name your action"
-msgstr "Dai un nome alla tua azione"
-
-#: ../src/preferences.c:261 ../src/preferences.c:324
-msgid "<b>Command:</b>"
-msgstr "<b>Comando:</b>"
-
-#: ../src/preferences.c:267 ../src/preferences.c:330
-#, c-format
-msgid "\"%s\" will be replaced with the clipboard contents"
-msgstr "\"%s\" verrà sostituito con il contenuto degli appunti"
-
-#. Create the dialog
-#: ../src/preferences.c:295
-msgid "Edit Action"
-msgstr "Modifica Azione"
-
-#. Create the dialog
-#: ../src/preferences.c:431
+#: ../src/preferences.c:371
 msgid "Preferences"
 msgstr "Preferenze"
 
-#: ../src/preferences.c:449
-msgid "General"
-msgstr "Generale"
+#: ../src/preferences.c:386
+#, fuzzy
+msgid "Behavior"
+msgstr "<b>Comportamento</b>"
 
-#: ../src/preferences.c:457
+#: ../src/preferences.c:394
+#, fuzzy
+msgid "<b>Clipboards</b>"
+msgstr "<b>Appunti</b>"
+
+#: ../src/preferences.c:401
+msgid "Use _Copy (Ctrl-C)"
+msgstr ""
+
+#: ../src/preferences.c:403
+msgid "Use _Primary (Selection)"
+msgstr ""
+
+#: ../src/preferences.c:411
 msgid "<b>History</b>"
 msgstr "<b>Cronologia</b>"
 
-#: ../src/preferences.c:464
-msgid "Amount of items to keep in history:"
+#: ../src/preferences.c:418
+msgid "_Save history"
+msgstr "_Salva cronologia"
+
+#: ../src/preferences.c:419
+#, fuzzy
+msgid "Save and restore history between sessions"
+msgstr "Salva e ripristina cronologia fra le sessioni"
+
+#: ../src/preferences.c:423
+#, fuzzy
+msgid "Items in history:"
 msgstr "Numero di elementi nella cronologia:"
 
-#: ../src/preferences.c:477
-msgid "<b>Display</b>"
+#: ../src/preferences.c:436
+#, fuzzy
+msgid "<b>Miscellaneous</b>"
 msgstr "<b>Visualizza</b>"
 
+#: ../src/preferences.c:443
+#, fuzzy
+msgid "Capture _hyperlinks only"
+msgstr "_Cattura solo gli hyperlink"
+
+#: ../src/preferences.c:445
+msgid "C_onfirm before clearing history"
+msgstr ""
+
+#: ../src/preferences.c:452
+#, fuzzy
+msgid "Display"
+msgstr "<b>Visualizza</b>"
+
+#: ../src/preferences.c:460
+#, fuzzy
+msgid "<b>Items</b>"
+msgstr "<b>Scorciatoie da tastiera</b>"
+
+#: ../src/preferences.c:467
+#, fuzzy
+msgid "Show in a _single line"
+msgstr "Mostra gli elementi su una singola riga"
+
+#: ../src/preferences.c:469
+#, fuzzy
+msgid "Show in _reverse order"
+msgstr "Inverti l'ordine della cronologia"
+
+#: ../src/preferences.c:473
+msgid "Character length of items:"
+msgstr ""
+
 #: ../src/preferences.c:486
-msgid "Length in characters of history items:"
-msgstr "Lunghezza in caratteri elementi cronologia:"
+#, fuzzy
+msgid "<b>Omitting</b>"
+msgstr "<b>Cronologia</b>"
 
 #: ../src/preferences.c:495
-msgid "Long items omitted in the:"
+#, fuzzy
+msgid "Omit items in the:"
 msgstr "Gli elementi lunghi verranno troncati al:"
 
 #: ../src/preferences.c:499
@@ -176,100 +217,122 @@ msgstr "Centro"
 msgid "End"
 msgstr "Fine"
 
-#: ../src/preferences.c:509
+#: ../src/preferences.c:508
+msgid "Extras"
+msgstr ""
+
+#: ../src/preferences.c:516
 msgid "<b>Hotkeys</b>"
 msgstr "<b>Scorciatoie da tastiera</b>"
 
-#: ../src/preferences.c:518
-msgid "History menu global hotkey:"
-msgstr "Scorciatoia per il menù Cronologia:"
+#: ../src/preferences.c:525
+msgid "History key combination:"
+msgstr ""
 
-#: ../src/preferences.c:526
-msgid "Actions menu global hotkey:"
-msgstr "Scorciatoia per il menù Azioni:"
+#: ../src/preferences.c:533
+msgid "Actions key combination:"
+msgstr ""
 
-#: ../src/preferences.c:538
-msgid "<b>Behaviour</b>"
-msgstr "<b>Comportamento</b>"
+#: ../src/preferences.c:541
+msgid "Menu key combination:"
+msgstr ""
 
-#: ../src/preferences.c:545
-msgid "_Save history"
-msgstr "_Salva cronologia"
-
-#: ../src/preferences.c:546
-msgid "Keep and restore history in between sessions"
-msgstr "Salva e ripristina cronologia fra le sessioni"
-
-#: ../src/preferences.c:549
-msgid "_Reverse history"
-msgstr "_Inverti cronologia"
-
-#: ../src/preferences.c:550
-msgid "Show history items in reverse order"
-msgstr "Inverti l'ordine della cronologia"
-
-#: ../src/preferences.c:553
-msgid "Single _line mode"
-msgstr "Modalità a _linea singola"
-
-#: ../src/preferences.c:554
-#, fuzzy
-msgid "Show items in a single line"
-msgstr "Mostra gli elementi su una singola riga"
-
-#: ../src/preferences.c:556
-msgid "_Capture hyperlinks only"
-msgstr "_Cattura solo gli hyperlink"
-
-#: ../src/preferences.c:557
-msgid "Ignore all non-hyperlink text"
-msgstr "Ignora tutto tranne gli hyperlink"
-
-#: ../src/preferences.c:564
+#: ../src/preferences.c:552
 msgid "Actions"
 msgstr "Azioni"
 
 #. Build the actions label
-#: ../src/preferences.c:569
+#: ../src/preferences.c:557
 msgid "Control-click Parcellite's tray icon to use actions"
 msgstr "Control-click sull'icona della tray per usare le azioni"
 
-#: ../src/preferences.c:590
+#: ../src/preferences.c:577
 msgid "Action"
 msgstr "Azione"
 
-#: ../src/preferences.c:598
+#: ../src/preferences.c:584
 msgid "Command"
 msgstr "Comando"
 
-#: ../src/preferences.c:613
-msgid "New"
-msgstr "Nuovo"
+#: ../src/preferences.c:599
+msgid "Add..."
+msgstr ""
 
-#: ../src/preferences.c:617
-msgid "New action"
-msgstr "Nuova azione"
+#: ../src/preferences.c:601
+#, fuzzy, c-format
+msgid ""
+"Add a new action\n"
+"\"%s\" in a command is replaced with the clipboard contents"
+msgstr "\"%s\" verrà sostituito con il contenuto degli appunti"
 
-#: ../src/preferences.c:620
-msgid "Edit"
-msgstr "Modifica"
+#: ../src/preferences.c:606
+msgid "Remove"
+msgstr ""
 
-#: ../src/preferences.c:624
-msgid "Edit selected"
-msgstr "Modifica selezionato"
-
-#: ../src/preferences.c:627
-msgid "Delete"
-msgstr "Cancella"
-
-#: ../src/preferences.c:631
-msgid "Delete selected"
-msgstr "Cancella selezionato"
-
-#: ../src/preferences.c:638
-msgid "Move selected up"
+#: ../src/preferences.c:612
+#, fuzzy
+msgid "Move selected action up"
 msgstr "Muovi la selezione verso l'alto"
 
-#: ../src/preferences.c:645
-msgid "Move selected down"
+#: ../src/preferences.c:617
+#, fuzzy
+msgid "Move selected action down"
 msgstr "Muovi la selezione verso il basso"
+
+#: ../data/parcellite.desktop.in.h:2 ../data/parcellite-startup.desktop.in.h:2
+msgid "Parcellite"
+msgstr ""
+
+#~ msgid "Close"
+#~ msgstr "Chiudi"
+
+#~ msgid "New Action"
+#~ msgstr "Nuova Azione"
+
+#~ msgid "<b>Name:</b>"
+#~ msgstr "<b>Nome:</b>"
+
+#~ msgid "Name your action"
+#~ msgstr "Dai un nome alla tua azione"
+
+#~ msgid "<b>Command:</b>"
+#~ msgstr "<b>Comando:</b>"
+
+#~ msgid "Edit Action"
+#~ msgstr "Modifica Azione"
+
+#~ msgid "General"
+#~ msgstr "Generale"
+
+#~ msgid "Length in characters of history items:"
+#~ msgstr "Lunghezza in caratteri elementi cronologia:"
+
+#~ msgid "History menu global hotkey:"
+#~ msgstr "Scorciatoia per il menù Cronologia:"
+
+#~ msgid "Actions menu global hotkey:"
+#~ msgstr "Scorciatoia per il menù Azioni:"
+
+#~ msgid "Single _line mode"
+#~ msgstr "Modalità a _linea singola"
+
+#~ msgid "Ignore all non-hyperlink text"
+#~ msgstr "Ignora tutto tranne gli hyperlink"
+
+#~ msgid "New"
+#~ msgstr "Nuovo"
+
+#~ msgid "New action"
+#~ msgstr "Nuova azione"
+
+#~ msgid "Edit"
+#~ msgstr "Modifica"
+
+#~ msgid "Edit selected"
+#~ msgstr "Modifica selezionato"
+
+#~ msgid "Delete"
+#~ msgstr "Cancella"
+
+#~ msgid "Delete selected"
+#~ msgstr "Cancella selezionato"
