@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Parcellite\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-10-18 11:53-0400\n"
+"POT-Creation-Date: 2008-11-05 20:47-0400\n"
 "PO-Revision-Date: 2008-08-15 16:58+0100\n"
 "Last-Translator: Németh Tamás <ntomasz@vipmail.hu>\n"
 "Language-Team: \n"
@@ -16,62 +16,63 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../src/main.c:166
+#: ../src/main.c:153
 msgid "Executing action..."
 msgstr "Művelet végrehajtása..."
 
-#: ../src/main.c:169 ../src/main.c:778
+#: ../src/main.c:159 ../src/main.c:758 ../data/parcellite.desktop.in.h:1
+#: ../data/parcellite-startup.desktop.in.h:1
 msgid "Clipboard Manager"
 msgstr "Vágólapkezelő"
 
-#: ../src/main.c:189
+#: ../src/main.c:182
 msgid "Could not create thread for executed action\n"
 msgstr "A végrehajtott művelethez nem hozható létre szál\n"
 
-#: ../src/main.c:240
+#: ../src/main.c:233
 msgid "Editing Clipboard"
 msgstr "Vágólap szerkesztése"
 
-#: ../src/main.c:257
+#: ../src/main.c:250
 msgid "<b>Clipboard</b>"
 msgstr "<b>Vágólap</b>"
 
-#: ../src/main.c:301
+#: ../src/main.c:294
 msgid "Save changes"
 msgstr "Változások mentése"
 
-#: ../src/main.c:311
+#: ../src/main.c:304
 #, fuzzy
 msgid "Discard changes"
 msgstr "Változások mentése"
 
-#: ../src/main.c:351
+#: ../src/main.c:342
 #, fuzzy
 msgid "Clear the history?"
 msgstr "_Fordított előzmény"
 
-#: ../src/main.c:410
+#: ../src/main.c:394
 msgid "Lightweight GTK+ clipboard manager."
 msgstr "GTK+ alapú, könnyen kezelhető vágólapkezelő."
 
-#: ../src/main.c:494
+#: ../src/main.c:480
 msgid "<b>None</b>"
 msgstr "<b>Nincs</b>"
 
 #. File contained no actions so adding empty
 #. File did not open so adding empty
 #. Nothing in history so adding empty
-#: ../src/main.c:515 ../src/main.c:544 ../src/main.c:657
+#: ../src/main.c:501 ../src/main.c:530 ../src/main.c:645
 msgid "Empty"
 msgstr "Üres"
 
 #. Edit actions
-#: ../src/main.c:551
+#: ../src/main.c:537
 msgid "_Edit actions"
 msgstr "_Műveletek szerkesztése"
 
 #. Edit clipboard
-#: ../src/main.c:575
+#: ../src/main.c:561
 msgid "_Edit Clipboard"
 msgstr "_Vágólap szerkesztése"
 
@@ -131,11 +132,11 @@ msgid "<b>Clipboards</b>"
 msgstr "<b>Vágólap</b>"
 
 #: ../src/preferences.c:401
-msgid "Use copy (Ctrl-C)"
+msgid "Use _Copy (Ctrl-C)"
 msgstr ""
 
 #: ../src/preferences.c:403
-msgid "Use primary (selection)"
+msgid "Use _Primary (Selection)"
 msgstr ""
 
 #: ../src/preferences.c:411
@@ -147,7 +148,8 @@ msgid "_Save history"
 msgstr "Előzmény _mentése"
 
 #: ../src/preferences.c:419
-msgid "Keep and restore history in between sessions"
+#, fuzzy
+msgid "Save and restore history between sessions"
 msgstr "Tartsa meg és állítsa helyre az előzményt a munkamenetek között"
 
 #: ../src/preferences.c:423
@@ -161,7 +163,8 @@ msgid "<b>Miscellaneous</b>"
 msgstr "<b>Megjelenítés</b>"
 
 #: ../src/preferences.c:443
-msgid "_Capture hyperlinks only"
+#, fuzzy
+msgid "Capture _hyperlinks only"
 msgstr "Csak az internetes _hivatkozások elkapása"
 
 #: ../src/preferences.c:445
@@ -275,6 +278,10 @@ msgstr "Kiválasztott mozgatása felfelé"
 #, fuzzy
 msgid "Move selected action down"
 msgstr "Kiválasztott mozgatása lefelé"
+
+#: ../data/parcellite.desktop.in.h:2 ../data/parcellite-startup.desktop.in.h:2
+msgid "Parcellite"
+msgstr ""
 
 #~ msgid "Close"
 #~ msgstr "Bezárás"
