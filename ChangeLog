@@ -10,7 +10,7 @@ v0.9   Pending...
     if they ever become NULL.
   
   Changes
-  + Fixed daemon mode.
+  + Fixed/updated daemon mode.
   + Changed preferences dialog.
   + Changed actions preferences to use GtkTreeView's built in editing mode.
   + Fixed bug with icon showing up in --no-icon mode when you execute an action.
