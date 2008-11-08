@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-11-05 20:47-0400\n"
+"POT-Creation-Date: 2008-11-08 13:00-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -196,63 +196,48 @@ msgid "End"
 msgstr ""
 
 #: ../src/preferences.c:508
-msgid "Extras"
-msgstr ""
-
-#: ../src/preferences.c:516
-msgid "<b>Hotkeys</b>"
-msgstr ""
-
-#: ../src/preferences.c:525
-msgid "History key combination:"
-msgstr ""
-
-#: ../src/preferences.c:533
-msgid "Actions key combination:"
-msgstr ""
-
-#: ../src/preferences.c:541
-msgid "Menu key combination:"
-msgstr ""
-
-#: ../src/preferences.c:552
 msgid "Actions"
 msgstr ""
 
 #. Build the actions label
-#: ../src/preferences.c:557
+#: ../src/preferences.c:513
 msgid "Control-click Parcellite's tray icon to use actions"
 msgstr ""
 
-#: ../src/preferences.c:577
+#: ../src/preferences.c:533
 msgid "Action"
 msgstr ""
 
-#: ../src/preferences.c:584
+#: ../src/preferences.c:540
 msgid "Command"
 msgstr ""
 
-#: ../src/preferences.c:599
+#: ../src/preferences.c:555
 msgid "Add..."
 msgstr ""
 
-#: ../src/preferences.c:601
-#, c-format
-msgid ""
-"Add a new action\n"
-"\"%s\" in a command is replaced with the clipboard contents"
-msgstr ""
-
-#: ../src/preferences.c:606
+#: ../src/preferences.c:559
 msgid "Remove"
 msgstr ""
 
-#: ../src/preferences.c:612
-msgid "Move selected action up"
+#: ../src/preferences.c:576
+msgid "Extras"
 msgstr ""
 
-#: ../src/preferences.c:617
-msgid "Move selected action down"
+#: ../src/preferences.c:584
+msgid "<b>Hotkeys</b>"
+msgstr ""
+
+#: ../src/preferences.c:593
+msgid "History key combination:"
+msgstr ""
+
+#: ../src/preferences.c:601
+msgid "Actions key combination:"
+msgstr ""
+
+#: ../src/preferences.c:609
+msgid "Menu key combination:"
 msgstr ""
 
 #: ../data/parcellite.desktop.in.h:2 ../data/parcellite-startup.desktop.in.h:2
