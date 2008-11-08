@@ -23,7 +23,7 @@
 
 G_BEGIN_DECLS
 
-#define ACTIONS_TAB    3
+#define ACTIONS_TAB    2
 #define POPUP_DELAY    100
 #define CHECK_INTERVAL 500
 
@@ -51,12 +51,6 @@ typedef struct
   gboolean  no_icon;          /* No icon */
 }
 prefs_t;
-
-struct last_item
-{
-  gchar* primary;
-  gchar* clipboard;
-};
 
 extern prefs_t prefs;
 
