@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Parcellite\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-11-05 20:47-0400\n"
+"POT-Creation-Date: 2008-11-08 13:08-0400\n"
 "PO-Revision-Date: 2008-11-03 19:26+0900\n"
 "Last-Translator: jiro kawada <jiro.kawada@gmail.com>\n"
 "Language-Team: JAPANESE\n"
@@ -205,67 +205,63 @@ msgid "End"
 msgstr "文末"
 
 #: ../src/preferences.c:508
-msgid "Extras"
-msgstr "その他"
-
-#: ../src/preferences.c:516
-msgid "<b>Hotkeys</b>"
-msgstr "<b>ホットキー</b>"
-
-#: ../src/preferences.c:525
-msgid "History key combination:"
-msgstr "履歴キーの組み合せ:"
-
-#: ../src/preferences.c:533
-msgid "Actions key combination:"
-msgstr "アクションキーの組み合せ:"
-
-#: ../src/preferences.c:541
-msgid "Menu key combination:"
-msgstr "メニューキーの組み合せ:"
-
-#: ../src/preferences.c:552
 msgid "Actions"
 msgstr "アクション"
 
 #. Build the actions label
-#: ../src/preferences.c:557
+#: ../src/preferences.c:513
 msgid "Control-click Parcellite's tray icon to use actions"
 msgstr "アクションの使用は Ctrl + Parcellite トレイアイコンのクリック"
 
-#: ../src/preferences.c:577
+#: ../src/preferences.c:533
 msgid "Action"
 msgstr "アクション"
 
-#: ../src/preferences.c:584
+#: ../src/preferences.c:540
 msgid "Command"
 msgstr "コマンド"
 
-#: ../src/preferences.c:599
+#: ../src/preferences.c:555
 msgid "Add..."
 msgstr "追加..."
 
-#: ../src/preferences.c:601
-#, c-format
-msgid ""
-"Add a new action\n"
-"\"%s\" in a command is replaced with the clipboard contents"
-msgstr ""
-"新しいアクションを追加\n"
-"コマンドの \"%s\" は、クリップボードの内容と置き換えられます。"
-
-#: ../src/preferences.c:606
+#: ../src/preferences.c:559
 msgid "Remove"
 msgstr "削除"
 
-#: ../src/preferences.c:612
-msgid "Move selected action up"
-msgstr "選択アクションを上に移動"
+#: ../src/preferences.c:576
+msgid "Extras"
+msgstr "その他"
 
-#: ../src/preferences.c:617
-msgid "Move selected action down"
-msgstr "選択アクションを下に移動"
+#: ../src/preferences.c:584
+msgid "<b>Hotkeys</b>"
+msgstr "<b>ホットキー</b>"
+
+#: ../src/preferences.c:593
+msgid "History key combination:"
+msgstr "履歴キーの組み合せ:"
+
+#: ../src/preferences.c:601
+msgid "Actions key combination:"
+msgstr "アクションキーの組み合せ:"
+
+#: ../src/preferences.c:609
+msgid "Menu key combination:"
+msgstr "メニューキーの組み合せ:"
 
 #: ../data/parcellite.desktop.in.h:2 ../data/parcellite-startup.desktop.in.h:2
 msgid "Parcellite"
 msgstr ""
+
+#~ msgid ""
+#~ "Add a new action\n"
+#~ "\"%s\" in a command is replaced with the clipboard contents"
+#~ msgstr ""
+#~ "新しいアクションを追加\n"
+#~ "コマンドの \"%s\" は、クリップボードの内容と置き換えられます。"
+
+#~ msgid "Move selected action up"
+#~ msgstr "選択アクションを上に移動"
+
+#~ msgid "Move selected action down"
+#~ msgstr "選択アクションを下に移動"
