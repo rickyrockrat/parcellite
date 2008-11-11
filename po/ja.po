@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Parcellite\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-11-08 13:08-0400\n"
-"PO-Revision-Date: 2008-11-03 19:26+0900\n"
+"POT-Creation-Date: 2008-11-10 21:46-0400\n"
+"PO-Revision-Date: 2008-11-10 11:46+0900\n"
 "Last-Translator: jiro kawada <jiro.kawada@gmail.com>\n"
 "Language-Team: JAPANESE\n"
 "MIME-Version: 1.0\n"
@@ -103,9 +103,9 @@ msgid ""
 msgstr ""
 "クリップボードの CLI の使用例:\n"
 "\n"
-"  echo \"copied to clipboard\" | parcellite\n"
-"  parcellite \"copied to clipboard\"\n"
-"  echo \"copied to clipboard\" | parcellite -o"
+"  echo \"クリップボードにコピー\" | parcellite\n"
+"  parcellite \"クリップボードにコピー\"\n"
+"  echo \"クリップボードにコピー\" | parcellite -o"
 
 #: ../src/utils.c:115
 msgid ""
@@ -134,7 +134,7 @@ msgstr "コピー(Ctrl-C)を使用(_C)"
 
 #: ../src/preferences.c:403
 msgid "Use _Primary (Selection)"
-msgstr "プライマリ・セレクション（マウスによる選択）を使用(_P)"
+msgstr "プライマリ・セレクション（選択）を使用(_P)"
 
 #: ../src/preferences.c:411
 msgid "<b>History</b>"
@@ -174,7 +174,7 @@ msgstr "<b>アイテム</b>"
 
 #: ../src/preferences.c:467
 msgid "Show in a _single line"
-msgstr "１行で表示(_S)"
+msgstr "1行で表示(_S)"
 
 #: ../src/preferences.c:469
 msgid "Show in _reverse order"
