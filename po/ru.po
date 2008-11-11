@@ -8,13 +8,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Parcellite\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-11-08 13:08-0400\n"
-"PO-Revision-Date: 2008-08-01 09:35+0500\n"
+"POT-Creation-Date: 2008-11-10 21:46-0400\n"
+"PO-Revision-Date: 2008-11-09 01:01+0500\n"
 "Last-Translator: Gultyaev Alexey <hokum83@gmail.com>\n"
 "Language-Team: Russian\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: Russian\n"
+"X-Poedit-Country: RUSSIAN FEDERATION\n"
 
 #: ../src/main.c:153
 msgid "Executing action..."
@@ -42,14 +44,12 @@ msgid "Save changes"
 msgstr "Сохранить изменения"
 
 #: ../src/main.c:304
-#, fuzzy
 msgid "Discard changes"
-msgstr "Сохранить изменения"
+msgstr "Отменить изменения"
 
 #: ../src/main.c:342
-#, fuzzy
 msgid "Clear the history?"
-msgstr "_Обратить историю"
+msgstr "Очистить историю?"
 
 #: ../src/main.c:394
 msgid "Lightweight GTK+ clipboard manager."
@@ -69,7 +69,7 @@ msgstr "Очистить"
 #. Edit actions
 #: ../src/main.c:537
 msgid "_Edit actions"
-msgstr "_Редактировть действия"
+msgstr "_Редактировать действия"
 
 #. Edit clipboard
 #: ../src/main.c:561
@@ -108,12 +108,11 @@ msgstr ""
 "  echo \"copied to clipboard\" | parcellite -o"
 
 #: ../src/utils.c:115
-#, fuzzy
 msgid ""
 "Written by Gilberto \"Xyhthyx\" Miralla.\n"
 "Report bugs to <xyhthyx@gmail.com>."
 msgstr ""
-"Программа написана Xyhthyx.\n"
+"Программа написана Gilberto \"Xyhthyx\" Miralla.\n"
 "О найденных ошибках сообщать на адрес <xyhthyx@gmail.com>."
 
 #. Create the dialog
@@ -122,22 +121,20 @@ msgid "Preferences"
 msgstr "Параметры"
 
 #: ../src/preferences.c:386
-#, fuzzy
 msgid "Behavior"
-msgstr "<b>Поведение</b>"
+msgstr "Поведение"
 
 #: ../src/preferences.c:394
-#, fuzzy
 msgid "<b>Clipboards</b>"
-msgstr "<b>Буфер обмена</b>"
+msgstr "<b>Буферы обмена</b>"
 
 #: ../src/preferences.c:401
 msgid "Use _Copy (Ctrl-C)"
-msgstr ""
+msgstr "Использовать буфер _копирования (Ctrl+C)"
 
 #: ../src/preferences.c:403
 msgid "Use _Primary (Selection)"
-msgstr ""
+msgstr "Использовать _первичный буфер (Выделение)"
 
 #: ../src/preferences.c:411
 msgid "<b>History</b>"
@@ -148,62 +145,52 @@ msgid "_Save history"
 msgstr "_Сохранять историю"
 
 #: ../src/preferences.c:419
-#, fuzzy
 msgid "Save and restore history between sessions"
 msgstr "Хранить и восстанавливать историю между сеансами"
 
 #: ../src/preferences.c:423
-#, fuzzy
 msgid "Items in history:"
-msgstr "Количество позиций, хранимых в истории:"
+msgstr "Количество элементов в истории:"
 
 #: ../src/preferences.c:436
-#, fuzzy
 msgid "<b>Miscellaneous</b>"
-msgstr "<b>Вид</b>"
+msgstr "<b>Разное</b>"
 
 #: ../src/preferences.c:443
-#, fuzzy
 msgid "Capture _hyperlinks only"
-msgstr "_Захватывать только гиперссылки"
+msgstr "З_ахватывать только гиперссылки"
 
 #: ../src/preferences.c:445
 msgid "C_onfirm before clearing history"
-msgstr ""
+msgstr "Подтверждать очистку _истории"
 
 #: ../src/preferences.c:452
-#, fuzzy
 msgid "Display"
-msgstr "<b>Вид</b>"
+msgstr "Вид"
 
 #: ../src/preferences.c:460
-#, fuzzy
 msgid "<b>Items</b>"
-msgstr "<b>Горячие клавиши</b>"
+msgstr "<b>Элементы истории</b>"
 
 #: ../src/preferences.c:467
-#, fuzzy
 msgid "Show in a _single line"
-msgstr "Показывать позиции в одну строку"
+msgstr "Показы_вать в одну строку"
 
 #: ../src/preferences.c:469
-#, fuzzy
 msgid "Show in _reverse order"
-msgstr "Показывать позиции истории в обратном порядке"
+msgstr "По_казывать в обратном порядке"
 
 #: ../src/preferences.c:473
 msgid "Character length of items:"
-msgstr ""
+msgstr "Количество символов элемента истории:"
 
 #: ../src/preferences.c:486
-#, fuzzy
 msgid "<b>Omitting</b>"
-msgstr "<b>История</b>"
+msgstr "<b>Сокращение элементов</b>"
 
 #: ../src/preferences.c:495
-#, fuzzy
 msgid "Omit items in the:"
-msgstr "Для длинных позиций не показывать:"
+msgstr "Для длинных элементов не показывать:"
 
 #: ../src/preferences.c:499
 msgid "Beginning"
@@ -238,15 +225,15 @@ msgstr "Команда"
 
 #: ../src/preferences.c:555
 msgid "Add..."
-msgstr ""
+msgstr "Добавить"
 
 #: ../src/preferences.c:559
 msgid "Remove"
-msgstr ""
+msgstr "Удалить"
 
 #: ../src/preferences.c:576
 msgid "Extras"
-msgstr ""
+msgstr "Дополнительно"
 
 #: ../src/preferences.c:584
 msgid "<b>Hotkeys</b>"
@@ -254,19 +241,19 @@ msgstr "<b>Горячие клавиши</b>"
 
 #: ../src/preferences.c:593
 msgid "History key combination:"
-msgstr ""
+msgstr "Сочетание клавиш для истории:"
 
 #: ../src/preferences.c:601
 msgid "Actions key combination:"
-msgstr ""
+msgstr "Сочетание клавиш для действий:"
 
 #: ../src/preferences.c:609
 msgid "Menu key combination:"
-msgstr ""
+msgstr "Сочетание клавиш для меню:"
 
 #: ../data/parcellite.desktop.in.h:2 ../data/parcellite-startup.desktop.in.h:2
 msgid "Parcellite"
-msgstr ""
+msgstr "Parcellite"
 
 #, fuzzy
 #~ msgid ""

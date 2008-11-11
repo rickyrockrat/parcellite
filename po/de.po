@@ -9,9 +9,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Parcellite\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-11-08 13:08-0400\n"
-"PO-Revision-Date: 2008-08-11 16:54+0100\n"
-"Last-Translator: Michael Stempin <mstempin@web.de>\n"
+"POT-Creation-Date: 2008-11-10 21:46-0400\n"
+"PO-Revision-Date: 2008-11-08 20:29+0100\n"
+"Last-Translator: Eckhard M. Jäger <bart@neeneenee.de>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -43,14 +43,12 @@ msgid "Save changes"
 msgstr "Änderungen Speichern"
 
 #: ../src/main.c:304
-#, fuzzy
 msgid "Discard changes"
-msgstr "Änderungen Speichern"
+msgstr "Änderungen verwerfen"
 
 #: ../src/main.c:342
-#, fuzzy
 msgid "Clear the history?"
-msgstr "Ve_rlauf umkehren"
+msgstr "Verlauf leeren?"
 
 #: ../src/main.c:394
 msgid "Lightweight GTK+ clipboard manager."
@@ -109,13 +107,12 @@ msgstr ""
 "  echo \"In Zwischenablage kopiert\" | parcellite -o"
 
 #: ../src/utils.c:115
-#, fuzzy
 msgid ""
 "Written by Gilberto \"Xyhthyx\" Miralla.\n"
 "Report bugs to <xyhthyx@gmail.com>."
 msgstr ""
-"Programmiert von Xyhthyx.\n"
-"Melden Sie Fehler an <xyhthyx@gmail.com>."
+"Entwickelt von Gilberto \"Xyhthyx\" Miralla.\n"
+"Melden Sie bitte Fehler an <xyhthyx@gmail.com>."
 
 #. Create the dialog
 #: ../src/preferences.c:371
@@ -123,9 +120,8 @@ msgid "Preferences"
 msgstr "Einstellungen"
 
 #: ../src/preferences.c:386
-#, fuzzy
 msgid "Behavior"
-msgstr "<b>Verhalten</b>"
+msgstr "Verhalten"
 
 #: ../src/preferences.c:394
 #, fuzzy
@@ -134,11 +130,11 @@ msgstr "<b>Zwischenablage</b>"
 
 #: ../src/preferences.c:401
 msgid "Use _Copy (Ctrl-C)"
-msgstr ""
+msgstr "Kopieren benutzen (Ctrl-C)"
 
 #: ../src/preferences.c:403
 msgid "Use _Primary (Selection)"
-msgstr ""
+msgstr "Kopieren benutzen (Ctrl-C)"
 
 #: ../src/preferences.c:411
 msgid "<b>History</b>"
@@ -149,19 +145,16 @@ msgid "_Save history"
 msgstr "Verlauf _speichern"
 
 #: ../src/preferences.c:419
-#, fuzzy
 msgid "Save and restore history between sessions"
-msgstr "Verlauf zwischen den einzelnen Sitzungen speichern"
+msgstr "Verlauf zwischen den einzelnen Sitzungen speichern/ wiederherstellen"
 
 #: ../src/preferences.c:423
-#, fuzzy
 msgid "Items in history:"
-msgstr "Anzahl der Einträge im Verlauf:"
+msgstr "Einträge im Verlauf:"
 
 #: ../src/preferences.c:436
-#, fuzzy
 msgid "<b>Miscellaneous</b>"
-msgstr "<b>Ansicht</b>"
+msgstr "<b>Verschiedenes</b>"
 
 #: ../src/preferences.c:443
 #, fuzzy
@@ -170,41 +163,35 @@ msgstr "Erfasse nur Links"
 
 #: ../src/preferences.c:445
 msgid "C_onfirm before clearing history"
-msgstr ""
+msgstr "Leeren des Verlaufes bestätigen"
 
 #: ../src/preferences.c:452
-#, fuzzy
 msgid "Display"
-msgstr "<b>Ansicht</b>"
+msgstr "Ansicht"
 
 #: ../src/preferences.c:460
-#, fuzzy
 msgid "<b>Items</b>"
-msgstr "<b>Tastenkombinationen</b>"
+msgstr "<b>Einträge</b>"
 
 #: ../src/preferences.c:467
-#, fuzzy
 msgid "Show in a _single line"
-msgstr "Einträge als einzelne Zeile anzeigen"
+msgstr "Als einzelne Zeile anzeigen"
 
 #: ../src/preferences.c:469
-#, fuzzy
 msgid "Show in _reverse order"
-msgstr "Einträge des Verlaufs in umgekehrter Reihenfolge anzeigen"
+msgstr "In umgekehrter Reihenfolge anzeigen"
 
 #: ../src/preferences.c:473
 msgid "Character length of items:"
-msgstr ""
+msgstr "Länge der Einträge im Verlauf"
 
 #: ../src/preferences.c:486
-#, fuzzy
 msgid "<b>Omitting</b>"
-msgstr "<b>Verlauf</b>"
+msgstr "<b>Ignorieren</b>"
 
 #: ../src/preferences.c:495
-#, fuzzy
 msgid "Omit items in the:"
-msgstr "Lange Einträge werden gekürzt:"
+msgstr "Ignoriere Einträge in:"
 
 #: ../src/preferences.c:499
 msgid "Beginning"
@@ -237,15 +224,15 @@ msgstr "Befehl"
 
 #: ../src/preferences.c:555
 msgid "Add..."
-msgstr ""
+msgstr "Hinzufügen..."
 
 #: ../src/preferences.c:559
 msgid "Remove"
-msgstr ""
+msgstr "Entfernen"
 
 #: ../src/preferences.c:576
 msgid "Extras"
-msgstr ""
+msgstr "Extras"
 
 #: ../src/preferences.c:584
 msgid "<b>Hotkeys</b>"
@@ -253,19 +240,19 @@ msgstr "<b>Tastenkombinationen</b>"
 
 #: ../src/preferences.c:593
 msgid "History key combination:"
-msgstr ""
+msgstr "Verlauf Tastenkombination"
 
 #: ../src/preferences.c:601
 msgid "Actions key combination:"
-msgstr ""
+msgstr "Aktionen Tastenkombination"
 
 #: ../src/preferences.c:609
 msgid "Menu key combination:"
-msgstr ""
+msgstr "Menü Tastenkombination"
 
 #: ../data/parcellite.desktop.in.h:2 ../data/parcellite-startup.desktop.in.h:2
 msgid "Parcellite"
-msgstr ""
+msgstr "Parcellite"
 
 #, fuzzy
 #~ msgid ""
