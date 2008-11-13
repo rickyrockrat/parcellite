@@ -1,1 +1,4 @@
-
++ Add '\n' at the end of piped contents.
++ Add primary support for CLI.
++ Dialog with listed history contents for searching and removing.
++ Static entries.
