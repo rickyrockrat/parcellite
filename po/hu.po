@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Parcellite\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-11-08 13:08-0400\n"
-"PO-Revision-Date: 2008-08-15 16:58+0100\n"
+"POT-Creation-Date: 2008-11-13 18:22-0400\n"
+"PO-Revision-Date: 2008-11-12 18:20+0100\n"
 "Last-Translator: Németh Tamás <ntomasz@vipmail.hu>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -42,14 +42,12 @@ msgid "Save changes"
 msgstr "Változások mentése"
 
 #: ../src/main.c:304
-#, fuzzy
 msgid "Discard changes"
-msgstr "Változások mentése"
+msgstr "Változások elvetése"
 
 #: ../src/main.c:342
-#, fuzzy
 msgid "Clear the history?"
-msgstr "_Fordított előzmény"
+msgstr "Törli az előzményeket?"
 
 #: ../src/main.c:394
 msgid "Lightweight GTK+ clipboard manager."
@@ -108,13 +106,12 @@ msgstr ""
 "  echo \"másolás a vágólapra\" | parcellite -o"
 
 #: ../src/utils.c:115
-#, fuzzy
 msgid ""
 "Written by Gilberto \"Xyhthyx\" Miralla.\n"
 "Report bugs to <xyhthyx@gmail.com>."
 msgstr ""
-"Programozó: Xyhthyx\n"
-"Hibajelentő emailcím: <xyhthyx@gmail.com>"
+"Írta: Gilberto \"Xyhthyx\" Miralla\n"
+"Hibajelentések címe: <xyhthyx@gmail.com>"
 
 #. Create the dialog
 #: ../src/preferences.c:371
@@ -122,22 +119,20 @@ msgid "Preferences"
 msgstr "Beállítások"
 
 #: ../src/preferences.c:386
-#, fuzzy
 msgid "Behavior"
-msgstr "<b>Viselkedés</b>"
+msgstr "Viselkedés"
 
 #: ../src/preferences.c:394
-#, fuzzy
 msgid "<b>Clipboards</b>"
-msgstr "<b>Vágólap</b>"
+msgstr "<b>Vágólapok</b>"
 
 #: ../src/preferences.c:401
 msgid "Use _Copy (Ctrl-C)"
-msgstr ""
+msgstr "_Másol használata (Ctrl+C)"
 
 #: ../src/preferences.c:403
 msgid "Use _Primary (Selection)"
-msgstr ""
+msgstr "_Elsődleges használata (Kiválasztás)"
 
 #: ../src/preferences.c:411
 msgid "<b>History</b>"
@@ -148,74 +143,64 @@ msgid "_Save history"
 msgstr "Előzmény _mentése"
 
 #: ../src/preferences.c:419
-#, fuzzy
 msgid "Save and restore history between sessions"
-msgstr "Tartsa meg és állítsa helyre az előzményt a munkamenetek között"
+msgstr "Előzmények mentése és visszaállítása a munkamenetek között"
 
 #: ../src/preferences.c:423
-#, fuzzy
 msgid "Items in history:"
-msgstr "Az előzményben megtartott elemek száma:"
+msgstr "Előzmény elemei:"
 
 #: ../src/preferences.c:436
-#, fuzzy
 msgid "<b>Miscellaneous</b>"
-msgstr "<b>Megjelenítés</b>"
+msgstr "<b>Egyebek</b>"
 
 #: ../src/preferences.c:443
-#, fuzzy
 msgid "Capture _hyperlinks only"
-msgstr "Csak az internetes _hivatkozások elkapása"
+msgstr "Csak a _hivatkozások elkapása"
 
 #: ../src/preferences.c:445
 msgid "C_onfirm before clearing history"
-msgstr ""
+msgstr "Előzmény törlésének megerősítése"
 
 #: ../src/preferences.c:452
-#, fuzzy
 msgid "Display"
-msgstr "<b>Megjelenítés</b>"
+msgstr "Megjelenítés"
 
 #: ../src/preferences.c:460
-#, fuzzy
 msgid "<b>Items</b>"
-msgstr "<b>Gyorsbillentyűk</b>"
+msgstr "<b>Elemek</b>"
 
 #: ../src/preferences.c:467
-#, fuzzy
 msgid "Show in a _single line"
-msgstr "Elemek mutatása egyetlen sorban"
+msgstr "_Egysoros mód"
 
 #: ../src/preferences.c:469
-#, fuzzy
 msgid "Show in _reverse order"
-msgstr "Előzmény elemeinek mutatása fordított sorrendben"
+msgstr "_Fordított sorrend"
 
 #: ../src/preferences.c:473
 msgid "Character length of items:"
-msgstr ""
+msgstr "Elemek karaktereinek száma:"
 
 #: ../src/preferences.c:486
-#, fuzzy
 msgid "<b>Omitting</b>"
-msgstr "<b>Előzmény</b>"
+msgstr "<b>Kihagyás</b>"
 
 #: ../src/preferences.c:495
-#, fuzzy
 msgid "Omit items in the:"
-msgstr "Hosszabb elemekből kihagyja:"
+msgstr "Elemek kihagyása itt:"
 
 #: ../src/preferences.c:499
 msgid "Beginning"
-msgstr "az elejét"
+msgstr "Elején"
 
 #: ../src/preferences.c:500
 msgid "Middle"
-msgstr "a közepét"
+msgstr "Középen"
 
 #: ../src/preferences.c:501
 msgid "End"
-msgstr "a végét"
+msgstr "Végén"
 
 #: ../src/preferences.c:508
 msgid "Actions"
@@ -236,15 +221,15 @@ msgstr "Parancs"
 
 #: ../src/preferences.c:555
 msgid "Add..."
-msgstr ""
+msgstr "Új..."
 
 #: ../src/preferences.c:559
 msgid "Remove"
-msgstr ""
+msgstr "Eltávolít"
 
 #: ../src/preferences.c:576
 msgid "Extras"
-msgstr ""
+msgstr "Extrák"
 
 #: ../src/preferences.c:584
 msgid "<b>Hotkeys</b>"
@@ -252,87 +237,16 @@ msgstr "<b>Gyorsbillentyűk</b>"
 
 #: ../src/preferences.c:593
 msgid "History key combination:"
-msgstr ""
+msgstr "Előzmény gyorsbillentyű:"
 
 #: ../src/preferences.c:601
 msgid "Actions key combination:"
-msgstr ""
+msgstr "Műveletek gyorsbillentyű:"
 
 #: ../src/preferences.c:609
 msgid "Menu key combination:"
-msgstr ""
+msgstr "Menü gyorsbillentyű:"
 
 #: ../data/parcellite.desktop.in.h:2 ../data/parcellite-startup.desktop.in.h:2
 msgid "Parcellite"
-msgstr ""
-
-#, fuzzy
-#~ msgid ""
-#~ "Add a new action\n"
-#~ "\"%s\" in a command is replaced with the clipboard contents"
-#~ msgstr "\"%s\" helyére kerül a vágólap tartalma"
-
-#, fuzzy
-#~ msgid "Move selected action up"
-#~ msgstr "Kiválasztott mozgatása felfelé"
-
-#, fuzzy
-#~ msgid "Move selected action down"
-#~ msgstr "Kiválasztott mozgatása lefelé"
-
-#~ msgid "Close"
-#~ msgstr "Bezárás"
-
-#~ msgid "New Action"
-#~ msgstr "Új művelet"
-
-#~ msgid "<b>Name:</b>"
-#~ msgstr "<b>Név:</b>"
-
-#~ msgid "Name your action"
-#~ msgstr "A művelet neve"
-
-#~ msgid "<b>Command:</b>"
-#~ msgstr "<b>Parancs:</b>"
-
-#~ msgid "Edit Action"
-#~ msgstr "Művelet szerkesztése"
-
-#~ msgid "General"
-#~ msgstr "Általános"
-
-#~ msgid "Length in characters of history items:"
-#~ msgstr "Karakterek száma az előzmény elemeinél:"
-
-#~ msgid "History menu global hotkey:"
-#~ msgstr "Előzmény gyorsbillentyűje:"
-
-#~ msgid "Actions menu global hotkey:"
-#~ msgstr "Műveletek gyorsbillentyűje:"
-
-#~ msgid "_Reverse history"
-#~ msgstr "_Fordított előzmény"
-
-#~ msgid "Single _line mode"
-#~ msgstr "_Egysoros mód"
-
-#~ msgid "Ignore all non-hyperlink text"
-#~ msgstr "Minden nem-internetes hivatkozás mellőzése"
-
-#~ msgid "New"
-#~ msgstr "Új"
-
-#~ msgid "New action"
-#~ msgstr "Új művelet"
-
-#~ msgid "Edit"
-#~ msgstr "Szerkesztés"
-
-#~ msgid "Edit selected"
-#~ msgstr "Kiválasztott szerkesztése"
-
-#~ msgid "Delete"
-#~ msgstr "Törlés"
-
-#~ msgid "Delete selected"
-#~ msgstr "Kiválasztott törlése"
+msgstr "Parcellite"
