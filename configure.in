@@ -5,6 +5,8 @@ AC_PREREQ([2.5])
 AC_INIT([parcellite], [svn], [xyhthyx@gmail.com])
 AM_INIT_AUTOMAKE([AC_PACKAGE_TARNAME()], [AC_PACKAGE_VERSION()])
 
+AC_CONFIG_MACRO_DIR([m4])
+
 AC_CONFIG_SRCDIR([src/main.c])
 AM_CONFIG_HEADER([config.h])
 
@@ -17,7 +19,7 @@ AC_SUBST(GETTEXT_PACKAGE)
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, "$GETTEXT_PACKAGE", [gettext package])
 
 ALL_LINGUAS="de es hu it ja ru tr"
-AM_GLIB_GNU_GETTEXT
+AM_GLIB_GNU_GETTEXT()
 AC_PROG_INTLTOOL([0.23])
 
 parcellitelocaledir='${prefix}/${DATADIRNAME}/locale'
@@ -59,9 +61,9 @@ AC_C_CONST()
 # -------------------------------------------------------------------------------
 AC_TYPE_SIGNAL()
 
-AC_CONFIG_FILES([Makefile
-                doc/Makefile
-                src/Makefile
-                data/Makefile])
 
-AC_OUTPUT(po/Makefile.in)
+AC_OUTPUT([Makefile
+           doc/Makefile
+           src/Makefile
+           data/Makefile
+           po/Makefile.in])

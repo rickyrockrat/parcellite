@@ -213,10 +213,12 @@ autostartdir = /etc/xdg/autostart
 autostart_in_file = parcellite-startup.desktop.in
 autostart_DATA = $(autostart_in_file:.desktop.in=.desktop)
 EXTRA_DIST = \
-  $(desktop_DATA) \
-  $(autostart_DATA) \
   $(desktop_in_file) \
   $(autostart_in_file)
+
+CLEANFILES = \
+  $(desktop_DATA) \
+  $(autostart_DATA)
 
 DISTCLEANFILES = \
   $(desktop_DATA) \
@@ -347,6 +349,7 @@ install-strip:
 mostlyclean-generic:
 
 clean-generic:
+	-test -z "$(CLEANFILES)" || rm -f $(CLEANFILES)
 
 distclean-generic:
 	-test -z "$(CONFIG_CLEAN_FILES)" || rm -f $(CONFIG_CLEAN_FILES)
@@ -412,7 +415,6 @@ uninstall-am: uninstall-autostartDATA uninstall-desktopDATA \
 	mostlyclean-generic pdf pdf-am ps ps-am uninstall uninstall-am \
 	uninstall-autostartDATA uninstall-desktopDATA \
 	uninstall-info-am
-
 
 %.desktop:   %.desktop.in   $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; LC_ALL=C $(INTLTOOL_MERGE) -d -u -c $(top_builddir)/po/.intltool-merge-cache $(top_srcdir)/po $< $@
 # Tell versions [3.59,3.63) of GNU make to not export all variables.

@@ -2278,6 +2278,8 @@ am__tar='${AMTAR} chof - "$$tardir"'; am__untar='${AMTAR} xf -'
 
 
 
+
+
 ac_config_headers="$ac_config_headers config.h"
 
 
@@ -10327,10 +10329,12 @@ _ACEOF
 
 
 
-ac_config_files="$ac_config_files Makefile doc/Makefile src/Makefile data/Makefile"
+#AC_CONFIG_FILES([Makefile
+#                doc/Makefile
+#                src/Makefile
+#                data/Makefile])
 
-
-ac_config_files="$ac_config_files po/Makefile.in"
+ac_config_files="$ac_config_files Makefile doc/Makefile src/Makefile data/Makefile po/Makefile.in"
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
