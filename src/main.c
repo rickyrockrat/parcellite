@@ -694,19 +694,10 @@ static void
 status_icon_clicked(GtkStatusIcon *status_icon, gpointer user_data)
 {
   /* Check what type of click was recieved */
-  GdkEvent* current_event = gtk_get_current_event();
-  g_print("Current event type: %i (needs to be 4 to work correctly)\n", current_event->type);
   GdkModifierType state;
-  if (gtk_get_current_event_state(&state) == TRUE)
-  {
-    g_print("Button state: %i (a state of 20 means control-click)\n", state);
-  }
-  else
-  {
-    g_print("The current event does not have a state field.\n");
-  }
+  gtk_get_current_event_state(&state);
   /* Control click */
-  if (state == (GDK_MOD2_MASK + GDK_CONTROL_MASK))
+  if (state == GDK_MOD2_MASK+GDK_CONTROL_MASK || state == GDK_CONTROL_MASK)
   {
     if (actions_lock == FALSE)
     {
@@ -718,8 +709,6 @@ status_icon_clicked(GtkStatusIcon *status_icon, gpointer user_data)
   {
     g_timeout_add(POPUP_DELAY, show_history_menu, NULL);
   }
-  /* Free the event */
-  gdk_event_free(current_event);
 }
 
 /* Called when history global hotkey is pressed */
