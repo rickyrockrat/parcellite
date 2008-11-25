@@ -1,0 +1,256 @@
+# translation of pt_BR.po to Português do Brasil
+# Italian translation of parcellite.
+# Copyright (C) 2008 Gilberto "Xyhthyx" Miralla <xyhthyx@gmail.com>
+# This file is distributed under the same license as the parcellite package.
+#
+#
+# Phantom X <megaphantomx at bol.com.br>, 2008.
+msgid ""
+msgstr ""
+"Project-Id-Version: pt_BR\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2008-11-13 18:21-0400\n"
+"PO-Revision-Date: 2008-11-25 19:12-0200\n"
+"Last-Translator: Phantom X <megaphantomx at bol.com.br>\n"
+"Language-Team: Português do Brasil <pt@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.11.4\n"
+"Plural-Forms:  nplurals=2; plural=(n > 1);\n"
+
+#: ../src/main.c:153
+msgid "Executing action..."
+msgstr "Executando ação..."
+
+#: ../src/main.c:159 ../src/main.c:758 ../data/parcellite.desktop.in.h:1
+#: ../data/parcellite-startup.desktop.in.h:1
+msgid "Clipboard Manager"
+msgstr "Gerenciador de Área de Transferência"
+
+#: ../src/main.c:182
+msgid "Could not create thread for executed action\n"
+msgstr "Impossível criar processo para a ação executada\n"
+
+#: ../src/main.c:233
+msgid "Editing Clipboard"
+msgstr "Editando a Área de Transferência"
+
+#: ../src/main.c:250
+msgid "<b>Clipboard</b>"
+msgstr "<b>Área de Transferência</b>"
+
+#: ../src/main.c:294
+msgid "Save changes"
+msgstr "Salvar modificações"
+
+#: ../src/main.c:304
+msgid "Discard changes"
+msgstr "Descartar modificações"
+
+#: ../src/main.c:342
+msgid "Clear the history?"
+msgstr "Limpar o histórico?"
+
+#: ../src/main.c:394
+msgid "Lightweight GTK+ clipboard manager."
+msgstr "Gerenciador de Área de Transferência em GTK+ leve."
+
+#: ../src/main.c:480
+msgid "<b>None</b>"
+msgstr "<b>Nenhum</b>"
+
+#. File contained no actions so adding empty
+#. File did not open so adding empty
+#. Nothing in history so adding empty
+#: ../src/main.c:501 ../src/main.c:530 ../src/main.c:645
+msgid "Empty"
+msgstr "Vazio"
+
+#. Edit actions
+#: ../src/main.c:537
+msgid "_Edit actions"
+msgstr "_Editar ações"
+
+#. Edit clipboard
+#: ../src/main.c:561
+msgid "_Edit Clipboard"
+msgstr "_Editar Área de Transferência"
+
+#: ../src/utils.c:38 ../src/utils.c:45
+#, c-format
+msgid "Couldn't create directory: %s\n"
+msgstr "Impossível criar diretório: %s\n"
+
+#: ../src/utils.c:83
+msgid "Run as daemon"
+msgstr "Executar como daemon"
+
+#: ../src/utils.c:90
+msgid "Do not use status icon (Ctrl-Alt-P for menu)"
+msgstr "Não usar ícone de status (Ctrl-Alt-P para o menu)"
+
+#: ../src/utils.c:97
+msgid "Print clipboard contents"
+msgstr "Imprimir conteúdo da área de transferência"
+
+#: ../src/utils.c:109
+msgid ""
+"Clipboard CLI usage examples:\n"
+"\n"
+"  echo \"copied to clipboard\" | parcellite\n"
+"  parcellite \"copied to clipboard\"\n"
+"  echo \"copied to clipboard\" | parcellite -o"
+msgstr ""
+"Exemplo de uso da Área de Transferência no terminal:\n"
+"\n"
+"  echo \"copiado para a área de transferência\" | parcellite\n"
+"  parcellite \"copiado para a área de transferência\"\n"
+"  echo \"copiado para a área de transferência\" | parcellite -o"
+
+#: ../src/utils.c:115
+msgid ""
+"Written by Gilberto \"Xyhthyx\" Miralla.\n"
+"Report bugs to <xyhthyx@gmail.com>."
+msgstr ""
+"Escrito por Gilberto \"Xyhthyx\" Miralla.\n"
+"Reportar bugs para <xyhthyx@gmail.com>."
+
+#. Create the dialog
+#: ../src/preferences.c:371
+msgid "Preferences"
+msgstr "Preferências"
+
+#: ../src/preferences.c:386
+msgid "Behavior"
+msgstr "Comportamento"
+
+#: ../src/preferences.c:394
+msgid "<b>Clipboards</b>"
+msgstr "<b>Áreas de Transferência</b>"
+
+#: ../src/preferences.c:401
+msgid "Use _Copy (Ctrl-C)"
+msgstr "Usar _Cópia (Ctrl-C)"
+
+#: ../src/preferences.c:403
+msgid "Use _Primary (Selection)"
+msgstr "Usar Seleção _Primária"
+
+#: ../src/preferences.c:411
+msgid "<b>History</b>"
+msgstr "<b>Histórico</b>"
+
+#: ../src/preferences.c:418
+msgid "_Save history"
+msgstr "_Salvar histórico"
+
+#: ../src/preferences.c:419
+msgid "Save and restore history between sessions"
+msgstr "Salvar e restaurar histórico entre as sessões"
+
+#: ../src/preferences.c:423
+msgid "Items in history:"
+msgstr "Itens no histórico:"
+
+#: ../src/preferences.c:436
+msgid "<b>Miscellaneous</b>"
+msgstr "<b>Vários</b>"
+
+#: ../src/preferences.c:443
+msgid "Capture _hyperlinks only"
+msgstr "Capturar somente _hyperlinks"
+
+#: ../src/preferences.c:445
+msgid "C_onfirm before clearing history"
+msgstr "C_onfirmar antes de limpar o histórico"
+
+#: ../src/preferences.c:452
+msgid "Display"
+msgstr "Exibir"
+
+#: ../src/preferences.c:460
+msgid "<b>Items</b>"
+msgstr "<b>Itens</b>"
+
+#: ../src/preferences.c:467
+msgid "Show in a _single line"
+msgstr "Exibir em uma _única linha"
+
+#: ../src/preferences.c:469
+msgid "Show in _reverse order"
+msgstr "Exibir em ordem _reversa"
+
+#: ../src/preferences.c:473
+msgid "Character length of items:"
+msgstr "Quantidade de caracteres dos itens:"
+
+#: ../src/preferences.c:486
+msgid "<b>Omitting</b>"
+msgstr "<b>Omitindo</b>"
+
+#: ../src/preferences.c:495
+msgid "Omit items in the:"
+msgstr "Omitir itens no:"
+
+#: ../src/preferences.c:499
+msgid "Beginning"
+msgstr "Início"
+
+#: ../src/preferences.c:500
+msgid "Middle"
+msgstr "Centro"
+
+#: ../src/preferences.c:501
+msgid "End"
+msgstr "Fim"
+
+#: ../src/preferences.c:508
+msgid "Actions"
+msgstr "Ações"
+
+#. Build the actions label
+#: ../src/preferences.c:513
+msgid "Control-click Parcellite's tray icon to use actions"
+msgstr "Control-clique no ícone da bandeja do Parcellite pra usar ações"
+
+#: ../src/preferences.c:533
+msgid "Action"
+msgstr "Ação"
+
+#: ../src/preferences.c:540
+msgid "Command"
+msgstr "Comando"
+
+#: ../src/preferences.c:555
+msgid "Add..."
+msgstr "Adicionar..."
+
+#: ../src/preferences.c:559
+msgid "Remove"
+msgstr "Remover"
+
+#: ../src/preferences.c:576
+msgid "Extras"
+msgstr ""
+
+#: ../src/preferences.c:584
+msgid "<b>Hotkeys</b>"
+msgstr "<b>Atalhos</b>"
+
+#: ../src/preferences.c:593
+msgid "History key combination:"
+msgstr "Combinação de teclas do Histórico:"
+
+#: ../src/preferences.c:601
+msgid "Actions key combination:"
+msgstr "Combinação de teclas de Ações:"
+
+#: ../src/preferences.c:609
+msgid "Menu key combination:"
+msgstr "Combinação de teclas do Menu:"
+
+#: ../data/parcellite.desktop.in.h:2 ../data/parcellite-startup.desktop.in.h:2
+msgid "Parcellite"
+msgstr ""
+
