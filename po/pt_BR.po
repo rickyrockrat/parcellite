@@ -1,5 +1,4 @@
-# translation of pt_BR.po to Português do Brasil
-# Italian translation of parcellite.
+# Português do Brasil translation of parcellite.
 # Copyright (C) 2008 Gilberto "Xyhthyx" Miralla <xyhthyx@gmail.com>
 # This file is distributed under the same license as the parcellite package.
 #
@@ -7,10 +6,10 @@
 # Phantom X <megaphantomx at bol.com.br>, 2008.
 msgid ""
 msgstr ""
-"Project-Id-Version: pt_BR\n"
+"Project-Id-Version: parcellite-pt_BR\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-11-13 18:21-0400\n"
-"PO-Revision-Date: 2008-11-25 19:12-0200\n"
+"PO-Revision-Date: 2008-11-25 23:46-0200\n"
 "Last-Translator: Phantom X <megaphantomx at bol.com.br>\n"
 "Language-Team: Português do Brasil <pt@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -212,7 +211,7 @@ msgstr "Ações"
 #. Build the actions label
 #: ../src/preferences.c:513
 msgid "Control-click Parcellite's tray icon to use actions"
-msgstr "Control-clique no ícone da bandeja do Parcellite pra usar ações"
+msgstr "Control-clique no ícone da bandeja do Parcellite para usar ações"
 
 #: ../src/preferences.c:533
 msgid "Action"
