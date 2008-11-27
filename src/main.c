@@ -406,6 +406,7 @@ show_about_dialog(GtkMenuItem *menu_item, gpointer user_data)
                                              "Németh Tamás <ntomasz@vipmail.hu>\n"
                                              "Hasan Yılmaz <iletisim@hasanyilmaz.net>\n"
                                              "Jiro Kawada <jiro.kawada@gmail.com>\n"
+                                             "Phantom X <megaphantomx@bol.com.br>\n"
                                              "Gilberto \"Xyhthyx\" Miralla <xyhthyx@gmail.com>");
     
     gtk_about_dialog_set_license((GtkAboutDialog*)about_dialog, license);
@@ -804,7 +805,7 @@ main(int argc, char *argv[])
       if (piped_string->len > 0)
       {
         /* Truncate new line character */
-        g_string_truncate(piped_string, (piped_string->len - 1));
+        /* g_string_truncate(piped_string, (piped_string->len - 1)); */
         /* Copy to clipboard */
         GtkClipboard* cb = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);
         gtk_clipboard_set_text(cb, piped_string->str, -1);

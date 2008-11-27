@@ -158,7 +158,7 @@ parse_options(int argc, char* argv[])
       if (piped_string->len > 0)
       {
         /* Truncate new line character */
-        g_string_truncate(piped_string, (piped_string->len - 1));
+        /* g_string_truncate(piped_string, (piped_string->len - 1)); */
         /* Copy to clipboard */
         gtk_clipboard_set_text(cb, piped_string->str, -1);
         gtk_clipboard_store(cb);
