@@ -32,7 +32,7 @@ echo "aclocal..."
 	exit 1
 }
 
-aclocal
+aclocal -I m4
 
 echo "autoheader..."
 (autoheader --version) < /dev/null > /dev/null 2>&1 || {

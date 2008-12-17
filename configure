@@ -2295,7 +2295,7 @@ cat >>confdefs.h <<_ACEOF
 _ACEOF
 
 
-ALL_LINGUAS="de es hu it ja pt_BR ru tr"
+ALL_LINGUAS="de es hu it ja pl_PL pt_BR ru tr zh_CN"
 DEPDIR="${am__leading_dot}deps"
 
 ac_config_commands="$ac_config_commands depfiles"
