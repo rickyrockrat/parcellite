@@ -1,0 +1,249 @@
+# Polish translation of parcellite
+# Copyright (C) 2008 Xyhthyx <xyhthyx@gmail.com>
+# This file is distributed under the same license as the parcellite package.
+# pankamyk <pankamyk@o2.pl>, 2008.
+#
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Parcellite\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2008-12-04 20:12-0400\n"
+"PO-Revision-Date: \n"
+"Last-Translator: pankamyk <pankamyk@o2.pl>\n"
+"Language-Team: none <pankamyk@o2.pl>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: Polish\n"
+"X-Poedit-Country: POLAND\n"
+
+#: ../src/main.c:153
+msgid "Executing action..."
+msgstr "Wykonywanie zadania..."
+
+#: ../src/main.c:159 ../src/main.c:762 ../data/parcellite.desktop.in.h:1
+#: ../data/parcellite-startup.desktop.in.h:1
+msgid "Clipboard Manager"
+msgstr "Menadżer schowka"
+
+#: ../src/main.c:182
+msgid "Could not create thread for executed action\n"
+msgstr "Nie można wykonać tego zadania!\n"
+
+#: ../src/main.c:233
+msgid "Editing Clipboard"
+msgstr "Edytor schowka"
+
+#: ../src/main.c:250
+msgid "<b>Clipboard</b>"
+msgstr "<b>Schowek<b>"
+
+#: ../src/main.c:294
+msgid "Save changes"
+msgstr "Zapisz"
+
+#: ../src/main.c:304
+msgid "Discard changes"
+msgstr "Anuluj"
+
+#: ../src/main.c:342
+msgid "Clear the history?"
+msgstr "Usunąć historie wpisów?"
+
+#: ../src/main.c:394
+msgid "Lightweight GTK+ clipboard manager."
+msgstr "Prosty i szybki menadżer schowka."
+
+#: ../src/main.c:481
+msgid "<b>None</b>"
+msgstr "<b>żaden</b>"
+
+#. File contained no actions so adding empty
+#. File did not open so adding empty
+#. Nothing in history so adding empty
+#: ../src/main.c:502 ../src/main.c:531 ../src/main.c:646
+msgid "Empty"
+msgstr "pusty"
+
+#. Edit actions
+#: ../src/main.c:538
+msgid "_Edit actions"
+msgstr "_Edycja zadania"
+
+#. Edit clipboard
+#: ../src/main.c:562
+msgid "_Edit Clipboard"
+msgstr "_Edycja zawartości schowka"
+
+#: ../src/utils.c:38 ../src/utils.c:45
+#, c-format
+msgid "Couldn't create directory: %s\n"
+msgstr "Nie można utworzyć katalogu \"%s\"\n"
+
+#: ../src/utils.c:83
+msgid "Run as daemon"
+msgstr "Uruchom jako deamon"
+
+#: ../src/utils.c:90
+msgid "Do not use status icon (Ctrl-Alt-P for menu)"
+msgstr "Ukrywanie ikony programu. <i>Domyślnie Ctrl+Alt+P pokazuje menu</i>"
+
+#: ../src/utils.c:97
+msgid "Print clipboard contents"
+msgstr "Drukowanie zawartości schowka"
+
+#: ../src/utils.c:109
+msgid ""
+"Clipboard CLI usage examples:\n"
+"\n"
+"  echo \"copied to clipboard\" | parcellite\n"
+"  parcellite \"copied to clipboard\"\n"
+"  echo \"copied to clipboard\" | parcellite -o"
+msgstr ""
+
+#: ../src/utils.c:115
+msgid ""
+"Written by Gilberto \"Xyhthyx\" Miralla.\n"
+"Report bugs to <xyhthyx@gmail.com>."
+msgstr ""
+"Autor: Gilberto \"Xyhthyx\" Miralla.\n"
+"Zauważone błędy proszę zgłaszać na adres xyhthyx@gmail.com"
+
+#. Create the dialog
+#: ../src/preferences.c:371
+msgid "Preferences"
+msgstr "Ustawienia"
+
+#: ../src/preferences.c:386
+msgid "Behavior"
+msgstr "Zachowanie"
+
+#: ../src/preferences.c:394
+msgid "<b>Clipboards</b>"
+msgstr "<b>Dodawane do schowka</b>"
+
+#: ../src/preferences.c:401
+msgid "Use _Copy (Ctrl-C)"
+msgstr "Tekst kopiowany przy użyciu <i>_Ctrl+C</i>"
+
+#: ../src/preferences.c:403
+msgid "Use _Primary (Selection)"
+msgstr "Tekst zaznaczony kursorem"
+
+#: ../src/preferences.c:411
+msgid "<b>History</b>"
+msgstr "<b>Historia</b>"
+
+#: ../src/preferences.c:418
+msgid "_Save history"
+msgstr "Zapi_sywanie historii wpisów"
+
+#: ../src/preferences.c:419
+msgid "Save and restore history between sessions"
+msgstr "Zapisywanie historii dla każdej sesji"
+
+#: ../src/preferences.c:423
+msgid "Items in history:"
+msgstr "Liczba zapamiętanych wpisów:"
+
+#: ../src/preferences.c:436
+msgid "<b>Miscellaneous</b>"
+msgstr "<b>Różne</b>"
+
+#: ../src/preferences.c:443
+msgid "Capture _hyperlinks only"
+msgstr "Przec_hwytywanie tylko linków"
+
+#: ../src/preferences.c:445
+msgid "C_onfirm before clearing history"
+msgstr "P_otwierdzanie usuwania historii wpisów"
+
+#: ../src/preferences.c:452
+msgid "Display"
+msgstr "Wygląd"
+
+#: ../src/preferences.c:460
+msgid "<b>Items</b>"
+msgstr "<b>Wygląd wpisów</b>"
+
+#: ../src/preferences.c:467
+msgid "Show in a _single line"
+msgstr "Pojedyncza linia"
+
+#: ../src/preferences.c:469
+msgid "Show in _reverse order"
+msgstr "Odw_rócenie kolejności"
+
+#: ../src/preferences.c:473
+msgid "Character length of items:"
+msgstr "Liczba znaków dla wpisu:"
+
+#: ../src/preferences.c:486
+msgid "<b>Omitting</b>"
+msgstr "<b>Streszczanie wpisu</b>"
+
+#: ../src/preferences.c:495
+msgid "Omit items in the:"
+msgstr "Wyświetlanie wpisu w menu:"
+
+#: ../src/preferences.c:499
+msgid "Beginning"
+msgstr "Początek"
+
+#: ../src/preferences.c:500
+msgid "Middle"
+msgstr "Początek i koniec"
+
+#: ../src/preferences.c:501
+msgid "End"
+msgstr "Koniec"
+
+#: ../src/preferences.c:508
+msgid "Actions"
+msgstr "Zadania"
+
+#. Build the actions label
+#: ../src/preferences.c:513
+msgid "Control-click Parcellite's tray icon to use actions"
+msgstr ""
+
+#: ../src/preferences.c:533
+msgid "Action"
+msgstr "Zadanie"
+
+#: ../src/preferences.c:540
+msgid "Command"
+msgstr "Polecenie"
+
+#: ../src/preferences.c:555
+msgid "Add..."
+msgstr "Dodaj..."
+
+#: ../src/preferences.c:559
+msgid "Remove"
+msgstr "Usuń"
+
+#: ../src/preferences.c:576
+msgid "Extras"
+msgstr "Dodatki"
+
+#: ../src/preferences.c:584
+msgid "<b>Hotkeys</b>"
+msgstr "<b>Skróty klawiatury<b>"
+
+#: ../src/preferences.c:593
+msgid "History key combination:"
+msgstr "Pokaż historie:"
+
+#: ../src/preferences.c:601
+msgid "Actions key combination:"
+msgstr "Pokaż zadania:"
+
+#: ../src/preferences.c:609
+msgid "Menu key combination:"
+msgstr "Pokaż menu:"
+
+#: ../data/parcellite.desktop.in.h:2 ../data/parcellite-startup.desktop.in.h:2
+msgid "Parcellite"
+msgstr "Parcellite"
