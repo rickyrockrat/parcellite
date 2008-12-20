@@ -154,3 +154,19 @@ get_last_item()
   else
     return NULL;
 }
+
+/* Deletes duplicate item in history */
+void
+delete_duplicate(gchar* item)
+{
+  GSList* element;
+  /* Go through each element compare each */
+  for (element = history; element != NULL; element = element->next)
+  {
+    if (g_strcmp0((gchar*)element->data, item) == 0)
+    {
+      history = g_slist_delete_link(history, element);
+      break;
+    }
+  }
+}
