@@ -104,7 +104,7 @@ item_check(gpointer data)
   /* Processing complete... */
   
   /* Primary check */
-  if (prefs.use_primary)
+  if (prefs.use_primary && g_strcmp0((gchar*)history->data, primary_text) != 0)
   {
     /* Get the button state to check if the mouse button is being held */
     GdkModifierType button_state;
@@ -112,28 +112,36 @@ item_check(gpointer data)
     /* Check item */
     if ((primary_text) && !(button_state & GDK_BUTTON1_MASK))
     {
-      if (prefs.hyperlinks_only && is_hyperlink(primary_text) && !item_exists(primary_text))
+      /* if (prefs.hyperlinks_only && is_hyperlink(primary_text) && !item_exists(primary_text)) */
+      if (prefs.hyperlinks_only && is_hyperlink(primary_text))
       {
+        delete_duplicate(primary_text);
         append_item(primary_text);
       }
-      else if (!prefs.hyperlinks_only && !item_exists(primary_text))
+      /* else if (!prefs.hyperlinks_only && !item_exists(primary_text)) */
+      else
       {
+        delete_duplicate(primary_text);
         append_item(primary_text);
       }
     }
   }
   /* Clipboard check */
-  if (prefs.use_copy)
+  if (prefs.use_copy && g_strcmp0((gchar*)history->data, clipboard_text) != 0)
   {
     /* Check item */
     if (clipboard_text)
     {
-      if (prefs.hyperlinks_only && is_hyperlink(clipboard_text) && !item_exists(clipboard_text))
+      /* if (prefs.hyperlinks_only && is_hyperlink(clipboard_text) && !item_exists(clipboard_text)) */
+      if (prefs.hyperlinks_only && is_hyperlink(clipboard_text))
       {
+        delete_duplicate(clipboard_text);
         append_item(clipboard_text);
       }
-      else if (!prefs.hyperlinks_only && !item_exists(clipboard_text))
+      /* else if (!prefs.hyperlinks_only && !item_exists(clipboard_text)) */
+      else
       {
+        delete_duplicate(clipboard_text);
         append_item(clipboard_text);
       }
     }

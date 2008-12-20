@@ -40,6 +40,9 @@ truncate_history();
 gpointer
 get_last_item();
 
+void
+delete_duplicate(gchar* item);
+
 G_END_DECLS
 
 #endif
