@@ -28,6 +28,7 @@
 /* Declare some widgets */
 GtkWidget *copy_check,
           *primary_check,
+          *synchronize_check,
           *history_spin,
           *charlength_spin,
           *ellipsize_combo,
@@ -61,6 +62,7 @@ apply_preferences()
   /* Get the new preferences */
   prefs.use_copy = gtk_toggle_button_get_active((GtkToggleButton*)copy_check);
   prefs.use_primary = gtk_toggle_button_get_active((GtkToggleButton*)primary_check);
+  prefs.synchronize = gtk_toggle_button_get_active((GtkToggleButton*)synchronize_check);
   prefs.save_history = gtk_toggle_button_get_active((GtkToggleButton*)save_check);
   prefs.history_limit = gtk_spin_button_get_value_as_int((GtkSpinButton*)history_spin);
   prefs.hyperlinks_only = gtk_toggle_button_get_active((GtkToggleButton*)hyperlinks_check);
@@ -90,6 +92,7 @@ save_preferences()
   /* Add values */
   g_key_file_set_boolean(rc_key, "rc", "use_copy", prefs.use_copy);
   g_key_file_set_boolean(rc_key, "rc", "use_primary", prefs.use_primary);
+  g_key_file_set_boolean(rc_key, "rc", "synchronize", prefs.synchronize);
   g_key_file_set_boolean(rc_key, "rc", "save_history", prefs.save_history);
   g_key_file_set_integer(rc_key, "rc", "history_limit", prefs.history_limit);
   g_key_file_set_boolean(rc_key, "rc", "hyperlinks_only", prefs.hyperlinks_only);
@@ -123,6 +126,7 @@ read_preferences()
     /* Load values */
     prefs.use_copy = g_key_file_get_boolean(rc_key, "rc", "use_copy", NULL);
     prefs.use_primary = g_key_file_get_boolean(rc_key, "rc", "use_primary", NULL);
+    prefs.synchronize = g_key_file_get_boolean(rc_key, "rc", "synchronize", NULL);
     prefs.save_history = g_key_file_get_boolean(rc_key, "rc", "save_history", NULL);
     prefs.history_limit = g_key_file_get_integer(rc_key, "rc", "history_limit", NULL);
     prefs.hyperlinks_only = g_key_file_get_boolean(rc_key, "rc", "hyperlinks_only", NULL);
@@ -402,6 +406,8 @@ show_preferences(gint tab)
   gtk_box_pack_start((GtkBox*)vbox, copy_check, FALSE, FALSE, 0);
   primary_check = gtk_check_button_new_with_mnemonic(_("Use _Primary (Selection)"));
   gtk_box_pack_start((GtkBox*)vbox, primary_check, FALSE, FALSE, 0);
+  synchronize_check = gtk_check_button_new_with_mnemonic(_("S_ynchronize clipboards"));
+  gtk_box_pack_start((GtkBox*)vbox, synchronize_check, FALSE, FALSE, 0);
   gtk_box_pack_start((GtkBox*)vbox_behavior, frame, FALSE, FALSE, 0);
   
   /* Build the history frame */
@@ -570,10 +576,10 @@ show_preferences(gint tab)
   gtk_box_pack_start((GtkBox*)hbbox, down_button, FALSE, TRUE, 0);
   gtk_box_pack_start((GtkBox*)vbox_actions, hbbox, FALSE, FALSE, 0);
   
-  /* Build the extras page */  
+  /* Build the hotkeys page */
   GtkWidget* page_extras = gtk_alignment_new(0.50, 0.50, 1.0, 1.0);
   gtk_alignment_set_padding((GtkAlignment*)page_extras, 12, 6, 12, 6);
-  gtk_notebook_append_page((GtkNotebook*)notebook, page_extras, gtk_label_new(_("Extras")));
+  gtk_notebook_append_page((GtkNotebook*)notebook, page_extras, gtk_label_new(_("Hotkeys")));
   GtkWidget* vbox_extras = gtk_vbox_new(FALSE, 12);
   gtk_container_add((GtkContainer*)page_extras, vbox_extras);
   
@@ -617,6 +623,7 @@ show_preferences(gint tab)
   /* Make widgets reflect current preferences */
   gtk_toggle_button_set_active((GtkToggleButton*)copy_check, prefs.use_copy);
   gtk_toggle_button_set_active((GtkToggleButton*)primary_check, prefs.use_primary);
+  gtk_toggle_button_set_active((GtkToggleButton*)synchronize_check, prefs.synchronize);
   gtk_toggle_button_set_active((GtkToggleButton*)save_check, prefs.save_history);
   gtk_spin_button_set_value((GtkSpinButton*)history_spin, (gdouble)prefs.history_limit);
   gtk_toggle_button_set_active((GtkToggleButton*)hyperlinks_check, prefs.hyperlinks_only);
