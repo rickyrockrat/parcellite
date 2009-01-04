@@ -34,6 +34,7 @@
 
 static gchar* primary_text;
 static gchar* clipboard_text;
+static gchar* synchronized_text;
 static GtkClipboard* primary;
 static GtkClipboard* clipboard;
 static GtkStatusIcon* status_icon;
@@ -41,13 +42,13 @@ static GtkStatusIcon* status_icon;
 static gboolean actions_lock = FALSE;
 
 /* Init preferences structure */
-prefs_t prefs = {DEF_USE_COPY,        DEF_USE_PRIMARY,
+prefs_t prefs = {DEF_USE_COPY,        DEF_USE_PRIMARY,      DEF_SYNCHRONIZE,
                  DEF_SAVE_HISTORY,    DEF_HISTORY_LIMIT,
                  DEF_HYPERLINKS_ONLY, DEF_CONFIRM_CLEAR,
-                 DEF_SINGLE_LINE,     DEF_REVERSE_HISTORY,
-                 DEF_ITEM_LENGTH,     DEF_ELLIPSIZE,
-                 INIT_HISTORY_KEY,    INIT_ACTIONS_KEY,
-                 INIT_MENU_KEY,       DEF_NO_ICON};
+                 DEF_SINGLE_LINE,     DEF_REVERSE_HISTORY,  DEF_ITEM_LENGTH,
+                 DEF_ELLIPSIZE,
+                 INIT_HISTORY_KEY,    INIT_ACTIONS_KEY,     INIT_MENU_KEY,
+                 DEF_NO_ICON};
 
 
 /* Goes through each in history and returns TRUE if item exists in history */
@@ -143,6 +144,23 @@ item_check(gpointer data)
       }
     }
   }
+  /* Synchronization */
+  if (prefs.synchronize)
+  {
+    if (g_strcmp0(synchronized_text, primary_text) != 0)
+    {
+      g_free(synchronized_text);
+      synchronized_text = g_strdup(primary_text);
+      gtk_clipboard_set_text(clipboard, primary_text, -1);
+    }
+    else if (g_strcmp0(synchronized_text, clipboard_text) != 0)
+    {
+      g_free(synchronized_text);
+      synchronized_text = g_strdup(clipboard_text);
+      gtk_clipboard_set_text(primary, clipboard_text, -1);
+    }
+  }
+  
   return TRUE;
 }
 
@@ -839,6 +857,7 @@ main(int argc, char *argv[])
   g_slist_free(history);
   g_free(primary_text);
   g_free(clipboard_text);
+  g_free(synchronized_text);
   
   /* Exit */
   return 0;
