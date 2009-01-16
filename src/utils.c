@@ -71,8 +71,9 @@ gboolean
 parse_options(int argc, char* argv[])
 {
   /* Declare argument options and argument variables */
-  gboolean icon   = FALSE, daemon = FALSE,
-           output = FALSE, result = FALSE;
+  gboolean icon   = FALSE,    daemon = FALSE,
+           clipboard = FALSE, primary = FALSE,
+           exit = FALSE;
   
   GOptionEntry main_entries[] = 
   {
@@ -91,10 +92,17 @@ parse_options(int argc, char* argv[])
       NULL
     },
     {
-      "output", 'o',
+      "clipboard", 'c',
       G_OPTION_FLAG_NO_ARG,
       G_OPTION_ARG_NONE,
-      &output, _("Print clipboard contents"),
+      &clipboard, _("Print clipboard contents"),
+      NULL
+    },
+    {
+      "primary", 'p',
+      G_OPTION_FLAG_NO_ARG,
+      G_OPTION_ARG_NONE,
+      &primary, _("Print primary contents"),
       NULL
     },
     {
@@ -109,7 +117,7 @@ parse_options(int argc, char* argv[])
                              _("Clipboard CLI usage examples:\n\n"
                                "  echo \"copied to clipboard\" | parcellite\n"
                                "  parcellite \"copied to clipboard\"\n"
-                               "  echo \"copied to clipboard\" | parcellite -o"));
+                               "  echo \"copied to clipboard\" | parcellite -c"));
   /* Set description */
   g_option_context_set_description(context,
                                  _("Written by Gilberto \"Xyhthyx\" Miralla.\n"
@@ -130,10 +138,10 @@ parse_options(int argc, char* argv[])
   else if (daemon)
   {
     init_daemon_mode();
-    result = TRUE;
+    exit = TRUE;
   }
   /* Print clipboard option */
-  else if (output)
+  else if (clipboard)
   {
     /* Grab clipboard */
     GtkClipboard* cb = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);
@@ -171,8 +179,21 @@ parse_options(int argc, char* argv[])
       g_print("%s", cb_text);
     g_free(cb_text);
     
-    /* Result true so program exits when finished parsing */
-    result = TRUE;
+    /* Return true so program exits when finished parsing */
+    exit = TRUE;
+  }
+  else if (primary)
+  {
+    /* Grab primary */
+    GtkClipboard* p = gtk_clipboard_get(GDK_SELECTION_PRIMARY);
+    /* Print primary text (if any) */
+    gchar* p_text = gtk_clipboard_wait_for_text(p);
+    if (p_text)
+      g_print("%s", p_text);
+    g_free(p_text);
+    
+    /* Return true so program exits when finished parsing */
+    exit = TRUE;
   }
   else
   {
@@ -182,9 +203,9 @@ parse_options(int argc, char* argv[])
     gtk_clipboard_set_text(cb, argv_string, -1);
     gtk_clipboard_store(cb);
     g_free(argv_string);
-    /* Result true so program exits when finished parsing */
-    result = TRUE;
+    /* Return true so program exits when finished parsing */
+    exit = TRUE;
   }
-  return result;
+  return exit;
 }
 

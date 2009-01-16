@@ -24,12 +24,14 @@ and primary contents safe
 .B \-n\fR, \fB\-\-no-icon
 Do not use status icon
 .TP
-.B \-o\fR, \fB\-\-output
+.B \-c\fR, \fB\-\-clipboard
 Print clipboard contents
+.B \-p\fR, \fB\-\-primary
+Print primary contents
 .SH CLI EXAMPLES
  echo "copied to clipboard" | parcellite
  parcellite "copied to clipboard"
- echo "copied to clipboard" | parcellite -o
+ echo "copied to clipboard" | parcellite -c
 .SH ACTIONS
 \fBParcellite's\fR actions perform commands using the contents of your clipboard. "\fB%s\fR" in the command
 is replaced with the clipboard contents.

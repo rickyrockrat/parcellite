@@ -77,6 +77,7 @@ item_check(gpointer data)
   /* Check if primary contents were lost */
   if ((primary_temp == NULL) && (primary_text != NULL))
   {
+    g_print("Restoring empty primary\n");
     gtk_clipboard_set_text(primary, primary_text, -1);
   }
   else
@@ -93,6 +94,7 @@ item_check(gpointer data)
   /* Check if clipboard contents were lost */
   if ((clipboard_temp == NULL) && (clipboard_text != NULL))
   {
+    g_print("Restoring empty clipboard\n");
     gtk_clipboard_set_text(clipboard, clipboard_text, -1);
   }
   else
@@ -113,14 +115,17 @@ item_check(gpointer data)
     /* Check item */
     if ((primary_text) && !(button_state & GDK_BUTTON1_MASK))
     {
+      g_print("Button not being held\n");
       if (prefs.hyperlinks_only && is_hyperlink(primary_text))
       {
+        g_print("New primary entry, hyperlinks enabled\n");
         delete_duplicate(primary_text);
         append_item(primary_text);
       }
       /* else if (!prefs.hyperlinks_only && !item_exists(primary_text)) */
       else
       {
+        g_print("New primary entry\n");
         delete_duplicate(primary_text);
         append_item(primary_text);
       }
