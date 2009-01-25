@@ -32,6 +32,7 @@ read_history ()
   gchar* history_path = g_build_filename(g_get_home_dir(),
                                          HISTORY_FILE,
                                          NULL);
+  
   /* Open the file for reading */
   FILE* history_file = fopen(history_path, "rb");
   g_free(history_path);
@@ -40,7 +41,8 @@ read_history ()
   {
     /* Read the size of the first item */
     gint size;
-    fread(&size, 4, 1, history_file); 
+    if (fread(&size, 4, 1, history_file) != 1)
+      size = 0;
     /* Continue reading until size is 0 */
     while (size)
     {
@@ -51,7 +53,8 @@ read_history ()
       item[size] = '\0';
       /* Prepend item and read next size */
       history = g_slist_prepend(history, item);
-      fread(&size, 4, 1, history_file);
+      if (fread(&size, 4, 1, history_file) != 1)
+        size = 0;
     }
     /* Close file and reverse the history to normal */
     fclose(history_file);
