@@ -144,7 +144,7 @@ parse_options(int argc, char* argv[])
   else if (clipboard)
   {
     /* Grab clipboard */
-    GtkClipboard* cb = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);
+    GtkClipboard* clip = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);
     
     /* Check if stdin has text to copy */
     if (!isatty(fileno(stdin)))
@@ -168,16 +168,16 @@ parse_options(int argc, char* argv[])
         /* Truncate new line character */
         /* g_string_truncate(piped_string, (piped_string->len - 1)); */
         /* Copy to clipboard */
-        gtk_clipboard_set_text(cb, piped_string->str, -1);
-        gtk_clipboard_store(cb);
+        gtk_clipboard_set_text(clip, piped_string->str, -1);
+        gtk_clipboard_store(clip);
       }
       g_string_free(piped_string, TRUE);
     }
     /* Print clipboard text (if any) */
-    gchar* cb_text = gtk_clipboard_wait_for_text(cb);
-    if (cb_text)
-      g_print("%s", cb_text);
-    g_free(cb_text);
+    gchar* clip_text = gtk_clipboard_wait_for_text(clip);
+    if (clip_text)
+      g_print("%s", clip_text);
+    g_free(clip_text);
     
     /* Return true so program exits when finished parsing */
     exit = TRUE;
@@ -185,12 +185,12 @@ parse_options(int argc, char* argv[])
   else if (primary)
   {
     /* Grab primary */
-    GtkClipboard* p = gtk_clipboard_get(GDK_SELECTION_PRIMARY);
+    GtkClipboard* prim = gtk_clipboard_get(GDK_SELECTION_PRIMARY);
     /* Print primary text (if any) */
-    gchar* p_text = gtk_clipboard_wait_for_text(p);
-    if (p_text)
-      g_print("%s", p_text);
-    g_free(p_text);
+    gchar* prim_text = gtk_clipboard_wait_for_text(prim);
+    if (prim_text)
+      g_print("%s", prim_text);
+    g_free(prim_text);
     
     /* Return true so program exits when finished parsing */
     exit = TRUE;
@@ -199,9 +199,9 @@ parse_options(int argc, char* argv[])
   {
     /* Copy from unrecognized options */
     gchar* argv_string = g_strjoinv(" ", argv + 1);
-    GtkClipboard* cb = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);
-    gtk_clipboard_set_text(cb, argv_string, -1);
-    gtk_clipboard_store(cb);
+    GtkClipboard* clip = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);
+    gtk_clipboard_set_text(clip, argv_string, -1);
+    gtk_clipboard_store(clip);
     g_free(argv_string);
     /* Return true so program exits when finished parsing */
     exit = TRUE;

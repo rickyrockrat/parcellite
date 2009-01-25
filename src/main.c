@@ -835,9 +835,9 @@ main(int argc, char *argv[])
         /* Truncate new line character */
         /* g_string_truncate(piped_string, (piped_string->len - 1)); */
         /* Copy to clipboard */
-        GtkClipboard* cb = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);
-        gtk_clipboard_set_text(cb, piped_string->str, -1);
-        gtk_clipboard_store(cb);
+        GtkClipboard* clip = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);
+        gtk_clipboard_set_text(clip, piped_string->str, -1);
+        gtk_clipboard_store(clip);
         /* Exit */
         return 0;
       }
