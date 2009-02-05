@@ -168,6 +168,7 @@ delete_duplicate(gchar* item)
   {
     if (g_strcmp0((gchar*)element->data, item) == 0)
     {
+      g_free(element->data);
       history = g_slist_delete_link(history, element);
       break;
     }
