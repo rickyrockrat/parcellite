@@ -4,7 +4,7 @@ desktopdir = $(datadir)/applications
 desktop_in_file = parcellite.desktop.in
 desktop_DATA = $(desktop_in_file:.desktop.in=.desktop)
 
-autostartdir = /etc/xdg/autostart
+autostartdir = $(sysconfdir)/xdg/autostart
 autostart_in_file = parcellite-startup.desktop.in
 autostart_DATA = $(autostart_in_file:.desktop.in=.desktop)
 
