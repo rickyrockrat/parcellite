@@ -7,7 +7,7 @@ v0.9.1   Pending...
   Changes
   + Updated German translation.
   + Control-click patch for actions menu.
-  + Piping contents no longer truncates new line character.
+  + Piping clipboard contents no longer truncates new line character.
 
 v0.9   Thursday, November 20 2008
 

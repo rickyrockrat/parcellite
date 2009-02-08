@@ -1,0 +1,253 @@
+# Norwegian translation of parcellite.
+# Copyright (C) 2008 Xyhthyx <xyhthyx@gmail.com>
+# This file is distributed under the same license as the parcellite package.
+# Øyvind Sæther <oyvinds@everdot.org>, 2009.
+msgid ""
+msgstr ""
+"Project-Id-Version: parcellite\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2008-12-04 20:12-0400\n"
+"PO-Revision-Date: 2009-01-17 11:33+0100\n"
+"Last-Translator: Øyvind Sæther <oyvinds@everdot.org>\n"
+"Language-Team: Norwegian Bokmål <kde-i18n-doc@lists.kde.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Lokalize 0.3\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: ../src/main.c:153
+msgid "Executing action..."
+msgstr "Utfører handling..."
+
+#: ../src/main.c:159 ../src/main.c:762 ../data/parcellite.desktop.in.h:1
+#: ../data/parcellite-startup.desktop.in.h:1
+msgid "Clipboard Manager"
+msgstr "Utklippstavleverktøy"
+
+#: ../src/main.c:182
+msgid "Could not create thread for executed action\n"
+msgstr "Kunne ikke lage tråd før utført handling\n"
+
+#: ../src/main.c:233
+msgid "Editing Clipboard"
+msgstr "Redigerer Utklippstavlen"
+
+#: ../src/main.c:250
+msgid "<b>Clipboard</b>"
+msgstr "<b>Utklippstavle</b>"
+
+#: ../src/main.c:294
+msgid "Save changes"
+msgstr "Lagre endringer"
+
+#: ../src/main.c:304
+msgid "Discard changes"
+msgstr "Forkast endringer"
+
+#: ../src/main.c:342
+msgid "Clear the history?"
+msgstr "Tøm historikken?"
+
+#: ../src/main.c:394
+msgid "Lightweight GTK+ clipboard manager."
+msgstr "Lettvekts GTK+ utklippstavlebehandler"
+
+#: ../src/main.c:481
+msgid "<b>None</b>"
+msgstr "<b>Ingen</b>"
+
+#. File contained no actions so adding empty
+#. File did not open so adding empty
+#. Nothing in history so adding empty
+#: ../src/main.c:502 ../src/main.c:531 ../src/main.c:646
+msgid "Empty"
+msgstr "Tom "
+
+#. Edit actions
+#: ../src/main.c:538
+msgid "_Edit actions"
+msgstr "_Rediger handlinger"
+
+#. Edit clipboard
+#: ../src/main.c:562
+msgid "_Edit Clipboard"
+msgstr "_Rediger utklippstavlen"
+
+#: ../src/utils.c:38 ../src/utils.c:45
+#, c-format
+msgid "Couldn't create directory: %s\n"
+msgstr "Kunne ikke opprette mappe: %s\n"
+
+#: ../src/utils.c:83
+msgid "Run as daemon"
+msgstr "Kjør i bakgrunnen"
+
+#: ../src/utils.c:90
+msgid "Do not use status icon (Ctrl-Alt-P for menu)"
+msgstr "Ikke vis statusikon (Ctrl-Alt-P for menyen)"
+
+#: ../src/utils.c:97
+msgid "Print clipboard contents"
+msgstr "Skriv ut utklippstavlens innhold"
+
+#: ../src/utils.c:109
+msgid ""
+"Clipboard CLI usage examples:\n"
+"\n"
+"  echo \"copied to clipboard\" | parcellite\n"
+"  parcellite \"copied to clipboard\"\n"
+"  echo \"copied to clipboard\" | parcellite -o"
+msgstr ""
+"Eksempler ved bruk av utklippstavlen i CLI:\n"
+"\n"
+"  echo \"kopiert til utklippstavlen\" | parcellite\n"
+"  parcellite \"kopiert til utklippstavlen\"\n"
+"  echo \"kopiert til utklippstavlen\" | parcellite -o"
+
+#: ../src/utils.c:115
+msgid ""
+"Written by Gilberto \"Xyhthyx\" Miralla.\n"
+"Report bugs to <xyhthyx@gmail.com>."
+msgstr ""
+"Skrevet av Gilberto \"Xyhthyx\" Miralla.\n"
+"Rapporter feil til <xyhthyx@gmail.com>."
+
+#. Create the dialog
+#: ../src/preferences.c:371
+msgid "Preferences"
+msgstr "Tilpass Parcellite "
+
+#: ../src/preferences.c:386
+msgid "Behavior"
+msgstr "Oppførsel"
+
+#: ../src/preferences.c:394
+msgid "<b>Clipboards</b>"
+msgstr "<b>Utklippstavler</b>"
+
+#: ../src/preferences.c:401
+msgid "Use _Copy (Ctrl-C)"
+msgstr "Bruk _Kopier (Ctrl-C)"
+
+#: ../src/preferences.c:403
+msgid "Use _Primary (Selection)"
+msgstr "Bruk _Primær (Utvalg)"
+
+#: ../src/preferences.c:411
+msgid "<b>History</b>"
+msgstr "<b>Historikk</b>"
+
+#: ../src/preferences.c:418
+msgid "_Save history"
+msgstr "_Lagre historikk"
+
+#: ../src/preferences.c:419
+msgid "Save and restore history between sessions"
+msgstr "Lagre og gjenopprett mellom sesjoner"
+
+#: ../src/preferences.c:423
+msgid "Items in history:"
+msgstr "Elementer i historikken:"
+
+#: ../src/preferences.c:436
+msgid "<b>Miscellaneous</b>"
+msgstr "<b>Diverse</b>"
+
+#: ../src/preferences.c:443
+msgid "Capture _hyperlinks only"
+msgstr "Bare fang _hyperlenker"
+
+#: ../src/preferences.c:445
+msgid "C_onfirm before clearing history"
+msgstr "Bekreft før tømming av hist_orikk"
+
+#: ../src/preferences.c:452
+msgid "Display"
+msgstr "Vis"
+
+#: ../src/preferences.c:460
+msgid "<b>Items</b>"
+msgstr "<b>Elementer</b>"
+
+#: ../src/preferences.c:467
+msgid "Show in a _single line"
+msgstr "Vi_s i en enkelt linje"
+
+#: ../src/preferences.c:469
+msgid "Show in _reverse order"
+msgstr "Vis i _omvendt rekkefølge"
+
+#: ../src/preferences.c:473
+msgid "Character length of items:"
+msgstr "Tegnlengde på elementer:"
+
+#: ../src/preferences.c:486
+msgid "<b>Omitting</b>"
+msgstr "<b>Unngåelser</b>"
+
+#: ../src/preferences.c:495
+msgid "Omit items in the:"
+msgstr "Unngå elementer i:"
+
+#: ../src/preferences.c:499
+msgid "Beginning"
+msgstr "Begynnelse"
+
+#: ../src/preferences.c:500
+msgid "Middle"
+msgstr "Midtpunkt"
+
+#: ../src/preferences.c:501
+msgid "End"
+msgstr "Slutt"
+
+#: ../src/preferences.c:508
+msgid "Actions"
+msgstr "Handlinger"
+
+#. Build the actions label
+#: ../src/preferences.c:513
+msgid "Control-click Parcellite's tray icon to use actions"
+msgstr "Hold Ctrl og klikk Parcellites ikon for å bruke handlinger"
+
+#: ../src/preferences.c:533
+msgid "Action"
+msgstr "Handling"
+
+#: ../src/preferences.c:540
+msgid "Command"
+msgstr "Kommando"
+
+#: ../src/preferences.c:555
+msgid "Add..."
+msgstr "Legg til..."
+
+#: ../src/preferences.c:559
+msgid "Remove"
+msgstr "Fjern"
+
+#: ../src/preferences.c:576
+msgid "Extras"
+msgstr "Ekstra"
+
+#: ../src/preferences.c:584
+msgid "<b>Hotkeys</b>"
+msgstr "<b>Hurtigtaster</b>"
+
+#: ../src/preferences.c:593
+msgid "History key combination:"
+msgstr "Snarevei for historikk:"
+
+#: ../src/preferences.c:601
+msgid "Actions key combination:"
+msgstr "Snarevei for handlinger:"
+
+#: ../src/preferences.c:609
+msgid "Menu key combination:"
+msgstr "Snarevei for meny:"
+
+#: ../data/parcellite.desktop.in.h:2 ../data/parcellite-startup.desktop.in.h:2
+msgid "Parcellite"
+msgstr "Parcellite"
+
