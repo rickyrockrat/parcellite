@@ -200,23 +200,6 @@ edit_actions_selected(GtkButton *button, gpointer user_data)
     show_preferences(ACTIONS_TAB);
 }
 
-/* Called when the save button is clicked from the edit window */
-static void
-save_clicked(GtkButton *button, gpointer user_data)
-{
-  /* Get the text buffer, its text and set as clipboard */
-  GtkTextBuffer* text_buffer = gtk_text_view_get_buffer((GtkTextView*)user_data);
-  GtkTextIter start, end;
-  gtk_text_buffer_get_start_iter(text_buffer, &start);
-  gtk_text_buffer_get_end_iter(text_buffer, &end);
-  gchar* new_clipboard_text = gtk_text_buffer_get_text(text_buffer, &start, &end, TRUE);
-  gtk_clipboard_set_text(clipboard, new_clipboard_text, -1);
-  /* Get top-most window widget and destroy it */
-  GtkWidget* window = gtk_widget_get_ancestor((GtkWidget*)user_data, GTK_TYPE_WINDOW);
-  gtk_widget_destroy(window);
-  g_free(new_clipboard_text);
-}
-
 /* Called when Edit is selected from history menu */
 static void
 edit_selected(GtkMenuItem *menu_item, gpointer user_data)
@@ -226,102 +209,47 @@ edit_selected(GtkMenuItem *menu_item, gpointer user_data)
   {
     /* Create clipboard buffer and set its text */
     GtkTextBuffer* clipboard_buffer = gtk_text_buffer_new(NULL);
-    gchar* cb_text = gtk_clipboard_wait_for_text(clipboard);
-    if (cb_text)
-      gtk_text_buffer_set_text(clipboard_buffer, cb_text, -1);
-    g_free(cb_text);
+    gchar* current_clipboard_text = gtk_clipboard_wait_for_text(clipboard);
+    if (current_clipboard_text != NULL)
+    {
+      gtk_text_buffer_set_text(clipboard_buffer, current_clipboard_text, -1);
+    }
     
-    /* Create window */
-    GtkWidget* window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-    gtk_grab_add(window);
-    gtk_window_set_decorated((GtkWindow*)window, FALSE);
-    gtk_window_set_default_size((GtkWindow*)window, 450, 300);
-    gtk_window_set_keep_above((GtkWindow*)window, TRUE);
-    gtk_window_set_title((GtkWindow*)window, _("Editing Clipboard"));
-    gtk_window_set_icon((GtkWindow*)window, gtk_widget_render_icon(window,
-                                                                   GTK_STOCK_EDIT,
-                                                                   GTK_ICON_SIZE_MENU,
-                                                                   NULL));
+    /* Create the dialog */
+    GtkWidget* dialog = gtk_dialog_new_with_buttons(_("Editing Clipboard"), NULL,
+                                                   (GTK_DIALOG_MODAL   +    GTK_DIALOG_NO_SEPARATOR),
+                                                    GTK_STOCK_CANCEL,       GTK_RESPONSE_REJECT,
+                                                    GTK_STOCK_OK,           GTK_RESPONSE_ACCEPT, NULL);
     
-    /* Add viewport, frame and alignment */
-    GtkWidget* viewport = gtk_viewport_new((GtkAdjustment*)gtk_adjustment_new(0, 0, 0, 0, 0, 0), 
-                                           (GtkAdjustment*)gtk_adjustment_new(0, 0, 0, 0, 0, 0));
+    gtk_window_set_default_size((GtkWindow*)dialog, 450, 300);
+    gtk_window_set_icon((GtkWindow*)dialog, gtk_widget_render_icon(dialog, GTK_STOCK_EDIT, GTK_ICON_SIZE_MENU, NULL));
     
-    /* gtk_viewport_set_shadow_type((GtkViewport*)viewport, GTK_SHADOW_ETCHED_OUT); */
-    gtk_viewport_set_shadow_type((GtkViewport*)viewport, GTK_SHADOW_NONE);
-    gtk_container_add((GtkContainer*)window, viewport);
-    GtkWidget* frame = gtk_frame_new(NULL);
-    gtk_frame_set_shadow_type((GtkFrame*)frame, GTK_SHADOW_NONE);
-    GtkWidget* label = gtk_label_new("Clipboard");
-    gtk_misc_set_padding((GtkMisc*)label, 0, 2);
-    gtk_label_set_markup((GtkLabel*)label, _("<b>Clipboard</b>"));
-    gtk_frame_set_label_widget((GtkFrame*)frame, label);
-    gtk_container_add((GtkContainer*)viewport, frame);
-    GtkWidget* alignment = gtk_alignment_new(0.50, 0.50, 1.0, 1.0);
-    gtk_alignment_set_padding((GtkAlignment*)alignment, 2, 0, 2, 2);
-    gtk_container_add((GtkContainer*)frame, alignment);
-    /* Add vbox for two rows of widgets */
-    GtkWidget* vbox = gtk_vbox_new(FALSE, 0);
-    gtk_container_add((GtkContainer*)alignment, vbox);
-    /* Add inner viewport and textview */
-    GtkWidget* inner_viewport = gtk_viewport_new((GtkAdjustment*)
-                                                 gtk_adjustment_new(0, 0, 0, 0, 0, 0),
-                                                 (GtkAdjustment*)
-                                                 gtk_adjustment_new(0, 0, 0, 0, 0, 0));
-    
-    gtk_viewport_set_shadow_type((GtkViewport*)inner_viewport, GTK_SHADOW_ETCHED_OUT);
-    gtk_box_pack_start(GTK_BOX(vbox), inner_viewport, TRUE, TRUE, 0);
-    GtkWidget* scrolled_window = gtk_scrolled_window_new((GtkAdjustment*)
-                                                         gtk_adjustment_new(0, 0, 0, 0, 0, 0),
-                                                         (GtkAdjustment*)
-                                                         gtk_adjustment_new(0, 0, 0, 0, 0, 0));
+    /* Build the scrolled window with the text view */
+    GtkWidget* scrolled_window = gtk_scrolled_window_new((GtkAdjustment*) gtk_adjustment_new(0, 0, 0, 0, 0, 0),
+                                                         (GtkAdjustment*) gtk_adjustment_new(0, 0, 0, 0, 0, 0));
     
     gtk_scrolled_window_set_policy((GtkScrolledWindow*)scrolled_window,
                                    GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
     
-    gtk_container_add((GtkContainer*)inner_viewport, scrolled_window);
+    gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), scrolled_window, TRUE, TRUE, 2);
     GtkWidget* text_view = gtk_text_view_new_with_buffer(clipboard_buffer);
     gtk_text_view_set_left_margin((GtkTextView*)text_view, 2);
     gtk_text_view_set_right_margin((GtkTextView*)text_view, 2);
     gtk_container_add((GtkContainer*)scrolled_window, text_view);
-    /* Button box underneath textview */
-    GtkWidget* hbutton_box = gtk_hbutton_box_new();
-    gtk_button_box_set_layout(GTK_BUTTON_BOX(hbutton_box), GTK_BUTTONBOX_END);
-    gtk_box_pack_start(GTK_BOX(vbox), hbutton_box, FALSE, FALSE, 2);
-    GtkWidget* hbox = gtk_hbox_new(FALSE, 2);
-    gtk_box_pack_start(GTK_BOX(hbutton_box), hbox, FALSE, FALSE, 0);
-    /* Save button */
-    GtkWidget* button_save = gtk_button_new();
     
-    gtk_button_set_relief((GtkButton*)button_save, GTK_RELIEF_NONE);
-    gtk_button_set_image((GtkButton*)button_save,
-                         gtk_image_new_from_stock(GTK_STOCK_OK,
-                                                  GTK_ICON_SIZE_MENU));
-    
-    gtk_widget_set_tooltip_text(button_save, _("Save changes"));
-    g_signal_connect((GObject*)button_save, "clicked", (GCallback)save_clicked, text_view);
-    gtk_box_pack_end(GTK_BOX(hbox), button_save, FALSE, FALSE, 0);
-    /* Close button */
-    GtkWidget* button_close = gtk_button_new();
-    gtk_button_set_relief((GtkButton*)button_close, GTK_RELIEF_NONE);
-    gtk_button_set_image((GtkButton*)button_close,
-                         gtk_image_new_from_stock(GTK_STOCK_CANCEL,
-                                                  GTK_ICON_SIZE_MENU));
-    
-    gtk_widget_set_tooltip_text(button_close, _("Discard changes"));
-    g_signal_connect_swapped((GObject*)button_close, "clicked",
-                             (GCallback)gtk_widget_destroy, window);
-    
-    gtk_box_pack_end(GTK_BOX(hbox), button_close, FALSE, FALSE, 0);
-    
-    /* Position window near status icon */
-    if (!prefs.no_icon)
+    /* Run the dialog */
+    gtk_widget_show_all(dialog);
+    if (gtk_dialog_run((GtkDialog*)dialog) == GTK_RESPONSE_ACCEPT)
     {
-      GdkRectangle area;
-      gtk_status_icon_get_geometry(status_icon, NULL, &area, NULL);
-      gtk_window_move((GtkWindow*)window, area.x, area.y);
+      /* Save changes done to the clipboard */
+      GtkTextIter start, end;
+      gtk_text_buffer_get_start_iter(clipboard_buffer, &start);
+      gtk_text_buffer_get_end_iter(clipboard_buffer, &end);
+      gchar* new_clipboard_text = gtk_text_buffer_get_text(clipboard_buffer, &start, &end, TRUE);
+      gtk_clipboard_set_text(clipboard, new_clipboard_text, -1);
+      g_free(new_clipboard_text);
     }
-    gtk_widget_show_all(window);
+    gtk_widget_destroy(dialog);
   }
 }
 
