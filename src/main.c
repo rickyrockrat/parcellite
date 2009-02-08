@@ -661,19 +661,6 @@ show_history_menu(gpointer data)
   g_signal_connect((GObject*)menu_item, "activate", (GCallback)clear_selected, NULL);
   gtk_menu_shell_append((GtkMenuShell*)menu, menu_item);
   /* Popup the menu... */
-  
-     /* Position the menu correctly
-      def position_menu(self, menu, data=None):
-      x, y = self.applet.window.get_origin()
-      
-      requisition_width, requisition_height = self.menu.size_request()
-      
-      if y + self.applet.allocation.height + requisition_height > self.applet.get_screen().get_height():
-         y -= requisition_height
-         
-      else:
-         y += self.applet.allocation.height*/
-  
   gtk_widget_show_all(menu);
   gtk_menu_popup((GtkMenu*)menu, NULL, NULL, NULL, NULL, 1, gtk_get_current_event_time());
   /* Return FALSE so the g_timeout_add() function is called only once */
