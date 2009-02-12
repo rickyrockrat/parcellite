@@ -56,9 +56,12 @@ prefs_t prefs = {DEF_USE_COPY,        DEF_USE_PRIMARY,      DEF_SYNCHRONIZE,
 static gboolean
 item_check(gpointer data)
 {
-  /* Process text and restore empty if needed */
+  /* Grab the current primary and clipboard text */
   gchar* primary_temp = gtk_clipboard_wait_for_text(primary);
   gchar* clipboard_temp = gtk_clipboard_wait_for_text(clipboard);
+  
+  /* What follows is an extremely confusing system of tests and crap... */
+  
   /* Check if primary contents were lost */
   if ((primary_temp == NULL) && (primary_text != NULL))
   {
@@ -66,15 +69,36 @@ item_check(gpointer data)
   }
   else
   {
-    /* Get the button state to check if the mouse button is being held */
     GdkModifierType button_state;
     gdk_window_get_pointer(NULL, NULL, NULL, &button_state);
+    /* Proceed if mouse button not being held */
     if ((primary_temp != NULL) && !(button_state & GDK_BUTTON1_MASK))
     {
-      g_free(primary_text);
-      primary_text = g_strdup(primary_temp);
+      /* Check if primary is the same as the last entry */
+      if (g_strcmp0(primary_temp, primary_text) != 0)
+      {
+        /* New primary entry */
+        g_free(primary_text);
+        primary_text = g_strdup(primary_temp);
+        /* Check if primary option is enabled and if there's text to add */
+        if (prefs.use_primary && primary_text)
+        {
+          /* Check contents before adding */
+          if (prefs.hyperlinks_only && is_hyperlink(primary_text))
+          {
+            delete_duplicate(primary_text);
+            append_item(primary_text);
+          }
+          else
+          {
+            delete_duplicate(primary_text);
+            append_item(primary_text);
+          }
+        }
+      }
     }
   }
+  
   /* Check if clipboard contents were lost */
   if ((clipboard_temp == NULL) && (clipboard_text != NULL))
   {
@@ -82,52 +106,30 @@ item_check(gpointer data)
   }
   else
   {
-    g_free(clipboard_text);
-    clipboard_text = g_strdup(clipboard_temp);
+    /* Check if clipboard is the same as the last entry */
+    if (g_strcmp0(clipboard_temp, clipboard_text) != 0)
+    {
+      /* New clipboard entry */
+      g_free(clipboard_text);
+      clipboard_text = g_strdup(clipboard_temp);
+      /* Check if clipboard option is enabled and if there's text to add */
+      if (prefs.use_copy && clipboard_text)
+      {
+        /* Check contents before adding */
+        if (prefs.hyperlinks_only && is_hyperlink(clipboard_text))
+        {
+          delete_duplicate(clipboard_text);
+          append_item(clipboard_text);
+        }
+        else
+        {
+          delete_duplicate(clipboard_text);
+          append_item(clipboard_text);
+        }
+      }
+    }
   }
-  g_free(primary_temp);
-  g_free(clipboard_temp);
-  /* Processing complete... */
   
-  /* Primary check */
-  if (prefs.use_primary)
-  {
-    /* Get the button state to check if the mouse button is being held */
-    GdkModifierType button_state;
-    gdk_window_get_pointer(NULL, NULL, NULL, &button_state);
-    /* Check item */
-    if ((primary_text) && !(button_state & GDK_BUTTON1_MASK))
-    {
-      if (prefs.hyperlinks_only && is_hyperlink(primary_text))
-      {
-        delete_duplicate(primary_text);
-        append_item(primary_text);
-      }
-      else
-      {
-        delete_duplicate(primary_text);
-        append_item(primary_text);
-      }
-    }
-  }
-  /* Clipboard check */
-  if (prefs.use_copy)
-  {
-    /* Check item */
-    if (clipboard_text)
-    {
-      if (prefs.hyperlinks_only && is_hyperlink(clipboard_text))
-      {
-        delete_duplicate(clipboard_text);
-        append_item(clipboard_text);
-      }
-      else
-      {
-        delete_duplicate(clipboard_text);
-        append_item(clipboard_text);
-      }
-    }
-  }
   /* Synchronization */
   if (prefs.synchronize)
   {
@@ -144,6 +146,10 @@ item_check(gpointer data)
       gtk_clipboard_set_text(primary, clipboard_text, -1);
     }
   }
+  
+  /* Cleanup */
+  g_free(primary_temp);
+  g_free(clipboard_temp);
   
   return TRUE;
 }
