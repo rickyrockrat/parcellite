@@ -256,6 +256,7 @@ edit_selected(GtkMenuItem *menu_item, gpointer user_data)
       g_free(new_clipboard_text);
     }
     gtk_widget_destroy(dialog);
+    g_free(current_clipboard_text);
   }
 }
 
