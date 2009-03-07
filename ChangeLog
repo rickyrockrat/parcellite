@@ -1,13 +1,18 @@
-v0.9.1   Pending...
+v0.9.1 Pending...
 
   New
-  + Clipboard and primary synchronization (by Wolfgang Schnerring).
+  + Print primary contents command line option.
   + Simplified Chinese, portuguese and polish translations.
+  + Clipboard and primary synchronization (by Wolfgang Schnerring).
   
   Changes
   + Updated German translation.
+  + Eliminated redundant disk activity.
   + Control-click patch for actions menu.
+  + Selected items are bumped to the top of the history.
+  + Improved (once again) new clipboard/primary contents handling.
   + Piping clipboard contents no longer truncates new line character.
+  + New Edit Clipboard dialog. Old dialog had strange behavior under different window managers.
 
 v0.9   Thursday, November 20 2008
 
