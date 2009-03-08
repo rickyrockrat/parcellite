@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Parcellite\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-11-19 11:28-0400\n"
+"POT-Creation-Date: 2009-03-08 10:32-0400\n"
 "PO-Revision-Date: 2008-10-06 12:57+0100\n"
 "Last-Translator: Gilberto Miralla <xyhthyx@gmail.com>\n"
 "Language-Team: Spanish\n"
@@ -17,61 +17,50 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../src/main.c:153
+#: ../src/main.c:166
 msgid "Executing action..."
 msgstr "Ejecutando acción..."
 
-#: ../src/main.c:159 ../src/main.c:758 ../data/parcellite.desktop.in.h:1
+#: ../src/main.c:172 ../src/main.c:704 ../data/parcellite.desktop.in.h:1
 #: ../data/parcellite-startup.desktop.in.h:1
 msgid "Clipboard Manager"
 msgstr "Gestor de Portapapeles"
 
-#: ../src/main.c:182
+#: ../src/main.c:195
 msgid "Could not create thread for executed action\n"
 msgstr "No se pudo crear hilo para la acción ejecutada\n"
 
-#: ../src/main.c:233
+#. Create the dialog
+#: ../src/main.c:225
 msgid "Editing Clipboard"
 msgstr "Editando Portapapeles"
 
-#: ../src/main.c:250
-msgid "<b>Clipboard</b>"
-msgstr "<b>Portapapeles</b>"
-
-#: ../src/main.c:294
-msgid "Save changes"
-msgstr "Guardar cambios"
-
-#: ../src/main.c:304
-msgid "Discard changes"
-msgstr "Descartar cambios"
-
-#: ../src/main.c:342
+#: ../src/main.c:284
 msgid "Clear the history?"
 msgstr "¿Borrar el historial?"
 
-#: ../src/main.c:394
+#: ../src/main.c:336
 msgid "Lightweight GTK+ clipboard manager."
 msgstr "Gestor ligero de portapapeles en GTK+."
 
-#: ../src/main.c:480
+#: ../src/main.c:423
 msgid "<b>None</b>"
 msgstr "<b>Ninguno</b>"
 
 #. File contained no actions so adding empty
 #. File did not open so adding empty
 #. Nothing in history so adding empty
-#: ../src/main.c:501 ../src/main.c:530 ../src/main.c:645
+#: ../src/main.c:444 ../src/main.c:473 ../src/main.c:588
 msgid "Empty"
 msgstr "Vacío"
 
 #. Edit actions
-#: ../src/main.c:537
+#: ../src/main.c:480
 msgid "_Edit actions"
 msgstr "_Editar acciones"
 
 #. Edit clipboard
-#: ../src/main.c:561
+#: ../src/main.c:504
 msgid "_Edit Clipboard"
 msgstr "_Editar Portapapeles"
 
@@ -80,25 +69,29 @@ msgstr "_Editar Portapapeles"
 msgid "Couldn't create directory: %s\n"
 msgstr "No se puede crear el directorio: %s\n"
 
-#: ../src/utils.c:83
+#: ../src/utils.c:84
 msgid "Run as daemon"
 msgstr "Ejecutar como demonio"
 
-#: ../src/utils.c:90
+#: ../src/utils.c:91
 msgid "Do not use status icon (Ctrl-Alt-P for menu)"
 msgstr "No usar icono de estado (Ctrl-Alt-P para el menú)"
 
-#: ../src/utils.c:97
+#: ../src/utils.c:98
 msgid "Print clipboard contents"
 msgstr "Imprimir contenido del portapapeles"
 
-#: ../src/utils.c:109
+#: ../src/utils.c:105
+msgid "Print primary contents"
+msgstr "Imprimir contenido de la selección"
+
+#: ../src/utils.c:117
 msgid ""
 "Clipboard CLI usage examples:\n"
 "\n"
 "  echo \"copied to clipboard\" | parcellite\n"
 "  parcellite \"copied to clipboard\"\n"
-"  echo \"copied to clipboard\" | parcellite -o"
+"  echo \"copied to clipboard\" | parcellite -c"
 msgstr ""
 "Ejemplos del portapapeles por el terminal:\n"
 "\n"
@@ -106,7 +99,7 @@ msgstr ""
 "  parcellite \"copiado a portapapeles\"\n"
 "  echo \"copiado a portapapeles\" | parcellite -o"
 
-#: ../src/utils.c:115
+#: ../src/utils.c:123
 msgid ""
 "Written by Gilberto \"Xyhthyx\" Miralla.\n"
 "Report bugs to <xyhthyx@gmail.com>."
@@ -115,142 +108,158 @@ msgstr ""
 "Reportar errores a <xyhthyx@gmail.com>."
 
 #. Create the dialog
-#: ../src/preferences.c:371
+#: ../src/preferences.c:375
 msgid "Preferences"
 msgstr "Preferencias"
 
-#: ../src/preferences.c:386
+#: ../src/preferences.c:390
 msgid "Behavior"
 msgstr "Comportamiento"
 
-#: ../src/preferences.c:394
+#: ../src/preferences.c:398
 msgid "<b>Clipboards</b>"
 msgstr "<b>Portapapeles</b>"
 
-#: ../src/preferences.c:401
+#: ../src/preferences.c:405
 msgid "Use _Copy (Ctrl-C)"
 msgstr "Usar _Copias (Ctrl-C)"
 
-#: ../src/preferences.c:403
+#: ../src/preferences.c:407
 msgid "Use _Primary (Selection)"
 msgstr "Usar _Primaria (Selección)"
 
-#: ../src/preferences.c:411
+#: ../src/preferences.c:409
+msgid "S_ynchronize clipboards"
+msgstr "S_incronizar portapapeles"
+
+#: ../src/preferences.c:417
 msgid "<b>History</b>"
 msgstr "<b>Historial</b>"
 
-#: ../src/preferences.c:418
+#: ../src/preferences.c:424
 msgid "_Save history"
 msgstr "_Guardar historial"
 
-#: ../src/preferences.c:419
+#: ../src/preferences.c:425
 msgid "Save and restore history between sessions"
 msgstr "Mantener y restaurar historial entre sesiones"
 
-#: ../src/preferences.c:423
+#: ../src/preferences.c:429
 msgid "Items in history:"
 msgstr "Artículos en el historial:"
 
-#: ../src/preferences.c:436
+#: ../src/preferences.c:442
 msgid "<b>Miscellaneous</b>"
 msgstr "<b>Varios</b>"
 
-#: ../src/preferences.c:443
+#: ../src/preferences.c:449
 msgid "Capture _hyperlinks only"
 msgstr "Capturar _hipervínculos solamente"
 
-#: ../src/preferences.c:445
+#: ../src/preferences.c:451
 msgid "C_onfirm before clearing history"
 msgstr "C_onfirmar antes de borrar historial"
 
-#: ../src/preferences.c:452
+#: ../src/preferences.c:458
 msgid "Display"
 msgstr "Muestra"
 
-#: ../src/preferences.c:460
+#: ../src/preferences.c:466
 msgid "<b>Items</b>"
 msgstr "<b>Articulos</b>"
 
-#: ../src/preferences.c:467
+#: ../src/preferences.c:473
 msgid "Show in a _single line"
 msgstr "Mo_strar articulos en líneas únicas"
 
-#: ../src/preferences.c:469
+#: ../src/preferences.c:475
 msgid "Show in _reverse order"
 msgstr "Mostrar artículos del historial en orden _invertido"
 
-#: ../src/preferences.c:473
+#: ../src/preferences.c:479
 msgid "Character length of items:"
 msgstr "Longitud de artículos en caracteres:"
 
-#: ../src/preferences.c:486
+#: ../src/preferences.c:492
 msgid "<b>Omitting</b>"
 msgstr "<b>Omitir</b>"
 
-#: ../src/preferences.c:495
+#: ../src/preferences.c:501
 msgid "Omit items in the:"
 msgstr "Omitir en el:"
 
-#: ../src/preferences.c:499
+#: ../src/preferences.c:505
 msgid "Beginning"
 msgstr "Principio"
 
-#: ../src/preferences.c:500
+#: ../src/preferences.c:506
 msgid "Middle"
 msgstr "Medio"
 
-#: ../src/preferences.c:501
+#: ../src/preferences.c:507
 msgid "End"
 msgstr "Final"
 
-#: ../src/preferences.c:508
+#: ../src/preferences.c:514
 msgid "Actions"
 msgstr "Acciones"
 
 #. Build the actions label
-#: ../src/preferences.c:513
+#: ../src/preferences.c:519
 msgid "Control-click Parcellite's tray icon to use actions"
 msgstr "Control-clic en el icono de Parcellite para usar acciones"
 
-#: ../src/preferences.c:533
+#: ../src/preferences.c:539
 msgid "Action"
 msgstr "Acción"
 
-#: ../src/preferences.c:540
+#: ../src/preferences.c:546
 msgid "Command"
 msgstr "Comando"
 
-#: ../src/preferences.c:555
+#: ../src/preferences.c:561
 msgid "Add..."
 msgstr "Añadir..."
 
-#: ../src/preferences.c:559
+#: ../src/preferences.c:565
 msgid "Remove"
 msgstr "Eliminar"
 
-#: ../src/preferences.c:576
-msgid "Extras"
-msgstr "Extras"
+#: ../src/preferences.c:582
+msgid "Hotkeys"
+msgstr "Atajos"
 
-#: ../src/preferences.c:584
+#: ../src/preferences.c:590
 msgid "<b>Hotkeys</b>"
 msgstr "<b>Atajos</b>"
 
-#: ../src/preferences.c:593
+#: ../src/preferences.c:599
 msgid "History key combination:"
 msgstr "Combinación para historial:"
 
-#: ../src/preferences.c:601
+#: ../src/preferences.c:607
 msgid "Actions key combination:"
 msgstr "Combinación para acciones:"
 
-#: ../src/preferences.c:609
+#: ../src/preferences.c:615
 msgid "Menu key combination:"
 msgstr "Combinación para el menú:"
 
 #: ../data/parcellite.desktop.in.h:2 ../data/parcellite-startup.desktop.in.h:2
 msgid "Parcellite"
 msgstr "Parcellite"
+
+#~ msgid "<b>Clipboard</b>"
+#~ msgstr "<b>Portapapeles</b>"
+
+#~ msgid "Save changes"
+#~ msgstr "Guardar cambios"
+
+#~ msgid "Discard changes"
+#~ msgstr "Descartar cambios"
+
+#~ msgid "Extras"
+#~ msgstr "Extras"
 
 #, fuzzy
 #~ msgid ""
