@@ -1,15 +1,16 @@
+# translation of pt_BR.po to Português do Brasil
 # Português do Brasil translation of parcellite.
 # Copyright (C) 2008 Gilberto "Xyhthyx" Miralla <xyhthyx@gmail.com>
 # This file is distributed under the same license as the parcellite package.
 #
 #
-# Phantom X <megaphantomx at bol.com.br>, 2008.
+# Phantom X <megaphantomx at bol.com.br>, 2008, 2009.
 msgid ""
 msgstr ""
-"Project-Id-Version: parcellite-pt_BR\n"
+"Project-Id-Version: pt_BR\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2009-03-08 10:33-0400\n"
-"PO-Revision-Date: 2008-11-25 23:46-0200\n"
+"PO-Revision-Date: 2009-03-13 22:30-0300\n"
 "Last-Translator: Phantom X <megaphantomx at bol.com.br>\n"
 "Language-Team: Português do Brasil <pt@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -83,12 +84,10 @@ msgid "Print clipboard contents"
 msgstr "Imprimir conteúdo da área de transferência"
 
 #: ../src/utils.c:105
-#, fuzzy
 msgid "Print primary contents"
-msgstr "Imprimir conteúdo da área de transferência"
+msgstr "Imprimir conteúdo primário"
 
 #: ../src/utils.c:117
-#, fuzzy
 msgid ""
 "Clipboard CLI usage examples:\n"
 "\n"
@@ -100,7 +99,7 @@ msgstr ""
 "\n"
 "  echo \"copiado para a área de transferência\" | parcellite\n"
 "  parcellite \"copiado para a área de transferência\"\n"
-"  echo \"copiado para a área de transferência\" | parcellite -o"
+"  echo \"copiado para a área de transferência\" | parcellite -c"
 
 #: ../src/utils.c:123
 msgid ""
@@ -133,7 +132,7 @@ msgstr "Usar Seleção _Primária"
 
 #: ../src/preferences.c:409
 msgid "S_ynchronize clipboards"
-msgstr ""
+msgstr "S_incronizar áreas de transferência"
 
 #: ../src/preferences.c:417
 msgid "<b>History</b>"
@@ -229,9 +228,8 @@ msgid "Remove"
 msgstr "Remover"
 
 #: ../src/preferences.c:582
-#, fuzzy
 msgid "Hotkeys"
-msgstr "<b>Atalhos</b>"
+msgstr "Atalhos"
 
 #: ../src/preferences.c:590
 msgid "<b>Hotkeys</b>"
@@ -251,13 +249,5 @@ msgstr "Combinação de teclas do Menu:"
 
 #: ../data/parcellite.desktop.in.h:2 ../data/parcellite-startup.desktop.in.h:2
 msgid "Parcellite"
-msgstr ""
+msgstr "Parcellite"
 
-#~ msgid "<b>Clipboard</b>"
-#~ msgstr "<b>Área de Transferência</b>"
-
-#~ msgid "Save changes"
-#~ msgstr "Salvar modificações"
-
-#~ msgid "Discard changes"
-#~ msgstr "Descartar modificações"
