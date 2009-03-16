@@ -1,15 +1,15 @@
 # Hungarian translation of Parcellite.
 # Copyright (C) 2008 Xyhthyx <xyhthyx@gmail.com>
 # This file is distributed under the same license as the parcellite package.
-# Németh Tamás <ntomasz@vipmail.hu>, 2008.
+# Németh Tamás <ntomasz@vipmail.hu>, 2008, 2009.
 #
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: Parcellite\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-03-08 10:32-0400\n"
-"PO-Revision-Date: 2008-11-12 18:20+0100\n"
+"POT-Creation-Date: 2009-03-15 21:14-0400\n"
+"PO-Revision-Date: 2009-03-15 20:26+0100\n"
 "Last-Translator: Németh Tamás <ntomasz@vipmail.hu>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -81,12 +81,10 @@ msgid "Print clipboard contents"
 msgstr "Vágólap tartalmak nyomtatása"
 
 #: ../src/utils.c:105
-#, fuzzy
 msgid "Print primary contents"
-msgstr "Vágólap tartalmak nyomtatása"
+msgstr "Elsődleges tartalmak nyomtatása"
 
 #: ../src/utils.c:117
-#, fuzzy
 msgid ""
 "Clipboard CLI usage examples:\n"
 "\n"
@@ -94,11 +92,11 @@ msgid ""
 "  parcellite \"copied to clipboard\"\n"
 "  echo \"copied to clipboard\" | parcellite -c"
 msgstr ""
-"A vágólapkezelő CLI (konzolos) használatára példa:\n"
+"A vágólapkezelő CLI (konzolos) használatára példák:\n"
 "\n"
 "  echo \"másolás a vágólapra\" | parcellite\n"
 "  parcellite \"másolás a vágólapra\"\n"
-"  echo \"másolás a vágólapra\" | parcellite -o"
+"  echo \"másolás a vágólapra\" | parcellite -c"
 
 #: ../src/utils.c:123
 msgid ""
@@ -106,7 +104,7 @@ msgid ""
 "Report bugs to <xyhthyx@gmail.com>."
 msgstr ""
 "Írta: Gilberto \"Xyhthyx\" Miralla\n"
-"Hibajelentések címe: <xyhthyx@gmail.com>"
+"Hibabejelentő emailcím: <xyhthyx@gmail.com>"
 
 #. Create the dialog
 #: ../src/preferences.c:375
@@ -131,7 +129,7 @@ msgstr "_Elsődleges használata (Kiválasztás)"
 
 #: ../src/preferences.c:409
 msgid "S_ynchronize clipboards"
-msgstr ""
+msgstr "Vágólapok s_zinkronizálása"
 
 #: ../src/preferences.c:417
 msgid "<b>History</b>"
@@ -227,9 +225,8 @@ msgid "Remove"
 msgstr "Eltávolít"
 
 #: ../src/preferences.c:582
-#, fuzzy
 msgid "Hotkeys"
-msgstr "<b>Gyorsbillentyűk</b>"
+msgstr "Gyorsbillentyűk"
 
 #: ../src/preferences.c:590
 msgid "<b>Hotkeys</b>"
@@ -250,15 +247,3 @@ msgstr "Menü gyorsbillentyű:"
 #: ../data/parcellite.desktop.in.h:2 ../data/parcellite-startup.desktop.in.h:2
 msgid "Parcellite"
 msgstr "Parcellite"
-
-#~ msgid "<b>Clipboard</b>"
-#~ msgstr "<b>Vágólap</b>"
-
-#~ msgid "Save changes"
-#~ msgstr "Változások mentése"
-
-#~ msgid "Discard changes"
-#~ msgstr "Változások elvetése"
-
-#~ msgid "Extras"
-#~ msgstr "Extrák"
