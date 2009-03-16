@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Parcellite\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-03-08 10:32-0400\n"
+"POT-Creation-Date: 2009-03-15 21:14-0400\n"
 "PO-Revision-Date: 2009-03-14 11:08+0900\n"
 "Last-Translator: jiro kawada <jiro.kawada@gmail.com>\n"
 "Language-Team: JAPANESE\n"
@@ -22,9 +22,7 @@ msgstr ""
 msgid "Executing action..."
 msgstr "アクション実行中..."
 
-#: ../src/main.c:172
-#: ../src/main.c:704
-#: ../data/parcellite.desktop.in.h:1
+#: ../src/main.c:172 ../src/main.c:704 ../data/parcellite.desktop.in.h:1
 #: ../data/parcellite-startup.desktop.in.h:1
 msgid "Clipboard Manager"
 msgstr "クリップボード・マネージャ"
@@ -53,9 +51,7 @@ msgstr "<b>なし</b>"
 #. File contained no actions so adding empty
 #. File did not open so adding empty
 #. Nothing in history so adding empty
-#: ../src/main.c:444
-#: ../src/main.c:473
-#: ../src/main.c:588
+#: ../src/main.c:444 ../src/main.c:473 ../src/main.c:588
 msgid "Empty"
 msgstr "空"
 
@@ -69,8 +65,7 @@ msgstr "アクション編集(_E)"
 msgid "_Edit Clipboard"
 msgstr "クリップボード編集(_E)"
 
-#: ../src/utils.c:38
-#: ../src/utils.c:45
+#: ../src/utils.c:38 ../src/utils.c:45
 #, c-format
 msgid "Couldn't create directory: %s\n"
 msgstr "ディレクトリの作成ができませんでした。: %s\n"
@@ -251,27 +246,31 @@ msgstr "アクションキーの組み合せ:"
 msgid "Menu key combination:"
 msgstr "メニューキーの組み合せ:"
 
-#: ../data/parcellite.desktop.in.h:2
-#: ../data/parcellite-startup.desktop.in.h:2
+#: ../data/parcellite.desktop.in.h:2 ../data/parcellite-startup.desktop.in.h:2
 msgid "Parcellite"
 msgstr "Parcellite"
 
 #~ msgid "<b>Clipboard</b>"
 #~ msgstr "<b>クリップボード</b>"
+
 #~ msgid "Save changes"
 #~ msgstr "変更保存"
+
 #~ msgid "Discard changes"
 #~ msgstr "変更破棄"
+
 #~ msgid "Extras"
 #~ msgstr "その他"
+
 #~ msgid ""
 #~ "Add a new action\n"
 #~ "\"%s\" in a command is replaced with the clipboard contents"
 #~ msgstr ""
 #~ "新しいアクションを追加\n"
 #~ "コマンドの \"%s\" は、クリップボードの内容と置き換えられます。"
+
 #~ msgid "Move selected action up"
 #~ msgstr "選択アクションを上に移動"
+
 #~ msgid "Move selected action down"
 #~ msgstr "選択アクションを下に移動"
-
