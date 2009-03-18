@@ -1,91 +1,87 @@
-# Polish translation of parcellite
-# Copyright (C) 2008 Xyhthyx <xyhthyx@gmail.com>
+# Swedish translation for parcellite.
+# Copyright (C) 2009 Free Software Foundation, Inc.
 # This file is distributed under the same license as the parcellite package.
-# pankamyk <pankamyk@o2.pl>, 2008.
-#
+# Daniel Nylander <po@danielnylander.se>, 2009.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Parcellite\n"
+"Project-Id-Version: parcellite\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-03-18 12:08-0400\n"
-"PO-Revision-Date: \n"
-"Last-Translator: pankamyk <pankamyk@o2.pl>\n"
-"Language-Team: none <pankamyk@o2.pl>\n"
+"POT-Creation-Date: 2009-03-18 12:12-0400\n"
+"PO-Revision-Date: 2009-03-04 09:41+0100\n"
+"Last-Translator: Daniel Nylander <po@danielnylander.se>\n"
+"Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Poedit-Language: Polish\n"
-"X-Poedit-Country: POLAND\n"
 
 #: ../src/main.c:166
 msgid "Executing action..."
-msgstr "Wykonywanie zadania..."
+msgstr "Kör åtgärd..."
 
 #: ../src/main.c:172 ../src/main.c:704 ../data/parcellite.desktop.in.h:1
 #: ../data/parcellite-startup.desktop.in.h:1
 msgid "Clipboard Manager"
-msgstr "Menadżer schowka"
+msgstr "Urklippshanterare"
 
 #: ../src/main.c:195
 msgid "Could not create thread for executed action\n"
-msgstr "Nie można wykonać tego zadania!\n"
+msgstr "Skapa inte tråd för startad åtgärd\n"
 
 #. Create the dialog
 #: ../src/main.c:225
 msgid "Editing Clipboard"
-msgstr "Edytor schowka"
+msgstr "Redigerar urklipp"
 
 #: ../src/main.c:284
 msgid "Clear the history?"
-msgstr "Usunąć historie wpisów?"
+msgstr "Töm historik?"
 
 #: ../src/main.c:336
 msgid "Lightweight GTK+ clipboard manager."
-msgstr "Prosty i szybki menadżer schowka."
+msgstr "Resurssnål GTK+-urklippshanterare."
 
 #: ../src/main.c:423
 msgid "<b>None</b>"
-msgstr "<b>żaden</b>"
+msgstr "<b>Inget</b>"
 
 #. File contained no actions so adding empty
 #. File did not open so adding empty
 #. Nothing in history so adding empty
 #: ../src/main.c:444 ../src/main.c:473 ../src/main.c:588
 msgid "Empty"
-msgstr "pusty"
+msgstr "Tom"
 
 #. Edit actions
 #: ../src/main.c:480
 msgid "_Edit actions"
-msgstr "_Edycja zadania"
+msgstr "R_edigera åtgärder"
 
 #. Edit clipboard
 #: ../src/main.c:504
 msgid "_Edit Clipboard"
-msgstr "_Edycja zawartości schowka"
+msgstr "R_edigera urklipp"
 
 #: ../src/utils.c:38 ../src/utils.c:45
 #, c-format
 msgid "Couldn't create directory: %s\n"
-msgstr "Nie można utworzyć katalogu \"%s\"\n"
+msgstr "Kunde inte skapa katalog: %s\n"
 
 #: ../src/utils.c:84
 msgid "Run as daemon"
-msgstr "Uruchom jako deamon"
+msgstr "Kör som demon"
 
 #: ../src/utils.c:91
 msgid "Do not use status icon (Ctrl-Alt-P for menu)"
-msgstr "Ukrywanie ikony programu. <i>Domyślnie Ctrl+Alt+P pokazuje menu</i>"
+msgstr "Använd inte statusikon (Ctrl-Alt-P för meny)"
 
 #: ../src/utils.c:98
 msgid "Print clipboard contents"
-msgstr "Drukowanie zawartości schowka"
+msgstr "Skriv ut urklippets innehåll"
 
 #: ../src/utils.c:105
-#, fuzzy
 msgid "Print primary contents"
-msgstr "Drukowanie zawartości schowka"
+msgstr "Skriv ut primärt innehåll"
 
 #: ../src/utils.c:117
 msgid ""
@@ -95,166 +91,158 @@ msgid ""
 "  parcellite \"copied to clipboard\"\n"
 "  echo \"copied to clipboard\" | parcellite -c"
 msgstr ""
+"Användningexempel för kommandorad:\n"
+"\n"
+"  echo \"kopierad till urklipp\" | parcellite\n"
+"  parcellite \"kopierad till urklipp\"\n"
+"  echo \"kopierad till urklipp\" | parcellite -c"
 
 #: ../src/utils.c:123
 msgid ""
 "Written by Gilberto \"Xyhthyx\" Miralla.\n"
 "Report bugs to <xyhthyx@gmail.com>."
 msgstr ""
-"Autor: Gilberto \"Xyhthyx\" Miralla.\n"
-"Zauważone błędy proszę zgłaszać na adres xyhthyx@gmail.com"
+"Skrivet av Gilberto \"Xyhthyx\" Miralla.\n"
+"Rapportera fel till <xyhthyx@gmail.com>."
 
 #. Create the dialog
 #: ../src/preferences.c:375
 msgid "Preferences"
-msgstr "Ustawienia"
+msgstr "Inställningar"
 
 #: ../src/preferences.c:390
 msgid "Behavior"
-msgstr "Zachowanie"
+msgstr "Beteende"
 
 #: ../src/preferences.c:398
 msgid "<b>Clipboards</b>"
-msgstr "<b>Dodawane do schowka</b>"
+msgstr "<b>Urklipp</b>"
 
 #: ../src/preferences.c:405
 msgid "Use _Copy (Ctrl-C)"
-msgstr "Tekst kopiowany przy użyciu <i>_Ctrl+C</i>"
+msgstr "Använd _Kopiera (Ctrl-C)"
 
 #: ../src/preferences.c:407
 msgid "Use _Primary (Selection)"
-msgstr "Tekst zaznaczony kursorem"
+msgstr "Använd _Primär (Markering)"
 
 #: ../src/preferences.c:409
 msgid "S_ynchronize clipboards"
-msgstr ""
+msgstr "S_ynkronisera urklipp"
 
 #: ../src/preferences.c:417
 msgid "<b>History</b>"
-msgstr "<b>Historia</b>"
+msgstr "<b>Historik</b>"
 
 #: ../src/preferences.c:424
 msgid "_Save history"
-msgstr "Zapi_sywanie historii wpisów"
+msgstr "_Spara historik"
 
 #: ../src/preferences.c:425
 msgid "Save and restore history between sessions"
-msgstr "Zapisywanie historii dla każdej sesji"
+msgstr "Spara och återställ historik mellan sessioner"
 
 #: ../src/preferences.c:429
 msgid "Items in history:"
-msgstr "Liczba zapamiętanych wpisów:"
+msgstr "Objekt i historik:"
 
 #: ../src/preferences.c:442
 msgid "<b>Miscellaneous</b>"
-msgstr "<b>Różne</b>"
+msgstr "<b>Diverse</b>"
 
 #: ../src/preferences.c:449
 msgid "Capture _hyperlinks only"
-msgstr "Przec_hwytywanie tylko linków"
+msgstr "Fånga endast _hyperlänkar"
 
 #: ../src/preferences.c:451
 msgid "C_onfirm before clearing history"
-msgstr "P_otwierdzanie usuwania historii wpisów"
+msgstr "B_ekräfta innan historiken töms"
 
 #: ../src/preferences.c:458
 msgid "Display"
-msgstr "Wygląd"
+msgstr "Visa"
 
 #: ../src/preferences.c:466
 msgid "<b>Items</b>"
-msgstr "<b>Wygląd wpisów</b>"
+msgstr "<b>Objekt</b>"
 
 #: ../src/preferences.c:473
 msgid "Show in a _single line"
-msgstr "Pojedyncza linia"
+msgstr "Visa på en _enda rad"
 
 #: ../src/preferences.c:475
 msgid "Show in _reverse order"
-msgstr "Odw_rócenie kolejności"
+msgstr "Visa i _omvänd ordning"
 
 #: ../src/preferences.c:479
 msgid "Character length of items:"
-msgstr "Liczba znaków dla wpisu:"
+msgstr "Teckenlängd för objekt:"
 
 #: ../src/preferences.c:492
 msgid "<b>Omitting</b>"
-msgstr "<b>Streszczanie wpisu</b>"
+msgstr "<b>Utelämna</b>"
 
 #: ../src/preferences.c:501
 msgid "Omit items in the:"
-msgstr "Wyświetlanie wpisu w menu:"
+msgstr "Utelämna objekt i:"
 
 #: ../src/preferences.c:505
 msgid "Beginning"
-msgstr "Początek"
+msgstr "Början"
 
 #: ../src/preferences.c:506
 msgid "Middle"
-msgstr "Początek i koniec"
+msgstr "Mitten"
 
 #: ../src/preferences.c:507
 msgid "End"
-msgstr "Koniec"
+msgstr "Slutet"
 
 #: ../src/preferences.c:514
 msgid "Actions"
-msgstr "Zadania"
+msgstr "Åtgärder"
 
 #. Build the actions label
 #: ../src/preferences.c:519
 msgid "Control-click Parcellite's tray icon to use actions"
-msgstr ""
+msgstr "Control-klicka på Parcellites aktivitetsikon för att använda åtgärder"
 
 #: ../src/preferences.c:539
 msgid "Action"
-msgstr "Zadanie"
+msgstr "Åtgärd"
 
 #: ../src/preferences.c:546
 msgid "Command"
-msgstr "Polecenie"
+msgstr "Kommando"
 
 #: ../src/preferences.c:561
 msgid "Add..."
-msgstr "Dodaj..."
+msgstr "Lägg till..."
 
 #: ../src/preferences.c:565
 msgid "Remove"
-msgstr "Usuń"
+msgstr "Ta bort"
 
 #: ../src/preferences.c:582
-#, fuzzy
 msgid "Hotkeys"
-msgstr "<b>Skróty klawiatury<b>"
+msgstr "Snabbtangenter"
 
 #: ../src/preferences.c:590
 msgid "<b>Hotkeys</b>"
-msgstr "<b>Skróty klawiatury<b>"
+msgstr "<b>Snabbtangenter</b>"
 
 #: ../src/preferences.c:599
 msgid "History key combination:"
-msgstr "Pokaż historie:"
+msgstr "Tangentkombination för historik:"
 
 #: ../src/preferences.c:607
 msgid "Actions key combination:"
-msgstr "Pokaż zadania:"
+msgstr "Tangentkombination för åtgärder:"
 
 #: ../src/preferences.c:615
 msgid "Menu key combination:"
-msgstr "Pokaż menu:"
+msgstr "Tangentkombination för meny:"
 
 #: ../data/parcellite.desktop.in.h:2 ../data/parcellite-startup.desktop.in.h:2
 msgid "Parcellite"
 msgstr "Parcellite"
-
-#~ msgid "<b>Clipboard</b>"
-#~ msgstr "<b>Schowek<b>"
-
-#~ msgid "Save changes"
-#~ msgstr "Zapisz"
-
-#~ msgid "Discard changes"
-#~ msgstr "Anuluj"
-
-#~ msgid "Extras"
-#~ msgstr "Dodatki"
