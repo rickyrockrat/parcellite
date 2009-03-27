@@ -289,6 +289,14 @@ clear_selected(GtkMenuItem *menu_item, gpointer user_data)
       g_slist_free(history);
       history = NULL;
       save_history();
+      g_free(primary_text);
+      g_free(clipboard_text);
+      g_free(synchronized_text);
+      primary_text = g_strdup("");
+      clipboard_text = g_strdup("");
+      synchronized_text = g_strdup("");
+      gtk_clipboard_set_text(primary, "", -1);
+      gtk_clipboard_set_text(clipboard, "", -1);
     }
     gtk_widget_destroy(confirm_dialog);
   }
@@ -298,6 +306,14 @@ clear_selected(GtkMenuItem *menu_item, gpointer user_data)
     g_slist_free(history);
     history = NULL;
     save_history();
+    g_free(primary_text);
+    g_free(clipboard_text);
+    g_free(synchronized_text);
+    primary_text = g_strdup("");
+    clipboard_text = g_strdup("");
+    synchronized_text = g_strdup("");
+    gtk_clipboard_set_text(primary, "", -1);
+    gtk_clipboard_set_text(clipboard, "", -1);
   }
 }
 
