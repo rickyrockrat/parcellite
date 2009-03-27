@@ -17,7 +17,7 @@ DUALCASE=1; export DUALCASE # for MKS sh
 if test -n "${ZSH_VERSION+set}" && (emulate sh) >/dev/null 2>&1; then
   emulate sh
   NULLCMD=:
-  # Zsh 3.x and 4.x performs word splitting on ${1+"$@"}, which
+  # Pre-4.2 versions of Zsh do word splitting on ${1+"$@"}, which
   # is contrary to our usage.  Disable this feature.
   alias -g '${1+"$@"}'='"$@"'
   setopt NO_GLOB_SUBST
@@ -39,17 +39,45 @@ as_cr_Letters=$as_cr_letters$as_cr_LETTERS
 as_cr_digits='0123456789'
 as_cr_alnum=$as_cr_Letters$as_cr_digits
 
+as_nl='
+'
+export as_nl
+# Printing a long string crashes Solaris 7 /usr/bin/printf.
+as_echo='\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\'
+as_echo=$as_echo$as_echo$as_echo$as_echo$as_echo
+as_echo=$as_echo$as_echo$as_echo$as_echo$as_echo$as_echo
+if (test "X`printf %s $as_echo`" = "X$as_echo") 2>/dev/null; then
+  as_echo='printf %s\n'
+  as_echo_n='printf %s'
+else
+  if test "X`(/usr/ucb/echo -n -n $as_echo) 2>/dev/null`" = "X-n $as_echo"; then
+    as_echo_body='eval /usr/ucb/echo -n "$1$as_nl"'
+    as_echo_n='/usr/ucb/echo -n'
+  else
+    as_echo_body='eval expr "X$1" : "X\\(.*\\)"'
+    as_echo_n_body='eval
+      arg=$1;
+      case $arg in
+      *"$as_nl"*)
+	expr "X$arg" : "X\\(.*\\)$as_nl";
+	arg=`expr "X$arg" : ".*$as_nl\\(.*\\)"`;;
+      esac;
+      expr "X$arg" : "X\\(.*\\)" | tr -d "$as_nl"
+    '
+    export as_echo_n_body
+    as_echo_n='sh -c $as_echo_n_body as_echo'
+  fi
+  export as_echo_body
+  as_echo='sh -c $as_echo_body as_echo'
+fi
+
 # The user is always right.
 if test "${PATH_SEPARATOR+set}" != set; then
-  echo "#! /bin/sh" >conf$$.sh
-  echo  "exit 0"   >>conf$$.sh
-  chmod +x conf$$.sh
-  if (PATH="/nonexistent;."; conf$$.sh) >/dev/null 2>&1; then
-    PATH_SEPARATOR=';'
-  else
-    PATH_SEPARATOR=:
-  fi
-  rm -f conf$$.sh
+  PATH_SEPARATOR=:
+  (PATH='/bin;/bin'; FPATH=$PATH; sh -c :) >/dev/null 2>&1 && {
+    (PATH='/bin:/bin'; FPATH=$PATH; sh -c :) >/dev/null 2>&1 ||
+      PATH_SEPARATOR=';'
+  }
 fi
 
 # Support unset when possible.
@@ -65,8 +93,6 @@ fi
 # there to prevent editors from complaining about space-tab.
 # (If _AS_PATH_WALK were called with IFS unset, it would disable word
 # splitting by setting IFS to empty value.)
-as_nl='
-'
 IFS=" ""	$as_nl"
 
 # Find who we are.  Look in the path if we contain no directory separator.
@@ -89,7 +115,7 @@ if test "x$as_myself" = x; then
   as_myself=$0
 fi
 if test ! -f "$as_myself"; then
-  echo "$as_myself: error: cannot find myself; rerun with an absolute file name" >&2
+  $as_echo "$as_myself: error: cannot find myself; rerun with an absolute file name" >&2
   { (exit 1); exit 1; }
 fi
 
@@ -102,17 +128,10 @@ PS2='> '
 PS4='+ '
 
 # NLS nuisances.
-for as_var in \
-  LANG LANGUAGE LC_ADDRESS LC_ALL LC_COLLATE LC_CTYPE LC_IDENTIFICATION \
-  LC_MEASUREMENT LC_MESSAGES LC_MONETARY LC_NAME LC_NUMERIC LC_PAPER \
-  LC_TELEPHONE LC_TIME
-do
-  if (set +x; test -z "`(eval $as_var=C; export $as_var) 2>&1`"); then
-    eval $as_var=C; export $as_var
-  else
-    ($as_unset $as_var) >/dev/null 2>&1 && $as_unset $as_var
-  fi
-done
+LC_ALL=C
+export LC_ALL
+LANGUAGE=C
+export LANGUAGE
 
 # Required to use basename.
 if expr a : '\(a\)' >/dev/null 2>&1 &&
@@ -134,7 +153,7 @@ as_me=`$as_basename -- "$0" ||
 $as_expr X/"$0" : '.*/\([^/][^/]*\)/*$' \| \
 	 X"$0" : 'X\(//\)$' \| \
 	 X"$0" : 'X\(/\)' \| . 2>/dev/null ||
-echo X/"$0" |
+$as_echo X/"$0" |
     sed '/^.*\/\([^/][^/]*\)\/*$/{
 	    s//\1/
 	    q
@@ -185,7 +204,7 @@ $as_unset CDPATH
       s/-\n.*//
     ' >$as_me.lineno &&
   chmod +x "$as_me.lineno" ||
-    { echo "$as_me: error: cannot create $as_me.lineno; rerun with a POSIX shell" >&2
+    { $as_echo "$as_me: error: cannot create $as_me.lineno; rerun with a POSIX shell" >&2
    { (exit 1); exit 1; }; }
 
   # Don't try to exec as it changes $[0], causing all sort of problems
@@ -213,7 +232,6 @@ case `echo -n x` in
 *)
   ECHO_N='-n';;
 esac
-
 if expr a : '\(a\)' >/dev/null 2>&1 &&
    test "X`expr 00001 : '.*\(...\)'`" = X001; then
   as_expr=expr
@@ -226,19 +244,22 @@ if test -d conf$$.dir; then
   rm -f conf$$.dir/conf$$.file
 else
   rm -f conf$$.dir
-  mkdir conf$$.dir
+  mkdir conf$$.dir 2>/dev/null
 fi
-echo >conf$$.file
-if ln -s conf$$.file conf$$ 2>/dev/null; then
-  as_ln_s='ln -s'
-  # ... but there are two gotchas:
-  # 1) On MSYS, both `ln -s file dir' and `ln file dir' fail.
-  # 2) DJGPP < 2.04 has no symlinks; `ln -s' creates a wrapper executable.
-  # In both cases, we have to default to `cp -p'.
-  ln -s conf$$.file conf$$.dir 2>/dev/null && test ! -f conf$$.exe ||
+if (echo >conf$$.file) 2>/dev/null; then
+  if ln -s conf$$.file conf$$ 2>/dev/null; then
+    as_ln_s='ln -s'
+    # ... but there are two gotchas:
+    # 1) On MSYS, both `ln -s file dir' and `ln file dir' fail.
+    # 2) DJGPP < 2.04 has no symlinks; `ln -s' creates a wrapper executable.
+    # In both cases, we have to default to `cp -p'.
+    ln -s conf$$.file conf$$.dir 2>/dev/null && test ! -f conf$$.exe ||
+      as_ln_s='cp -p'
+  elif ln conf$$.file conf$$ 2>/dev/null; then
+    as_ln_s=ln
+  else
     as_ln_s='cp -p'
-elif ln conf$$.file conf$$ 2>/dev/null; then
-  as_ln_s=ln
+  fi
 else
   as_ln_s='cp -p'
 fi
@@ -263,10 +284,10 @@ else
   as_test_x='
     eval sh -c '\''
       if test -d "$1"; then
-        test -d "$1/.";
+	test -d "$1/.";
       else
 	case $1 in
-        -*)set "./$1";;
+	-*)set "./$1";;
 	esac;
 	case `ls -ld'$as_ls_L_option' "$1" 2>/dev/null` in
 	???[sx]*):;;*)false;;esac;fi
@@ -289,7 +310,7 @@ exec 6>&1
 # values after options handling.
 ac_log="
 This file was extended by parcellite $as_me svn, which was
-generated by GNU Autoconf 2.61.  Invocation command line was
+generated by GNU Autoconf 2.63.  Invocation command line was
 
   CONFIG_FILES    = $CONFIG_FILES
   CONFIG_HEADERS  = $CONFIG_HEADERS
@@ -309,17 +330,18 @@ ac_cs_usage="\
 \`$as_me' instantiates files from templates according to the
 current configuration.
 
-Usage: $0 [OPTIONS] [FILE]...
+Usage: $0 [OPTION]... [FILE]...
 
   -h, --help       print this help, then exit
   -V, --version    print version number and configuration settings, then exit
-  -q, --quiet      do not print progress messages
+  -q, --quiet, --silent
+                   do not print progress messages
   -d, --debug      don't remove temporary files
       --recheck    update $as_me by reconfiguring in the same conditions
-  --file=FILE[:TEMPLATE]
-		   instantiate the configuration file FILE
-  --header=FILE[:TEMPLATE]
-		   instantiate the configuration header FILE
+      --file=FILE[:TEMPLATE]
+                   instantiate the configuration file FILE
+      --header=FILE[:TEMPLATE]
+                   instantiate the configuration header FILE
 
 Configuration files:
 $config_files
@@ -334,18 +356,19 @@ Report bugs to <bug-autoconf@gnu.org>."
 
 ac_cs_version="\
 parcellite config.status svn
-configured by ./configure, generated by GNU Autoconf 2.61,
+configured by ./configure, generated by GNU Autoconf 2.63,
   with options \"\"
 
-Copyright (C) 2006 Free Software Foundation, Inc.
+Copyright (C) 2008 Free Software Foundation, Inc.
 This config.status script is free software; the Free Software Foundation
 gives unlimited permission to copy, distribute and modify it."
 
 ac_pwd='/home/orz/Development/parcellite'
 srcdir='.'
 INSTALL='/usr/bin/install -c'
-# If no file are specified by the user, then we need to provide default
-# value.  By we need to know if files were specified by the user.
+AWK='mawk'
+test -n "$AWK" || AWK=awk
+# The default lists apply if the user does not specify any file.
 ac_need_defaults=:
 while test $# != 0
 do
@@ -367,30 +390,36 @@ do
   -recheck | --recheck | --rechec | --reche | --rech | --rec | --re | --r)
     ac_cs_recheck=: ;;
   --version | --versio | --versi | --vers | --ver | --ve | --v | -V )
-    echo "$ac_cs_version"; exit ;;
+    $as_echo "$ac_cs_version"; exit ;;
   --debug | --debu | --deb | --de | --d | -d )
     debug=: ;;
   --file | --fil | --fi | --f )
     $ac_shift
-    CONFIG_FILES="$CONFIG_FILES $ac_optarg"
+    case $ac_optarg in
+    *\'*) ac_optarg=`$as_echo "$ac_optarg" | sed "s/'/'\\\\\\\\''/g"` ;;
+    esac
+    CONFIG_FILES="$CONFIG_FILES '$ac_optarg'"
     ac_need_defaults=false;;
   --header | --heade | --head | --hea )
     $ac_shift
-    CONFIG_HEADERS="$CONFIG_HEADERS $ac_optarg"
+    case $ac_optarg in
+    *\'*) ac_optarg=`$as_echo "$ac_optarg" | sed "s/'/'\\\\\\\\''/g"` ;;
+    esac
+    CONFIG_HEADERS="$CONFIG_HEADERS '$ac_optarg'"
     ac_need_defaults=false;;
   --he | --h)
     # Conflict between --help and --header
-    { echo "$as_me: error: ambiguous option: $1
+    { $as_echo "$as_me: error: ambiguous option: $1
 Try \`$0 --help' for more information." >&2
    { (exit 1); exit 1; }; };;
   --help | --hel | -h )
-    echo "$ac_cs_usage"; exit ;;
+    $as_echo "$ac_cs_usage"; exit ;;
   -q | -quiet | --quiet | --quie | --qui | --qu | --q \
   | -silent | --silent | --silen | --sile | --sil | --si | --s)
     ac_cs_silent=: ;;
 
   # This is an error.
-  -*) { echo "$as_me: error: unrecognized option: $1
+  -*) { $as_echo "$as_me: error: unrecognized option: $1
 Try \`$0 --help' for more information." >&2
    { (exit 1); exit 1; }; } ;;
 
@@ -409,10 +438,12 @@ if $ac_cs_silent; then
 fi
 
 if $ac_cs_recheck; then
-  echo "running CONFIG_SHELL=/bin/sh /bin/sh ./configure " $ac_configure_extra_args " --no-create --no-recursion" >&6
-  CONFIG_SHELL=/bin/sh
+  set X '/bin/sh' './configure'  $ac_configure_extra_args --no-create --no-recursion
+  shift
+  $as_echo "running CONFIG_SHELL=/bin/sh $*" >&6
+  CONFIG_SHELL='/bin/sh'
   export CONFIG_SHELL
-  exec /bin/sh "./configure" $ac_configure_extra_args --no-create --no-recursion
+  exec "$@"
 fi
 
 exec 5>>config.log
@@ -421,7 +452,7 @@ exec 5>>config.log
   sed 'h;s/./-/g;s/^.../## /;s/...$/ ##/;p;x;p;x' <<_ASBOX
 ## Running $as_me. ##
 _ASBOX
-  echo "$ac_log"
+  $as_echo "$ac_log"
 } >&5
 
 #
@@ -432,9 +463,9 @@ AMDEP_TRUE="" ac_aux_dir="."
 # Capture the value of obsolete ALL_LINGUAS because we need it to compute
     # POFILES, UPDATEPOFILES, DUMMYPOFILES, GMOFILES, CATALOGS. But hide it
     # from automake < 1.5.
-    eval 'OBSOLETE_ALL_LINGUAS''="de es hu it ja pl_PL pt_BR ru tr zh_CN"'
+    eval 'OBSOLETE_ALL_LINGUAS''="de es hu it ja pl_PL pt_BR ru sv tr zh_CN"'
     # Capture the value of LINGUAS because we need it to compute CATALOGS.
-    LINGUAS=" de es hu it ja pl_PL pt_BR ru tr zh_CN"
+    LINGUAS=" de es hu it ja pl_PL pt_BR ru sv tr zh_CN"
 
 
 
@@ -453,8 +484,8 @@ do
     "po/Makefile.in") CONFIG_FILES="$CONFIG_FILES po/Makefile.in" ;;
     "po/stamp-it") CONFIG_COMMANDS="$CONFIG_COMMANDS po/stamp-it" ;;
 
-  *) { { echo "$as_me:$LINENO: error: invalid argument: $ac_config_target" >&5
-echo "$as_me: error: invalid argument: $ac_config_target" >&2;}
+  *) { { $as_echo "$as_me:$LINENO: error: invalid argument: $ac_config_target" >&5
+$as_echo "$as_me: error: invalid argument: $ac_config_target" >&2;}
    { (exit 1); exit 1; }; };;
   esac
 done
@@ -495,186 +526,317 @@ $debug ||
   (umask 077 && mkdir "$tmp")
 } ||
 {
-   echo "$me: cannot create a temporary directory in ." >&2
+   $as_echo "$as_me: cannot create a temporary directory in ." >&2
    { (exit 1); exit 1; }
 }
 
-#
-# Set up the sed scripts for CONFIG_FILES section.
-#
-
-# No need to generate the scripts if there are no CONFIG_FILES.
-# This happens for instance when ./config.status config.h
+# Set up the scripts for CONFIG_FILES section.
+# No need to generate them if there are no CONFIG_FILES.
+# This happens for instance with `./config.status config.h'.
 if test -n "$CONFIG_FILES"; then
 
-cat >"$tmp/subs-1.sed" <<\CEOF
-/@[a-zA-Z_][a-zA-Z_0-9]*@/!b
-s,@SHELL@,|#_!!_#|/bin/sh,g
-s,@PATH_SEPARATOR@,|#_!!_#|:,g
-s,@PACKAGE_NAME@,|#_!!_#|parcellite,g
-s,@PACKAGE_TARNAME@,|#_!!_#|parcellite,g
-s,@PACKAGE_VERSION@,|#_!!_#|svn,g
-s,@PACKAGE_STRING@,|#_!!_#|parcellite svn,g
-s,@PACKAGE_BUGREPORT@,|#_!!_#|xyhthyx@|#_!!_#|gmail.com,g
-s,@exec_prefix@,|#_!!_#|${prefix},g
-s,@prefix@,|#_!!_#|/usr/local,g
-s,@program_transform_name@,|#_!!_#|s\,x\,x\,,g
-s,@bindir@,|#_!!_#|${exec_prefix}/bin,g
-s,@sbindir@,|#_!!_#|${exec_prefix}/sbin,g
-s,@libexecdir@,|#_!!_#|${exec_prefix}/libexec,g
-s,@datarootdir@,|#_!!_#|${prefix}/share,g
-s,@datadir@,|#_!!_#|${datarootdir},g
-s,@sysconfdir@,|#_!!_#|${prefix}/etc,g
-s,@sharedstatedir@,|#_!!_#|${prefix}/com,g
-s,@localstatedir@,|#_!!_#|${prefix}/var,g
-s,@includedir@,|#_!!_#|${prefix}/include,g
-s,@oldincludedir@,|#_!!_#|/usr/include,g
-s,@docdir@,|#_!!_#|${datarootdir}/doc/${PACKAGE_TARNAME},g
-s,@infodir@,|#_!!_#|${datarootdir}/info,g
-s,@htmldir@,|#_!!_#|${docdir},g
-s,@dvidir@,|#_!!_#|${docdir},g
-s,@pdfdir@,|#_!!_#|${docdir},g
-s,@psdir@,|#_!!_#|${docdir},g
-s,@libdir@,|#_!!_#|${exec_prefix}/lib,g
-s,@localedir@,|#_!!_#|${datarootdir}/locale,g
-s,@mandir@,|#_!!_#|${datarootdir}/man,g
-s,@DEFS@,|#_!!_#|-DHAVE_CONFIG_H,g
-s,@ECHO_C@,|#_!!_#|,g
-s,@ECHO_N@,|#_!!_#|-n,g
-s,@ECHO_T@,|#_!!_#|,g
-s,@LIBS@,|#_!!_#|-lpthread ,g
-s,@build_alias@,|#_!!_#|,g
-s,@host_alias@,|#_!!_#|,g
-s,@target_alias@,|#_!!_#|,g
-s,@INSTALL_PROGRAM@,|#_!!_#|${INSTALL},g
-s,@INSTALL_SCRIPT@,|#_!!_#|${INSTALL},g
-s,@INSTALL_DATA@,|#_!!_#|${INSTALL} -m 644,g
-s,@CYGPATH_W@,|#_!!_#|echo,g
-s,@PACKAGE@,|#_!!_#|parcellite,g
-s,@VERSION@,|#_!!_#|svn,g
-s,@ACLOCAL@,|#_!!_#|${SHELL} /home/orz/Development/parcellite/missing --run aclocal-1.9,g
-s,@AUTOCONF@,|#_!!_#|${SHELL} /home/orz/Development/parcellite/missing --run autoconf,g
-s,@AUTOMAKE@,|#_!!_#|${SHELL} /home/orz/Development/parcellite/missing --run automake-1.9,g
-s,@AUTOHEADER@,|#_!!_#|${SHELL} /home/orz/Development/parcellite/missing --run autoheader,g
-s,@MAKEINFO@,|#_!!_#|${SHELL} /home/orz/Development/parcellite/missing --run makeinfo,g
-s,@install_sh@,|#_!!_#|/home/orz/Development/parcellite/install-sh,g
-s,@STRIP@,|#_!!_#|,g
-s,@INSTALL_STRIP_PROGRAM@,|#_!!_#|${SHELL} $(install_sh) -c -s,g
-s,@mkdir_p@,|#_!!_#|mkdir -p --,g
-s,@AWK@,|#_!!_#|mawk,g
-s,@SET_MAKE@,|#_!!_#|,g
-s,@am__leading_dot@,|#_!!_#|.,g
-s,@AMTAR@,|#_!!_#|${SHELL} /home/orz/Development/parcellite/missing --run tar,g
-s,@am__tar@,|#_!!_#|${AMTAR} chof - "$$tardir",g
-s,@am__untar@,|#_!!_#|${AMTAR} xf -,g
-s,@GETTEXT_PACKAGE@,|#_!!_#|parcellite,g
-s,@CC@,|#_!!_#|gcc,g
-s,@CFLAGS@,|#_!!_#|-g -O2,g
-s,@LDFLAGS@,|#_!!_#|,g
-s,@CPPFLAGS@,|#_!!_#|,g
-s,@ac_ct_CC@,|#_!!_#|gcc,g
-s,@EXEEXT@,|#_!!_#|,g
-s,@OBJEXT@,|#_!!_#|o,g
-s,@DEPDIR@,|#_!!_#|.deps,g
-s,@am__include@,|#_!!_#|include,g
-s,@am__quote@,|#_!!_#|,g
-s,@AMDEP_TRUE@,|#_!!_#|,g
-s,@AMDEP_FALSE@,|#_!!_#|#,g
-s,@AMDEPBACKSLASH@,|#_!!_#|\\,g
-s,@CCDEPMODE@,|#_!!_#|depmode=gcc3,g
-s,@am__fastdepCC_TRUE@,|#_!!_#|,g
-s,@am__fastdepCC_FALSE@,|#_!!_#|#,g
-s,@CPP@,|#_!!_#|gcc -E,g
-s,@GREP@,|#_!!_#|/bin/grep,g
-s,@EGREP@,|#_!!_#|/bin/grep -E,g
-s,@USE_NLS@,|#_!!_#|yes,g
-s,@MSGFMT@,|#_!!_#|/usr/bin/msgfmt,g
-s,@MSGFMT_OPTS@,|#_!!_#|-c,g
-s,@GMSGFMT@,|#_!!_#|/usr/bin/msgfmt,g
-s,@XGETTEXT@,|#_!!_#|/usr/bin/xgettext,g
-s,@CATALOGS@,|#_!!_#| de.gmo es.gmo hu.gmo it.gmo ja.gmo pl_PL.gmo pt_BR.gmo ru.gmo tr.gmo zh_CN.gmo,g
-s,@CATOBJEXT@,|#_!!_#|.gmo,g
-s,@DATADIRNAME@,|#_!!_#|share,g
-s,@GMOFILES@,|#_!!_#| de.gmo es.gmo hu.gmo it.gmo ja.gmo pl_PL.gmo pt_BR.gmo ru.gmo tr.gmo zh_CN.gmo,g
-s,@INSTOBJEXT@,|#_!!_#|.mo,g
-s,@INTLLIBS@,|#_!!_#|,g
-s,@PO_IN_DATADIR_TRUE@,|#_!!_#|,g
-s,@PO_IN_DATADIR_FALSE@,|#_!!_#|,g
-s,@POFILES@,|#_!!_#| de.po es.po hu.po it.po ja.po pl_PL.po pt_BR.po ru.po tr.po zh_CN.po,g
-s,@POSUB@,|#_!!_#|po,g
-s,@MKINSTALLDIRS@,|#_!!_#|./mkinstalldirs,g
-s,@INTLTOOL_UPDATE@,|#_!!_#|/usr/bin/intltool-update,g
-s,@INTLTOOL_MERGE@,|#_!!_#|/usr/bin/intltool-merge,g
-s,@INTLTOOL_EXTRACT@,|#_!!_#|/usr/bin/intltool-extract,g
-CEOF
-cat >"$tmp/subs-2.sed" <<\CEOF
-/@[a-zA-Z_][a-zA-Z_0-9]*@/!b end
-s,@INTLTOOL_DESKTOP_RULE@,|#_!!_#|%.desktop:   %.desktop.in   $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; LC_ALL=C $(INTLTOOL_MERGE) -d -u -c $(top_builddir)/po/.intltool-merge-cache $(top_srcdir)/po $< $@|#_!!_#|,g
-s,@INTLTOOL_DIRECTORY_RULE@,|#_!!_#|%.directory: %.directory.in $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; LC_ALL=C $(INTLTOOL_MERGE) -d -u -c $(top_builddir)/po/.intltool-merge-cache $(top_srcdir)/po $< $@|#_!!_#|,g
-s,@INTLTOOL_KEYS_RULE@,|#_!!_#|%.keys:      %.keys.in      $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; LC_ALL=C $(INTLTOOL_MERGE) -k -u -c $(top_builddir)/po/.intltool-merge-cache $(top_srcdir)/po $< $@|#_!!_#|,g
-s,@INTLTOOL_PROP_RULE@,|#_!!_#|%.prop:      %.prop.in      $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; LC_ALL=C $(INTLTOOL_MERGE) -d -u -c $(top_builddir)/po/.intltool-merge-cache $(top_srcdir)/po $< $@|#_!!_#|,g
-s,@INTLTOOL_OAF_RULE@,|#_!!_#|%.oaf:       %.oaf.in       $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; LC_ALL=C $(INTLTOOL_MERGE) -o -p $(top_srcdir)/po $< $@|#_!!_#|,g
-s,@INTLTOOL_PONG_RULE@,|#_!!_#|%.pong:      %.pong.in      $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; LC_ALL=C $(INTLTOOL_MERGE) -x -u -c $(top_builddir)/po/.intltool-merge-cache $(top_srcdir)/po $< $@|#_!!_#|,g
-s,@INTLTOOL_SERVER_RULE@,|#_!!_#|%.server:    %.server.in    $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; LC_ALL=C $(INTLTOOL_MERGE) -o -u -c $(top_builddir)/po/.intltool-merge-cache $(top_srcdir)/po $< $@|#_!!_#|,g
-s,@INTLTOOL_SHEET_RULE@,|#_!!_#|%.sheet:     %.sheet.in     $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; LC_ALL=C $(INTLTOOL_MERGE) -x -u -c $(top_builddir)/po/.intltool-merge-cache $(top_srcdir)/po $< $@|#_!!_#|,g
-s,@INTLTOOL_SOUNDLIST_RULE@,|#_!!_#|%.soundlist: %.soundlist.in $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; LC_ALL=C $(INTLTOOL_MERGE) -d -u -c $(top_builddir)/po/.intltool-merge-cache $(top_srcdir)/po $< $@|#_!!_#|,g
-s,@INTLTOOL_UI_RULE@,|#_!!_#|%.ui:        %.ui.in        $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; LC_ALL=C $(INTLTOOL_MERGE) -x -u -c $(top_builddir)/po/.intltool-merge-cache $(top_srcdir)/po $< $@|#_!!_#|,g
-s,@INTLTOOL_XAM_RULE@,|#_!!_#|%.xam:       %.xml.in       $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; LC_ALL=C $(INTLTOOL_MERGE) -x -u -c $(top_builddir)/po/.intltool-merge-cache $(top_srcdir)/po $< $@|#_!!_#|,g
-s,@INTLTOOL_KBD_RULE@,|#_!!_#|%.kbd:       %.kbd.in       $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; LC_ALL=C $(INTLTOOL_MERGE) -x -u -m -c $(top_builddir)/po/.intltool-merge-cache $(top_srcdir)/po $< $@|#_!!_#|,g
-s,@INTLTOOL_XML_RULE@,|#_!!_#|%.xml:       %.xml.in       $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; LC_ALL=C $(INTLTOOL_MERGE) -x -u -c $(top_builddir)/po/.intltool-merge-cache $(top_srcdir)/po $< $@|#_!!_#|,g
-s,@INTLTOOL_XML_NOMERGE_RULE@,|#_!!_#|%.xml:       %.xml.in       $(INTLTOOL_MERGE) ; LC_ALL=C $(INTLTOOL_MERGE) -x -u /tmp $< $@|#_!!_#|,g
-s,@INTLTOOL_CAVES_RULE@,|#_!!_#|%.caves:     %.caves.in     $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; LC_ALL=C $(INTLTOOL_MERGE) -d -u -c $(top_builddir)/po/.intltool-merge-cache $(top_srcdir)/po $< $@|#_!!_#|,g
-s,@INTLTOOL_SCHEMAS_RULE@,|#_!!_#|%.schemas:   %.schemas.in   $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; LC_ALL=C $(INTLTOOL_MERGE) -s -u -c $(top_builddir)/po/.intltool-merge-cache $(top_srcdir)/po $< $@|#_!!_#|,g
-s,@INTLTOOL_THEME_RULE@,|#_!!_#|%.theme:     %.theme.in     $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; LC_ALL=C $(INTLTOOL_MERGE) -d -u -c $(top_builddir)/po/.intltool-merge-cache $(top_srcdir)/po $< $@|#_!!_#|,g
-s,@INTLTOOL_SERVICE_RULE@,|#_!!_#|%.service: %.service.in   $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; LC_ALL=C $(INTLTOOL_MERGE) -d -u -c $(top_builddir)/po/.intltool-merge-cache $(top_srcdir)/po $< $@|#_!!_#|,g
-s,@INTLTOOL_POLICY_RULE@,|#_!!_#|%.policy:    %.policy.in    $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; LC_ALL=C $(INTLTOOL_MERGE) -x -u -c $(top_builddir)/po/.intltool-merge-cache $(top_srcdir)/po $< $@|#_!!_#|,g
-s,@MSGMERGE@,|#_!!_#|/usr/bin/msgmerge,g
-s,@INTLTOOL_PERL@,|#_!!_#|/usr/bin/perl,g
-s,@ALL_LINGUAS@,|#_!!_#|de es hu it ja pl_PL pt_BR ru tr zh_CN,g
-s,@parcellitelocaledir@,|#_!!_#|${prefix}/${DATADIRNAME}/locale,g
-s,@GETTEXT_MACRO_VERSION@,|#_!!_#|0.17,g
-s,@MSGFMT_015@,|#_!!_#|/usr/bin/msgfmt,g
-s,@GMSGFMT_015@,|#_!!_#|/usr/bin/msgfmt,g
-s,@XGETTEXT_015@,|#_!!_#|/usr/bin/xgettext,g
-s,@XGETTEXT_EXTRA_OPTIONS@,|#_!!_#|,g
-s,@build@,|#_!!_#|i686-pc-linux-gnu,g
-s,@build_cpu@,|#_!!_#|i686,g
-s,@build_vendor@,|#_!!_#|pc,g
-s,@build_os@,|#_!!_#|linux-gnu,g
-s,@host@,|#_!!_#|i686-pc-linux-gnu,g
-s,@host_cpu@,|#_!!_#|i686,g
-s,@host_vendor@,|#_!!_#|pc,g
-s,@host_os@,|#_!!_#|linux-gnu,g
-s,@INTL_MACOSX_LIBS@,|#_!!_#|,g
-s,@LIBICONV@,|#_!!_#|-liconv,g
-s,@LTLIBICONV@,|#_!!_#|-liconv,g
-s,@LIBINTL@,|#_!!_#|,g
-s,@LTLIBINTL@,|#_!!_#|,g
-s,@PKG_CONFIG@,|#_!!_#|/usr/bin/pkg-config,g
-s,@GTK_CFLAGS@,|#_!!_#|-D_REENTRANT -I/usr/include/gtk-2.0 -I/usr/lib/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/pango-1.0 -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/freetype2 -I/usr/include/directfb -I/usr/include/libpng12  ,g
-s,@GTK_LIBS@,|#_!!_#|-lgtk-x11-2.0 -lgdk-x11-2.0 -latk-1.0 -lgdk_pixbuf-2.0 -lm -lpangocairo-1.0 -lpango-1.0 -lcairo -lgobject-2.0 -lgmodule-2.0 -lglib-2.0  ,g
-s,@GLIB_CFLAGS@,|#_!!_#|-I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include  ,g
-s,@GLIB_LIBS@,|#_!!_#|-lglib-2.0  ,g
-s,@GLIB_GENMARSHAL@,|#_!!_#|glib-genmarshal,g
-s,@GOBJECT_QUERY@,|#_!!_#|gobject-query,g
-s,@GLIB_MKENUMS@,|#_!!_#|glib-mkenums,g
-s,@LIBOBJS@,|#_!!_#|,g
-s,@LTLIBOBJS@,|#_!!_#|,g
-:end
-s/|#_!!_#|//g
-CEOF
+
+ac_cr=''
+ac_cs_awk_cr=`$AWK 'BEGIN { print "a\rb" }' </dev/null 2>/dev/null`
+if test "$ac_cs_awk_cr" = "a${ac_cr}b"; then
+  ac_cs_awk_cr='\\r'
+else
+  ac_cs_awk_cr=$ac_cr
+fi
+
+echo 'BEGIN {' >"$tmp/subs1.awk" &&
+cat >>"$tmp/subs1.awk" <<\_ACAWK &&
+S["LTLIBOBJS"]=""
+S["LIBOBJS"]=""
+S["GLIB_MKENUMS"]="glib-mkenums"
+S["GOBJECT_QUERY"]="gobject-query"
+S["GLIB_GENMARSHAL"]="glib-genmarshal"
+S["GLIB_LIBS"]="-lglib-2.0  "
+S["GLIB_CFLAGS"]="-I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include  "
+S["GTK_LIBS"]="-lgtk-x11-2.0 -lgdk-x11-2.0 -latk-1.0 -lpangoft2-1.0 -lgdk_pixbuf-2.0 -lm -lpangocairo-1.0 -lgio-2.0 -lcairo -lpango-1.0 -lfreetype -lz -lfontconfig"\
+" -lgobject-2.0 -lgmodule-2.0 -lglib-2.0  "
+S["GTK_CFLAGS"]="-D_REENTRANT -I/usr/include/gtk-2.0 -I/usr/lib/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/pango-1.0 -I/usr/include/g"\
+"lib-2.0 -I/usr/lib/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/freetype2 -I/usr/include/directfb -I/usr/include/libpng12  "
+S["PKG_CONFIG"]="/usr/bin/pkg-config"
+S["LTLIBINTL"]=""
+S["LIBINTL"]=""
+S["LTLIBICONV"]="-liconv"
+S["LIBICONV"]="-liconv"
+S["INTL_MACOSX_LIBS"]=""
+S["host_os"]="linux-gnu"
+S["host_vendor"]="pc"
+S["host_cpu"]="i686"
+S["host"]="i686-pc-linux-gnu"
+S["build_os"]="linux-gnu"
+S["build_vendor"]="pc"
+S["build_cpu"]="i686"
+S["build"]="i686-pc-linux-gnu"
+S["XGETTEXT_EXTRA_OPTIONS"]=""
+S["XGETTEXT_015"]="/usr/bin/xgettext"
+S["GMSGFMT_015"]="/usr/bin/msgfmt"
+S["MSGFMT_015"]="/usr/bin/msgfmt"
+S["GETTEXT_MACRO_VERSION"]="0.17"
+S["parcellitelocaledir"]="${prefix}/${DATADIRNAME}/locale"
+S["ALL_LINGUAS"]="de es hu it ja pl_PL pt_BR ru sv tr zh_CN"
+S["INTLTOOL_PERL"]="/usr/bin/perl"
+S["MSGMERGE"]="/usr/bin/msgmerge"
+S["INTLTOOL_POLICY_RULE"]="%.policy:    %.policy.in    $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; LC_ALL=C $(INTLTOOL_MERGE) -x -u -c $(top_builddir)/po/.intltool-m"\
+"erge-cache $(top_srcdir)/po $< $@"
+S["INTLTOOL_SERVICE_RULE"]="%.service: %.service.in   $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; LC_ALL=C $(INTLTOOL_MERGE) -d -u -c $(top_builddir)/po/.intltool-mer"\
+"ge-cache $(top_srcdir)/po $< $@"
+S["INTLTOOL_THEME_RULE"]="%.theme:     %.theme.in     $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; LC_ALL=C $(INTLTOOL_MERGE) -d -u -c $(top_builddir)/po/.intltool-m"\
+"erge-cache $(top_srcdir)/po $< $@"
+S["INTLTOOL_SCHEMAS_RULE"]="%.schemas:   %.schemas.in   $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; LC_ALL=C $(INTLTOOL_MERGE) -s -u -c $(top_builddir)/po/.intltool-m"\
+"erge-cache $(top_srcdir)/po $< $@"
+S["INTLTOOL_CAVES_RULE"]="%.caves:     %.caves.in     $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; LC_ALL=C $(INTLTOOL_MERGE) -d -u -c $(top_builddir)/po/.intltool-m"\
+"erge-cache $(top_srcdir)/po $< $@"
+S["INTLTOOL_XML_NOMERGE_RULE"]="%.xml:       %.xml.in       $(INTLTOOL_MERGE) ; LC_ALL=C $(INTLTOOL_MERGE) -x -u /tmp $< $@"
+S["INTLTOOL_XML_RULE"]="%.xml:       %.xml.in       $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; LC_ALL=C $(INTLTOOL_MERGE) -x -u -c $(top_builddir)/po/.intltool-m"\
+"erge-cache $(top_srcdir)/po $< $@"
+S["INTLTOOL_KBD_RULE"]="%.kbd:       %.kbd.in       $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; LC_ALL=C $(INTLTOOL_MERGE) -x -u -m -c $(top_builddir)/po/.intltoo"\
+"l-merge-cache $(top_srcdir)/po $< $@"
+S["INTLTOOL_XAM_RULE"]="%.xam:       %.xml.in       $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; LC_ALL=C $(INTLTOOL_MERGE) -x -u -c $(top_builddir)/po/.intltool-m"\
+"erge-cache $(top_srcdir)/po $< $@"
+S["INTLTOOL_UI_RULE"]="%.ui:        %.ui.in        $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; LC_ALL=C $(INTLTOOL_MERGE) -x -u -c $(top_builddir)/po/.intltool-m"\
+"erge-cache $(top_srcdir)/po $< $@"
+S["INTLTOOL_SOUNDLIST_RULE"]="%.soundlist: %.soundlist.in $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; LC_ALL=C $(INTLTOOL_MERGE) -d -u -c $(top_builddir)/po/.intltool-m"\
+"erge-cache $(top_srcdir)/po $< $@"
+S["INTLTOOL_SHEET_RULE"]="%.sheet:     %.sheet.in     $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; LC_ALL=C $(INTLTOOL_MERGE) -x -u -c $(top_builddir)/po/.intltool-m"\
+"erge-cache $(top_srcdir)/po $< $@"
+S["INTLTOOL_SERVER_RULE"]="%.server:    %.server.in    $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; LC_ALL=C $(INTLTOOL_MERGE) -o -u -c $(top_builddir)/po/.intltool-m"\
+"erge-cache $(top_srcdir)/po $< $@"
+S["INTLTOOL_PONG_RULE"]="%.pong:      %.pong.in      $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; LC_ALL=C $(INTLTOOL_MERGE) -x -u -c $(top_builddir)/po/.intltool-m"\
+"erge-cache $(top_srcdir)/po $< $@"
+S["INTLTOOL_OAF_RULE"]="%.oaf:       %.oaf.in       $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; LC_ALL=C $(INTLTOOL_MERGE) -o -p $(top_srcdir)/po $< $@"
+S["INTLTOOL_PROP_RULE"]="%.prop:      %.prop.in      $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; LC_ALL=C $(INTLTOOL_MERGE) -d -u -c $(top_builddir)/po/.intltool-m"\
+"erge-cache $(top_srcdir)/po $< $@"
+S["INTLTOOL_KEYS_RULE"]="%.keys:      %.keys.in      $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; LC_ALL=C $(INTLTOOL_MERGE) -k -u -c $(top_builddir)/po/.intltool-m"\
+"erge-cache $(top_srcdir)/po $< $@"
+S["INTLTOOL_DIRECTORY_RULE"]="%.directory: %.directory.in $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; LC_ALL=C $(INTLTOOL_MERGE) -d -u -c $(top_builddir)/po/.intltool-m"\
+"erge-cache $(top_srcdir)/po $< $@"
+S["INTLTOOL_DESKTOP_RULE"]="%.desktop:   %.desktop.in   $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; LC_ALL=C $(INTLTOOL_MERGE) -d -u -c $(top_builddir)/po/.intltool-m"\
+"erge-cache $(top_srcdir)/po $< $@"
+S["INTLTOOL_EXTRACT"]="/usr/bin/intltool-extract"
+S["INTLTOOL_MERGE"]="/usr/bin/intltool-merge"
+S["INTLTOOL_UPDATE"]="/usr/bin/intltool-update"
+S["MKINSTALLDIRS"]="./mkinstalldirs"
+S["POSUB"]="po"
+S["POFILES"]=" de.po es.po hu.po it.po ja.po pl_PL.po pt_BR.po ru.po sv.po tr.po zh_CN.po"
+S["PO_IN_DATADIR_FALSE"]=""
+S["PO_IN_DATADIR_TRUE"]=""
+S["INTLLIBS"]=""
+S["INSTOBJEXT"]=".mo"
+S["GMOFILES"]=" de.gmo es.gmo hu.gmo it.gmo ja.gmo pl_PL.gmo pt_BR.gmo ru.gmo sv.gmo tr.gmo zh_CN.gmo"
+S["DATADIRNAME"]="share"
+S["CATOBJEXT"]=".gmo"
+S["CATALOGS"]=" de.gmo es.gmo hu.gmo it.gmo ja.gmo pl_PL.gmo pt_BR.gmo ru.gmo sv.gmo tr.gmo zh_CN.gmo"
+S["XGETTEXT"]="/usr/bin/xgettext"
+S["GMSGFMT"]="/usr/bin/msgfmt"
+S["MSGFMT_OPTS"]="-c"
+S["MSGFMT"]="/usr/bin/msgfmt"
+S["USE_NLS"]="yes"
+S["EGREP"]="/bin/grep -E"
+S["GREP"]="/bin/grep"
+S["CPP"]="gcc -E"
+S["am__fastdepCC_FALSE"]="#"
+S["am__fastdepCC_TRUE"]=""
+S["CCDEPMODE"]="depmode=gcc3"
+S["AMDEPBACKSLASH"]="\\"
+S["AMDEP_FALSE"]="#"
+S["AMDEP_TRUE"]=""
+S["am__quote"]=""
+S["am__include"]="include"
+S["DEPDIR"]=".deps"
+S["OBJEXT"]="o"
+S["EXEEXT"]=""
+S["ac_ct_CC"]="gcc"
+S["CPPFLAGS"]=""
+S["LDFLAGS"]=""
+S["CFLAGS"]="-g -O2"
+S["CC"]="gcc"
+S["GETTEXT_PACKAGE"]="parcellite"
+S["am__untar"]="${AMTAR} xf -"
+S["am__tar"]="${AMTAR} chof - \"$$tardir\""
+S["AMTAR"]="${SHELL} /home/orz/Development/parcellite/missing --run tar"
+S["am__leading_dot"]="."
+S["SET_MAKE"]=""
+S["AWK"]="mawk"
+S["mkdir_p"]="mkdir -p --"
+S["INSTALL_STRIP_PROGRAM"]="${SHELL} $(install_sh) -c -s"
+S["STRIP"]=""
+S["install_sh"]="/home/orz/Development/parcellite/install-sh"
+S["MAKEINFO"]="${SHELL} /home/orz/Development/parcellite/missing --run makeinfo"
+S["AUTOHEADER"]="${SHELL} /home/orz/Development/parcellite/missing --run autoheader"
+S["AUTOMAKE"]="${SHELL} /home/orz/Development/parcellite/missing --run automake-1.9"
+S["AUTOCONF"]="${SHELL} /home/orz/Development/parcellite/missing --run autoconf"
+S["ACLOCAL"]="${SHELL} /home/orz/Development/parcellite/missing --run aclocal-1.9"
+S["VERSION"]="svn"
+S["PACKAGE"]="parcellite"
+S["CYGPATH_W"]="echo"
+S["INSTALL_DATA"]="${INSTALL} -m 644"
+S["INSTALL_SCRIPT"]="${INSTALL}"
+S["INSTALL_PROGRAM"]="${INSTALL}"
+S["target_alias"]=""
+S["host_alias"]=""
+S["build_alias"]=""
+S["LIBS"]="-lpthread "
+S["ECHO_T"]=""
+S["ECHO_N"]="-n"
+S["ECHO_C"]=""
+S["DEFS"]="-DHAVE_CONFIG_H"
+S["mandir"]="${datarootdir}/man"
+S["localedir"]="${datarootdir}/locale"
+S["libdir"]="${exec_prefix}/lib"
+S["psdir"]="${docdir}"
+S["pdfdir"]="${docdir}"
+S["dvidir"]="${docdir}"
+S["htmldir"]="${docdir}"
+S["infodir"]="${datarootdir}/info"
+S["docdir"]="${datarootdir}/doc/${PACKAGE_TARNAME}"
+S["oldincludedir"]="/usr/include"
+S["includedir"]="${prefix}/include"
+S["localstatedir"]="${prefix}/var"
+S["sharedstatedir"]="${prefix}/com"
+S["sysconfdir"]="${prefix}/etc"
+S["datadir"]="${datarootdir}"
+S["datarootdir"]="${prefix}/share"
+S["libexecdir"]="${exec_prefix}/libexec"
+S["sbindir"]="${exec_prefix}/sbin"
+S["bindir"]="${exec_prefix}/bin"
+S["program_transform_name"]="s,x,x,"
+S["prefix"]="/usr/local"
+S["exec_prefix"]="${prefix}"
+S["PACKAGE_BUGREPORT"]="xyhthyx@gmail.com"
+S["PACKAGE_STRING"]="parcellite svn"
+S["PACKAGE_VERSION"]="svn"
+S["PACKAGE_TARNAME"]="parcellite"
+S["PACKAGE_NAME"]="parcellite"
+S["PATH_SEPARATOR"]=":"
+S["SHELL"]="/bin/sh"
+_ACAWK
+cat >>"$tmp/subs1.awk" <<_ACAWK &&
+  for (key in S) S_is_set[key] = 1
+  FS = ""
+
+}
+{
+  line = $ 0
+  nfields = split(line, field, "@")
+  substed = 0
+  len = length(field[1])
+  for (i = 2; i < nfields; i++) {
+    key = field[i]
+    keylen = length(key)
+    if (S_is_set[key]) {
+      value = S[key]
+      line = substr(line, 1, len) "" value "" substr(line, len + keylen + 3)
+      len += length(value) + length(field[++i])
+      substed = 1
+    } else
+      len += 1 + keylen
+  }
+
+  print line
+}
+
+_ACAWK
+if sed "s/$ac_cr//" < /dev/null > /dev/null 2>&1; then
+  sed "s/$ac_cr\$//; s/$ac_cr/$ac_cs_awk_cr/g"
+else
+  cat
+fi < "$tmp/subs1.awk" > "$tmp/subs.awk" \
+  || { { $as_echo "$as_me:$LINENO: error: could not setup config files machinery" >&5
+$as_echo "$as_me: error: could not setup config files machinery" >&2;}
+   { (exit 1); exit 1; }; }
 fi # test -n "$CONFIG_FILES"
 
+# Set up the scripts for CONFIG_HEADERS section.
+# No need to generate them if there are no CONFIG_HEADERS.
+# This happens for instance with `./config.status Makefile'.
+if test -n "$CONFIG_HEADERS"; then
+cat >"$tmp/defines.awk" <<\_ACAWK ||
+BEGIN {
+D["PACKAGE_NAME"]=" \"parcellite\""
+D["PACKAGE_TARNAME"]=" \"parcellite\""
+D["PACKAGE_VERSION"]=" \"svn\""
+D["PACKAGE_STRING"]=" \"parcellite svn\""
+D["PACKAGE_BUGREPORT"]=" \"xyhthyx@gmail.com\""
+D["PACKAGE"]=" \"parcellite\""
+D["VERSION"]=" \"svn\""
+D["GETTEXT_PACKAGE"]=" \"parcellite\""
+D["STDC_HEADERS"]=" 1"
+D["HAVE_SYS_TYPES_H"]=" 1"
+D["HAVE_SYS_STAT_H"]=" 1"
+D["HAVE_STDLIB_H"]=" 1"
+D["HAVE_STRING_H"]=" 1"
+D["HAVE_MEMORY_H"]=" 1"
+D["HAVE_STRINGS_H"]=" 1"
+D["HAVE_INTTYPES_H"]=" 1"
+D["HAVE_STDINT_H"]=" 1"
+D["HAVE_UNISTD_H"]=" 1"
+D["HAVE_LOCALE_H"]=" 1"
+D["HAVE_LC_MESSAGES"]=" 1"
+D["HAVE_BIND_TEXTDOMAIN_CODESET"]=" 1"
+D["HAVE_GETTEXT"]=" 1"
+D["HAVE_DCGETTEXT"]=" 1"
+D["ENABLE_NLS"]=" 1"
+D["ENABLE_NLS"]=" 1"
+D["HAVE_GETTEXT"]=" 1"
+D["HAVE_DCGETTEXT"]=" 1"
+D["HAVE_LIBPTHREAD"]=" 1"
+D["HAVE_STDLIB_H"]=" 1"
+D["HAVE_STRING_H"]=" 1"
+D["HAVE_PTHREAD_H"]=" 1"
+D["RETSIGTYPE"]=" void"
+  for (key in D) D_is_set[key] = 1
+  FS = ""
+}
+/^[\t ]*#[\t ]*(define|undef)[\t ]+[_abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ][_abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789]*([\t (]|$)/ {
+  line = $ 0
+  split(line, arg, " ")
+  if (arg[1] == "#") {
+    defundef = arg[2]
+    mac1 = arg[3]
+  } else {
+    defundef = substr(arg[1], 2)
+    mac1 = arg[2]
+  }
+  split(mac1, mac2, "(") #)
+  macro = mac2[1]
+  prefix = substr(line, 1, index(line, defundef) - 1)
+  if (D_is_set[macro]) {
+    # Preserve the white space surrounding the "#".
+    print prefix "define", macro P[macro] D[macro]
+    next
+  } else {
+    # Replace #undef with comments.  This is necessary, for example,
+    # in the case of _POSIX_SOURCE, which is predefined and required
+    # on some systems where configure will not decide to define it.
+    if (defundef == "undef") {
+      print "/*", prefix defundef, macro, "*/"
+      next
+    }
+  }
+}
+{ print }
+_ACAWK
+  { { $as_echo "$as_me:$LINENO: error: could not setup config headers machinery" >&5
+$as_echo "$as_me: error: could not setup config headers machinery" >&2;}
+   { (exit 1); exit 1; }; }
+fi # test -n "$CONFIG_HEADERS"
 
-for ac_tag in  :F $CONFIG_FILES  :H $CONFIG_HEADERS    :C $CONFIG_COMMANDS
+
+eval set X "  :F $CONFIG_FILES  :H $CONFIG_HEADERS    :C $CONFIG_COMMANDS"
+shift
+for ac_tag
 do
   case $ac_tag in
   :[FHLC]) ac_mode=$ac_tag; continue;;
   esac
   case $ac_mode$ac_tag in
   :[FHL]*:*);;
-  :L* | :C*:*) { { echo "$as_me:$LINENO: error: Invalid tag $ac_tag." >&5
-echo "$as_me: error: Invalid tag $ac_tag." >&2;}
+  :L* | :C*:*) { { $as_echo "$as_me:$LINENO: error: invalid tag $ac_tag" >&5
+$as_echo "$as_me: error: invalid tag $ac_tag" >&2;}
    { (exit 1); exit 1; }; };;
   :[FH]-) ac_tag=-:-;;
   :[FH]*) ac_tag=$ac_tag:$ac_tag.in;;
@@ -703,26 +865,38 @@ echo "$as_me: error: Invalid tag $ac_tag." >&2;}
 	   [\\/$]*) false;;
 	   *) test -f "$srcdir/$ac_f" && ac_f="$srcdir/$ac_f";;
 	   esac ||
-	   { { echo "$as_me:$LINENO: error: cannot find input file: $ac_f" >&5
-echo "$as_me: error: cannot find input file: $ac_f" >&2;}
+	   { { $as_echo "$as_me:$LINENO: error: cannot find input file: $ac_f" >&5
+$as_echo "$as_me: error: cannot find input file: $ac_f" >&2;}
    { (exit 1); exit 1; }; };;
       esac
-      ac_file_inputs="$ac_file_inputs $ac_f"
+      case $ac_f in *\'*) ac_f=`$as_echo "$ac_f" | sed "s/'/'\\\\\\\\''/g"`;; esac
+      ac_file_inputs="$ac_file_inputs '$ac_f'"
     done
 
     # Let's still pretend it is `configure' which instantiates (i.e., don't
     # use $as_me), people would be surprised to read:
     #    /* config.h.  Generated by config.status.  */
-    configure_input="Generated from "`IFS=:
-	  echo $* | sed 's|^[^:]*/||;s|:[^:]*/|, |g'`" by configure."
+    configure_input='Generated from '`
+	  $as_echo "$*" | sed 's|^[^:]*/||;s|:[^:]*/|, |g'
+	`' by configure.'
     if test x"$ac_file" != x-; then
       configure_input="$ac_file.  $configure_input"
-      { echo "$as_me:$LINENO: creating $ac_file" >&5
-echo "$as_me: creating $ac_file" >&6;}
+      { $as_echo "$as_me:$LINENO: creating $ac_file" >&5
+$as_echo "$as_me: creating $ac_file" >&6;}
     fi
+    # Neutralize special characters interpreted by sed in replacement strings.
+    case $configure_input in #(
+    *\&* | *\|* | *\\* )
+       ac_sed_conf_input=`$as_echo "$configure_input" |
+       sed 's/[\\\\&|]/\\\\&/g'`;; #(
+    *) ac_sed_conf_input=$configure_input;;
+    esac
 
     case $ac_tag in
-    *:-:* | *:-) cat >"$tmp/stdin";;
+    *:-:* | *:-) cat >"$tmp/stdin" \
+      || { { $as_echo "$as_me:$LINENO: error: could not create $ac_file" >&5
+$as_echo "$as_me: error: could not create $ac_file" >&2;}
+   { (exit 1); exit 1; }; } ;;
     esac
     ;;
   esac
@@ -732,7 +906,7 @@ $as_expr X"$ac_file" : 'X\(.*[^/]\)//*[^/][^/]*/*$' \| \
 	 X"$ac_file" : 'X\(//\)[^/]' \| \
 	 X"$ac_file" : 'X\(//\)$' \| \
 	 X"$ac_file" : 'X\(/\)' \| . 2>/dev/null ||
-echo X"$ac_file" |
+$as_echo X"$ac_file" |
     sed '/^X\(.*[^/]\)\/\/*[^/][^/]*\/*$/{
 	    s//\1/
 	    q
@@ -758,7 +932,7 @@ echo X"$ac_file" |
     as_dirs=
     while :; do
       case $as_dir in #(
-      *\'*) as_qdir=`echo "$as_dir" | sed "s/'/'\\\\\\\\''/g"`;; #(
+      *\'*) as_qdir=`$as_echo "$as_dir" | sed "s/'/'\\\\\\\\''/g"`;; #'(
       *) as_qdir=$as_dir;;
       esac
       as_dirs="'$as_qdir' $as_dirs"
@@ -767,7 +941,7 @@ $as_expr X"$as_dir" : 'X\(.*[^/]\)//*[^/][^/]*/*$' \| \
 	 X"$as_dir" : 'X\(//\)[^/]' \| \
 	 X"$as_dir" : 'X\(//\)$' \| \
 	 X"$as_dir" : 'X\(/\)' \| . 2>/dev/null ||
-echo X"$as_dir" |
+$as_echo X"$as_dir" |
     sed '/^X\(.*[^/]\)\/\/*[^/][^/]*\/*$/{
 	    s//\1/
 	    q
@@ -788,17 +962,17 @@ echo X"$as_dir" |
       test -d "$as_dir" && break
     done
     test -z "$as_dirs" || eval "mkdir $as_dirs"
-  } || test -d "$as_dir" || { { echo "$as_me:$LINENO: error: cannot create directory $as_dir" >&5
-echo "$as_me: error: cannot create directory $as_dir" >&2;}
+  } || test -d "$as_dir" || { { $as_echo "$as_me:$LINENO: error: cannot create directory $as_dir" >&5
+$as_echo "$as_me: error: cannot create directory $as_dir" >&2;}
    { (exit 1); exit 1; }; }; }
   ac_builddir=.
 
 case "$ac_dir" in
 .) ac_dir_suffix= ac_top_builddir_sub=. ac_top_build_prefix= ;;
 *)
-  ac_dir_suffix=/`echo "$ac_dir" | sed 's,^\.[\\/],,'`
+  ac_dir_suffix=/`$as_echo "$ac_dir" | sed 's|^\.[\\/]||'`
   # A ".." for each directory in $ac_dir_suffix.
-  ac_top_builddir_sub=`echo "$ac_dir_suffix" | sed 's,/[^\\/]*,/..,g;s,/,,'`
+  ac_top_builddir_sub=`$as_echo "$ac_dir_suffix" | sed 's|/[^\\/]*|/..|g;s|/||'`
   case $ac_top_builddir_sub in
   "") ac_top_builddir_sub=. ac_top_build_prefix= ;;
   *)  ac_top_build_prefix=$ac_top_builddir_sub/ ;;
@@ -840,7 +1014,8 @@ ac_abs_srcdir=$ac_abs_top_srcdir$ac_dir_suffix
 # FIXME: This hack should be removed a few years after 2.60.
 ac_datarootdir_hack=; ac_datarootdir_seen=
 
-case `sed -n '/datarootdir/ {
+ac_sed_dataroot='
+/datarootdir/ {
   p
   q
 }
@@ -849,11 +1024,12 @@ case `sed -n '/datarootdir/ {
 /@infodir@/p
 /@localedir@/p
 /@mandir@/p
-' $ac_file_inputs` in
+'
+case `eval "sed -n \"\$ac_sed_dataroot\" $ac_file_inputs"` in
 *datarootdir*) ac_datarootdir_seen=yes;;
 *@datadir@*|*@docdir@*|*@infodir@*|*@localedir@*|*@mandir@*)
-  { echo "$as_me:$LINENO: WARNING: $ac_file_inputs seems to ignore the --datarootdir setting" >&5
-echo "$as_me: WARNING: $ac_file_inputs seems to ignore the --datarootdir setting" >&2;}
+  { $as_echo "$as_me:$LINENO: WARNING: $ac_file_inputs seems to ignore the --datarootdir setting" >&5
+$as_echo "$as_me: WARNING: $ac_file_inputs seems to ignore the --datarootdir setting" >&2;}
   ac_datarootdir_hack='
   s&@datadir@&${datarootdir}&g
   s&@docdir@&${datarootdir}/doc/${PACKAGE_TARNAME}&g
@@ -862,7 +1038,7 @@ echo "$as_me: WARNING: $ac_file_inputs seems to ignore the --datarootdir setting
   s&@mandir@&${datarootdir}/man&g
     s&\${datarootdir}&${prefix}/share&g' ;;
 esac
-  sed "/^[	 ]*VPATH[	 ]*=/{
+ac_sed_extra="/^[	 ]*VPATH[	 ]*=/{
 s/:*\$(srcdir):*/:/
 s/:*\${srcdir}:*/:/
 s/:*@srcdir@:*/:/
@@ -873,8 +1049,9 @@ s/^[^=]*=[	 ]*$//
 
 :t
 /@[a-zA-Z_][a-zA-Z_0-9]*@/!b
-s&@configure_input@&$configure_input&;t t
+s|@configure_input@|$ac_sed_conf_input|;t t
 s&@top_builddir@&$ac_top_builddir_sub&;t t
+s&@top_build_prefix@&$ac_top_build_prefix&;t t
 s&@srcdir@&$ac_srcdir&;t t
 s&@abs_srcdir@&$ac_abs_srcdir&;t t
 s&@top_srcdir@&$ac_top_srcdir&;t t
@@ -884,100 +1061,74 @@ s&@abs_builddir@&$ac_abs_builddir&;t t
 s&@abs_top_builddir@&$ac_abs_top_builddir&;t t
 s&@INSTALL@&$ac_INSTALL&;t t
 $ac_datarootdir_hack
-" $ac_file_inputs | sed -f "$tmp/subs-1.sed" | sed -f "$tmp/subs-2.sed" >$tmp/out
+"
+eval sed \"\$ac_sed_extra\" "$ac_file_inputs" | $AWK -f "$tmp/subs.awk" >$tmp/out \
+  || { { $as_echo "$as_me:$LINENO: error: could not create $ac_file" >&5
+$as_echo "$as_me: error: could not create $ac_file" >&2;}
+   { (exit 1); exit 1; }; }
 
 test -z "$ac_datarootdir_hack$ac_datarootdir_seen" &&
   { ac_out=`sed -n '/\${datarootdir}/p' "$tmp/out"`; test -n "$ac_out"; } &&
   { ac_out=`sed -n '/^[	 ]*datarootdir[	 ]*:*=/p' "$tmp/out"`; test -z "$ac_out"; } &&
-  { echo "$as_me:$LINENO: WARNING: $ac_file contains a reference to the variable \`datarootdir'
+  { $as_echo "$as_me:$LINENO: WARNING: $ac_file contains a reference to the variable \`datarootdir'
 which seems to be undefined.  Please make sure it is defined." >&5
-echo "$as_me: WARNING: $ac_file contains a reference to the variable \`datarootdir'
+$as_echo "$as_me: WARNING: $ac_file contains a reference to the variable \`datarootdir'
 which seems to be undefined.  Please make sure it is defined." >&2;}
 
   rm -f "$tmp/stdin"
   case $ac_file in
-  -) cat "$tmp/out"; rm -f "$tmp/out";;
-  *) rm -f "$ac_file"; mv "$tmp/out" $ac_file;;
-  esac
+  -) cat "$tmp/out" && rm -f "$tmp/out";;
+  *) rm -f "$ac_file" && mv "$tmp/out" "$ac_file";;
+  esac \
+  || { { $as_echo "$as_me:$LINENO: error: could not create $ac_file" >&5
+$as_echo "$as_me: error: could not create $ac_file" >&2;}
+   { (exit 1); exit 1; }; }
  ;;
   :H)
   #
   # CONFIG_HEADER
   #
-    # First, check the format of the line:
-    cat >"$tmp/defines.sed" <<\CEOF
-/^[	 ]*#[	 ]*undef[	 ][	 ]*[_abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ][_abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789]*[	 ]*$/b def
-/^[	 ]*#[	 ]*define[	 ][	 ]*[_abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ][_abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789]*[(	 ]/b def
-b
-:def
-s/$/ /
-s,^\([	 #]*\)[^	 ]*\([	 ]*PACKAGE_NAME\)[	 (].*,\1define\2 "parcellite" ,
-s,^\([	 #]*\)[^	 ]*\([	 ]*PACKAGE_TARNAME\)[	 (].*,\1define\2 "parcellite" ,
-s,^\([	 #]*\)[^	 ]*\([	 ]*PACKAGE_VERSION\)[	 (].*,\1define\2 "svn" ,
-s,^\([	 #]*\)[^	 ]*\([	 ]*PACKAGE_STRING\)[	 (].*,\1define\2 "parcellite svn" ,
-s,^\([	 #]*\)[^	 ]*\([	 ]*PACKAGE_BUGREPORT\)[	 (].*,\1define\2 "xyhthyx@gmail.com" ,
-s,^\([	 #]*\)[^	 ]*\([	 ]*PACKAGE\)[	 (].*,\1define\2 "parcellite" ,
-s,^\([	 #]*\)[^	 ]*\([	 ]*VERSION\)[	 (].*,\1define\2 "svn" ,
-s,^\([	 #]*\)[^	 ]*\([	 ]*GETTEXT_PACKAGE\)[	 (].*,\1define\2 "parcellite" ,
-s,^\([	 #]*\)[^	 ]*\([	 ]*STDC_HEADERS\)[	 (].*,\1define\2 1 ,
-s,^\([	 #]*\)[^	 ]*\([	 ]*HAVE_SYS_TYPES_H\)[	 (].*,\1define\2 1 ,
-s,^\([	 #]*\)[^	 ]*\([	 ]*HAVE_SYS_STAT_H\)[	 (].*,\1define\2 1 ,
-s,^\([	 #]*\)[^	 ]*\([	 ]*HAVE_STDLIB_H\)[	 (].*,\1define\2 1 ,
-s,^\([	 #]*\)[^	 ]*\([	 ]*HAVE_STRING_H\)[	 (].*,\1define\2 1 ,
-s,^\([	 #]*\)[^	 ]*\([	 ]*HAVE_MEMORY_H\)[	 (].*,\1define\2 1 ,
-s,^\([	 #]*\)[^	 ]*\([	 ]*HAVE_STRINGS_H\)[	 (].*,\1define\2 1 ,
-s,^\([	 #]*\)[^	 ]*\([	 ]*HAVE_INTTYPES_H\)[	 (].*,\1define\2 1 ,
-s,^\([	 #]*\)[^	 ]*\([	 ]*HAVE_STDINT_H\)[	 (].*,\1define\2 1 ,
-s,^\([	 #]*\)[^	 ]*\([	 ]*HAVE_UNISTD_H\)[	 (].*,\1define\2 1 ,
-s,^\([	 #]*\)[^	 ]*\([	 ]*HAVE_LOCALE_H\)[	 (].*,\1define\2 1 ,
-s,^\([	 #]*\)[^	 ]*\([	 ]*HAVE_LC_MESSAGES\)[	 (].*,\1define\2 1 ,
-s,^\([	 #]*\)[^	 ]*\([	 ]*HAVE_BIND_TEXTDOMAIN_CODESET\)[	 (].*,\1define\2 1 ,
-s,^\([	 #]*\)[^	 ]*\([	 ]*HAVE_GETTEXT\)[	 (].*,\1define\2 1 ,
-s,^\([	 #]*\)[^	 ]*\([	 ]*HAVE_DCGETTEXT\)[	 (].*,\1define\2 1 ,
-s,^\([	 #]*\)[^	 ]*\([	 ]*ENABLE_NLS\)[	 (].*,\1define\2 1 ,
-s,^\([	 #]*\)[^	 ]*\([	 ]*HAVE_GETTEXT\)[	 (].*,\1define\2 1 ,
-s,^\([	 #]*\)[^	 ]*\([	 ]*HAVE_DCGETTEXT\)[	 (].*,\1define\2 1 ,
-s,^\([	 #]*\)[^	 ]*\([	 ]*HAVE_LIBPTHREAD\)[	 (].*,\1define\2 1 ,
-s,^\([	 #]*\)[^	 ]*\([	 ]*HAVE_STDLIB_H\)[	 (].*,\1define\2 1 ,
-s,^\([	 #]*\)[^	 ]*\([	 ]*HAVE_STRING_H\)[	 (].*,\1define\2 1 ,
-s,^\([	 #]*\)[^	 ]*\([	 ]*HAVE_PTHREAD_H\)[	 (].*,\1define\2 1 ,
-s,^\([	 #]*\)[^	 ]*\([	 ]*RETSIGTYPE\)[	 (].*,\1define\2 void ,
-s/ $//
-s,^[	 #]*u.*,/* & */,
-CEOF
-    sed -f "$tmp/defines.sed" $ac_file_inputs >"$tmp/out1"
-ac_result="$tmp/out1"
   if test x"$ac_file" != x-; then
-    echo "/* $configure_input  */" >"$tmp/config.h"
-    cat "$ac_result" >>"$tmp/config.h"
-    if diff $ac_file "$tmp/config.h" >/dev/null 2>&1; then
-      { echo "$as_me:$LINENO: $ac_file is unchanged" >&5
-echo "$as_me: $ac_file is unchanged" >&6;}
+    {
+      $as_echo "/* $configure_input  */" \
+      && eval '$AWK -f "$tmp/defines.awk"' "$ac_file_inputs"
+    } >"$tmp/config.h" \
+      || { { $as_echo "$as_me:$LINENO: error: could not create $ac_file" >&5
+$as_echo "$as_me: error: could not create $ac_file" >&2;}
+   { (exit 1); exit 1; }; }
+    if diff "$ac_file" "$tmp/config.h" >/dev/null 2>&1; then
+      { $as_echo "$as_me:$LINENO: $ac_file is unchanged" >&5
+$as_echo "$as_me: $ac_file is unchanged" >&6;}
     else
-      rm -f $ac_file
-      mv "$tmp/config.h" $ac_file
+      rm -f "$ac_file"
+      mv "$tmp/config.h" "$ac_file" \
+	|| { { $as_echo "$as_me:$LINENO: error: could not create $ac_file" >&5
+$as_echo "$as_me: error: could not create $ac_file" >&2;}
+   { (exit 1); exit 1; }; }
     fi
   else
-    echo "/* $configure_input  */"
-    cat "$ac_result"
+    $as_echo "/* $configure_input  */" \
+      && eval '$AWK -f "$tmp/defines.awk"' "$ac_file_inputs" \
+      || { { $as_echo "$as_me:$LINENO: error: could not create -" >&5
+$as_echo "$as_me: error: could not create -" >&2;}
+   { (exit 1); exit 1; }; }
   fi
-  rm -f "$tmp/out12"
-# Compute $ac_file's index in $config_headers.
+# Compute "$ac_file"'s index in $config_headers.
 _am_stamp_count=1
 for _am_header in $config_headers :; do
   case $_am_header in
-    $ac_file | $ac_file:* )
+    "$ac_file" | "$ac_file":* )
       break ;;
     * )
       _am_stamp_count=`expr $_am_stamp_count + 1` ;;
   esac
 done
-echo "timestamp for $ac_file" >`$as_dirname -- $ac_file ||
-$as_expr X$ac_file : 'X\(.*[^/]\)//*[^/][^/]*/*$' \| \
-	 X$ac_file : 'X\(//\)[^/]' \| \
-	 X$ac_file : 'X\(//\)$' \| \
-	 X$ac_file : 'X\(/\)' \| . 2>/dev/null ||
-echo X$ac_file |
+echo "timestamp for "$ac_file"" >`$as_dirname -- "$ac_file" ||
+$as_expr X"$ac_file" : 'X\(.*[^/]\)//*[^/][^/]*/*$' \| \
+	 X"$ac_file" : 'X\(//\)[^/]' \| \
+	 X"$ac_file" : 'X\(//\)$' \| \
+	 X"$ac_file" : 'X\(/\)' \| . 2>/dev/null ||
+$as_echo X"$ac_file" |
     sed '/^X\(.*[^/]\)\/\/*[^/][^/]*\/*$/{
 	    s//\1/
 	    q
@@ -997,8 +1148,8 @@ echo X$ac_file |
 	  s/.*/./; q'`/stamp-h$_am_stamp_count
  ;;
 
-  :C)  { echo "$as_me:$LINENO: executing $ac_file commands" >&5
-echo "$as_me: executing $ac_file commands" >&6;}
+  :C)  { $as_echo "$as_me:$LINENO: executing $ac_file commands" >&5
+$as_echo "$as_me: executing $ac_file commands" >&6;}
  ;;
   esac
 
@@ -1019,7 +1170,7 @@ $as_expr X"$mf" : 'X\(.*[^/]\)//*[^/][^/]*/*$' \| \
 	 X"$mf" : 'X\(//\)[^/]' \| \
 	 X"$mf" : 'X\(//\)$' \| \
 	 X"$mf" : 'X\(/\)' \| . 2>/dev/null ||
-echo X"$mf" |
+$as_echo X"$mf" |
     sed '/^X\(.*[^/]\)\/\/*[^/][^/]*\/*$/{
 	    s//\1/
 	    q
@@ -1063,7 +1214,7 @@ $as_expr X"$file" : 'X\(.*[^/]\)//*[^/][^/]*/*$' \| \
 	 X"$file" : 'X\(//\)[^/]' \| \
 	 X"$file" : 'X\(//\)$' \| \
 	 X"$file" : 'X\(/\)' \| . 2>/dev/null ||
-echo X"$file" |
+$as_echo X"$file" |
     sed '/^X\(.*[^/]\)\/\/*[^/][^/]*\/*$/{
 	    s//\1/
 	    q
@@ -1089,7 +1240,7 @@ echo X"$file" |
     as_dirs=
     while :; do
       case $as_dir in #(
-      *\'*) as_qdir=`echo "$as_dir" | sed "s/'/'\\\\\\\\''/g"`;; #(
+      *\'*) as_qdir=`$as_echo "$as_dir" | sed "s/'/'\\\\\\\\''/g"`;; #'(
       *) as_qdir=$as_dir;;
       esac
       as_dirs="'$as_qdir' $as_dirs"
@@ -1098,7 +1249,7 @@ $as_expr X"$as_dir" : 'X\(.*[^/]\)//*[^/][^/]*/*$' \| \
 	 X"$as_dir" : 'X\(//\)[^/]' \| \
 	 X"$as_dir" : 'X\(//\)$' \| \
 	 X"$as_dir" : 'X\(/\)' \| . 2>/dev/null ||
-echo X"$as_dir" |
+$as_echo X"$as_dir" |
     sed '/^X\(.*[^/]\)\/\/*[^/][^/]*\/*$/{
 	    s//\1/
 	    q
@@ -1119,8 +1270,8 @@ echo X"$as_dir" |
       test -d "$as_dir" && break
     done
     test -z "$as_dirs" || eval "mkdir $as_dirs"
-  } || test -d "$as_dir" || { { echo "$as_me:$LINENO: error: cannot create directory $as_dir" >&5
-echo "$as_me: error: cannot create directory $as_dir" >&2;}
+  } || test -d "$as_dir" || { { $as_echo "$as_me:$LINENO: error: cannot create directory $as_dir" >&5
+$as_echo "$as_me: error: cannot create directory $as_dir" >&2;}
    { (exit 1); exit 1; }; }; }
     # echo "creating $dirpart/$file"
     echo '# dummy' > "$dirpart/$file"
@@ -1253,8 +1404,8 @@ done
       "$srcdir/po/POTFILES.in" | sed '$!s/$/ \\/' >"po/POTFILES"
 
     if test ! -f "po/Makefile"; then
-      { { echo "$as_me:$LINENO: error: po/Makefile is not ready." >&5
-echo "$as_me: error: po/Makefile is not ready." >&2;}
+      { { $as_echo "$as_me:$LINENO: error: po/Makefile is not ready." >&5
+$as_echo "$as_me: error: po/Makefile is not ready." >&2;}
    { (exit 1); exit 1; }; }
     fi
     mv "po/Makefile" "po/Makefile.tmp"

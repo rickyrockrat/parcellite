@@ -1,7 +1,12 @@
+v0.9.2  Pending...
+
+  Changes
+  + Clear option clears clipboard and primary contents.
+
 v0.9.1  Wednesday, March 18 2009
 
   New
-  +Several new translations.
+  + Several new translations.
   + Print primary contents command line option.
   + Clipboard and primary synchronization (by Wolfgang Schnerring).
   
