@@ -65,15 +65,14 @@ item_check(gpointer data)
   /* Check if primary contents were lost */
   if ((primary_temp == NULL) && (primary_text != NULL))
   {
+    /* Check contents */
     gint count;
 		GdkAtom *targets;
 		gboolean contents = gtk_clipboard_wait_for_targets(primary, &targets, &count);
 		g_free(targets);
     /* Only recover lost contents if there isn't any other type of content in the clipboard */
     if (!contents)
-		{
       gtk_clipboard_set_text(primary, primary_text, -1);
-    }
   }
   else
   {
@@ -110,15 +109,14 @@ item_check(gpointer data)
   /* Check if clipboard contents were lost */
   if ((clipboard_temp == NULL) && (clipboard_text != NULL))
   {
+    /* Check contents */
     gint count;
 		GdkAtom *targets;
 		gboolean contents = gtk_clipboard_wait_for_targets(primary, &targets, &count);
 		g_free(targets);
 		/* Only recover lost contents if there isn't any other type of content in the clipboard */
 		if (!contents)
-		{
       gtk_clipboard_set_text(clipboard, clipboard_text, -1);
-    }
   }
   else
   {
