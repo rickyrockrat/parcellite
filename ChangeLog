@@ -2,6 +2,7 @@ v0.9.2  Pending...
 
   Changes
   + Clear option clears clipboard and primary contents.
+  + Empty clipboard and primary recovery no longer overwrites contents of other types.
 
 v0.9.1  Wednesday, March 18 2009
 
