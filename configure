@@ -2403,7 +2403,7 @@ cat >>confdefs.h <<_ACEOF
 _ACEOF
 
 
-ALL_LINGUAS="de es hu it ja pl_PL pt_BR ru sv tr zh_CN"
+ALL_LINGUAS="de es hu it ja pl pl_PL pt_BR ru sv tr zh_CN"
 DEPDIR="${am__leading_dot}deps"
 
 ac_config_commands="$ac_config_commands depfiles"
@@ -10058,8 +10058,9 @@ main ()
 {
   int major, minor, micro;
   char *tmp_version;
+  int ignored;
 
-  system ("touch conf.glibtest");
+  ignored = system ("touch conf.glibtest");
 
   /* HP/UX 9 (%@#!) writes to sscanf strings */
   tmp_version = g_strdup("$min_glib_version");

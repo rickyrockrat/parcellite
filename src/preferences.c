@@ -258,6 +258,25 @@ save_actions()
   }
 }
 
+/* Called when clipboard checks are pressed */
+static void
+check_toggled(GtkToggleButton *togglebutton, gpointer user_data)
+{
+  if (gtk_toggle_button_get_active((GtkToggleButton*)copy_check) &&
+      gtk_toggle_button_get_active((GtkToggleButton*)primary_check))
+  {
+    /* Only allow synchronize option if both primary and clipboard are enabled */
+    gtk_widget_set_sensitive((GtkWidget*)synchronize_check, TRUE);
+  }
+  else
+  {
+    /* Disable synchronize option */
+    gtk_toggle_button_set_active((GtkToggleButton*)synchronize_check, FALSE);
+    gtk_widget_set_sensitive((GtkWidget*)synchronize_check, FALSE);
+
+  }
+}
+
 /* Called when Add... button is clicked */
 static void
 add_action(GtkButton *button, gpointer user_data)
@@ -403,8 +422,10 @@ show_preferences(gint tab)
   vbox = gtk_vbox_new(FALSE, 2);
   gtk_container_add((GtkContainer*)alignment, vbox);
   copy_check = gtk_check_button_new_with_mnemonic(_("Use _Copy (Ctrl-C)"));
+  g_signal_connect((GObject*)copy_check, "toggled", (GCallback)check_toggled, NULL);
   gtk_box_pack_start((GtkBox*)vbox, copy_check, FALSE, FALSE, 0);
   primary_check = gtk_check_button_new_with_mnemonic(_("Use _Primary (Selection)"));
+  g_signal_connect((GObject*)primary_check, "toggled", (GCallback)check_toggled, NULL);
   gtk_box_pack_start((GtkBox*)vbox, primary_check, FALSE, FALSE, 0);
   synchronize_check = gtk_check_button_new_with_mnemonic(_("S_ynchronize clipboards"));
   gtk_box_pack_start((GtkBox*)vbox, synchronize_check, FALSE, FALSE, 0);
