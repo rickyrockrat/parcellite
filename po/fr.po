@@ -1,0 +1,331 @@
+# French translation of parcellite.
+# Copyright (C) 2008 Xyhthyx <xyhthyx@gmail.com>
+# This file is distributed under the same license as the parcellite package.
+# Vincent Coiffier <vcoiffier@yahoo.com>, 2009.
+#
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Parcellite\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2009-05-13 19:25-0400\n"
+"PO-Revision-Date: 2009-05-13 00:46+0100\n"
+"Last-Translator: Vincent Coiffier <vcoiffier@yahoo.com>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../src/main.c:184
+msgid "Executing action..."
+msgstr "Exécute l'action..."
+
+#: ../src/main.c:190 ../src/main.c:739 ../data/parcellite.desktop.in.h:1
+#: ../data/parcellite-startup.desktop.in.h:1
+msgid "Clipboard Manager"
+msgstr "Gestionnaire de presse-papier"
+
+#: ../src/main.c:213
+msgid "Could not create thread for executed action\n"
+msgstr "Impossible de créer une tâche pour l'action exécutée\n"
+
+#. Create the dialog
+#: ../src/main.c:243
+msgid "Editing Clipboard"
+msgstr "Edite le presse-papier"
+
+#: ../src/main.c:302
+msgid "Clear the history?"
+msgstr "Effacer l'historique?"
+
+#: ../src/main.c:370
+msgid "Lightweight GTK+ clipboard manager."
+msgstr "Léger gestionnaire de presse-papier GTK+."
+
+#: ../src/main.c:457
+msgid "<b>None</b>"
+msgstr "<b>Aucun</b>"
+
+#. File contained no actions so adding empty
+#. File did not open so adding empty
+#. Nothing in history so adding empty
+#: ../src/main.c:478 ../src/main.c:507 ../src/main.c:623
+msgid "Empty"
+msgstr "Vide"
+
+#. Edit actions
+#: ../src/main.c:514
+msgid "_Edit actions"
+msgstr "_Editer les actions"
+
+#. Edit clipboard
+#: ../src/main.c:538
+msgid "_Edit Clipboard"
+msgstr "_Editer le presse-papier"
+
+#: ../src/utils.c:38 ../src/utils.c:45
+#, c-format
+msgid "Couldn't create directory: %s\n"
+msgstr "Impossible de créer le répertoire: %s\n"
+
+#: ../src/utils.c:84
+msgid "Run as daemon"
+msgstr "Démarrer en tant que service"
+
+#: ../src/utils.c:91
+msgid "Do not use status icon (Ctrl-Alt-P for menu)"
+msgstr "Ne pas utiliser l'icône de statut (Ctrl-Alt-P pour le menu)"
+
+#: ../src/utils.c:98
+msgid "Print clipboard contents"
+msgstr "Imprimer le contenu du presse-papier"
+
+#: ../src/utils.c:105
+msgid "Print primary contents"
+msgstr "Imprimer le contenu primaire"
+
+#: ../src/utils.c:117
+msgid ""
+"Clipboard CLI usage examples:\n"
+"\n"
+"  echo \"copied to clipboard\" | parcellite\n"
+"  parcellite \"copied to clipboard\"\n"
+"  echo \"copied to clipboard\" | parcellite -c"
+msgstr ""
+"Exemples d'utilisation de commandes CLI pour le presse-papier:\n"
+"\n"
+"  echo \"copié dans le presse-papier\" | parcellite\n"
+"  parcellite \"copié dans le presse-papier\"\n"
+"  echo \"copié dans le presse-papier\" | parcellite -c"
+
+#: ../src/utils.c:123
+msgid ""
+"Written by Gilberto \"Xyhthyx\" Miralla.\n"
+"Report bugs to <xyhthyx@gmail.com>."
+msgstr ""
+"Ecrit par Gilberto \"Xyhthyx\" Miralla.\n"
+"Remonter les bogues à <xyhthyx@gmail.com>."
+
+#. Create the dialog
+#: ../src/preferences.c:394
+msgid "Preferences"
+msgstr "Préférences"
+
+#: ../src/preferences.c:409
+msgid "Behavior"
+msgstr "Comportement"
+
+#: ../src/preferences.c:417
+msgid "<b>Clipboards</b>"
+msgstr "<b>Presse-papiers</b>"
+
+#: ../src/preferences.c:424
+msgid "Use _Copy (Ctrl-C)"
+msgstr "Utiliser la _Copie (Ctrl-C)"
+
+#: ../src/preferences.c:427
+msgid "Use _Primary (Selection)"
+msgstr "Utiliser le _Primaire (Sélection)"
+
+#: ../src/preferences.c:430
+msgid "S_ynchronize clipboards"
+msgstr "S_ynchroniser les presse-papiers"
+
+#: ../src/preferences.c:438
+msgid "<b>History</b>"
+msgstr "<b>Historique</b>"
+
+#: ../src/preferences.c:445
+msgid "_Save history"
+msgstr "_Sauvegarder l'historique"
+
+#: ../src/preferences.c:446
+msgid "Save and restore history between sessions"
+msgstr "Sauvegarder et restaurer l'historique entre les sessions"
+
+#: ../src/preferences.c:450
+msgid "Items in history:"
+msgstr "Articles dans l'historique:"
+
+#: ../src/preferences.c:463
+msgid "<b>Miscellaneous</b>"
+msgstr "<b>Divers</b>"
+
+#: ../src/preferences.c:470
+msgid "Capture _hyperlinks only"
+msgstr "Capturer uniquement les _hyperliens"
+
+#: ../src/preferences.c:472
+msgid "C_onfirm before clearing history"
+msgstr "C_onfirmer avant d'effacer l'historique"
+
+#: ../src/preferences.c:479
+msgid "Display"
+msgstr "Affichage"
+
+#: ../src/preferences.c:487
+msgid "<b>Items</b>"
+msgstr "<b>Articles</b>"
+
+#: ../src/preferences.c:494
+msgid "Show in a _single line"
+msgstr "Afficher sur une _seule ligne"
+
+#: ../src/preferences.c:496
+msgid "Show in _reverse order"
+msgstr "Afficher dans l'o_rdre inverse"
+
+#: ../src/preferences.c:500
+msgid "Character length of items:"
+msgstr "Longueur en caractères pour les articles:"
+
+#: ../src/preferences.c:513
+msgid "<b>Omitting</b>"
+msgstr "<b>Omis</b>"
+
+#: ../src/preferences.c:522
+msgid "Omit items in the:"
+msgstr "Articles omis dans le:"
+
+#: ../src/preferences.c:526
+msgid "Beginning"
+msgstr "Début"
+
+#: ../src/preferences.c:527
+msgid "Middle"
+msgstr "Milieu"
+
+#: ../src/preferences.c:528
+msgid "End"
+msgstr "Fin"
+
+#: ../src/preferences.c:535
+msgid "Actions"
+msgstr "Actions"
+
+#. Build the actions label
+#: ../src/preferences.c:540
+msgid "Control-click Parcellite's tray icon to use actions"
+msgstr ""
+"Cliquer sur Control et la zone de notification Parcellite pour utiliser les "
+"actions"
+
+#: ../src/preferences.c:560
+msgid "Action"
+msgstr "Action"
+
+#: ../src/preferences.c:567
+msgid "Command"
+msgstr "Commande"
+
+#: ../src/preferences.c:582
+msgid "Add..."
+msgstr "Ajouter..."
+
+#: ../src/preferences.c:586
+msgid "Remove"
+msgstr "Supprimer"
+
+#: ../src/preferences.c:603
+msgid "Hotkeys"
+msgstr "Raccourci clavier"
+
+#: ../src/preferences.c:611
+msgid "<b>Hotkeys</b>"
+msgstr "<b>Raccourci claviers</b>"
+
+#: ../src/preferences.c:620
+msgid "History key combination:"
+msgstr "Combinaison de touches pour l'historique:"
+
+#: ../src/preferences.c:628
+msgid "Actions key combination:"
+msgstr "Combinaison de touches pour les actions:"
+
+#: ../src/preferences.c:636
+msgid "Menu key combination:"
+msgstr "Combinaison de touches pour le menu:"
+
+#: ../data/parcellite.desktop.in.h:2 ../data/parcellite-startup.desktop.in.h:2
+msgid "Parcellite"
+msgstr "Parcellite"
+
+#~ msgid "<b>Clipboard</b>"
+#~ msgstr "<b>Zwischenablage</b>"
+
+#~ msgid "Save changes"
+#~ msgstr "Änderungen speichern"
+
+#~ msgid "Discard changes"
+#~ msgstr "Änderungen verwerfen"
+
+#~ msgid "Extras"
+#~ msgstr "Extras"
+
+#, fuzzy
+#~ msgid ""
+#~ "Add a new action\n"
+#~ "\"%s\" in a command is replaced with the clipboard contents"
+#~ msgstr "\"%s\" wird mit dem Inhalt der Zwischenablage ersetzt"
+
+#, fuzzy
+#~ msgid "Move selected action up"
+#~ msgstr "Auswahl nach oben verschieben"
+
+#, fuzzy
+#~ msgid "Move selected action down"
+#~ msgstr "Auswahl nach unten verschieben"
+
+#~ msgid "Close"
+#~ msgstr "Schließen"
+
+#~ msgid "New Action"
+#~ msgstr "Neue Aktion"
+
+#~ msgid "<b>Name:</b>"
+#~ msgstr "<b>Name:</b>"
+
+#~ msgid "Name your action"
+#~ msgstr "Benennen Sie Ihre Aktion"
+
+#~ msgid "<b>Command:</b>"
+#~ msgstr "<b>Befehl:</b>"
+
+#~ msgid "Edit Action"
+#~ msgstr "Aktion bearbeiten"
+
+#~ msgid "General"
+#~ msgstr "Allgemein"
+
+#~ msgid "Length in characters of history items:"
+#~ msgstr "Maximale Länge der Zeichen pro Eintrag:"
+
+#~ msgid "History menu global hotkey:"
+#~ msgstr "Globale Tastenkombination für Verlaufsmenü:"
+
+#~ msgid "Actions menu global hotkey:"
+#~ msgstr "Globale Tastenkombination für Aktionsmenü:"
+
+#~ msgid "Single _line mode"
+#~ msgstr "Zei_lenmodus"
+
+#~ msgid "Ignore all non-hyperlink text"
+#~ msgstr "Ignoriere nicht verlinkten Text"
+
+#~ msgid "New"
+#~ msgstr "Neu"
+
+#~ msgid "New action"
+#~ msgstr "Neue Aktion"
+
+#~ msgid "Edit"
+#~ msgstr "Bearbeiten"
+
+#~ msgid "Edit selected"
+#~ msgstr "Auswahl bearbeiten"
+
+#~ msgid "Delete"
+#~ msgstr "Löschen"
+
+#~ msgid "Delete selected"
+#~ msgstr "Auswahl löschen"
