@@ -24,8 +24,9 @@
 
 dnl IT_PROG_INTLTOOL([MINIMUM-VERSION], [no-xml])
 # serial 40 IT_PROG_INTLTOOL
-AC_DEFUN([IT_PROG_INTLTOOL],
-[AC_PREREQ([2.50])dnl
+AC_DEFUN([IT_PROG_INTLTOOL], [
+AC_PREREQ([2.50])dnl
+AC_REQUIRE([AM_NLS])dnl
 
 case "$am__api_version" in
     1.[01234])
@@ -74,30 +75,31 @@ INTLTOOL_SOUNDLIST_RULE='%.soundlist: %.soundlist.in $(INTLTOOL_MERGE) $(wildcar
     INTLTOOL_SERVICE_RULE='%.service: %.service.in   $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; LC_ALL=C $(INTLTOOL_MERGE) -d -u -c $(top_builddir)/po/.intltool-merge-cache $(top_srcdir)/po $< [$]@'
    INTLTOOL_POLICY_RULE='%.policy:    %.policy.in    $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; LC_ALL=C $(INTLTOOL_MERGE) -x -u -c $(top_builddir)/po/.intltool-merge-cache $(top_srcdir)/po $< [$]@'
 
-AC_SUBST(INTLTOOL_DESKTOP_RULE)
-AC_SUBST(INTLTOOL_DIRECTORY_RULE)
-AC_SUBST(INTLTOOL_KEYS_RULE)
-AC_SUBST(INTLTOOL_PROP_RULE)
-AC_SUBST(INTLTOOL_OAF_RULE)
-AC_SUBST(INTLTOOL_PONG_RULE)
-AC_SUBST(INTLTOOL_SERVER_RULE)
-AC_SUBST(INTLTOOL_SHEET_RULE)
-AC_SUBST(INTLTOOL_SOUNDLIST_RULE)
-AC_SUBST(INTLTOOL_UI_RULE)
-AC_SUBST(INTLTOOL_XAM_RULE)
-AC_SUBST(INTLTOOL_KBD_RULE)
-AC_SUBST(INTLTOOL_XML_RULE)
-AC_SUBST(INTLTOOL_XML_NOMERGE_RULE)
-AC_SUBST(INTLTOOL_CAVES_RULE)
-AC_SUBST(INTLTOOL_SCHEMAS_RULE)
-AC_SUBST(INTLTOOL_THEME_RULE)
-AC_SUBST(INTLTOOL_SERVICE_RULE)
-AC_SUBST(INTLTOOL_POLICY_RULE)
+_IT_SUBST(INTLTOOL_DESKTOP_RULE)
+_IT_SUBST(INTLTOOL_DIRECTORY_RULE)
+_IT_SUBST(INTLTOOL_KEYS_RULE)
+_IT_SUBST(INTLTOOL_PROP_RULE)
+_IT_SUBST(INTLTOOL_OAF_RULE)
+_IT_SUBST(INTLTOOL_PONG_RULE)
+_IT_SUBST(INTLTOOL_SERVER_RULE)
+_IT_SUBST(INTLTOOL_SHEET_RULE)
+_IT_SUBST(INTLTOOL_SOUNDLIST_RULE)
+_IT_SUBST(INTLTOOL_UI_RULE)
+_IT_SUBST(INTLTOOL_XAM_RULE)
+_IT_SUBST(INTLTOOL_KBD_RULE)
+_IT_SUBST(INTLTOOL_XML_RULE)
+_IT_SUBST(INTLTOOL_XML_NOMERGE_RULE)
+_IT_SUBST(INTLTOOL_CAVES_RULE)
+_IT_SUBST(INTLTOOL_SCHEMAS_RULE)
+_IT_SUBST(INTLTOOL_THEME_RULE)
+_IT_SUBST(INTLTOOL_SERVICE_RULE)
+_IT_SUBST(INTLTOOL_POLICY_RULE)
 
 # Check the gettext tools to make sure they are GNU
 AC_PATH_PROG(XGETTEXT, xgettext)
 AC_PATH_PROG(MSGMERGE, msgmerge)
 AC_PATH_PROG(MSGFMT, msgfmt)
+AC_PATH_PROG(GMSGFMT, gmsgfmt, $MSGFMT)
 if test -z "$XGETTEXT" -o -z "$MSGMERGE" -o -z "$MSGFMT"; then
     AC_MSG_ERROR([GNU gettext tools not found; required for intltool])
 fi
@@ -108,12 +110,17 @@ if test -z "$xgversion" -o -z "$mmversion" -o -z "$mfversion"; then
     AC_MSG_ERROR([GNU gettext tools not found; required for intltool])
 fi
 
-AC_PATH_PROG(INTLTOOL_PERL, [perl])
+AC_PATH_PROG(INTLTOOL_PERL, perl)
 if test -z "$INTLTOOL_PERL"; then
-   AC_MSG_ERROR([perl not found; required for intltool])
+   AC_MSG_ERROR([perl not found])
 fi
-if test -z "`$INTLTOOL_PERL -v | fgrep '5.' 2> /dev/null`"; then
-   AC_MSG_ERROR([perl 5.x required for intltool])
+AC_MSG_CHECKING([for perl >= 5.8.1])
+$INTLTOOL_PERL -e "use 5.8.1;" > /dev/null 2>&1
+if test $? -ne 0; then
+   AC_MSG_ERROR([perl 5.8.1 is required for intltool])
+else
+   IT_PERL_VERSION="`$INTLTOOL_PERL -e \"printf '%vd', $^V\"`"
+   AC_MSG_RESULT([$IT_PERL_VERSION])
 fi
 if test "x$2" != "xno-xml"; then
    AC_MSG_CHECKING([for XML::Parser])
@@ -169,6 +176,9 @@ dnl The following CONFIG_COMMANDS should be exetuted at the very end
 dnl of config.status.
 AC_CONFIG_COMMANDS_PRE([
   AC_CONFIG_COMMANDS([$1/stamp-it], [
+    if [ ! grep "^# INTLTOOL_MAKEFILE$" "$1/Makefile.in" > /dev/null ]; then
+       AC_MSG_ERROR([$1/Makefile.in.in was not created by intltoolize.])
+    fi
     rm -f "$1/stamp-it" "$1/stamp-it.tmp" "$1/POTFILES" "$1/Makefile.tmp"
     >"$1/stamp-it.tmp"
     [sed '/^#/d
@@ -177,21 +187,27 @@ AC_CONFIG_COMMANDS_PRE([
 	'"s|^|	$ac_top_srcdir/|" \
       "$srcdir/$1/POTFILES.in" | sed '$!s/$/ \\/' >"$1/POTFILES"
     ]
-    if test ! -f "$1/Makefile"; then
-      AC_MSG_ERROR([$1/Makefile is not ready.])
-    fi
-    mv "$1/Makefile" "$1/Makefile.tmp"
     [sed '/^POTFILES =/,/[^\\]$/ {
 		/^POTFILES =/!d
 		r $1/POTFILES
 	  }
-	 ' "$1/Makefile.tmp" >"$1/Makefile"]
+	 ' "$1/Makefile.in" >"$1/Makefile"]
     rm -f "$1/Makefile.tmp"
     mv "$1/stamp-it.tmp" "$1/stamp-it"
   ])
 ])dnl
 ])
 
+# _IT_SUBST(VARIABLE)
+# -------------------
+# Abstract macro to do either _AM_SUBST_NOTMAKE or AC_SUBST
+#
+AC_DEFUN([_IT_SUBST],
+[
+AC_SUBST([$1])
+m4_ifdef([_AM_SUBST_NOTMAKE], [_AM_SUBST_NOTMAKE([$1])])
+]
+)
 
 # deprecated macros
 AU_ALIAS([AC_PROG_INTLTOOL], [IT_PROG_INTLTOOL])

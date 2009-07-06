@@ -363,10 +363,11 @@ Copyright (C) 2008 Free Software Foundation, Inc.
 This config.status script is free software; the Free Software Foundation
 gives unlimited permission to copy, distribute and modify it."
 
-ac_pwd='/home/orz/Development/parcellite'
+ac_pwd='/home/xyhthyx/Development/parcellite'
 srcdir='.'
-INSTALL='/usr/bin/install -c'
-AWK='mawk'
+INSTALL='/bin/install -c'
+MKDIR_P='/bin/mkdir -p'
+AWK='gawk'
 test -n "$AWK" || AWK=awk
 # The default lists apply if the user does not specify any file.
 ac_need_defaults=:
@@ -546,6 +547,8 @@ fi
 
 echo 'BEGIN {' >"$tmp/subs1.awk" &&
 cat >>"$tmp/subs1.awk" <<\_ACAWK &&
+S["am__EXEEXT_FALSE"]=""
+S["am__EXEEXT_TRUE"]="#"
 S["LTLIBOBJS"]=""
 S["LIBOBJS"]=""
 S["GLIB_MKENUMS"]="glib-mkenums"
@@ -553,10 +556,10 @@ S["GOBJECT_QUERY"]="gobject-query"
 S["GLIB_GENMARSHAL"]="glib-genmarshal"
 S["GLIB_LIBS"]="-lglib-2.0  "
 S["GLIB_CFLAGS"]="-I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include  "
-S["GTK_LIBS"]="-lgtk-x11-2.0 -lgdk-x11-2.0 -latk-1.0 -lpangoft2-1.0 -lgdk_pixbuf-2.0 -lm -lpangocairo-1.0 -lgio-2.0 -lcairo -lpango-1.0 -lfreetype -lfontconfig -lg"\
-"object-2.0 -lgmodule-2.0 -lglib-2.0  "
-S["GTK_CFLAGS"]="-D_REENTRANT -I/usr/include/gtk-2.0 -I/usr/lib/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/pango-1.0 -I/usr/include/p"\
-"ixman-1 -I/usr/include/freetype2 -I/usr/include/directfb -I/usr/include/libpng12 -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include  "
+S["GTK_LIBS"]="-lgtk-x11-2.0 -lgdk-x11-2.0 -latk-1.0 -lgio-2.0 -lpangoft2-1.0 -lgdk_pixbuf-2.0 -lpangocairo-1.0 -lcairo -lpango-1.0 -lfreetype -lfontconfig -lgobje"\
+"ct-2.0 -lgmodule-2.0 -lglib-2.0  "
+S["GTK_CFLAGS"]="-I/usr/include/gtk-2.0 -I/usr/lib/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/pango-1.0 -I/usr/include/glib-2.0 -I/us"\
+"r/lib/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/freetype2 -I/usr/include/libpng12  "
 S["PKG_CONFIG"]="/usr/bin/pkg-config"
 S["LTLIBINTL"]=""
 S["LIBINTL"]=""
@@ -564,13 +567,13 @@ S["LTLIBICONV"]="-liconv"
 S["LIBICONV"]="-liconv"
 S["INTL_MACOSX_LIBS"]=""
 S["host_os"]="linux-gnu"
-S["host_vendor"]="pc"
-S["host_cpu"]="i686"
-S["host"]="i686-pc-linux-gnu"
+S["host_vendor"]="unknown"
+S["host_cpu"]="x86_64"
+S["host"]="x86_64-unknown-linux-gnu"
 S["build_os"]="linux-gnu"
-S["build_vendor"]="pc"
-S["build_cpu"]="i686"
-S["build"]="i686-pc-linux-gnu"
+S["build_vendor"]="unknown"
+S["build_cpu"]="x86_64"
+S["build"]="x86_64-unknown-linux-gnu"
 S["XGETTEXT_EXTRA_OPTIONS"]=""
 S["XGETTEXT_015"]="/usr/bin/xgettext"
 S["GMSGFMT_015"]="/usr/bin/msgfmt"
@@ -657,22 +660,24 @@ S["CC"]="gcc"
 S["GETTEXT_PACKAGE"]="parcellite"
 S["am__untar"]="${AMTAR} xf -"
 S["am__tar"]="${AMTAR} chof - \"$$tardir\""
-S["AMTAR"]="${SHELL} /home/orz/Development/parcellite/missing --run tar"
+S["AMTAR"]="${SHELL} /home/xyhthyx/Development/parcellite/missing --run tar"
 S["am__leading_dot"]="."
 S["SET_MAKE"]=""
-S["AWK"]="mawk"
-S["mkdir_p"]="mkdir -p --"
-S["INSTALL_STRIP_PROGRAM"]="${SHELL} $(install_sh) -c -s"
+S["AWK"]="gawk"
+S["mkdir_p"]="/bin/mkdir -p"
+S["MKDIR_P"]="/bin/mkdir -p"
+S["INSTALL_STRIP_PROGRAM"]="$(install_sh) -c -s"
 S["STRIP"]=""
-S["install_sh"]="/home/orz/Development/parcellite/install-sh"
-S["MAKEINFO"]="${SHELL} /home/orz/Development/parcellite/missing --run makeinfo"
-S["AUTOHEADER"]="${SHELL} /home/orz/Development/parcellite/missing --run autoheader"
-S["AUTOMAKE"]="${SHELL} /home/orz/Development/parcellite/missing --run automake-1.9"
-S["AUTOCONF"]="${SHELL} /home/orz/Development/parcellite/missing --run autoconf"
-S["ACLOCAL"]="${SHELL} /home/orz/Development/parcellite/missing --run aclocal-1.9"
+S["install_sh"]="${SHELL} /home/xyhthyx/Development/parcellite/install-sh"
+S["MAKEINFO"]="${SHELL} /home/xyhthyx/Development/parcellite/missing --run makeinfo"
+S["AUTOHEADER"]="${SHELL} /home/xyhthyx/Development/parcellite/missing --run autoheader"
+S["AUTOMAKE"]="${SHELL} /home/xyhthyx/Development/parcellite/missing --run automake-1.11"
+S["AUTOCONF"]="${SHELL} /home/xyhthyx/Development/parcellite/missing --run autoconf"
+S["ACLOCAL"]="${SHELL} /home/xyhthyx/Development/parcellite/missing --run aclocal-1.11"
 S["VERSION"]="svn"
 S["PACKAGE"]="parcellite"
 S["CYGPATH_W"]="echo"
+S["am__isrc"]=""
 S["INSTALL_DATA"]="${INSTALL} -m 644"
 S["INSTALL_SCRIPT"]="${INSTALL}"
 S["INSTALL_PROGRAM"]="${INSTALL}"
@@ -1010,6 +1015,11 @@ ac_abs_srcdir=$ac_abs_top_srcdir$ac_dir_suffix
   [\\/$]* | ?:[\\/]* ) ac_INSTALL=$INSTALL ;;
   *) ac_INSTALL=$ac_top_build_prefix$INSTALL ;;
   esac
+  ac_MKDIR_P=$MKDIR_P
+  case $MKDIR_P in
+  [\\/$]* | ?:[\\/]* ) ;;
+  */*) ac_MKDIR_P=$ac_top_build_prefix$MKDIR_P ;;
+  esac
 # If the template does not know about datarootdir, expand it.
 # FIXME: This hack should be removed a few years after 2.60.
 ac_datarootdir_hack=; ac_datarootdir_seen=
@@ -1060,6 +1070,7 @@ s&@builddir@&$ac_builddir&;t t
 s&@abs_builddir@&$ac_abs_builddir&;t t
 s&@abs_top_builddir@&$ac_abs_top_builddir&;t t
 s&@INSTALL@&$ac_INSTALL&;t t
+s&@MKDIR_P@&$ac_MKDIR_P&;t t
 $ac_datarootdir_hack
 "
 eval sed \"\$ac_sed_extra\" "$ac_file_inputs" | $AWK -f "$tmp/subs.awk" >$tmp/out \
@@ -1114,21 +1125,22 @@ $as_echo "$as_me: error: could not create -" >&2;}
    { (exit 1); exit 1; }; }
   fi
 # Compute "$ac_file"'s index in $config_headers.
+_am_arg="$ac_file"
 _am_stamp_count=1
 for _am_header in $config_headers :; do
   case $_am_header in
-    "$ac_file" | "$ac_file":* )
+    $_am_arg | $_am_arg:* )
       break ;;
     * )
       _am_stamp_count=`expr $_am_stamp_count + 1` ;;
   esac
 done
-echo "timestamp for "$ac_file"" >`$as_dirname -- "$ac_file" ||
-$as_expr X"$ac_file" : 'X\(.*[^/]\)//*[^/][^/]*/*$' \| \
-	 X"$ac_file" : 'X\(//\)[^/]' \| \
-	 X"$ac_file" : 'X\(//\)$' \| \
-	 X"$ac_file" : 'X\(/\)' \| . 2>/dev/null ||
-$as_echo X"$ac_file" |
+echo "timestamp for $_am_arg" >`$as_dirname -- "$_am_arg" ||
+$as_expr X"$_am_arg" : 'X\(.*[^/]\)//*[^/][^/]*/*$' \| \
+	 X"$_am_arg" : 'X\(//\)[^/]' \| \
+	 X"$_am_arg" : 'X\(//\)$' \| \
+	 X"$_am_arg" : 'X\(/\)' \| . 2>/dev/null ||
+$as_echo X"$_am_arg" |
     sed '/^X\(.*[^/]\)\/\/*[^/][^/]*\/*$/{
 	    s//\1/
 	    q
@@ -1155,17 +1167,28 @@ $as_echo "$as_me: executing $ac_file commands" >&6;}
 
 
   case $ac_file$ac_mode in
-    "depfiles":C) test x"$AMDEP_TRUE" != x"" || for mf in $CONFIG_FILES; do
-  # Strip MF so we end up with the name of the file.
-  mf=`echo "$mf" | sed -e 's/:.*$//'`
-  # Check whether this is an Automake generated Makefile or not.
-  # We used to match only the files named `Makefile.in', but
-  # some people rename them; so instead we look at the file content.
-  # Grep'ing the first line is not enough: some people post-process
-  # each Makefile.in and add a new line on top of each file to say so.
-  # So let's grep whole file.
-  if grep '^#.*generated by automake' $mf > /dev/null 2>&1; then
-    dirpart=`$as_dirname -- "$mf" ||
+    "depfiles":C) test x"$AMDEP_TRUE" != x"" || {
+  # Autoconf 2.62 quotes --file arguments for eval, but not when files
+  # are listed without --file.  Let's play safe and only enable the eval
+  # if we detect the quoting.
+  case $CONFIG_FILES in
+  *\'*) eval set x "$CONFIG_FILES" ;;
+  *)   set x $CONFIG_FILES ;;
+  esac
+  shift
+  for mf
+  do
+    # Strip MF so we end up with the name of the file.
+    mf=`echo "$mf" | sed -e 's/:.*$//'`
+    # Check whether this is an Automake generated Makefile or not.
+    # We used to match only the files named `Makefile.in', but
+    # some people rename them; so instead we look at the file content.
+    # Grep'ing the first line is not enough: some people post-process
+    # each Makefile.in and add a new line on top of each file to say so.
+    # Grep'ing the whole file is not good either: AIX grep has a line
+    # limit of 2048, but all sed's we know have understand at least 4000.
+    if sed -n 's,^#.*generated by automake.*,X,p' "$mf" | grep X >/dev/null 2>&1; then
+      dirpart=`$as_dirname -- "$mf" ||
 $as_expr X"$mf" : 'X\(.*[^/]\)//*[^/][^/]*/*$' \| \
 	 X"$mf" : 'X\(//\)[^/]' \| \
 	 X"$mf" : 'X\(//\)$' \| \
@@ -1188,28 +1211,28 @@ $as_echo X"$mf" |
 	    q
 	  }
 	  s/.*/./; q'`
-  else
-    continue
-  fi
-  # Extract the definition of DEPDIR, am__include, and am__quote
-  # from the Makefile without running `make'.
-  DEPDIR=`sed -n 's/^DEPDIR = //p' < "$mf"`
-  test -z "$DEPDIR" && continue
-  am__include=`sed -n 's/^am__include = //p' < "$mf"`
-  test -z "am__include" && continue
-  am__quote=`sed -n 's/^am__quote = //p' < "$mf"`
-  # When using ansi2knr, U may be empty or an underscore; expand it
-  U=`sed -n 's/^U = //p' < "$mf"`
-  # Find all dependency output files, they are included files with
-  # $(DEPDIR) in their names.  We invoke sed twice because it is the
-  # simplest approach to changing $(DEPDIR) to its actual value in the
-  # expansion.
-  for file in `sed -n "
-    s/^$am__include $am__quote\(.*(DEPDIR).*\)$am__quote"'$/\1/p' <"$mf" | \
-       sed -e 's/\$(DEPDIR)/'"$DEPDIR"'/g' -e 's/\$U/'"$U"'/g'`; do
-    # Make sure the directory exists.
-    test -f "$dirpart/$file" && continue
-    fdir=`$as_dirname -- "$file" ||
+    else
+      continue
+    fi
+    # Extract the definition of DEPDIR, am__include, and am__quote
+    # from the Makefile without running `make'.
+    DEPDIR=`sed -n 's/^DEPDIR = //p' < "$mf"`
+    test -z "$DEPDIR" && continue
+    am__include=`sed -n 's/^am__include = //p' < "$mf"`
+    test -z "am__include" && continue
+    am__quote=`sed -n 's/^am__quote = //p' < "$mf"`
+    # When using ansi2knr, U may be empty or an underscore; expand it
+    U=`sed -n 's/^U = //p' < "$mf"`
+    # Find all dependency output files, they are included files with
+    # $(DEPDIR) in their names.  We invoke sed twice because it is the
+    # simplest approach to changing $(DEPDIR) to its actual value in the
+    # expansion.
+    for file in `sed -n "
+      s/^$am__include $am__quote\(.*(DEPDIR).*\)$am__quote"'$/\1/p' <"$mf" | \
+	 sed -e 's/\$(DEPDIR)/'"$DEPDIR"'/g' -e 's/\$U/'"$U"'/g'`; do
+      # Make sure the directory exists.
+      test -f "$dirpart/$file" && continue
+      fdir=`$as_dirname -- "$file" ||
 $as_expr X"$file" : 'X\(.*[^/]\)//*[^/][^/]*/*$' \| \
 	 X"$file" : 'X\(//\)[^/]' \| \
 	 X"$file" : 'X\(//\)$' \| \
@@ -1232,7 +1255,7 @@ $as_echo X"$file" |
 	    q
 	  }
 	  s/.*/./; q'`
-    { as_dir=$dirpart/$fdir
+      { as_dir=$dirpart/$fdir
   case $as_dir in #(
   -*) as_dir=./$as_dir;;
   esac
@@ -1273,10 +1296,11 @@ $as_echo X"$as_dir" |
   } || test -d "$as_dir" || { { $as_echo "$as_me:$LINENO: error: cannot create directory $as_dir" >&5
 $as_echo "$as_me: error: cannot create directory $as_dir" >&2;}
    { (exit 1); exit 1; }; }; }
-    # echo "creating $dirpart/$file"
-    echo '# dummy' > "$dirpart/$file"
+      # echo "creating $dirpart/$file"
+      echo '# dummy' > "$dirpart/$file"
+    done
   done
-done
+}
  ;;
     "default-1":C) case "$CONFIG_FILES" in *po/Makefile.in*)
         sed -e "/POTFILES =/r po/POTFILES" po/Makefile.in > po/Makefile
@@ -1395,6 +1419,11 @@ done
       esac
     done ;;
     "po/stamp-it":C)
+    if  ! grep "^# INTLTOOL_MAKEFILE$" "po/Makefile.in" > /dev/null ; then
+       { { $as_echo "$as_me:$LINENO: error: po/Makefile.in.in was not created by intltoolize." >&5
+$as_echo "$as_me: error: po/Makefile.in.in was not created by intltoolize." >&2;}
+   { (exit 1); exit 1; }; }
+    fi
     rm -f "po/stamp-it" "po/stamp-it.tmp" "po/POTFILES" "po/Makefile.tmp"
     >"po/stamp-it.tmp"
     sed '/^#/d
@@ -1403,17 +1432,11 @@ done
 	'"s|^|	$ac_top_srcdir/|" \
       "$srcdir/po/POTFILES.in" | sed '$!s/$/ \\/' >"po/POTFILES"
 
-    if test ! -f "po/Makefile"; then
-      { { $as_echo "$as_me:$LINENO: error: po/Makefile is not ready." >&5
-$as_echo "$as_me: error: po/Makefile is not ready." >&2;}
-   { (exit 1); exit 1; }; }
-    fi
-    mv "po/Makefile" "po/Makefile.tmp"
     sed '/^POTFILES =/,/[^\\]$/ {
 		/^POTFILES =/!d
 		r po/POTFILES
 	  }
-	 ' "po/Makefile.tmp" >"po/Makefile"
+	 ' "po/Makefile.in" >"po/Makefile"
     rm -f "po/Makefile.tmp"
     mv "po/stamp-it.tmp" "po/stamp-it"
    ;;

@@ -560,6 +560,15 @@ show_history_menu(gpointer data)
     for (element = history; element != NULL; element = element->next)
     {
       GString* string = g_string_new((gchar*)element->data);
+      /* Remove control characters */
+      int i = 0;
+      while (i < string->len)
+      {
+        if (string->str[i] == '\n')
+          g_string_erase(string, i, 1);
+        else
+          i++;
+      }
       /* Ellipsize text */
       if (string->len > prefs.item_length)
       {
