@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-12-26 09:07-0500\n"
+"POT-Creation-Date: 2009-12-26 10:35-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,50 +16,50 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../src/main.c:184
+#: ../src/main.c:186
 msgid "Executing action..."
 msgstr ""
 
-#: ../src/main.c:190 ../src/main.c:748 ../data/parcellite.desktop.in.h:1
+#: ../src/main.c:192 ../src/main.c:750 ../data/parcellite.desktop.in.h:1
 #: ../data/parcellite-startup.desktop.in.h:1
 msgid "Clipboard Manager"
 msgstr ""
 
-#: ../src/main.c:213
+#: ../src/main.c:215
 msgid "Could not create thread for executed action\n"
 msgstr ""
 
 #. Create the dialog
-#: ../src/main.c:243
+#: ../src/main.c:245
 msgid "Editing Clipboard"
 msgstr ""
 
-#: ../src/main.c:302
+#: ../src/main.c:304
 msgid "Clear the history?"
 msgstr ""
 
-#: ../src/main.c:370
+#: ../src/main.c:372
 msgid "Lightweight GTK+ clipboard manager."
 msgstr ""
 
-#: ../src/main.c:457
+#: ../src/main.c:459
 msgid "<b>None</b>"
 msgstr ""
 
 #. File contained no actions so adding empty
 #. File did not open so adding empty
 #. Nothing in history so adding empty
-#: ../src/main.c:478 ../src/main.c:507 ../src/main.c:632
+#: ../src/main.c:480 ../src/main.c:509 ../src/main.c:634
 msgid "Empty"
 msgstr ""
 
 #. Edit actions
-#: ../src/main.c:514
+#: ../src/main.c:516
 msgid "_Edit actions"
 msgstr ""
 
 #. Edit clipboard
-#: ../src/main.c:538
+#: ../src/main.c:540
 msgid "_Edit Clipboard"
 msgstr ""
 
