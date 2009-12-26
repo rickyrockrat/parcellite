@@ -1,11 +1,13 @@
 v0.9.2  Pending...
 
   New
+  + Danish translation (by Kim Jensen).
   + French translation (by Vincent Coiffier).
 
   Changes
   + Clear option clears clipboard and primary contents.
   + Use accessor functions instead direct access (by Javier Jardon).
+  + Add missing include statements to silence gcc warnings (by Ludwig Nussel).
   + Empty clipboard and primary recovery no longer overwrites contents of other types.
   + Removes newline characters ('\n') from the history menu entries (by Daniel Di Marco).
 
