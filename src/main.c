@@ -22,6 +22,7 @@
 
 #include <glib.h>
 #include <stdlib.h>
+#include <unistd.h>
 #include <gtk/gtk.h>
 #include <pthread.h>
 #include "main.h"
@@ -67,9 +68,9 @@ item_check(gpointer data)
   {
     /* Check contents */
     gint count;
-		GdkAtom *targets;
-		gboolean contents = gtk_clipboard_wait_for_targets(primary, &targets, &count);
-		g_free(targets);
+    GdkAtom *targets;
+    gboolean contents = gtk_clipboard_wait_for_targets(primary, &targets, &count);
+    g_free(targets);
     /* Only recover lost contents if there isn't any other type of content in the clipboard */
     if (!contents)
     {
@@ -113,12 +114,13 @@ item_check(gpointer data)
   {
     /* Check contents */
     gint count;
-		GdkAtom *targets;
-		gboolean contents = gtk_clipboard_wait_for_targets(primary, &targets, &count);
-		g_free(targets);
+    GdkAtom *targets;
+    gboolean contents = gtk_clipboard_wait_for_targets(primary, &targets, &count);
+    g_free(targets);
 		/* Only recover lost contents if there isn't any other type of content in the clipboard */
 		if (!contents)
 		{
+      g_print("Clipboard is null, recovering ...\n");
       gtk_clipboard_set_text(clipboard, clipboard_text, -1);
     }
   }
