@@ -197,23 +197,49 @@ execute_action(void *command)
   pthread_exit(NULL);
 }
 
+/* Called when execution action exits */
+static void
+action_exit(GPid pid, gint status, gpointer data)
+{
+  g_spawn_close_pid(pid);
+  if (!prefs.no_icon)
+  {
+    gtk_status_icon_set_from_stock((GtkStatusIcon*)status_icon, GTK_STOCK_PASTE);
+    gtk_status_icon_set_tooltip((GtkStatusIcon*)status_icon, _("Clipboard Manager"));
+  }
+  actions_lock = FALSE;
+}
+
 /* Called when an action is selected from actions menu */
 static void
 action_selected(GtkButton *button, gpointer user_data)
 {
-  /* Insert clipboard into command (user_data), execute and free */
+  /* Change icon and enable lock */
+  actions_lock = TRUE;
+  if (!prefs.no_icon)
+  {
+    gtk_status_icon_set_from_stock((GtkStatusIcon*)status_icon, GTK_STOCK_EXECUTE);
+    gtk_status_icon_set_tooltip((GtkStatusIcon*)status_icon, _("Executing action..."));
+  }
+  
+  /* Insert clipboard into command (user_data), and prepare it for execution */
   gchar* clipboard_text = gtk_clipboard_wait_for_text(clipboard);
   gchar* command = g_markup_printf_escaped((gchar*)user_data, clipboard_text);
   g_free(clipboard_text);
   g_free(user_data);
+  gchar* shell_command = g_shell_quote(command);
+  g_free(command);
+  gchar* cmd = g_strconcat("/bin/sh -c ", shell_command, NULL);
+  g_free(shell_command);
   
-  /* Create thread */
-  pthread_t action_thread;
-  if (pthread_create(&action_thread, NULL, execute_action, (void *)command))
-  {
-    g_free(command);
-    g_warning(_("Could not create thread for executed action\n"));
-  }
+  /* Execute action */
+  GPid pid;
+  gchar **argv;
+  g_shell_parse_argv(cmd, NULL, &argv, NULL);
+  g_free(cmd);
+  g_spawn_async(NULL, argv, NULL, G_SPAWN_DO_NOT_REAP_CHILD, NULL, NULL, &pid, NULL);
+  g_child_watch_add(pid, (GChildWatchFunc)action_exit, NULL);
+  g_strfreev(argv);
 }
 
 /* Called when Edit Actions is selected from actions menu */
