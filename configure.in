@@ -42,7 +42,7 @@ AC_PROG_MAKE_SET()
 # -------------------------------------------------------------------------------
 # Checks for libraries.
 # -------------------------------------------------------------------------------
-AC_CHECK_LIB(pthread, pthread_create)
+# AC_CHECK_LIB(pthread, pthread_create)
 AM_PATH_GTK_2_0(2.10.0, [], AC_MSG_ERROR(Requirement not met: gtk >= 2.10.0))
 AM_PATH_GLIB_2_0(2.14.0, [], AC_MSG_ERROR(Requirement not met: glib >= 2.14.0))
 
