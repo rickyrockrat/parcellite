@@ -549,9 +549,9 @@ AMDEP_TRUE="" ac_aux_dir="."
 # Capture the value of obsolete ALL_LINGUAS because we need it to compute
     # POFILES, UPDATEPOFILES, DUMMYPOFILES, GMOFILES, CATALOGS. But hide it
     # from automake < 1.5.
-    eval 'OBSOLETE_ALL_LINGUAS''="de es fr hu it ja pl pl_PL pt_BR ru sv tr zh_CN"'
+    eval 'OBSOLETE_ALL_LINGUAS''="cs da de es fr hu it ja nb pl pl_PL pt_BR ro ru sv tr zh_CN"'
     # Capture the value of LINGUAS because we need it to compute CATALOGS.
-    LINGUAS=" de es fr hu it ja pl pl_PL pt_BR ru sv tr zh_CN"
+    LINGUAS=" cs da de es fr hu it ja nb pl pl_PL pt_BR ro ru sv tr zh_CN"
 
 
 
@@ -665,7 +665,7 @@ S["GMSGFMT_015"]="/usr/bin/msgfmt"
 S["MSGFMT_015"]="/usr/bin/msgfmt"
 S["GETTEXT_MACRO_VERSION"]="0.17"
 S["parcellitelocaledir"]="${prefix}/${DATADIRNAME}/locale"
-S["ALL_LINGUAS"]="de es fr hu it ja pl pl_PL pt_BR ru sv tr zh_CN"
+S["ALL_LINGUAS"]="cs da de es fr hu it ja nb pl pl_PL pt_BR ro ru sv tr zh_CN"
 S["INTLTOOL_PERL"]="/usr/bin/perl"
 S["MSGMERGE"]="/usr/bin/msgmerge"
 S["INTLTOOL_POLICY_RULE"]="%.policy:    %.policy.in    $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; LC_ALL=C $(INTLTOOL_MERGE) -x -u -c $(top_builddir)/po/.intltool-m"\
@@ -709,15 +709,15 @@ S["INTLTOOL_MERGE"]="/usr/bin/intltool-merge"
 S["INTLTOOL_UPDATE"]="/usr/bin/intltool-update"
 S["MKINSTALLDIRS"]="./mkinstalldirs"
 S["POSUB"]="po"
-S["POFILES"]=" de.po es.po fr.po hu.po it.po ja.po pl.po pl_PL.po pt_BR.po ru.po sv.po tr.po zh_CN.po"
+S["POFILES"]=" cs.po da.po de.po es.po fr.po hu.po it.po ja.po nb.po pl.po pl_PL.po pt_BR.po ro.po ru.po sv.po tr.po zh_CN.po"
 S["PO_IN_DATADIR_FALSE"]=""
 S["PO_IN_DATADIR_TRUE"]=""
 S["INTLLIBS"]=""
 S["INSTOBJEXT"]=".mo"
-S["GMOFILES"]=" de.gmo es.gmo fr.gmo hu.gmo it.gmo ja.gmo pl.gmo pl_PL.gmo pt_BR.gmo ru.gmo sv.gmo tr.gmo zh_CN.gmo"
+S["GMOFILES"]=" cs.gmo da.gmo de.gmo es.gmo fr.gmo hu.gmo it.gmo ja.gmo nb.gmo pl.gmo pl_PL.gmo pt_BR.gmo ro.gmo ru.gmo sv.gmo tr.gmo zh_CN.gmo"
 S["DATADIRNAME"]="share"
 S["CATOBJEXT"]=".gmo"
-S["CATALOGS"]=" de.gmo es.gmo fr.gmo hu.gmo it.gmo ja.gmo pl.gmo pl_PL.gmo pt_BR.gmo ru.gmo sv.gmo tr.gmo zh_CN.gmo"
+S["CATALOGS"]=" cs.gmo da.gmo de.gmo es.gmo fr.gmo hu.gmo it.gmo ja.gmo nb.gmo pl.gmo pl_PL.gmo pt_BR.gmo ro.gmo ru.gmo sv.gmo tr.gmo zh_CN.gmo"
 S["XGETTEXT"]="/usr/bin/xgettext"
 S["GMSGFMT"]="/usr/bin/msgfmt"
 S["MSGFMT_OPTS"]="-c"

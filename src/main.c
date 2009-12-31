@@ -403,14 +403,23 @@ show_about_dialog(GtkMenuItem *menu_item, gpointer user_data)
     gtk_about_dialog_set_copyright((GtkAboutDialog*)about_dialog, "Copyright (C) 2007, 2008 Gilberto \"Xyhthyx\" Miralla");
     gtk_about_dialog_set_authors((GtkAboutDialog*)about_dialog, authors);
     gtk_about_dialog_set_translator_credits ((GtkAboutDialog*)about_dialog,
-                                             "Davide Truffa <davide@catoblepa.org>\n"
+                                             "Miloš Koutný <milos.koutny@gmail.com>\n"
+                                             "Kim Jensen <reklamepost@energimail.dk>\n"
                                              "Eckhard M. Jäger <bart@neeneenee.de>\n"
-                                             "Gultyaev Alexey <hokum83@gmail.com>\n"
                                              "Michael Stempin <mstempin@web.de>\n"
+                                             "Benjamin 'sphax3d' Danon <sphax3d@gmail.com>\n"
                                              "Németh Tamás <ntomasz@vipmail.hu>\n"
-                                             "Hasan Yılmaz <iletisim@hasanyilmaz.net>\n"
+                                             "Davide Truffa <davide@catoblepa.org>\n"
                                              "Jiro Kawada <jiro.kawada@gmail.com>\n"
+                                             "Øyvind Sæther <oyvinds@everdot.org>\n"
+                                             "pankamyk <pankamyk@o2.pl>\n"
+                                             "Tomasz Rusek <tomek.rusek@gmail.com>\n"
                                              "Phantom X <megaphantomx@bol.com.br>\n"
+                                             "Ovidiu D. Niţan <ov1d1u@sblug.ro>\n"
+                                             "Alexander Kazancev <kazancas@mandriva.ru>\n"
+                                             "Daniel Nylander <po@danielnylander.se>\n"
+                                             "Hedef Türkçe <iletisim@hedefturkce.com>\n"
+                                             "Lyman Li <lymanrb@gmail.com>\n"
                                              "Gilberto \"Xyhthyx\" Miralla <xyhthyx@gmail.com>");
     
     gtk_about_dialog_set_license((GtkAboutDialog*)about_dialog, license);
