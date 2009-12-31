@@ -4,11 +4,15 @@ v0.9.2  Pending...
   + Danish translation (by Kim Jensen).
   + Czech translation (by Miloš Koutný).
   + French translation (by Vincent Coiffier).
+  + Romanian translation (by Ovidiu D. Niţan).
 
   Changes
+  + Modified action execution code.
+  + Removed dependency on pthreads.
   + Clear option clears clipboard and primary contents.
   + Use accessor functions instead direct access (by Javier Jardon).
   + Add missing include statements to silence gcc warnings (by Ludwig Nussel).
+  + Clipboard sync cannot be enabled unless both copy and primary are enabled.
   + Empty clipboard and primary recovery no longer overwrites contents of other types.
   + Removes newline characters ('\n') from the history menu entries (by Daniel Di Marco).
 
