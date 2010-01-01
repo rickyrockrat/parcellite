@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-12-31 16:53-0500\n"
+"POT-Creation-Date: 2010-01-01 12:21-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -20,7 +20,7 @@ msgstr ""
 msgid "Executing action..."
 msgstr ""
 
-#: ../src/main.c:192 ../src/main.c:208 ../src/main.c:776
+#: ../src/main.c:192 ../src/main.c:208 ../src/main.c:785
 #: ../data/parcellite.desktop.in.h:1 ../data/parcellite-startup.desktop.in.h:1
 msgid "Clipboard Manager"
 msgstr ""
@@ -38,24 +38,24 @@ msgstr ""
 msgid "Lightweight GTK+ clipboard manager."
 msgstr ""
 
-#: ../src/main.c:485
+#: ../src/main.c:494
 msgid "<b>None</b>"
 msgstr ""
 
 #. File contained no actions so adding empty
 #. File did not open so adding empty
 #. Nothing in history so adding empty
-#: ../src/main.c:506 ../src/main.c:535 ../src/main.c:660
+#: ../src/main.c:515 ../src/main.c:544 ../src/main.c:669
 msgid "Empty"
 msgstr ""
 
 #. Edit actions
-#: ../src/main.c:542
+#: ../src/main.c:551
 msgid "_Edit actions"
 msgstr ""
 
 #. Edit clipboard
-#: ../src/main.c:566
+#: ../src/main.c:575
 msgid "_Edit Clipboard"
 msgstr ""
 
