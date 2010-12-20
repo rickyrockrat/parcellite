@@ -115,7 +115,7 @@ item_check(gpointer data)
     /* Check contents */
     gint count;
     GdkAtom *targets;
-    gboolean contents = gtk_clipboard_wait_for_targets(primary, &targets, &count);
+    gboolean contents = gtk_clipboard_wait_for_targets(clipboard, &targets, &count);
     g_free(targets);
 		/* Only recover lost contents if there isn't any other type of content in the clipboard */
 		if (!contents)
@@ -598,13 +598,19 @@ show_history_menu(gpointer data)
     {
       GString* string = g_string_new((gchar*)element->data);
       /* Remove control characters */
-      int i = 0;
+      gsize i = 0;
       while (i < string->len)
-      {
-        if (string->str[i] == '\n')
-          g_string_erase(string, i, 1);
-        else
+      {	 /**fix 100% CPU utilization for odd data. - bug 2976890   */
+				gsize nline=0;
+				while(string->str[i+nline] == '\n' && nline+i<string->len)
+					nline++;
+				if(nline){
+					g_string_erase(string, i, nline);
+					/* RMME printf("e %ld",nline);fflush(NULL); */
+				}
+				else
           i++;
+
       }
       /* Ellipsize text */
       if (string->len > prefs.item_length)
@@ -679,6 +685,8 @@ show_history_menu(gpointer data)
   /* Popup the menu... */
   gtk_widget_show_all(menu);
   gtk_menu_popup((GtkMenu*)menu, NULL, NULL, NULL, NULL, 1, gtk_get_current_event_time());
+	/**set last entry at first -fixes bug 2974614 */
+	gtk_menu_shell_select_first((GtkMenuShell*)menu, TRUE);
   /* Return FALSE so the g_timeout_add() function is called only once */
   return FALSE;
 }
