@@ -370,7 +370,7 @@ show_about_dialog(GtkMenuItem *menu_item, gpointer user_data)
   /* This helps prevent multiple instances */
   if (!gtk_grab_get_current())
   {
-    const gchar* authors[] = {"Gilberto \"Xyhthyx\" Miralla <xyhthyx@gmail.com>", NULL};
+    const gchar* authors[] = {"Gilberto \"Xyhthyx\" Miralla <xyhthyx@gmail.com>\nDoug Springer <gpib@rickyrockrat.com>", NULL};
     const gchar* license =
       "This program is free software; you can redistribute it and/or modify\n"
       "it under the terms of the GNU General Public License as published by\n"
