@@ -2,7 +2,7 @@
 # Autoconf/automake.
 # -------------------------------------------------------------------------------
 AC_PREREQ([2.5])
-AC_INIT([parcellite], [svn], [xyhthyx@gmail.com])
+AC_INIT([parcellite], [svn], [gpib@rickyrockrat.com])
 AM_INIT_AUTOMAKE([AC_PACKAGE_TARNAME()], [AC_PACKAGE_VERSION()])
 
 AC_CONFIG_MACRO_DIR([m4])
