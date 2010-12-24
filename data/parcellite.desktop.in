@@ -1,7 +1,7 @@
 [Desktop Entry]
 _Name=Parcellite
 _Comment=Clipboard Manager
-Icon=gtk-paste
+Icon=parcellite
 Exec=parcellite
 Terminal=false
 Type=Application
