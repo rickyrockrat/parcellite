@@ -73,8 +73,8 @@ am__base_list = \
   sed '$$!N;$$!N;$$!N;$$!N;$$!N;$$!N;$$!N;s/\n/ /g' | \
   sed '$$!N;$$!N;$$!N;$$!N;s/\n/ /g'
 am__installdirs = "$(DESTDIR)$(autostartdir)" \
-	"$(DESTDIR)$(desktopdir)"
-DATA = $(autostart_DATA) $(desktop_DATA)
+	"$(DESTDIR)$(desktopdir)" "$(DESTDIR)$(pixmapdir)"
+DATA = $(autostart_DATA) $(desktop_DATA) $(pixmap_DATA)
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 ACLOCAL = @ACLOCAL@
 ALL_LINGUAS = @ALL_LINGUAS@
@@ -212,23 +212,35 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
+xdgdatadir = @XDGDATADIR@
+app_name = parcellite
+app_icon_files = \
+	$(app_name:%=%.png) \
+	$(app_name:%=%.svg) \
+	$(app_name:%=%.xpm) 
+
 desktopdir = $(datadir)/applications
-desktop_in_file = parcellite.desktop.in
-desktop_DATA = $(desktop_in_file:.desktop.in=.desktop)
+desktop_in_file = $(app_name:%=%.desktop.in)
+desktop_DATA = $(app_name:%=%.desktop)
 autostartdir = $(sysconfdir)/xdg/autostart
-autostart_in_file = parcellite-startup.desktop.in
-autostart_DATA = $(autostart_in_file:.desktop.in=.desktop)
+autostart_in_file = $(app_name:%=%-startup.desktop.in)
+autostart_DATA = $(app_name:%=%-startup.desktop)
+pixmapdir = $(datadir)/pixmaps
+pixmap_DATA = $(app_icon_files)
 EXTRA_DIST = \
   $(desktop_in_file) \
-  $(autostart_in_file)
+  $(autostart_in_file) \
+  $(icons) 
 
 CLEANFILES = \
   $(desktop_DATA) \
-  $(autostart_DATA)
+  $(autostart_DATA) \
+  $(pixmap_DATA)
 
 DISTCLEANFILES = \
   $(desktop_DATA) \
-  $(autostart_DATA)
+  $(autostart_DATA) \
+  $(pixmap_DATA)
 
 all: all-am
 
@@ -303,6 +315,26 @@ uninstall-desktopDATA:
 	test -n "$$files" || exit 0; \
 	echo " ( cd '$(DESTDIR)$(desktopdir)' && rm -f" $$files ")"; \
 	cd "$(DESTDIR)$(desktopdir)" && rm -f $$files
+install-pixmapDATA: $(pixmap_DATA)
+	@$(NORMAL_INSTALL)
+	test -z "$(pixmapdir)" || $(MKDIR_P) "$(DESTDIR)$(pixmapdir)"
+	@list='$(pixmap_DATA)'; test -n "$(pixmapdir)" || list=; \
+	for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  echo "$$d$$p"; \
+	done | $(am__base_list) | \
+	while read files; do \
+	  echo " $(INSTALL_DATA) $$files '$(DESTDIR)$(pixmapdir)'"; \
+	  $(INSTALL_DATA) $$files "$(DESTDIR)$(pixmapdir)" || exit $$?; \
+	done
+
+uninstall-pixmapDATA:
+	@$(NORMAL_UNINSTALL)
+	@list='$(pixmap_DATA)'; test -n "$(pixmapdir)" || list=; \
+	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
+	test -n "$$files" || exit 0; \
+	echo " ( cd '$(DESTDIR)$(pixmapdir)' && rm -f" $$files ")"; \
+	cd "$(DESTDIR)$(pixmapdir)" && rm -f $$files
 tags: TAGS
 TAGS:
 
@@ -344,7 +376,7 @@ check-am: all-am
 check: check-am
 all-am: Makefile $(DATA)
 installdirs:
-	for dir in "$(DESTDIR)$(autostartdir)" "$(DESTDIR)$(desktopdir)"; do \
+	for dir in "$(DESTDIR)$(autostartdir)" "$(DESTDIR)$(desktopdir)" "$(DESTDIR)$(pixmapdir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
 install: install-am
@@ -394,7 +426,8 @@ info: info-am
 
 info-am:
 
-install-data-am: install-autostartDATA install-desktopDATA
+install-data-am: install-autostartDATA install-desktopDATA \
+	install-pixmapDATA
 
 install-dvi: install-dvi-am
 
@@ -438,7 +471,8 @@ ps: ps-am
 
 ps-am:
 
-uninstall-am: uninstall-autostartDATA uninstall-desktopDATA
+uninstall-am: uninstall-autostartDATA uninstall-desktopDATA \
+	uninstall-pixmapDATA
 
 .MAKE: install-am install-strip
 
@@ -448,11 +482,13 @@ uninstall-am: uninstall-autostartDATA uninstall-desktopDATA
 	install-data-am install-desktopDATA install-dvi install-dvi-am \
 	install-exec install-exec-am install-html install-html-am \
 	install-info install-info-am install-man install-pdf \
-	install-pdf-am install-ps install-ps-am install-strip \
-	installcheck installcheck-am installdirs maintainer-clean \
-	maintainer-clean-generic mostlyclean mostlyclean-generic pdf \
-	pdf-am ps ps-am uninstall uninstall-am uninstall-autostartDATA \
-	uninstall-desktopDATA
+	install-pdf-am install-pixmapDATA install-ps install-ps-am \
+	install-strip installcheck installcheck-am installdirs \
+	maintainer-clean maintainer-clean-generic mostlyclean \
+	mostlyclean-generic pdf pdf-am ps ps-am uninstall uninstall-am \
+	uninstall-autostartDATA uninstall-desktopDATA \
+	uninstall-pixmapDATA
+
 
 @INTLTOOL_DESKTOP_RULE@
 
