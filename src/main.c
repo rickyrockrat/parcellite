@@ -32,6 +32,7 @@
 #include "preferences.h"
 #include "parcellite-i18n.h"
 
+#define PARCELLITE_ICON "parcellite"
 
 static gchar* primary_text;
 static gchar* clipboard_text;
@@ -188,7 +189,7 @@ execute_action(void *command)
   system((gchar*)command);
   if (!prefs.no_icon)
   {
-  gtk_status_icon_set_from_stock((GtkStatusIcon*)status_icon, GTK_STOCK_PASTE);
+	gtk_status_icon_set_from_stock((GtkStatusIcon*)status_icon, PARCELLITE_ICON);
   gtk_status_icon_set_tooltip((GtkStatusIcon*)status_icon, _("Clipboard Manager"));
   }
   actions_lock = FALSE;
@@ -204,7 +205,7 @@ action_exit(GPid pid, gint status, gpointer data)
   g_spawn_close_pid(pid);
   if (!prefs.no_icon)
   {
-    gtk_status_icon_set_from_stock((GtkStatusIcon*)status_icon, GTK_STOCK_PASTE);
+		gtk_status_icon_set_from_stock((GtkStatusIcon*)status_icon, PARCELLITE_ICON);
     gtk_status_icon_set_tooltip((GtkStatusIcon*)status_icon, _("Clipboard Manager"));
   }
   actions_lock = FALSE;
@@ -423,7 +424,7 @@ show_about_dialog(GtkMenuItem *menu_item, gpointer user_data)
                                              "Gilberto \"Xyhthyx\" Miralla <xyhthyx@gmail.com>");
     
     gtk_about_dialog_set_license((GtkAboutDialog*)about_dialog, license);
-    gtk_about_dialog_set_logo_icon_name((GtkAboutDialog*)about_dialog, GTK_STOCK_PASTE);
+	  gtk_about_dialog_set_logo_icon_name((GtkAboutDialog*)about_dialog, PARCELLITE_ICON);
     /* Run the about dialog */
     gtk_dialog_run((GtkDialog*)about_dialog);
     gtk_widget_destroy(about_dialog);
@@ -789,7 +790,7 @@ parcellite_init()
   /* Create status icon */
   if (!prefs.no_icon)
   {
-    status_icon = gtk_status_icon_new_from_stock(GTK_STOCK_PASTE);
+	  status_icon = gtk_status_icon_new_from_icon_name(PARCELLITE_ICON); 
     gtk_status_icon_set_tooltip((GtkStatusIcon*)status_icon, _("Clipboard Manager"));
     g_signal_connect((GObject*)status_icon, "activate", (GCallback)status_icon_clicked, NULL);
     g_signal_connect((GObject*)status_icon, "popup-menu", (GCallback)show_parcellite_menu, NULL);
