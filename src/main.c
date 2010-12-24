@@ -597,21 +597,6 @@ show_history_menu(gpointer data)
     for (element = history; element != NULL; element = element->next)
     {
       GString* string = g_string_new((gchar*)element->data);
-      /* Remove control characters */
-      gsize i = 0;
-      while (i < string->len)
-      {	 /**fix 100% CPU utilization for odd data. - bug 2976890   */
-				gsize nline=0;
-				while(string->str[i+nline] == '\n' && nline+i<string->len)
-					nline++;
-				if(nline){
-					g_string_erase(string, i, nline);
-					/* RMME printf("e %ld",nline);fflush(NULL); */
-				}
-				else
-          i++;
-
-      }
       /* Ellipsize text */
       if (string->len > prefs.item_length)
       {
@@ -630,6 +615,21 @@ show_history_menu(gpointer data)
             string = g_string_append(string, "...");
             break;
         }
+      }
+		  /* Remove control characters */
+      gsize i = 0;
+      while (i < string->len)
+      {	 /**fix 100% CPU utilization for odd data. - bug 2976890   */
+				gsize nline=0;
+				while(string->str[i+nline] == '\n' && nline+i<string->len)
+					nline++;
+				if(nline){
+					g_string_erase(string, i, nline);
+					/* RMME printf("e %ld",nline);fflush(NULL); */
+				}
+				else
+          i++;
+
       }
       /* Make new item with ellipsized text */
       menu_item = gtk_menu_item_new_with_label(string->str);
