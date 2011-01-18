@@ -34,6 +34,15 @@
 
 #define PARCELLITE_ICON "parcellite"
 
+/* Uncomment the next line to print a debug trace. */
+/*#define DEBUG  */
+
+#ifdef DEBUG
+#  define TRACE(x) x
+#else
+#  define TRACE(x) do {} while (FALSE);
+#endif
+
 static gchar* primary_text;
 static gchar* clipboard_text;
 static gchar* synchronized_text;
@@ -311,10 +320,26 @@ edit_selected(GtkMenuItem *menu_item, gpointer user_data)
 static void
 item_selected(GtkMenuItem *menu_item, gpointer user_data)
 {
-  /* Get the text from the right element and set as clipboard */
-  GSList* element = g_slist_nth(history, (guint)user_data);
-  gtk_clipboard_set_text(clipboard, (gchar*)element->data, -1);
-  gtk_clipboard_set_text(primary, (gchar*)element->data, -1);
+	GdkEventButton *b;
+	GdkEvent *event=gtk_get_current_event();
+	GSList* element = g_slist_nth(history, (guint)user_data);
+	
+	if(event->type==GDK_BUTTON_RELEASE){
+		b=(GdkEventButton *)event;
+		if( 3==b->button) {
+			TRACE(g_print("Right-click\n!"));	
+			g_free(element->data);
+      history = g_slist_delete_link(history, element);
+			 /* Save changes */
+    	if (prefs.save_history)
+      	save_history();
+		}else {			
+		  /* Get the text from the right element and set as clipboard */
+		  gtk_clipboard_set_text(clipboard, (gchar*)element->data, -1);
+		  gtk_clipboard_set_text(primary, (gchar*)element->data, -1);
+		}	
+	}	
+			
 }
 
 /* Called when Clear is selected from history menu */
