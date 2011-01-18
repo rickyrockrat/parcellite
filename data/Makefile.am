@@ -26,7 +26,6 @@ app_icon_files = \
 	$(app_name:%=%.svg) \
 	$(app_name:%=%.xpm) 
 
-
 desktopdir = $(datadir)/applications
 desktop_in_file = $(app_name:%=%.desktop.in)
 desktop_DATA = $(app_name:%=%.desktop)
@@ -43,7 +42,7 @@ pixmap_DATA = $(app_icon_files)
 EXTRA_DIST = \
   $(desktop_in_file) \
   $(autostart_in_file) \
-  $(icons) 
+  $(app_icon_files) 
 
 CLEANFILES = \
   $(desktop_DATA) \
