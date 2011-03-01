@@ -26,7 +26,7 @@
 #include "keybinder.h"
 
 /* Uncomment the next line to print a debug trace. */
-/* #define DEBUG */
+/* #define DEBUG  */
 
 #ifdef DEBUG
 #  define TRACE(x) x
@@ -172,8 +172,8 @@ filter_func (GdkXEvent *gdk_xevent, GdkEvent *event, gpointer data)
 	TRACE (g_print ("Got Event! %d, %d\n", xevent->type, event->type));
 
 	switch (xevent->type) {
-	case KeyPress:
-		TRACE (g_print ("Got KeyPress! keycode: %d, modifiers: %d\n", 
+	case KeyRelease:
+		TRACE (g_print ("Got KeyRelease! keycode: %d, modifiers: %d\n", 
 				xevent->xkey.keycode, 
 				xevent->xkey.state));
 
@@ -204,8 +204,8 @@ filter_func (GdkXEvent *gdk_xevent, GdkEvent *event, gpointer data)
 
 		processing_event = FALSE;
 		break;
-	case KeyRelease:
-		TRACE (g_print ("Got KeyRelease! \n"));
+	case KeyPress:
+		TRACE (g_print ("Got KeyPress! \n"));
 		break;
 	}
 
