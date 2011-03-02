@@ -53,6 +53,7 @@ typedef struct
 	gboolean  history_pos;			/* set postion (or not)  */
 	gint      history_x;        /* location of x location to display history  */	
 	gint      history_y;        /* location of y location to display history  */	
+	gboolean  case_search;      /* turn on case sensitive search */
 }
 prefs_t;
 
