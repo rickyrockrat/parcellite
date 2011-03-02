@@ -46,7 +46,7 @@ EXTRA_DIST = \
 
 CLEANFILES = \
   $(desktop_DATA) \
-  $(autostart_DATA) \
+  $(autostart_DATA)
 
 DISTCLEANFILES = \
   $(desktop_DATA) \
