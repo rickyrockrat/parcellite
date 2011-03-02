@@ -39,7 +39,10 @@ GtkWidget *copy_check,
           *confirm_check,
           *reverse_check,
           *linemode_check,
-          *hyperlinks_check;
+          *hyperlinks_check,
+          *history_pos,
+          *history_x,
+          *history_y;
 
 GtkListStore* actions_list;
 GtkTreeSelection* actions_selection;
@@ -65,6 +68,9 @@ apply_preferences()
   prefs.synchronize = gtk_toggle_button_get_active((GtkToggleButton*)synchronize_check);
   prefs.save_history = gtk_toggle_button_get_active((GtkToggleButton*)save_check);
   prefs.history_limit = gtk_spin_button_get_value_as_int((GtkSpinButton*)history_spin);
+	prefs.history_pos = gtk_toggle_button_get_active((GtkToggleButton*)history_pos);
+	prefs.history_x=gtk_spin_button_get_value_as_int((GtkSpinButton*)history_x);
+	prefs.history_y=gtk_spin_button_get_value_as_int((GtkSpinButton*)history_y);
   prefs.hyperlinks_only = gtk_toggle_button_get_active((GtkToggleButton*)hyperlinks_check);
   prefs.confirm_clear = gtk_toggle_button_get_active((GtkToggleButton*)confirm_check);
   prefs.single_line = gtk_toggle_button_get_active((GtkToggleButton*)linemode_check);
@@ -104,6 +110,9 @@ save_preferences()
   g_key_file_set_string(rc_key, "rc", "history_key", prefs.history_key);
   g_key_file_set_string(rc_key, "rc", "actions_key", prefs.actions_key);
   g_key_file_set_string(rc_key, "rc", "menu_key", prefs.menu_key);
+	g_key_file_set_boolean(rc_key, "rc", "history_pos", prefs.history_pos);
+	g_key_file_set_integer(rc_key, "rc", "history_x", prefs.history_x);
+	g_key_file_set_integer(rc_key, "rc", "history_y", prefs.history_y);
   
   /* Check config and data directories */
   check_dirs();
@@ -115,14 +124,13 @@ save_preferences()
 }
 
 /* Read ~/.config/parcellite/parcelliterc */
-void
-read_preferences()
+void read_preferences()
 {
   gchar* rc_file = g_build_filename(g_get_home_dir(), PREFERENCES_FILE, NULL);
+	gint x,y;
   /* Create key */
   GKeyFile* rc_key = g_key_file_new();
-  if (g_key_file_load_from_file(rc_key, rc_file, G_KEY_FILE_NONE, NULL))
-  {
+  if (g_key_file_load_from_file(rc_key, rc_file, G_KEY_FILE_NONE, NULL)) {
     /* Load values */
     prefs.use_copy = g_key_file_get_boolean(rc_key, "rc", "use_copy", NULL);
     prefs.use_primary = g_key_file_get_boolean(rc_key, "rc", "use_primary", NULL);
@@ -138,8 +146,15 @@ read_preferences()
     prefs.history_key = g_key_file_get_string(rc_key, "rc", "history_key", NULL);
     prefs.actions_key = g_key_file_get_string(rc_key, "rc", "actions_key", NULL);
     prefs.menu_key = g_key_file_get_string(rc_key, "rc", "menu_key", NULL);
+		prefs.history_pos = g_key_file_get_boolean(rc_key, "rc", "history_pos", NULL);
+	  prefs.history_x = g_key_file_get_integer(rc_key, "rc", "history_x", NULL);
+	  prefs.history_y = g_key_file_get_integer(rc_key, "rc", "history_y", NULL);
     
     /* Check for errors and set default values if any */
+    postition_history(NULL,&x,&y,NULL, (gpointer)1);
+		if(prefs.history_x>x) prefs.history_x=x;
+			if(prefs.history_y>y) prefs.history_y=y;
+	
     if ((!prefs.history_limit) || (prefs.history_limit > 100) || (prefs.history_limit < 0))
       prefs.history_limit = DEF_HISTORY_LIMIT;
     if ((!prefs.item_length) || (prefs.item_length > 75) || (prefs.item_length < 0))
@@ -179,20 +194,20 @@ read_actions()
     GtkTreeIter row_iter;
     /* Read the size of the first item */
     gint size;
-    fread(&size, 4, 1, actions_file);
+    if(0 ==fread(&size, 4, 1, actions_file)) g_print("P1:0 Items read\n");
     /* Continue reading until size is 0 */
     while (size != 0)
     {
       /* Read name */
       gchar* name = (gchar*)g_malloc(size + 1);
-      fread(name, size, 1, actions_file);
+      if(0 ==fread(name, size, 1, actions_file))  g_print("P1:0 Items read\n");
       name[size] = '\0';
-      fread(&size, 4, 1, actions_file);
+      if(0 ==fread(&size, 4, 1, actions_file))  g_print("P1:0 Items read\n");
       /* Read command */
       gchar* command = (gchar*)g_malloc(size + 1);
-      fread(command, size, 1, actions_file);
+      if(0 ==fread(command, size, 1, actions_file))  g_print("P1:0 Items read\n");
       command[size] = '\0';
-      fread(&size, 4, 1, actions_file);
+      if(0 ==fread(&size, 4, 1, actions_file))  g_print("P1:0 Items read\n");
       /* Append the read action */
       gtk_list_store_append(actions_list, &row_iter);
       gtk_list_store_set(actions_list, &row_iter, 0, name, 1, command, -1);
@@ -389,6 +404,7 @@ show_preferences(gint tab)
             *vbox;
   
   GtkObject *adjustment;
+	gint x,y;
   GtkTreeViewColumn *tree_column;
   
   /* Create the dialog */
@@ -450,6 +466,24 @@ show_preferences(gint tab)
   save_check = gtk_check_button_new_with_mnemonic(_("_Save history"));
   gtk_widget_set_tooltip_text(save_check, _("Save and restore history between sessions"));
   gtk_box_pack_start((GtkBox*)vbox, save_check, FALSE, FALSE, 0);
+	/**set the history position  */
+	hbox = gtk_hbox_new(FALSE, 4);
+  gtk_box_pack_start((GtkBox*)vbox, hbox, FALSE, FALSE, 0);
+	history_pos = gtk_check_button_new_with_mnemonic(_("_Postion history"));
+  gtk_widget_set_tooltip_text(history_pos, _("Set the location where history appears"));
+  gtk_box_pack_start((GtkBox*)hbox, history_pos, FALSE, FALSE, 0);
+	postition_history(NULL,&x,&y,NULL, (gpointer)1);
+	label = gtk_label_new("X");
+	gtk_box_pack_start((GtkBox*)hbox, label, FALSE, FALSE, 0);
+	history_x=gtk_spin_button_new((GtkAdjustment*)gtk_adjustment_new (prefs.history_x,1,x,10,100,0 ),10,0); 
+	gtk_box_pack_start((GtkBox*)hbox, history_x, FALSE, FALSE, 0);
+	label = gtk_label_new("Y");
+	gtk_box_pack_start((GtkBox*)hbox, label, FALSE, FALSE, 0);
+	history_y=gtk_spin_button_new((GtkAdjustment*)gtk_adjustment_new (prefs.history_y,1,y,10,100,0 ),10,0); 
+	gtk_box_pack_start((GtkBox*)hbox, history_y, FALSE, FALSE, 0);
+	gtk_spin_button_set_update_policy((GtkSpinButton*)history_x, GTK_UPDATE_IF_VALID);
+	gtk_spin_button_set_update_policy((GtkSpinButton*)history_y, GTK_UPDATE_IF_VALID);
+	/* Set items in history  */
   hbox = gtk_hbox_new(FALSE, 4);
   gtk_box_pack_start((GtkBox*)vbox, hbox, FALSE, FALSE, 0);
   label = gtk_label_new(_("Items in history:"));
@@ -657,6 +691,9 @@ show_preferences(gint tab)
   gtk_toggle_button_set_active((GtkToggleButton*)linemode_check, prefs.single_line);
   gtk_toggle_button_set_active((GtkToggleButton*)reverse_check, prefs.reverse_history);
   gtk_spin_button_set_value((GtkSpinButton*)charlength_spin, (gdouble)prefs.item_length);
+	gtk_toggle_button_set_active((GtkToggleButton*)history_pos, prefs.history_pos);
+	gtk_spin_button_set_value((GtkSpinButton*)history_x, (gdouble)prefs.history_x);
+	gtk_spin_button_set_value((GtkSpinButton*)history_y, (gdouble)prefs.history_y);
   gtk_combo_box_set_active((GtkComboBox*)ellipsize_combo, prefs.ellipsize - 1);
   gtk_entry_set_text((GtkEntry*)history_key_entry, prefs.history_key);
   gtk_entry_set_text((GtkEntry*)actions_key_entry, prefs.actions_key);
