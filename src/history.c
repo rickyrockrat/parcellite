@@ -49,7 +49,8 @@ read_history ()
       /* Malloc according to the size of the item */
       gchar* item = (gchar*)g_malloc(size + 1);
       /* Read item and add ending character */
-      fread(item, size, 1, history_file);
+      if(0 == fread(item, size, 1, history_file))
+      	g_print("H1:Read 0 items\n");
       item[size] = '\0';
       /* Prepend item and read next size */
       history = g_slist_prepend(history, item);
