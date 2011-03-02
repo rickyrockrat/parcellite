@@ -35,7 +35,7 @@
 #define PARCELLITE_ICON "parcellite"
 
 /* Uncomment the next line to print a debug trace. */
-/*#define DEBUG  */
+/*#define DEBUG   */
 
 #ifdef DEBUG
 #  define TRACE(x) x
@@ -195,7 +195,8 @@ execute_action(void *command)
   gtk_status_icon_set_from_stock((GtkStatusIcon*)status_icon, GTK_STOCK_EXECUTE);
   gtk_status_icon_set_tooltip((GtkStatusIcon*)status_icon, _("Executing action..."));
   }
-  system((gchar*)command);
+  if(system((gchar*)command))
+  	g_print("sytem command '%s' failed\n",(gchar *)command);
   if (!prefs.no_icon)
   {
 	gtk_status_icon_set_from_stock((GtkStatusIcon*)status_icon, PARCELLITE_ICON);
@@ -269,11 +270,19 @@ edit_selected(GtkMenuItem *menu_item, gpointer user_data)
   /* This helps prevent multiple instances */
   if (!gtk_grab_get_current())
   {
+	  gchar* current_clipboard_text;
     /* Create clipboard buffer and set its text */
     GtkTextBuffer* clipboard_buffer = gtk_text_buffer_new(NULL);
-    gchar* current_clipboard_text = gtk_clipboard_wait_for_text(clipboard);
+		if( NULL != menu_item){
+			current_clipboard_text=g_strdup(gtk_label_get_text((GtkLabel *)gtk_bin_get_child((GtkBin*)menu_item)));
+			
+		}else{
+			current_clipboard_text = gtk_clipboard_wait_for_text(clipboard);
+		}
+    
     if (current_clipboard_text != NULL)
     {
+			TRACE(g_print("Got '%s'\n",current_clipboard_text));
       gtk_text_buffer_set_text(clipboard_buffer, current_clipboard_text, -1);
     }
     
@@ -314,6 +323,7 @@ edit_selected(GtkMenuItem *menu_item, gpointer user_data)
     gtk_widget_destroy(dialog);
     g_free(current_clipboard_text);
   }
+	else TRACE(g_print("gtk_grab_get_current returned !0\n"));
 }
 
 /* Called when an item is selected from history menu */
@@ -426,7 +436,8 @@ show_about_dialog(GtkMenuItem *menu_item, gpointer user_data)
     gtk_about_dialog_set_website((GtkAboutDialog*)about_dialog,
                                  "http://parcellite.sourceforge.net");
     
-    gtk_about_dialog_set_copyright((GtkAboutDialog*)about_dialog, "Copyright (C) 2007, 2008 Gilberto \"Xyhthyx\" Miralla");
+    gtk_about_dialog_set_copyright((GtkAboutDialog*)about_dialog, "Copyright (C) 2007, 2008 Gilberto \"Xyhthyx\" Miralla\n"
+	   "Copyright (C) 2010-2011 Doug Springer");
     gtk_about_dialog_set_authors((GtkAboutDialog*)about_dialog, authors);
     gtk_about_dialog_set_translator_credits ((GtkAboutDialog*)about_dialog,
                                              "Miloš Koutný <milos.koutny@gmail.com>\n"
@@ -533,7 +544,8 @@ show_actions_menu(gpointer data)
   if (actions_file)
   {
     gint size;
-    fread(&size, 4, 1, actions_file);
+    if(0==fread(&size, 4, 1, actions_file))
+    	g_print("1:got 0 items from fread\n");
     /* Check if actions file is empty */
     if (!size)
     {
@@ -547,16 +559,20 @@ show_actions_menu(gpointer data)
     {
       /* Read name */
       gchar* name = (gchar*)g_malloc(size + 1);
-      fread(name, size, 1, actions_file);
+      if( 0 ==fread(name, size, 1, actions_file))
+      	g_print("2:got 0 items from fread\n");
       name[size] = '\0';
       menu_item = gtk_menu_item_new_with_label(name);
       g_free(name);
-      fread(&size, 4, 1, actions_file);
+      if(0 ==fread(&size, 4, 1, actions_file))
+      	g_print("3:got 0 items from fread\n");
       /* Read command */
       gchar* command = (gchar*)g_malloc(size + 1);
-      fread(command, size, 1, actions_file);
+      if(0 ==fread(command, size, 1, actions_file))
+      	g_print("4:got 0 items from fread\n");
       command[size] = '\0';
-      fread(&size, 4, 1, actions_file);
+      if(0 ==fread(&size, 4, 1, actions_file))
+      	g_print("5:got 0 items from fread\n");
       /* Append the action */
       gtk_menu_shell_append((GtkMenuShell*)menu, menu_item);
       g_signal_connect((GObject*)menu_item,        "activate",
@@ -585,23 +601,159 @@ show_actions_menu(gpointer data)
   /* Return false so the g_timeout_add() function is called only once */
   return FALSE;
 }
-
+#define KBUF_SIZE 20
+static gboolean key_release_cb (GtkWidget *w,GdkEventKey *e, gpointer user)
+{
+	static gchar *kstr=NULL;
+	static gint idx;
+	gint first, current;
+	static GtkWidget *item=NULL;
+	GList *children;
+	if(NULL != e)
+		g_print("krc %c (%x) S%x T%x C%x,SE%x, G%x, W%p\n",e->keyval,e->keyval,e->state,e->type,e->hardware_keycode,e->send_event,e->group,e->window);
+	/**serves as init for keysearch  */
+	if(NULL ==w && NULL==e && NULL == user){
+		if(NULL != kstr)
+			g_free(kstr);
+		kstr=g_strnfill(KBUF_SIZE+8,0);
+		idx=0;
+		return 0;
+	}else if(NULL == kstr){
+		g_print("kstr null. Not init\n");
+		return FALSE;
+	}
+/**	if(e->state & (GDK_SHIFT_MASK|GDK_LOCK_MASK) != e->state){
+		g_print("rfs to use mods\n");
+		TRACE(g_print("state is %X. Refusing to use mods\n",e->state));
+		return TRUE;
+	} have to use for _ and others*/
+	if( e->state & GDK_MOD1_MASK){/**alt key pressed  */
+		if(e->keyval == 'e'){
+			TRACE(g_print("Alt-E\n"));
+			gtk_grab_remove(w);
+		  edit_selected((GtkMenuItem *)item, NULL);
+		}
+			
+		else if(e->keyval == 'c'){
+			TRACE(g_print("Alt-C\n"));
+			clear_selected(NULL, NULL); 
+		}	else{
+			TRACE(g_print("Ignoring Alt-%c (0x%02x) state 0x%x",e->keyval,e->keyval,e->state));
+		}
+		return FALSE;
+	}
+	if(e->keyval == 0xff08){/**backspace  */
+		if(idx)
+			--idx;
+		kstr[idx]=0;
+		return 0;
+	}
+	if(e->keyval >'~'){
+		TRACE(g_print("Ignoring key '%c' 0x%02x\n",e->keyval,e->keyval));	
+		return FALSE;
+	}
+	if(idx>=KBUF_SIZE){
+		TRACE(g_print("keys full\n"));
+		return TRUE;
+	}
+	kstr[idx++]=e->keyval;
+	kstr[idx]=0;
+	children=gtk_container_get_children((GtkContainer *)user);
+	item=NULL;
+	current=first=0; /**first is edit,   */
+	while(NULL != children->next){
+		gchar *l;
+		GtkWidget *child=gtk_bin_get_child((GtkBin*)children->data);
+		if(GTK_IS_LABEL(child)){
+			l=(gchar *)gtk_label_get_text((GtkLabel *)child);
+			if(!g_ascii_strncasecmp(kstr,l,idx) ){
+				if(0 ==current){
+					first=1;
+				}	else{
+					first=0;
+				}
+				
+				if(!first ){
+					TRACE(g_print("Got cmp'%s'='%s'\n",kstr,l));
+					item=(GtkWidget *)children->data;
+					break;	
+				}
+				
+			}	
+		}
+		
+		children=children->next;
+		++current;
+	}
+	/**user->children...
+	GList *children;  
+	gpointer data,next,prev
+	data should be a GtkMenuItem list, whose children are labels...
+	*/	 
+	/*str=(gchar *)gtk_label_get_text((GtkLabel *)gtk_bin_get_child((GtkBin*)children->data)); */
+	TRACE(g_print("Got '%c' 0x%02x, state 0x%02X",e->keyval,e->keyval,e->state));
+	if(NULL !=item){
+		if(first){TRACE(g_print("First:"));}
+		/*if(last)TRACE(g_print("Last:")); */
+		TRACE(g_print("At Item '%s'",gtk_label_get_text((GtkLabel *)gtk_bin_get_child((GtkBin*)item))));
+		gtk_menu_shell_select_item((GtkMenuShell *)user,(GtkWidget *)item);
+	}
+		
+	TRACE(g_print("\n"));
+	return TRUE;
+}
+/**postition the history dialog  */
+void postition_history(GtkMenu *menu,gint *x,gint *y,gboolean *push_in, gpointer user_data)
+{
+	GdkScreen *s;
+	gint sx,sy;
+	s=gdk_screen_get_default();
+	sx= gdk_screen_get_width(s);
+	sy= gdk_screen_get_height(s);
+	if(NULL !=push_in)
+		*push_in=FALSE;
+	if(1 == (int)user_data){
+		if(NULL !=x) *x=sx;
+		if(NULL !=y) *y=sy;	
+	}else{
+		if(prefs.history_pos){
+			int xx,yy;
+			if(prefs.history_x > prefs.item_length )
+				xx=prefs.history_x-prefs.item_length;
+			else
+				xx=1;
+			if(prefs.history_y > prefs.history_limit )
+				yy=prefs.history_y-prefs.history_limit;
+			else
+				yy=1;
+			if(NULL !=x) *x=xx;
+			if(NULL !=y) *y=yy;	
+			g_print("x=%d, y=%d\n",xx,yy);
+		}
+		
+	}
+	
+}
 /* Called when status icon is left-clicked */
-static gboolean
-show_history_menu(gpointer data)
+static gboolean show_history_menu(gpointer data)
 {
   /* Declare some variables */
   GtkWidget *menu,       *menu_item,
             *menu_image, *item_label;
-  
+  /**init our keystroke function  */
+	key_release_cb(NULL,NULL,NULL);
   /* Create the menu */
   menu = gtk_menu_new();
+	gtk_menu_shell_set_take_focus((GtkMenuShell *)menu,TRUE); /**grab keyboard focus  */
   g_signal_connect((GObject*)menu, "selection-done", (GCallback)gtk_widget_destroy, NULL);
+	/**Trap key events  */
+	g_signal_connect((GObject*)menu, "key-release-event", (GCallback)key_release_cb, (gpointer)menu);
+	/**trap mnemonic events  */
+	/*g_signal_connect((GObject*)menu, "mnemonic-activate", (GCallback)key_release_cb, (gpointer)menu); */
   /* Edit clipboard */
-  menu_item = gtk_image_menu_item_new_with_mnemonic(_("_Edit Clipboard"));
+  menu_item = gtk_image_menu_item_new_with_label(_("Use Alt-E to edit, Alt-C to clear"));
   menu_image = gtk_image_new_from_stock(GTK_STOCK_EDIT, GTK_ICON_SIZE_MENU);
   gtk_image_menu_item_set_image((GtkImageMenuItem*)menu_item, menu_image);
-  g_signal_connect((GObject*)menu_item, "activate", (GCallback)edit_selected, NULL);
   gtk_menu_shell_append((GtkMenuShell*)menu, menu_item);
   /* -------------------- */
   gtk_menu_shell_append((GtkMenuShell*)menu, gtk_separator_menu_item_new());
@@ -705,12 +857,14 @@ show_history_menu(gpointer data)
   /* -------------------- */
   gtk_menu_shell_append((GtkMenuShell*)menu, gtk_separator_menu_item_new());
   /* Clear */
-  menu_item = gtk_image_menu_item_new_from_stock(GTK_STOCK_CLEAR, NULL);
-  g_signal_connect((GObject*)menu_item, "activate", (GCallback)clear_selected, NULL);
-  gtk_menu_shell_append((GtkMenuShell*)menu, menu_item);
+	
+/**  	menu_item = gtk_image_menu_item_new_with_label(_("Clear"));
+  menu_image = gtk_image_new_from_stock(GTK_STOCK_CLEAR, GTK_ICON_SIZE_MENU);
+  gtk_image_menu_item_set_image((GtkImageMenuItem*)menu_item, menu_image);
+  gtk_menu_shell_append((GtkMenuShell*)menu, menu_item);*/
   /* Popup the menu... */
   gtk_widget_show_all(menu);
-  gtk_menu_popup((GtkMenu*)menu, NULL, NULL, NULL, NULL, 1, gtk_get_current_event_time());
+  gtk_menu_popup((GtkMenu*)menu, NULL, NULL, postition_history, NULL, 1, gtk_get_current_event_time());
 	/**set last entry at first -fixes bug 2974614 */
 	gtk_menu_shell_select_first((GtkMenuShell*)menu, TRUE);
   /* Return FALSE so the g_timeout_add() function is called only once */
