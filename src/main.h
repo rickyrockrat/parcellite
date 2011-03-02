@@ -50,6 +50,9 @@ typedef struct
   gchar*    menu_key;         /* Parcellite menu hotkey */
   
   gboolean  no_icon;          /* No icon */
+	gboolean  history_pos;			/* set postion (or not)  */
+	gint      history_x;        /* location of x location to display history  */	
+	gint      history_y;        /* location of y location to display history  */	
 }
 prefs_t;
 
@@ -63,6 +66,8 @@ actions_hotkey(char *keystring, gpointer user_data);
 
 void
 menu_hotkey(char *keystring, gpointer user_data);
+
+void postition_history(GtkMenu *menu,gint *x,gint *y,gboolean *push_in, gpointer user_data);
 
 G_END_DECLS
 
