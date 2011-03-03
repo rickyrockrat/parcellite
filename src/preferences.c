@@ -43,7 +43,8 @@ GtkWidget *copy_check,
           *history_pos,
           *history_x,
           *history_y,
-          *case_search;
+          *case_search,
+          *type_search;
 
 GtkListStore* actions_list;
 GtkTreeSelection* actions_selection;
@@ -82,6 +83,7 @@ apply_preferences()
   prefs.actions_key = g_strdup(gtk_entry_get_text((GtkEntry*)actions_key_entry));
   prefs.menu_key = g_strdup(gtk_entry_get_text((GtkEntry*)menu_key_entry));
   prefs.case_search = gtk_toggle_button_get_active((GtkToggleButton*)case_search);
+  prefs.type_search = gtk_toggle_button_get_active((GtkToggleButton*)type_search);
   
   /* Bind keys and apply the new history limit */
   keybinder_bind(prefs.history_key, history_hotkey, NULL);
@@ -91,12 +93,12 @@ apply_preferences()
 }
 
 /* Save preferences to ~/.config/parcellite/parcelliterc */
-static void
-save_preferences()
+static void save_preferences()
 {
   /* Create key */
   GKeyFile* rc_key = g_key_file_new();
-  
+  if(0 == prefs.type_search)
+    prefs.case_search=0;
   /* Add values */
   g_key_file_set_boolean(rc_key, "rc", "use_copy", prefs.use_copy);
   g_key_file_set_boolean(rc_key, "rc", "use_primary", prefs.use_primary);
@@ -116,6 +118,7 @@ save_preferences()
   g_key_file_set_integer(rc_key, "rc", "history_x", prefs.history_x);
   g_key_file_set_integer(rc_key, "rc", "history_y", prefs.history_y);
   g_key_file_set_boolean(rc_key, "rc", "case_search", prefs.case_search);
+  g_key_file_set_boolean(rc_key, "rc", "type_search", prefs.type_search);
 
   /* Check config and data directories */
   check_dirs();
@@ -153,7 +156,9 @@ void read_preferences()
     prefs.history_x = g_key_file_get_integer(rc_key, "rc", "history_x", NULL);
     prefs.history_y = g_key_file_get_integer(rc_key, "rc", "history_y", NULL);
     prefs.case_search = g_key_file_get_boolean(rc_key, "rc", "case_search", NULL);    
-    
+    prefs.type_search = g_key_file_get_boolean(rc_key, "rc", "type_search", NULL);    
+    if(0 == prefs.type_search)
+      prefs.case_search=0;
     /* Check for errors and set default values if any */
     postition_history(NULL,&x,&y,NULL, (gpointer)1);
     if(prefs.history_x>x) prefs.history_x=x;
@@ -184,8 +189,7 @@ void read_preferences()
 }
 
 /* Read ~/.parcellite/actions into the treeview */
-static void
-read_actions()
+static void read_actions()
 {
   /* Open the file for reading */
   gchar* path = g_build_filename(g_get_home_dir(), ACTIONS_FILE, NULL);
@@ -223,8 +227,7 @@ read_actions()
 }
 
 /* Save the actions treeview to ~/.local/share/parcellite/actions */
-static void
-save_actions()
+static void save_actions()
 {
   /* Check config and data directories */
   check_dirs();
@@ -278,8 +281,7 @@ save_actions()
 }
 
 /* Called when clipboard checks are pressed */
-static void
-check_toggled(GtkToggleButton *togglebutton, gpointer user_data)
+static void check_toggled(GtkToggleButton *togglebutton, gpointer user_data)
 {
   if (gtk_toggle_button_get_active((GtkToggleButton*)copy_check) &&
       gtk_toggle_button_get_active((GtkToggleButton*)primary_check))
@@ -296,9 +298,22 @@ check_toggled(GtkToggleButton *togglebutton, gpointer user_data)
   }
 }
 
+static void search_toggled(GtkToggleButton *b, gpointer user)
+{
+  if(user == case_search){
+    if(TRUE == gtk_toggle_button_get_active((GtkToggleButton*)case_search) && 
+      FALSE == gtk_toggle_button_get_active((GtkToggleButton*)type_search) )
+      gtk_toggle_button_set_active((GtkToggleButton*)type_search, TRUE);
+  }else if( user == type_search){
+    if(FALSE == gtk_toggle_button_get_active((GtkToggleButton*)type_search) &&
+      TRUE == gtk_toggle_button_get_active((GtkToggleButton*)case_search) )
+      gtk_toggle_button_set_active((GtkToggleButton*)case_search, FALSE);    
+  }
+
+}
+
 /* Called when Add... button is clicked */
-static void
-add_action(GtkButton *button, gpointer user_data)
+static void add_action(GtkButton *button, gpointer user_data)
 {
   /* Append new item */
   GtkTreeIter row_iter;
@@ -314,8 +329,7 @@ add_action(GtkButton *button, gpointer user_data)
 }
 
 /* Called when Remove button is clicked */
-static void
-remove_action(GtkButton *button, gpointer user_data)
+static void remove_action(GtkButton *button, gpointer user_data)
 {
   GtkTreeIter sel_iter;
   /* Check if selected */
@@ -336,8 +350,7 @@ remove_action(GtkButton *button, gpointer user_data)
 }
 
 /* Called when Up button is clicked */
-static void
-move_action_up(GtkButton *button, gpointer user_data)
+static void move_action_up(GtkButton *button, gpointer user_data)
 {
   GtkTreeIter sel_iter;
   /* Check if selected */
@@ -358,8 +371,7 @@ move_action_up(GtkButton *button, gpointer user_data)
 }
 
 /* Called when Down button is clicked */
-static void
-move_action_down(GtkButton *button, gpointer user_data)
+static void move_action_down(GtkButton *button, gpointer user_data)
 {
   GtkTreeIter sel_iter;
   /* Check if selected */
@@ -375,8 +387,7 @@ move_action_down(GtkButton *button, gpointer user_data)
 }
 
 /* Called when delete key is pressed */
-static void
-delete_key_pressed(GtkWidget *widget, GdkEventKey *event, gpointer user_data)
+static void delete_key_pressed(GtkWidget *widget, GdkEventKey *event, gpointer user_data)
 {
   /* Check if DEL key was pressed (keyval: 65535) */
   if (event->keyval == 65535)
@@ -384,8 +395,7 @@ delete_key_pressed(GtkWidget *widget, GdkEventKey *event, gpointer user_data)
 }
 
 /* Called when a cell is edited */
-static void
-edit_action(GtkCellRendererText *renderer, gchar *path,
+static void edit_action(GtkCellRendererText *renderer, gchar *path,
             gchar *new_text,               gpointer cell)
 {
   GtkTreeIter sel_iter;
@@ -393,14 +403,13 @@ edit_action(GtkCellRendererText *renderer, gchar *path,
   if (gtk_tree_selection_get_selected(actions_selection, NULL, &sel_iter))
   {
     /* Apply changes */
-    gtk_list_store_set(actions_list, &sel_iter, (gint)cell, new_text, -1);
+    gtk_list_store_set(actions_list, &sel_iter, GPOINTER_TO_INT(cell), new_text, -1);
   }
 }
 
 
 /* Shows the preferences dialog on the given tab */
-void
-show_preferences(gint tab)
+void show_preferences(gint tab)
 {
   /* Declare some variables */
   GtkWidget *frame,     *label,
@@ -510,9 +519,17 @@ show_preferences(gint tab)
   gtk_container_add((GtkContainer*)frame, alignment);
   vbox = gtk_vbox_new(FALSE, 2);
   gtk_container_add((GtkContainer*)alignment, vbox);
+/**type checkbox  */  
+  type_search = gtk_check_button_new_with_mnemonic(_("Search As You _Type"));
+  gtk_widget_set_tooltip_text(type_search, _("If checked, does a search-as-you-type. Turns red if not found. Goes to top (Alt-E) line when no chars are entered for search"));
+  g_signal_connect((GObject*)type_search, "toggled", (GCallback)search_toggled, type_search);
+  gtk_box_pack_start((GtkBox*)vbox, type_search, FALSE, FALSE, 0);
+/**case checkbox  */    
   case_search = gtk_check_button_new_with_mnemonic(_("_Case Sensitive Search"));
   gtk_widget_set_tooltip_text(case_search, _("If checked, does case sensitive search"));
-  gtk_box_pack_start((GtkBox*)vbox, case_search, FALSE, FALSE, 0);
+  g_signal_connect((GObject*)case_search, "toggled", (GCallback)search_toggled, case_search);
+  gtk_box_pack_start((GtkBox*)vbox, case_search, FALSE, FALSE, 0);  
+  
   hyperlinks_check = gtk_check_button_new_with_mnemonic(_("Capture _hyperlinks only"));
   gtk_box_pack_start((GtkBox*)vbox, hyperlinks_check, FALSE, FALSE, 0);
   confirm_check = gtk_check_button_new_with_mnemonic(_("C_onfirm before clearing history"));
@@ -706,6 +723,7 @@ show_preferences(gint tab)
   gtk_entry_set_text((GtkEntry*)actions_key_entry, prefs.actions_key);
   gtk_entry_set_text((GtkEntry*)menu_key_entry, prefs.menu_key);
   gtk_toggle_button_set_active((GtkToggleButton*)case_search, prefs.case_search);  
+  gtk_toggle_button_set_active((GtkToggleButton*)type_search, prefs.type_search);  
   
   /* Read actions */
   read_actions();
