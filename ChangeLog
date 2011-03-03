@@ -1,7 +1,8 @@
+v1.0.0 Wednesday, March 2 2011
   Changes
   +Created new icon 'parcellite' and added it to install.
   +Moved newline to after elipsizing (thanks, Christian).
-  +Added right-click delete 01/17/2011
+  +Added right-click delete.
   +Added history location
   +Added search as you type.
 
