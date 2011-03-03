@@ -796,7 +796,7 @@ foundit:
 	TRACE(g_print("\n"));
 	return TRUE;
 }
-/**postition the history dialog  */
+/**postition the history dialog  - should only be called if prefs.history_pos is set */
 void postition_history(GtkMenu *menu,gint *x,gint *y,gboolean *push_in, gpointer user_data)
 {
 	GdkScreen *s;
@@ -1004,7 +1004,7 @@ static gboolean show_history_menu(gpointer data)
   }  
   /* Popup the menu... */
   gtk_widget_show_all(menu);
-  gtk_menu_popup((GtkMenu*)menu, NULL, NULL, postition_history, NULL, 1, gtk_get_current_event_time());
+  gtk_menu_popup((GtkMenu*)menu, NULL, NULL, prefs.history_pos?postition_history:NULL, NULL, 1, gtk_get_current_event_time());
 	/**set last entry at first -fixes bug 2974614 */
 	gtk_menu_shell_select_first((GtkMenuShell*)menu, TRUE);
   /* Return FALSE so the g_timeout_add() function is called only once */
