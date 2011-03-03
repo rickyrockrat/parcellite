@@ -54,6 +54,7 @@ typedef struct
 	gint      history_x;        /* location of x location to display history  */	
 	gint      history_y;        /* location of y location to display history  */	
 	gboolean  case_search;      /* turn on case sensitive search */
+	gboolean  type_search;      /* turn on search-as-you-type */
 }
 prefs_t;
 
