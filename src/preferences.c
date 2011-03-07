@@ -44,7 +44,8 @@ GtkWidget *copy_check,
           *history_x,
           *history_y,
           *case_search,
-          *type_search;
+          *type_search,
+          *data_size;
 
 GtkListStore* actions_list;
 GtkTreeSelection* actions_selection;
@@ -73,6 +74,7 @@ apply_preferences()
   prefs.history_pos = gtk_toggle_button_get_active((GtkToggleButton*)history_pos);
   prefs.history_x=gtk_spin_button_get_value_as_int((GtkSpinButton*)history_x);
   prefs.history_y=gtk_spin_button_get_value_as_int((GtkSpinButton*)history_y);
+  prefs.data_size=gtk_spin_button_get_value_as_int((GtkSpinButton*)data_size);
   prefs.hyperlinks_only = gtk_toggle_button_get_active((GtkToggleButton*)hyperlinks_check);
   prefs.confirm_clear = gtk_toggle_button_get_active((GtkToggleButton*)confirm_check);
   prefs.single_line = gtk_toggle_button_get_active((GtkToggleButton*)linemode_check);
@@ -119,6 +121,7 @@ static void save_preferences()
   g_key_file_set_integer(rc_key, "rc", "history_y", prefs.history_y);
   g_key_file_set_boolean(rc_key, "rc", "case_search", prefs.case_search);
   g_key_file_set_boolean(rc_key, "rc", "type_search", prefs.type_search);
+  g_key_file_set_integer(rc_key, "rc", "data_size", prefs.data_size);
 
   /* Check config and data directories */
   check_dirs();
@@ -157,6 +160,7 @@ void read_preferences()
     prefs.history_y = g_key_file_get_integer(rc_key, "rc", "history_y", NULL);
     prefs.case_search = g_key_file_get_boolean(rc_key, "rc", "case_search", NULL);    
     prefs.type_search = g_key_file_get_boolean(rc_key, "rc", "type_search", NULL);    
+    prefs.data_size = g_key_file_get_integer(rc_key, "rc", "data_size", NULL);
     if(0 == prefs.type_search)
       prefs.case_search=0;
     /* Check for errors and set default values if any */
@@ -509,7 +513,15 @@ void show_preferences(gint tab)
   gtk_spin_button_set_update_policy((GtkSpinButton*)history_spin, GTK_UPDATE_IF_VALID);
   gtk_box_pack_start((GtkBox*)hbox, history_spin, FALSE, FALSE, 0);
   gtk_box_pack_start((GtkBox*)vbox_behavior, frame, FALSE, FALSE, 0);
-  
+/**set data_size  */
+  hbox = gtk_hbox_new(FALSE, 4);  
+  gtk_box_pack_start((GtkBox*)vbox, hbox, FALSE, FALSE, 0);
+  label = gtk_label_new(_("Max Data Size (MB)"));
+  gtk_box_pack_start((GtkBox*)hbox, label, FALSE, FALSE, 0);
+  data_size=gtk_spin_button_new((GtkAdjustment*)gtk_adjustment_new (prefs.data_size,0,1000,1,10,0 ),10,0); 
+  gtk_box_pack_start((GtkBox*)hbox, data_size, FALSE, FALSE, 0);
+  gtk_spin_button_set_update_policy((GtkSpinButton*)data_size, GTK_UPDATE_IF_VALID);
+  gtk_widget_set_tooltip_text(label, _("Set Maximum amount of data to copy for each entry in MBytes. 0 is no limit."));
   /* Build the miscellaneous frame */
   frame = gtk_frame_new(NULL);
   gtk_frame_set_shadow_type((GtkFrame*)frame, GTK_SHADOW_NONE);
@@ -726,6 +738,7 @@ void show_preferences(gint tab)
   gtk_entry_set_text((GtkEntry*)menu_key_entry, prefs.menu_key);
   gtk_toggle_button_set_active((GtkToggleButton*)case_search, prefs.case_search);  
   gtk_toggle_button_set_active((GtkToggleButton*)type_search, prefs.type_search);  
+  gtk_spin_button_set_value((GtkSpinButton*)data_size, (gdouble)prefs.data_size);
   
   /* Read actions */
   read_actions();
