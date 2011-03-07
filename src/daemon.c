@@ -19,7 +19,7 @@
 #include <glib.h>
 #include <gtk/gtk.h>
 #include "daemon.h"
-
+#include "utils.h"
 
 static gint timeout_id;
 static gchar* primary_text;
@@ -29,8 +29,7 @@ static GtkClipboard* clipboard;
 
 
 /* Called during the daemon loop to protect primary/clipboard contents */
-static void
-daemon_check()
+static void daemon_check()
 {
   /* Get current primary/clipboard contents */
   gchar* primary_temp = gtk_clipboard_wait_for_text(primary);
@@ -55,7 +54,7 @@ daemon_check()
     if ((primary_temp != NULL) && !(button_state & GDK_BUTTON1_MASK))
     {
       g_free(primary_text);
-      primary_text = g_strdup(primary_temp);
+      primary_text = p_strdup(primary_temp);
     }
   }
   
@@ -74,15 +73,14 @@ daemon_check()
   else
   {
     g_free(clipboard_text);
-    clipboard_text = g_strdup(clipboard_temp);
+    clipboard_text = p_strdup(clipboard_temp);
   }
   g_free(primary_temp);
   g_free(clipboard_temp);
 }
 
 /* Called if timeout was destroyed */
-static void
-reset_daemon(gpointer data)
+static void reset_daemon(gpointer data)
 {
   if (timeout_id != 0)
     g_source_remove(timeout_id);
@@ -95,8 +93,7 @@ reset_daemon(gpointer data)
 }
 
 /* Initializes daemon mode */
-void
-init_daemon_mode()
+void init_daemon_mode()
 {
   /* Create clipboard and primary and connect signals */
   primary = gtk_clipboard_get(GDK_SELECTION_PRIMARY);

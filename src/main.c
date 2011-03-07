@@ -69,9 +69,9 @@ prefs_t prefs = {DEF_USE_COPY,        DEF_USE_PRIMARY,      DEF_SYNCHRONIZE,
 
 
 
+
 /* Called every CHECK_INTERVAL seconds to check for new items */
-static gboolean
-item_check(gpointer data)
+static gboolean item_check(gpointer data)
 {
   /* Grab the current primary and clipboard text */
   gchar* primary_temp = gtk_clipboard_wait_for_text(primary);
@@ -105,7 +105,7 @@ item_check(gpointer data)
       {
         /* New primary entry */
         g_free(primary_text);
-        primary_text = g_strdup(primary_temp);
+        primary_text = p_strdup(primary_temp);
         /* Check if primary option is enabled and if there's text to add */
         if (prefs.use_primary && primary_text)
         {
@@ -147,7 +147,7 @@ item_check(gpointer data)
     {
       /* New clipboard entry */
       g_free(clipboard_text);
-      clipboard_text = g_strdup(clipboard_temp);
+      clipboard_text = p_strdup(clipboard_temp);
       /* Check if clipboard option is enabled and if there's text to add */
       if (prefs.use_copy && clipboard_text)
       {
@@ -172,13 +172,13 @@ item_check(gpointer data)
     if (g_strcmp0(synchronized_text, primary_text) != 0)
     {
       g_free(synchronized_text);
-      synchronized_text = g_strdup(primary_text);
+      synchronized_text = p_strdup(primary_text);
       gtk_clipboard_set_text(clipboard, primary_text, -1);
     }
     else if (g_strcmp0(synchronized_text, clipboard_text) != 0)
     {
       g_free(synchronized_text);
-      synchronized_text = g_strdup(clipboard_text);
+      synchronized_text = p_strdup(clipboard_text);
       gtk_clipboard_set_text(primary, clipboard_text, -1);
     }
   }
@@ -275,7 +275,7 @@ static void edit_selected(GtkMenuItem *menu_item, gpointer user_data)
     /* Create clipboard buffer and set its text */
     GtkTextBuffer* clipboard_buffer = gtk_text_buffer_new(NULL);
 		if( NULL != menu_item){
-			current_clipboard_text=g_strdup(gtk_label_get_text((GtkLabel *)gtk_bin_get_child((GtkBin*)menu_item)));
+			current_clipboard_text=p_strdup(gtk_label_get_text((GtkLabel *)gtk_bin_get_child((GtkBin*)menu_item)));
 			
 		}else{
 			current_clipboard_text = gtk_clipboard_wait_for_text(clipboard);
@@ -378,9 +378,9 @@ static void clear_selected(GtkMenuItem *menu_item, gpointer user_data)
       g_free(primary_text);
       g_free(clipboard_text);
       g_free(synchronized_text);
-      primary_text = g_strdup("");
-      clipboard_text = g_strdup("");
-      synchronized_text = g_strdup("");
+      primary_text = p_strdup("");
+      clipboard_text = p_strdup("");
+      synchronized_text = p_strdup("");
       gtk_clipboard_set_text(primary, "", -1);
       gtk_clipboard_set_text(clipboard, "", -1);
     }
@@ -395,9 +395,9 @@ static void clear_selected(GtkMenuItem *menu_item, gpointer user_data)
     g_free(primary_text);
     g_free(clipboard_text);
     g_free(synchronized_text);
-    primary_text = g_strdup("");
-    clipboard_text = g_strdup("");
-    synchronized_text = g_strdup("");
+    primary_text = p_strdup("");
+    clipboard_text = p_strdup("");
+    synchronized_text = p_strdup("");
     gtk_clipboard_set_text(primary, "", -1);
     gtk_clipboard_set_text(clipboard, "", -1);
   }
