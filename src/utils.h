@@ -24,14 +24,12 @@ G_BEGIN_DECLS
 #define CONFIG_DIR  ".local/share/parcellite"
 #define DATA_DIR    ".config/parcellite"
 
-void
-check_dirs();
+gchar *p_strdup( const gchar *str );
+void check_dirs();
 
-gboolean
-is_hyperlink(gchar* link);
+gboolean is_hyperlink(gchar* link);
 
-gboolean
-parse_options(int argc, char* argv[]);
+gboolean parse_options(int argc, char* argv[]);
 
 G_END_DECLS
 
