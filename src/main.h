@@ -55,6 +55,7 @@ typedef struct
 	gint      history_y;        /* location of y location to display history  */	
 	gboolean  case_search;      /* turn on case sensitive search */
 	gboolean  type_search;      /* turn on search-as-you-type */
+  gint32      data_size;      /**size, in megabytes to limit text copied.  */
 }
 prefs_t;
 
