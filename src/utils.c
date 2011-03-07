@@ -23,10 +23,47 @@
 #include "daemon.h"
 #include "history.h"
 #include "parcellite-i18n.h"
+#include <string.h>
 
+/** Wrapper to replace g_strdup to limit size of text copied from clipboard. 
+g_strndup will dup to the size of the limit, which will waste resources, so
+try to allocate using other methods.
+*/
+gchar *p_strdup( const gchar *str )
+{
+  gchar *n=NULL;
+  gint u8;
+  size_t l,x;
+  if(NULL == str)
+    return NULL;
+  if(0==prefs.data_size)
+    return g_strdup(str);
+  x=prefs.data_size*1000000; 
+  /**use the following to test truncation  */
+  /*x=prefs.data_size*10; */
+  if(TRUE ==g_utf8_validate (str,-1,NULL)){
+/*    g_printf("UTF8 "); */
+    l=g_utf8_strlen(str,-1);
+    u8=1;
+  } else{
+    l=strlen(str);
+    u8=0;
+  }
+    
+  
+  if(l>x){
+    l=x;
+  }
+  
+  if(NULL !=(n=g_malloc(l+8))){
+    n[l+7]=0;
+    g_strlcpy(n,str,l+1);
+  }
+    
+  return n;
+}
 /* Creates program related directories if needed */
-void
-check_dirs()
+void check_dirs()
 {
   gchar* data_dir = g_build_path("/", g_get_home_dir(), DATA_DIR,  NULL);
   gchar* config_dir = g_build_path("/", g_get_home_dir(), CONFIG_DIR,  NULL);
@@ -50,8 +87,7 @@ check_dirs()
 }
 
 /* Returns TRUE if text is a hyperlink */
-gboolean
-is_hyperlink(gchar* text)
+gboolean is_hyperlink(gchar* text)
 {
   /* TODO: I need a better regex, this one is poor */
   GRegex* regex = g_regex_new("([A-Za-z][A-Za-z0-9+.-]{1,120}:[A-Za-z0-9/]" \
@@ -67,8 +103,7 @@ is_hyperlink(gchar* text)
 /* Parses the program arguments. Returns TRUE if program needs
  * to exit after parsing is complete
  */
-gboolean
-parse_options(int argc, char* argv[])
+gboolean parse_options(int argc, char* argv[])
 {
   /* Declare argument options and argument variables */
   gboolean icon   = FALSE,    daemon = FALSE,
@@ -121,7 +156,7 @@ parse_options(int argc, char* argv[])
   /* Set description */
   g_option_context_set_description(context,
                                  _("Written by Gilberto \"Xyhthyx\" Miralla.\n"
-                                   "Report bugs to <xyhthyx@gmail.com>."));
+                                   "Report bugs to <gpib@rickyrockrat.com>."));
   /* Add entries and parse options */
   g_option_context_add_main_entries(context, main_entries, NULL);
   g_option_context_parse(context, &argc, &argv, NULL);
