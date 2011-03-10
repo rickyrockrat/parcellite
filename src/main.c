@@ -68,8 +68,21 @@ prefs_t prefs = {DEF_USE_COPY,        DEF_USE_PRIMARY,      DEF_SYNCHRONIZE,
                  DEF_NO_ICON};
 
 
-
-
+/**Turns up in 2.16  */
+int p_strcmp (const char *str1, const char *str2)
+{
+#if (GTK_MAJOR_VERSION > 2 || ( GTK_MAJOR_VERSION == 2 && GTK_MAJOR_VERSION >= 16))
+  return g_strcmp0(str1,str2);
+#else
+  if(NULL ==str1 && NULL == str2)
+    return 0;
+  if(NULL ==str1 && str2)
+    return -1;
+  if(NULL ==str2 && str1)
+    return 1;
+  return strcmp(str1,str2);
+#endif
+}
 /* Called every CHECK_INTERVAL seconds to check for new items */
 static gboolean item_check(gpointer data)
 {
@@ -101,7 +114,7 @@ static gboolean item_check(gpointer data)
     if ((primary_temp != NULL) && !(button_state & GDK_BUTTON1_MASK))
     {
       /* Check if primary is the same as the last entry */
-      if (g_strcmp0(primary_temp, primary_text) != 0)
+      if (p_strcmp(primary_temp, primary_text) != 0)
       {
         /* New primary entry */
         g_free(primary_text);
@@ -143,7 +156,7 @@ static gboolean item_check(gpointer data)
   else
   {
     /* Check if clipboard is the same as the last entry */
-    if (g_strcmp0(clipboard_temp, clipboard_text) != 0)
+    if (p_strcmp(clipboard_temp, clipboard_text) != 0)
     {
       /* New clipboard entry */
       g_free(clipboard_text);
@@ -169,13 +182,13 @@ static gboolean item_check(gpointer data)
   /* Synchronization */
   if (prefs.synchronize)
   {
-    if (g_strcmp0(synchronized_text, primary_text) != 0)
+    if (p_strcmp(synchronized_text, primary_text) != 0)
     {
       g_free(synchronized_text);
       synchronized_text = p_strdup(primary_text);
       gtk_clipboard_set_text(clipboard, primary_text, -1);
     }
-    else if (g_strcmp0(synchronized_text, clipboard_text) != 0)
+    else if (p_strcmp(synchronized_text, clipboard_text) != 0)
     {
       g_free(synchronized_text);
       synchronized_text = p_strdup(clipboard_text);
@@ -956,14 +969,14 @@ static gboolean show_history_menu(gpointer data)
       gtk_label_set_single_line_mode((GtkLabel*)item_label, prefs.single_line);
       
       /* Check if item is also clipboard text and make bold */
-      if ((clipboard_temp) && (g_strcmp0((gchar*)element->data, clipboard_temp) == 0))
+      if ((clipboard_temp) && (p_strcmp((gchar*)element->data, clipboard_temp) == 0))
       {
         gchar* bold_text = g_markup_printf_escaped("<b>%s</b>", string->str);
         gtk_label_set_markup((GtkLabel*)item_label, bold_text);
         g_free(bold_text);
         h.clip_item=menu_item;
       }
-      else if ((primary_temp) && (g_strcmp0((gchar*)element->data, primary_temp) == 0))
+      else if ((primary_temp) && (p_strcmp((gchar*)element->data, primary_temp) == 0))
       {
         gchar* italic_text = g_markup_printf_escaped("<i>%s</i>", string->str);
         gtk_label_set_markup((GtkLabel*)item_label, italic_text);
@@ -1085,8 +1098,7 @@ menu_hotkey(char *keystring, gpointer user_data)
 }
 
 /* Startup calls and initializations */
-static void
-parcellite_init()
+static void parcellite_init()
 {
   /* Create clipboard */
   primary = gtk_clipboard_get(GDK_SELECTION_PRIMARY);
