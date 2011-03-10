@@ -1,3 +1,6 @@
+v1.0.2
+ Changes
+ +Move configure.in to configure.ac, fix so just links with gtk+
 v1.0.1 Thursday, March 9 2011
   Changes
  +Fixed build so dist-clean does not remove icons.
