@@ -50,5 +50,4 @@ CLEANFILES = \
 
 DISTCLEANFILES = \
   $(desktop_DATA) \
-  $(autostart_DATA) \
-  $(pixmap_DATA)
+  $(autostart_DATA) 
