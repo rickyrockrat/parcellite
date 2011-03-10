@@ -1,3 +1,8 @@
+v1.0.1 Thursday, March 9 2011
+  Changes
+ +Fixed build so dist-clean does not remove icons.
+ +Added wrapper p_strcmp so it builds with Gtk <2.16
+
 v1.0.0 Wednesday, March 2 2011
   Changes
   +Created new icon 'parcellite' and added it to install.
