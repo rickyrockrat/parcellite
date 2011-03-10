@@ -167,7 +167,7 @@ delete_duplicate(gchar* item)
   /* Go through each element compare each */
   for (element = history; element != NULL; element = element->next)
   {
-    if (g_strcmp0((gchar*)element->data, item) == 0)
+    if (p_strcmp((gchar*)element->data, item) == 0)
     {
       g_free(element->data);
       history = g_slist_delete_link(history, element);
