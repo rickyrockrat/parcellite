@@ -6,6 +6,7 @@ v1.0.2rc1
  +Changed item_length to go down to 5 and up to 100.
  +Changed Hot Keys so they activate on keypress.
  +Added Ctrl,Shift-delete functionality.
+ +Added debian package build script.
  
 v1.0.1 Thursday, March 9 2011
   Changes
