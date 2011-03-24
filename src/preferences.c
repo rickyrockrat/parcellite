@@ -577,7 +577,7 @@ void show_preferences(gint tab)
   label = gtk_label_new(_("Character length of items:"));
   gtk_misc_set_alignment((GtkMisc*)label, 0.0, 0.50);
   gtk_box_pack_start((GtkBox*)hbox, label, FALSE, FALSE, 0);
-  adjustment = gtk_adjustment_new(50, 25, 75, 1, 5, 0);
+  adjustment = gtk_adjustment_new(50, 5, 100, 1, 5, 0);
   charlength_spin = gtk_spin_button_new((GtkAdjustment*)adjustment, 0.0, 0);
   gtk_spin_button_set_update_policy((GtkSpinButton*)charlength_spin, GTK_UPDATE_IF_VALID);
   gtk_box_pack_start((GtkBox*)hbox, charlength_spin, FALSE, FALSE, 0);
