@@ -44,6 +44,7 @@ struct item_info {
 struct history_info{
   GtkWidget *menu;
   GtkWidget *clip_item;
+	gchar *element_text;
   GtkWidget *title_item;
 	GList *item_info; /**struct item_info  */
 };
@@ -288,14 +289,15 @@ static void edit_actions_selected(GtkButton *button, gpointer user_data)
 /* Called when Edit is selected from history menu */
 static void edit_selected(GtkMenuItem *menu_item, gpointer user_data)
 {
+	struct history_info *h=(struct history_info*)user_data;
   /* This helps prevent multiple instances */
   if (!gtk_grab_get_current())
   {
 	  gchar* current_clipboard_text;
     /* Create clipboard buffer and set its text */
     GtkTextBuffer* clipboard_buffer = gtk_text_buffer_new(NULL);
-		if( NULL != menu_item){
-			current_clipboard_text=p_strdup(gtk_label_get_text((GtkLabel *)gtk_bin_get_child((GtkBin*)menu_item)));
+		if( NULL != h->element_text){
+			current_clipboard_text=p_strdup(h->element_text);
 			
 		}else{
 			current_clipboard_text = gtk_clipboard_wait_for_text(clipboard);
@@ -814,37 +816,6 @@ void postition_history(GtkMenu *menu,gint *x,gint *y,gboolean *push_in, gpointer
 	
 }
 
-static GtkWidget *create_history_title(struct history_info *h, gchar *text)
-{
-  GtkWidget *menu_image;
-  /* Create box for xpm and label */
-  /*h->title_box = gtk_hbox_new (FALSE, 0); */
-  /*gtk_container_set_border_width (GTK_CONTAINER (h->title_box), 2); */
-  /* Get the style of the button to get the
-   * background color. */
-  /*h->tstyle= gtk_widget_get_style(h->menu); */
-  if(0 ==prefs.type_search){
-    h->title_item = gtk_image_menu_item_new_with_mnemonic(_("_Edit Clipboard"));
-    menu_image = gtk_image_new_from_stock(GTK_STOCK_EDIT, GTK_ICON_SIZE_MENU);
-    gtk_image_menu_item_set_image((GtkImageMenuItem*)h->title_item, menu_image);
-    g_signal_connect((GObject*)h->title_item, "activate", (GCallback)edit_selected, NULL);
-  }else{
-    h->title_item = gtk_image_menu_item_new_with_label(text);
-    menu_image = gtk_image_new_from_stock(GTK_STOCK_EDIT, GTK_ICON_SIZE_MENU);
-    gtk_image_menu_item_set_image((GtkImageMenuItem*)h->title_item, menu_image);
-  #if 0 /**doesn't work. Gives a GTK_MENU_ITEM fail  */ 
-     /* Pack the item into the box */
-    gtk_container_add ((GtkContainer *)(h->title_box),h->title_item);
-    gtk_widget_show(h->title_box);
-    gtk_widget_show(h->title_item);
-    return(h->title_box);
-  #endif    
-  }
-  
-
-  return(h->title_item);
-}
-
 /***************************************************************************/
 /** This handles events for the history menu, which is the parent of each
 item.
@@ -923,7 +894,7 @@ static gboolean key_release_cb (GtkWidget *w,GdkEventKey *e, gpointer user)
 		if(e->keyval == 'e'){
 			TRACE(g_print("Alt-E\n"));
 			gtk_grab_remove(w);
-		  edit_selected((GtkMenuItem *)item, NULL);
+		  edit_selected((GtkMenuItem *)h, (gpointer)h);
 		}
 			
 		else if(e->keyval == 'c'){
@@ -1180,12 +1151,15 @@ static gboolean show_history_menu(gpointer data)
 	/*g_signal_connect((GObject*)menu, "mnemonic-activate", (GCallback)key_release_cb, (gpointer)menu);  */
   if(prefs.type_search){
     /* Edit clipboard */
-    gtk_menu_shell_append((GtkMenuShell*)menu, create_history_title(&h,_("Use Alt-E to edit, Alt-C to clear")));    
+		h.title_item = gtk_image_menu_item_new_with_label( _("Use Alt-E to edit, Alt-C to clear") );
+    menu_image = gtk_image_new_from_stock(GTK_STOCK_EDIT, GTK_ICON_SIZE_MENU);
+    gtk_image_menu_item_set_image((GtkImageMenuItem*)h.title_item, menu_image);
+    gtk_menu_shell_append((GtkMenuShell*)menu, h.title_item);    
   }else{
     menu_item = gtk_image_menu_item_new_with_mnemonic(_("_Edit Clipboard"));
     menu_image = gtk_image_new_from_stock(GTK_STOCK_EDIT, GTK_ICON_SIZE_MENU);
     gtk_image_menu_item_set_image((GtkImageMenuItem*)menu_item, menu_image);
-    g_signal_connect((GObject*)menu_item, "activate", (GCallback)edit_selected, NULL);
+		g_signal_connect((GObject*)menu_item, "activate", (GCallback)edit_selected, (gpointer)&h);
     gtk_menu_shell_append((GtkMenuShell*)menu, menu_item);
   }
 
@@ -1263,6 +1237,7 @@ static gboolean show_history_menu(gpointer data)
         gtk_label_set_markup((GtkLabel*)item_label, bold_text);
         g_free(bold_text);
         h.clip_item=menu_item;
+				h.element_text=(gchar *)element->data;
       }
       else if ((primary_temp) && (p_strcmp((gchar*)element->data, primary_temp) == 0))
       {
@@ -1270,6 +1245,7 @@ static gboolean show_history_menu(gpointer data)
         gtk_label_set_markup((GtkLabel*)item_label, italic_text);
         g_free(italic_text);
         h.clip_item=menu_item;
+			  h.element_text=(gchar *)element->data;
       }
       /* Append item */
       gtk_menu_shell_append((GtkMenuShell*)menu, menu_item);
