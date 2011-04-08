@@ -2,7 +2,7 @@
 # Autoconf/automake.
 # -------------------------------------------------------------------------------
 AC_PREREQ([2.5])
-AC_INIT([parcellite], [1.0.2rc1], [gpib@rickyrockrat.com])
+AC_INIT([parcellite], [1.0.2rc2], [gpib@rickyrockrat.com])
 # AC_INIT([parcellite], [lollygag], [gpib@rickyrockrat.com])
 AM_INIT_AUTOMAKE([AC_PACKAGE_TARNAME()], [AC_PACKAGE_VERSION()])
 
