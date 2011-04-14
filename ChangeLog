@@ -1,3 +1,7 @@
+v1.0.2rc3	 Thursday, April 14 2011
+ Changes
+ +Fixed Status Icon missing on execute Action.
+ 
 v1.0.2rc2	 Tuesday, April 05 2011
  Changes
  +Fixed E, Alt-E (edit clipboard) not working bug.
