@@ -1,326 +1,719 @@
-# Russian translation of parcellite.
-# Copyright (C) 2008 Xyhthyx <xyhthyx@gmail.com>
-# This file is distributed under the same license as the parcellite package.
-# Alexander Kazancev <kazancas@mandriva.ru>
-#
-#
+# translation of ru.po to Russian
+# akdengi <kazancas@mandriva.ru>, 2009.
 msgid ""
 msgstr ""
-"Project-Id-Version: Parcellite\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-12-31 16:51-0500\n"
-"PO-Revision-Date: 2009-03-16 00:53+0100\n"
-"Last-Translator: Alexander Kazancev <kazancas@mandriva.ru>\n"
-"Language-Team: \n"
+"Project-Id-Version: ru\n"
+"Report-Msgid-Bugs-To: http://bugzilla.icculus.org/\n"
+"POT-Creation-Date: 2008-03-02 19:36-0500\n"
+"PO-Revision-Date: 2009-08-14 02:07+0500\n"
+"Last-Translator: akdengi <kazancas@mandriva.ru>\n"
+"Language-Team: Russian <gnu@mx.ru>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Language: ru_RU\n"
+"X-Poedit-Language: Russian\n"
+"X-Poedit-Country: RUSSIAN FEDERATION\n"
+"X-Generator: KBabel 1.11.4\n"
+"Plural-Forms:  nplurals=2; plural=(n != 1);\n\n"
+"\n"
 
-#: ../src/main.c:186 ../src/main.c:222
-msgid "Executing action..."
-msgstr "Запуск действия..."
+#: src/strings.c:7
+msgid "Openbox Configuration Manager"
+msgstr "Мастер настройки Openbox "
 
-#: ../src/main.c:192 ../src/main.c:208 ../src/main.c:776
-#: ../data/parcellite.desktop.in.h:1 ../data/parcellite-startup.desktop.in.h:1
-msgid "Clipboard Manager"
-msgstr "Менеджер буфера обмена"
+#: src/strings.c:8
+msgid "<span weight=\"bold\">Theme</span>"
+msgstr "<span weight=\"bold\">Тема</span>"
 
-#. Create the dialog
-#: ../src/main.c:271
-msgid "Editing Clipboard"
-msgstr "Редактирование буфера обмена"
+#: src/strings.c:9 src/strings.c:14 src/strings.c:18 src/strings.c:27
+#: src/strings.c:43 src/strings.c:51 src/strings.c:54 src/strings.c:63
+#: src/strings.c:72 src/strings.c:80 src/strings.c:85 src/strings.c:98
+#: src/strings.c:100 src/strings.c:107 src/strings.c:113 src/strings.c:116
+#: src/strings.c:118 src/strings.c:125 src/strings.c:137 src/strings.c:140
+#: src/strings.c:151 src/strings.c:154 src/strings.c:160 src/strings.c:165
+#: src/strings.c:167 src/strings.c:170
+msgid "    "
+msgstr "    "
 
-#: ../src/main.c:330
-msgid "Clear the history?"
-msgstr "Очистить историю?"
+#: src/strings.c:10
+msgid "_Install a new theme..."
+msgstr "Установить новую тему..."
 
-#: ../src/main.c:398
-msgid "Lightweight GTK+ clipboard manager."
-msgstr "Легковесный менеджер буфера обмена на GTK+."
+#: src/strings.c:11
+msgid "Create a theme _archive (.obt)..."
+msgstr "Запаковать тему в архив (.obt)..."
 
-#: ../src/main.c:485
-msgid "<b>None</b>"
-msgstr "<b>Нет</b>"
+#: src/strings.c:12
+msgid "Theme"
+msgstr "Тема"
 
-#. File contained no actions so adding empty
-#. File did not open so adding empty
-#. Nothing in history so adding empty
-#: ../src/main.c:506 ../src/main.c:535 ../src/main.c:660
-msgid "Empty"
-msgstr "Пусто"
+#: src/strings.c:13
+msgid "<span weight=\"bold\">Windows</span>"
+msgstr "<span weight=\"bold\">Окна</span>"
 
-#. Edit actions
-#: ../src/main.c:542
-msgid "_Edit actions"
-msgstr "_Править действия"
+#: src/strings.c:15
+msgid "_Windows retain a border when undecorated"
+msgstr "Показывать границу неотдекорированных окон"
 
-#. Edit clipboard
-#: ../src/main.c:566
-msgid "_Edit Clipboard"
-msgstr "Править буфер обмена"
+#: src/strings.c:16
+msgid "A_nimate iconify and restore"
+msgstr "Анимировать сворачивание/разворачивание окон"
 
-#: ../src/utils.c:38 ../src/utils.c:45
+#: src/strings.c:17
+msgid "<span weight=\"bold\">Window Titles</span>"
+msgstr "<span weight=\"bold\">Заголовки окон</span>"
+
+#: src/strings.c:19
+msgid "_Button order:"
+msgstr "Порядок элементов:"
+
+#: src/strings.c:20
+msgid ""
+"N - The window's icon\n"
+"D - The all-desktops (sticky) button\n"
+"S - The shade (roll up) button\n"
+"L - The label (window title)\n"
+"I - The iconify (minimize) button\n"
+"M - The maximize button\n"
+"C - The close button"
+msgstr ""
+"N - Значок окна\n"
+"D - Кнопка \"на все столы\"\n"
+"S - Кнопка \"свернуть в заголовок\"\n"
+"L - Надпись заголовка окна\n"
+"I - Кнопка \"свернуть\"\n"
+"M - Кнопка \"во весь экран\"\n"
+"C - Кнопка \"закрыть\""
+
+#: src/strings.c:28
+msgid ""
+"N:\n"
+"L:\n"
+"I:\n"
+"M:"
+msgstr ""
+"N:\n"
+"L:\n"
+"I:\n"
+"M:"
+
+#: src/strings.c:32
+msgid ""
+"Window icon\n"
+"Window label (Title)\n"
+"Iconify (Minimize)\n"
+"Maximize"
+msgstr ""
+"Значок окна\n"
+"Заголовок окна\n"
+"Свернуть\n"
+"Во весь экран"
+
+#: src/strings.c:36
+msgid ""
+"C:\n"
+"S:\n"
+"D:"
+msgstr ""
+"C:\n"
+"S:\n"
+"D:"
+
+#: src/strings.c:39
+msgid ""
+"Close\n"
+"Shade (Roll up)\n"
+"Omnipresent (On all desktops)"
+msgstr ""
+"Закрыть\n"
+"Свернуть в заголовок\n"
+"Отобразить на все столы"
+
+#: src/strings.c:42
+msgid "<span weight=\"bold\">Fonts</span>"
+msgstr "<span weight=\"bold\">Шрифты</span>"
+
+#: src/strings.c:44
+msgid "_Active window title: "
+msgstr "Заголовок активного окна: "
+
+#: src/strings.c:45
+msgid "_Inactive window title: "
+msgstr "Заголовок неактивного окна: "
+
+#: src/strings.c:46
+msgid "Menu _header: "
+msgstr "Заголовок меню:"
+
+#: src/strings.c:47
+msgid "_Menu Item: "
+msgstr "Элементы меню:"
+
+#: src/strings.c:48
+msgid "_On-screen display: "
+msgstr "Надписи на экране:"
+
+#: src/strings.c:49
+msgid "Appearance"
+msgstr "Внешний вид окон"
+
+#: src/strings.c:50 src/strings.c:97
+msgid "<span weight=\"bold\">Focusing Windows</span>"
+msgstr "<span weight=\"bold\">Фокус окон</span>"
+
+#: src/strings.c:52
+msgid "Focus _new windows when they appear"
+msgstr "Устанавливать фокус на окно при появлении"
+
+#: src/strings.c:53
+msgid "<span weight=\"bold\">Placing Windows</span>"
+msgstr "<span weight=\"bold\">Размещение новых окон</span>"
+
+#: src/strings.c:55
+msgid "_Place new windows under the mouse pointer"
+msgstr "Под указателем мыши"
+
+#: src/strings.c:56
+msgid "_Center new windows when they are placed"
+msgstr "По центру экрана"
+
+#: src/strings.c:57
+msgid "Prefer to place new windows _on:"
+msgstr "Предпочтительно размещать окна на:"
+
+#: src/strings.c:58
+msgid "All monitors"
+msgstr "всех мониторах"
+
+#: src/strings.c:59
+msgid "The active monitor"
+msgstr "активных мониторах"
+
+#: src/strings.c:60
+msgid "The monitor with the mouse"
+msgstr "мониторе, на котором курсор"
+
+#: src/strings.c:61
+msgid "Windows"
+msgstr "Поведение окон"
+
+#: src/strings.c:62
+msgid "<span weight=\"bold\">Moving and Resizing Windows</span>"
+msgstr "<span weight=\"bold\">Перетаскивание и изменение размеров окон</span>"
+
+#: src/strings.c:64
+msgid "Update the window contents while _resizing"
+msgstr "Обновлять содержимое окна при изменении размера"
+
+#: src/strings.c:65
+msgid "Drag _threshold distance:"
+msgstr "Порог подхватывания окна при перетаскивании:"
+
+#: src/strings.c:66 src/strings.c:68 src/strings.c:70 src/strings.c:90
+#: src/strings.c:95 src/strings.c:128 src/strings.c:130 src/strings.c:132
+#: src/strings.c:134
+msgid "px"
+msgstr "пикселей"
+
+#: src/strings.c:67
+msgid "Amount of resistance against other _windows:"
+msgstr "Сопротивление при прилипании к другим окнам:"
+
+#: src/strings.c:69
+msgid "Amount of resistance against screen _edges:"
+msgstr "Сопротивление при прилипании к границам экрана:"
+
+#: src/strings.c:71
+msgid "_Switch desktops when moving a window past the screen edge"
+msgstr "Переключать рабочий стол при перемещении за границу экрана"
+
+#: src/strings.c:73
+msgid "_Amount of time to wait before switching:"
+msgstr "Задержка перед переключением:"
+
+#: src/strings.c:74 src/strings.c:105 src/strings.c:112 src/strings.c:120
+#: src/strings.c:169 src/strings.c:172
+msgid "ms"
+msgstr "миллисекунд"
+
+#: src/strings.c:75
+msgid "<span weight=\"bold\">Information Dialog</span>"
+msgstr "<span weight=\"bold\">Информация о размере окна</span>"
+
+#: src/strings.c:76
+msgid "Show _information dialog:"
+msgstr "Показывать информацию о размере:"
+
+#: src/strings.c:77
+msgid "When resizing terminal windows"
+msgstr "для окон терминала"
+
+#: src/strings.c:78
+msgid "Always"
+msgstr "всегда"
+
+#: src/strings.c:79
+msgid "Never"
+msgstr "никогда"
+
+#: src/strings.c:81
+msgid "Information dialog's _position:"
+msgstr "Позиция информационного диалога:"
+
+#: src/strings.c:82
+msgid "Centered on the window"
+msgstr "по центру окна"
+
+#: src/strings.c:83
+msgid "Above the window"
+msgstr "над окном"
+
+#: src/strings.c:84
+msgid "Fixed position on screen"
+msgstr "фиксирована на экране"
+
+#: src/strings.c:86
+msgid "Fixed _x position:"
+msgstr "Фиксировать x:"
+
+#: src/strings.c:87 src/strings.c:92
+msgid "Centered"
+msgstr "по центру"
+
+#: src/strings.c:88
+msgid "From left edge"
+msgstr "слева"
+
+#: src/strings.c:89
+msgid "From right edge"
+msgstr "справа"
+
+#: src/strings.c:91
+msgid "Fixed _y position:"
+msgstr "Фиксировать y:"
+
+#: src/strings.c:93
+msgid "From top edge"
+msgstr "сверху"
+
+#: src/strings.c:94
+msgid "From bottom edge"
+msgstr "снизу"
+
+#: src/strings.c:96
+msgid "Move & Resize"
+msgstr "Перемещение и размер"
+
+#: src/strings.c:99
+msgid "_Focus windows when the mouse pointer moves over them"
+msgstr "Устанавливать фокус на окно при наведении указателя мыши"
+
+#: src/strings.c:101
+msgid "Move focus under the mouse when _switching desktops"
+msgstr "При переключении рабочих столов"
+
+#: src/strings.c:102
+msgid "Move focus _under the mouse when the mouse is not moving"
+msgstr "Установить фокус под мышью, когда мышь не движется"
+
+#: src/strings.c:103
+msgid "_Raise windows when the mouse pointer moves over them"
+msgstr "Поднимать окно при наведении указателя мыши"
+
+#: src/strings.c:104
+msgid "_Delay before focusing and raising windows:"
+msgstr "Задержка перед фокусом и поднятием окна"
+
+#: src/strings.c:106
+msgid "<span weight=\"bold\">Titlebar</span>"
+msgstr "<span weight=\"bold\">Заголовок окна</span>"
+
+#: src/strings.c:108
+msgid "Double click on the _titlebar:"
+msgstr "При двойном щелчке мыши на заголовке:"
+
+#: src/strings.c:109
+msgid "Maximizes the window"
+msgstr "развернуть окно"
+
+#: src/strings.c:110
+msgid "Shades the window"
+msgstr "свернуть в заголовок"
+
+#: src/strings.c:111
+msgid "Double click ti_me:"
+msgstr "Время двойного щелчка:"
+
+#: src/strings.c:114
+msgid "Mouse"
+msgstr "Мышь"
+
+#: src/strings.c:115
+msgid "<span weight=\"bold\">Desktops</span>"
+msgstr "<span weight=\"bold\">Рабочие столы</span>"
+
+#: src/strings.c:117
+msgid "_Show a notification when switching desktops"
+msgstr "Показывать уведомление при переключении рабочих столов"
+
+#: src/strings.c:119
+msgid "_Amount of time to show the notification for:"
+msgstr "Показывать уведомление на:"
+
+#: src/strings.c:121
+msgid "_Number of desktops: "
+msgstr "Количество рабочих столов:"
+
+#: src/strings.c:122
+msgid "_Desktop names:"
+msgstr "Названия рабочих столов:"
+
+#: src/strings.c:123
+msgid "Desktops"
+msgstr "Рабочие столы"
+
+#: src/strings.c:124
+msgid "<span weight=\"bold\">Desktop Margins</span>"
+msgstr "<span weight=\"bold\">Границы рабочего стола</span>"
+
+#: src/strings.c:126
+msgid ""
+"Desktop margins are reserved areas on the edge of your screen.  New windows "
+"will not be placed within a margin, and maximized windows will not cover "
+"them."
+msgstr ""
+"Границы позволяют выделить пространство по краям экрана. Новые окна не будут "
+"помещаться за эти границы, и при развороте во весь экран эта область не "
+"будет перекрыта."
+
+#: src/strings.c:127
+msgid "_Top"
+msgstr "Сверху"
+
+#: src/strings.c:129
+msgid "_Left"
+msgstr "Слева"
+
+#: src/strings.c:131
+msgid "_Right"
+msgstr "Справа"
+
+#: src/strings.c:133
+msgid "_Bottom"
+msgstr "Снизу"
+
+#: src/strings.c:135
+msgid "Margins"
+msgstr "Границы экрана"
+
+#: src/strings.c:136
+msgid "<span weight=\"bold\">Dock</span>"
+msgstr "<span weight=\"bold\">Док</span>"
+
+#: src/strings.c:138
+msgid ""
+"The dock is a special container for \"dockapps\", or dock applications.  It "
+"is not visible on screen until a dockapp is run.  Dockapps can be used to "
+"show things like a clock, or to provide you with a system tray."
+msgstr "Док это специальный контейнер, для \"dockapps\" или по другому, приложений дока. Он не видим на экране до тех пор, пока не запущено это приложение.  Dockapps может быть использованы для показа таких вещей, как часы или системного трея."
+
+#: src/strings.c:139
+msgid "<span weight=\"bold\">Position</span>"
+msgstr "<span weight=\"bold\">Расположение</span>"
+
+#: src/strings.c:141
+msgid "_Position:"
+msgstr "Расположение:"
+
+#: src/strings.c:142
+msgid "Top Left"
+msgstr "слева сверху"
+
+#: src/strings.c:143
+msgid "Top"
+msgstr "сверху"
+
+#: src/strings.c:144
+msgid "Top Right"
+msgstr "справа сверху"
+
+#: src/strings.c:145
+msgid "Left"
+msgstr "слева"
+
+#: src/strings.c:146
+msgid "Right"
+msgstr "справа"
+
+#: src/strings.c:147
+msgid "Bottom Left"
+msgstr "слева снизу"
+
+#: src/strings.c:148
+msgid "Bottom"
+msgstr "снизу"
+
+#: src/strings.c:149
+msgid "Bottom Right"
+msgstr "справа снизу"
+
+#: src/strings.c:150
+msgid "Floating"
+msgstr "плавающее"
+
+#: src/strings.c:152
+msgid "_Floating position:"
+msgstr "Плавающее расположение:"
+
+#: src/strings.c:153
+msgid "x"
+msgstr "x"
+
+#: src/strings.c:155
+msgid "Allow _windows to be placed within the dock's area"
+msgstr "Окна могут находиться в области дока"
+
+#: src/strings.c:156
+msgid "_Orientation: "
+msgstr "Ориентация:"
+
+#: src/strings.c:157
+msgid "Vertical"
+msgstr "Вертикальная"
+
+#: src/strings.c:158
+msgid "Horizontal"
+msgstr "Горизонтальная"
+
+#: src/strings.c:159
+msgid "<span weight=\"bold\">Stacking</span>"
+msgstr "<span weight=\"bold\">Взаимодействие с окнами</span>"
+
+#: src/strings.c:161
+msgid "Keep dock _above other windows"
+msgstr "Держать док над другими окнами"
+
+#: src/strings.c:162
+msgid "A_llow dock to be both above and below windows"
+msgstr "Позволять доку находиться как над, так и под другими окнами"
+
+#: src/strings.c:163
+msgid "Keep dock _below other windows"
+msgstr "Держать док под другими окнами"
+
+#: src/strings.c:164
+msgid "<span weight=\"bold\">Hiding</span>"
+msgstr "<span weight=\"bold\">Автоскрытие</span>"
+
+#: src/strings.c:166
+msgid "_Hide off screen"
+msgstr "Скрывать с экрана"
+
+#: src/strings.c:168
+msgid "_Delay before hiding:"
+msgstr "Задержка перед скрытием:"
+
+#: src/strings.c:171
+msgid "Delay before _showing:"
+msgstr "Задержка перед появлением:"
+
+#: src/strings.c:173
+msgid "Dock"
+msgstr "Док"
+
+#: src/strings.c:174
+msgid "Abo_ut"
+msgstr "О программе"
+
+#: src/strings.c:175
+msgid "About ObConf"
+msgstr "Об ObConf"
+
+#: src/strings.c:176
+msgid "<span weight=\"bold\" size=\"xx-large\">ObConf VERSION</span>"
+msgstr "<span weight=\"bold\" size=\"xx-large\">ObConf VERSION</span>"
+
+#: src/strings.c:177
+msgid "A preferences manager for Openbox"
+msgstr "Менеджер настроек для Openbox"
+
+#: src/strings.c:178
+msgid ""
+"Copyright (c) 2003-2008\n"
+"Dana Jansens <danakj@orodu.net>\n"
+"Tim Riley <tr@slackzone.org>\n"
+"Javeed Shaikh <syscrash2k@gmail.com>"
+msgstr ""
+"Copyright (c) 2003-2008\n"
+"Dana Jansens <danakj@orodu.net>\n"
+"Tim Riley <tr@slackzone.org>\n"
+"Javeed Shaikh <syscrash2k@gmail.com>"
+
+#: src/strings.c:182
+msgid "window1"
+msgstr "окно1"
+
+#: src/strings.c:183
+msgid "<span weight=\"bold\">Press the key you wish to bind...</span>"
+msgstr "<span weight=\"bold\">Нажмите клавишу для назначения...</span>"
+
+#: src/main.c:72 src/main.c:74 src/main.c:76
+msgid "Copyright (c)"
+msgstr "Copyright (c)"
+
+#: src/main.c:87
+msgid "Syntax: obconf [options] [ARCHIVE.obt]\n"
+msgstr "Использование: obconf [options] [ARCHIVE.obt]\n"
+
+#: src/main.c:88
+msgid ""
+"\n"
+"Options:\n"
+msgstr ""
+"\n"
+"Опции:\n"
+
+#: src/main.c:89
+msgid "  --help                Display this help and exit\n"
+msgstr "  --help                Показать это сообщение и выйти\n"
+
+#: src/main.c:90
+msgid "  --version             Display the version and exit\n"
+msgstr "  --version             Показать версию и выйти\n"
+
+#: src/main.c:91
+msgid "  --install ARCHIVE.obt Install the given theme archive and select it\n"
+msgstr "  --install ARCHIVE.obt Установить и выбрать заданную тему из архива\n"
+
+#: src/main.c:92
+msgid ""
+"  --archive THEME       Create a theme archive from the given theme "
+"directory\n"
+msgstr "  --archive THEME       Упаковать тему из выбранной директории в архив\n"
+
+#: src/main.c:93
+msgid "  --config-file FILE    Specify the path to the config file to use\n"
+msgstr "  --config-file FILE   Указать путь к конфигурационному файлу\n"
+
+#: src/main.c:94
 #, c-format
-msgid "Couldn't create directory: %s\n"
-msgstr "Невозможно создание директории: %s\n"
-
-#: ../src/utils.c:84
-msgid "Run as daemon"
-msgstr "Запускать как демон"
-
-#: ../src/utils.c:91
-msgid "Do not use status icon (Ctrl-Alt-P for menu)"
-msgstr "Не использовать иконку статутса (Strg+Alt+P для меню)"
-
-#: ../src/utils.c:98
-msgid "Print clipboard contents"
-msgstr "Напечатать содержимое буфера обмена"
-
-#: ../src/utils.c:105
-msgid "Print primary contents"
-msgstr "Напечатать основное содержимое"
-
-#: ../src/utils.c:117
 msgid ""
-"Clipboard CLI usage examples:\n"
 "\n"
-"  echo \"copied to clipboard\" | parcellite\n"
-"  parcellite \"copied to clipboard\"\n"
-"  echo \"copied to clipboard\" | parcellite -c"
+"Please report bugs at %s\n"
+"\n"
 msgstr ""
-"Пример использования менеджера из командной строки:\n"
 "\n"
-"  echo \"скопировано в буфер\" | parcellite\n"
-"  parcellite \"скопировано в буфер\"\n"
-"  echo \"скопировано в буфер\" | parcellite -o"
+"Пожалуйста сообщайте об ошибках на %s\n"
+"\n"
 
-#: ../src/utils.c:123
+#: src/main.c:110
+msgid "--install requires an argument\n"
+msgstr "--install требует указания аргумента\n"
+
+#: src/main.c:116
+msgid "--archive requires an argument\n"
+msgstr "--archive требует указания аргументаt\n"
+
+#: src/main.c:122
+msgid "--config-file requires an argument\n"
+msgstr "--config-file требует указания аргумента\n"
+
+#: src/main.c:213
 msgid ""
-"Written by Gilberto \"Xyhthyx\" Miralla.\n"
-"Report bugs to <xyhthyx@gmail.com>."
+"Failed to load the obconf.glade interface file. You have probably failed to "
+"install ObConf properly."
 msgstr ""
-"Entwickelt von Gilberto \"Xyhthyx\" Miralla.\n"
-"Melden Sie Fehler bitte an <xyhthyx@gmail.com>."
+"Не удалось загрузить файл obconf.glade. Возможно, ObConf был установлен "
+"некорректно."
 
-#. Create the dialog
-#: ../src/preferences.c:395
-msgid "Preferences"
-msgstr "Настройки"
+#: src/main.c:234
+msgid ""
+"Failed to load an rc.xml. You have probably failed to install Openbox "
+"properly."
+msgstr "Не удалось загрузить rc.xml. Возможно, ObConf был установлен некорректно."
 
-#: ../src/preferences.c:414
-msgid "Behavior"
-msgstr "Поведение"
+#: src/main.c:243
+#, c-format
+msgid ""
+"Error while parsing the Openbox configuration file.  Your configuration file "
+"is not valid XML.\n"
+"\n"
+"Message: %s"
+msgstr ""
+"Ошибка при парсинге конфигурационного файла Openbox. Конфигурацонный XML-"
+"файл некорректен\n"
+"\n"
+"Сообщение: %s"
 
-#: ../src/preferences.c:422
-msgid "<b>Clipboards</b>"
-msgstr "<b>Буферы обмена</b>"
+#: src/desktops.c:134 src/desktops.c:165 src/desktops.c:181
+msgid "(Unnamed desktop)"
+msgstr "(без названия)"
 
-#: ../src/preferences.c:429
-msgid "Use _Copy (Ctrl-C)"
-msgstr "Использовать буфер _Копировать (Ctrl-C)"
+#: src/theme.c:109 src/theme.c:141
+msgid "Choose an Openbox theme"
+msgstr "Выберите тему для Openbox"
 
-#: ../src/preferences.c:432
-msgid "Use _Primary (Selection)"
-msgstr "_Использовать буфер выделения"
+#: src/theme.c:118
+msgid "Openbox theme archives"
+msgstr "Архивы тем Openbox"
 
-#: ../src/preferences.c:435
-msgid "S_ynchronize clipboards"
-msgstr "Синхронизировать буферы"
+#: src/archive.c:40
+#, c-format
+msgid "\"%s\" was installed to %s"
+msgstr "\"%s\" была установлена в %s"
 
-#: ../src/preferences.c:443
-msgid "<b>History</b>"
-msgstr "<b>История</b>"
+#: src/archive.c:65
+#, c-format
+msgid "\"%s\" was successfully created"
+msgstr "\"%s\" был успешно создан"
 
-#: ../src/preferences.c:450
-msgid "_Save history"
-msgstr "_Сохранять историю"
+#: src/archive.c:101
+#, c-format
+msgid ""
+"Unable to create the theme archive \"%s\".\n"
+"The following errors were reported:\n"
+"%s"
+msgstr ""
+"Невозможно создать архив с темой \"%s\".\n"
+"Сообщения об ошибках:\n"
+"%s"
 
-#: ../src/preferences.c:451
-msgid "Save and restore history between sessions"
-msgstr "Сохранять и восстанавливать историю между сессиями"
+#: src/archive.c:106 src/archive.c:190
+#, c-format
+msgid "Unable to run the \"tar\" command: %s"
+msgstr "Не удалось запусить команду \"tar\" : %s"
 
-#: ../src/preferences.c:455
-msgid "Items in history:"
-msgstr "Элементы в истории:"
+#: src/archive.c:126
+#, c-format
+msgid "Unable to create directory \"%s\": %s"
+msgstr "Не удалось создать директорию \"%s\": %s"
 
-#: ../src/preferences.c:468
-msgid "<b>Miscellaneous</b>"
-msgstr "<b>Исключения</b>"
+#: src/archive.c:148
+#, c-format
+msgid "\"%s\" does not appear to be a valid Openbox theme directory"
+msgstr "\"%s\" похоже не директория с темой Openbox"
 
-#: ../src/preferences.c:475
-msgid "Capture _hyperlinks only"
-msgstr "Захватывать только _гиперссылки"
+#: src/archive.c:158
+#, c-format
+msgid "Unable to move to directory \"%s\": %s"
+msgstr "Не удалось переместить директорию \"%s\": %s"
 
-#: ../src/preferences.c:477
-msgid "C_onfirm before clearing history"
-msgstr "_Подтверждение перед очисткой истории"
+#: src/archive.c:197
+#, c-format
+msgid ""
+"Unable to extract the file \"%s\".\n"
+"Please ensure that \"%s\" is writable and that the file is a valid Openbox "
+"theme archive.\n"
+"The following errors were reported:\n"
+"%s"
+msgstr ""
+"Не удалось распаковать файл \"%s\".\n"
+"Пожалуйста убедитесь что \"%s\" доступен для записи, и что файл является "
+"архивом темы Openbox.\n"
+"Сообщения об ошибках:\n"
+"%s"
 
-#: ../src/preferences.c:484
-msgid "Display"
-msgstr "Отображение"
+#: src/mouse.c:72
+msgid "Custom actions"
+msgstr "Действие по выбору"
 
-#: ../src/preferences.c:492
-msgid "<b>Items</b>"
-msgstr "<b>Элементы</b>"
-
-#: ../src/preferences.c:499
-msgid "Show in a _single line"
-msgstr "Показывать в одну строку"
-
-#: ../src/preferences.c:501
-msgid "Show in _reverse order"
-msgstr "Показывать в обратном порядке"
-
-#: ../src/preferences.c:505
-msgid "Character length of items:"
-msgstr "Число символов в элементе "
-
-#: ../src/preferences.c:518
-msgid "<b>Omitting</b>"
-msgstr "<b>Исключения</b>"
-
-#: ../src/preferences.c:527
-msgid "Omit items in the:"
-msgstr "Исключить элементы в:"
-
-#: ../src/preferences.c:531
-msgid "Beginning"
-msgstr "Начале"
-
-#: ../src/preferences.c:532
-msgid "Middle"
-msgstr "Середине"
-
-#: ../src/preferences.c:533
-msgid "End"
-msgstr "Конце"
-
-#: ../src/preferences.c:540
-msgid "Actions"
-msgstr "Действия"
-
-#. Build the actions label
-#: ../src/preferences.c:545
-msgid "Control-click Parcellite's tray icon to use actions"
-msgstr "CTRL+клик по иконке Parcellite в трее для выполнения действий"
-
-#: ../src/preferences.c:565
-msgid "Action"
-msgstr "Действие"
-
-#: ../src/preferences.c:572
-msgid "Command"
-msgstr "Команда"
-
-#: ../src/preferences.c:587
-msgid "Add..."
-msgstr "Добавить..."
-
-#: ../src/preferences.c:591
-msgid "Remove"
-msgstr "Удалить"
-
-#: ../src/preferences.c:608
-msgid "Hotkeys"
-msgstr "Горячие клавиши"
-
-#: ../src/preferences.c:616
-msgid "<b>Hotkeys</b>"
-msgstr "<b>Горячие клавиши</b>"
-
-#: ../src/preferences.c:625
-msgid "History key combination:"
-msgstr "Вызов Истории"
-
-#: ../src/preferences.c:633
-msgid "Actions key combination:"
-msgstr "Вызов Действия"
-
-#: ../src/preferences.c:641
-msgid "Menu key combination:"
-msgstr "Вызов меню"
-
-#: ../data/parcellite.desktop.in.h:2 ../data/parcellite-startup.desktop.in.h:2
-msgid "Parcellite"
-msgstr "Parcellite"
-
-#~ msgid "Could not create thread for executed action\n"
-#~ msgstr "Невозможно создать поток для запускаемого действия\n"
-
-#~ msgid "<b>Clipboard</b>"
-#~ msgstr "<b>Zwischenablage</b>"
-
-#~ msgid "Save changes"
-#~ msgstr "Änderungen speichern"
-
-#~ msgid "Discard changes"
-#~ msgstr "Änderungen verwerfen"
-
-#~ msgid "Extras"
-#~ msgstr "Extras"
-
-#~ msgid ""
-#~ "Add a new action\n"
-#~ "\"%s\" in a command is replaced with the clipboard contents"
-#~ msgstr "\"%s\" wird mit dem Inhalt der Zwischenablage ersetzt"
-
-#~ msgid "Move selected action up"
-#~ msgstr "Поднять выбранное действие вверх"
-
-#~ msgid "Move selected action down"
-#~ msgstr "Поднять вызванное действие вниз"
-
-#~ msgid "Close"
-#~ msgstr "Schließen"
-
-#~ msgid "New Action"
-#~ msgstr "Neue Aktion"
-
-#~ msgid "<b>Name:</b>"
-#~ msgstr "<b>Name:</b>"
-
-#~ msgid "Name your action"
-#~ msgstr "Benennen Sie Ihre Aktion"
-
-#~ msgid "<b>Command:</b>"
-#~ msgstr "<b>Befehl:</b>"
-
-#~ msgid "Edit Action"
-#~ msgstr "Aktion bearbeiten"
-
-#~ msgid "General"
-#~ msgstr "Allgemein"
-
-#~ msgid "Length in characters of history items:"
-#~ msgstr "Maximale Länge der Zeichen pro Eintrag:"
-
-#~ msgid "History menu global hotkey:"
-#~ msgstr "Globale Tastenkombination für Verlaufsmenü:"
-
-#~ msgid "Actions menu global hotkey:"
-#~ msgstr "Globale Tastenkombination für Aktionsmenü:"
-
-#~ msgid "Single _line mode"
-#~ msgstr "Zei_lenmodus"
-
-#~ msgid "Ignore all non-hyperlink text"
-#~ msgstr "Ignoriere nicht verlinkten Text"
-
-#~ msgid "New"
-#~ msgstr "Neu"
-
-#~ msgid "New action"
-#~ msgstr "Neue Aktion"
-
-#~ msgid "Edit"
-#~ msgstr "Bearbeiten"
-
-#~ msgid "Edit selected"
-#~ msgstr "Auswahl bearbeiten"
-
-#~ msgid "Delete"
-#~ msgstr "Löschen"
-
-#~ msgid "Delete selected"
-#~ msgstr "Auswahl löschen"

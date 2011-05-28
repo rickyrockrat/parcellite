@@ -497,7 +497,7 @@ void show_preferences(gint tab)
   /**set the history position  */
   hbox = gtk_hbox_new(FALSE, 4);
   gtk_box_pack_start((GtkBox*)vbox, hbox, FALSE, FALSE, 0);
-  history_pos = gtk_check_button_new_with_mnemonic(_("_Postion history"));
+  history_pos = gtk_check_button_new_with_mnemonic(_("_Position history"));
   gtk_widget_set_tooltip_text(history_pos, _("Set the location where history appears. If unchecked, appears where the mouse is."));
   gtk_box_pack_start((GtkBox*)hbox, history_pos, FALSE, FALSE, 0);
   postition_history(NULL,&x,&y,NULL, (gpointer)1);
