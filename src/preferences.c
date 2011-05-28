@@ -45,6 +45,9 @@ GtkWidget *copy_check,
           *history_y,
           *case_search,
           *type_search,
+          *ignore_whiteonly,
+          *trim_wspace_begend,
+          *trim_newline,
           *data_size;
 
 GtkListStore* actions_list;
@@ -86,6 +89,9 @@ apply_preferences()
   prefs.menu_key = g_strdup(gtk_entry_get_text((GtkEntry*)menu_key_entry));
   prefs.case_search = gtk_toggle_button_get_active((GtkToggleButton*)case_search);
   prefs.type_search = gtk_toggle_button_get_active((GtkToggleButton*)type_search);
+	prefs.ignore_whiteonly = gtk_toggle_button_get_active((GtkToggleButton*)ignore_whiteonly);
+	prefs.trim_wspace_begend = gtk_toggle_button_get_active((GtkToggleButton*)trim_wspace_begend);
+	prefs.trim_newline = gtk_toggle_button_get_active((GtkToggleButton*)trim_newline); 
   
   /* Bind keys and apply the new history limit */
   keybinder_bind(prefs.history_key, history_hotkey, NULL);
@@ -122,7 +128,9 @@ static void save_preferences()
   g_key_file_set_boolean(rc_key, "rc", "case_search", prefs.case_search);
   g_key_file_set_boolean(rc_key, "rc", "type_search", prefs.type_search);
   g_key_file_set_integer(rc_key, "rc", "data_size", prefs.data_size);
-
+  g_key_file_set_boolean(rc_key, "rc", "ignore_whiteonly", prefs.ignore_whiteonly);
+  g_key_file_set_boolean(rc_key, "rc", "trim_wspace_begend", prefs.trim_wspace_begend);
+	g_key_file_set_boolean(rc_key, "rc", "trim_newline", prefs.trim_newline);
   /* Check config and data directories */
   check_dirs();
   /* Save key to file */
@@ -161,6 +169,9 @@ void read_preferences()
     prefs.case_search = g_key_file_get_boolean(rc_key, "rc", "case_search", NULL);    
     prefs.type_search = g_key_file_get_boolean(rc_key, "rc", "type_search", NULL);    
     prefs.data_size = g_key_file_get_integer(rc_key, "rc", "data_size", NULL);
+		prefs.ignore_whiteonly = g_key_file_get_boolean(rc_key, "rc", "ignore_whiteonly", NULL);    
+		prefs.trim_wspace_begend = g_key_file_get_boolean(rc_key, "rc", "trim_wspace_begend", NULL);    
+		prefs.trim_newline = g_key_file_get_boolean(rc_key, "rc", "trim_newline", NULL);    
     if(0 == prefs.type_search)
       prefs.case_search=0;
     /* Check for errors and set default values if any */
@@ -543,7 +554,19 @@ void show_preferences(gint tab)
   gtk_widget_set_tooltip_text(case_search, _("If checked, does case sensitive search"));
   g_signal_connect((GObject*)case_search, "toggled", (GCallback)search_toggled, case_search);
   gtk_box_pack_start((GtkBox*)vbox, case_search, FALSE, FALSE, 0);  
-  
+/** ignore_whiteonly checkbox */ 
+	ignore_whiteonly = gtk_check_button_new_with_mnemonic(_("_Ignore Whitespace Only"));
+  gtk_widget_set_tooltip_text(ignore_whiteonly, _("If checked, will ignore any clipboard additions that contain only whitespace."));
+  gtk_box_pack_start((GtkBox*)vbox, ignore_whiteonly, FALSE, FALSE, 0);
+/** trim_wspace_begend checkbox */ 
+	trim_wspace_begend = gtk_check_button_new_with_mnemonic(_("_Trim Whitespace"));
+  gtk_widget_set_tooltip_text(trim_wspace_begend, _("If checked, will trim whitespace from beginning and end of entry."));
+  gtk_box_pack_start((GtkBox*)vbox, trim_wspace_begend, FALSE, FALSE, 0);
+/** trim_newline checkbox */ 
+	trim_newline = gtk_check_button_new_with_mnemonic(_("_Trim Newlines"));
+  gtk_widget_set_tooltip_text(trim_newline, _("If checked, will replace newlines with spaces."));
+  gtk_box_pack_start((GtkBox*)vbox, trim_newline, FALSE, FALSE, 0);
+	
   hyperlinks_check = gtk_check_button_new_with_mnemonic(_("Capture _hyperlinks only"));
   gtk_box_pack_start((GtkBox*)vbox, hyperlinks_check, FALSE, FALSE, 0);
   confirm_check = gtk_check_button_new_with_mnemonic(_("C_onfirm before clearing history"));
@@ -739,6 +762,9 @@ void show_preferences(gint tab)
   gtk_toggle_button_set_active((GtkToggleButton*)case_search, prefs.case_search);  
   gtk_toggle_button_set_active((GtkToggleButton*)type_search, prefs.type_search);  
   gtk_spin_button_set_value((GtkSpinButton*)data_size, (gdouble)prefs.data_size);
+	gtk_toggle_button_set_active((GtkToggleButton*)ignore_whiteonly, prefs.ignore_whiteonly);  
+	gtk_toggle_button_set_active((GtkToggleButton*)trim_wspace_begend, prefs.trim_wspace_begend);  
+	gtk_toggle_button_set_active((GtkToggleButton*)trim_newline, prefs.trim_newline);  
   
   /* Read actions */
   read_actions();
