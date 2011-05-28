@@ -1,6 +1,10 @@
 v1.0.2rc3	 Thursday, April 14 2011
  Changes
  +Fixed Status Icon missing on execute Action.
+ +Fixed Capture Hyperlinks only
+ +Added Ingore Whitespace only
+ +Added Trim Whitespace
+ +Added Trim Newlines
  
 v1.0.2rc2	 Tuesday, April 05 2011
  Changes
