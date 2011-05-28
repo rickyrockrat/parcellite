@@ -5,6 +5,7 @@ v1.0.2rc3	 Thursday, April 14 2011
  +Added Ingore Whitespace only
  +Added Trim Whitespace
  +Added Trim Newlines
+ +Fixed search-as-you-type for UTF-8.
  
 v1.0.2rc2	 Tuesday, April 05 2011
  Changes
