@@ -923,6 +923,10 @@ static gboolean key_release_cb (GtkWidget *w,GdkEventKey *e, gpointer user)
 		}
 		return FALSE;
 	}	/**end alt key pressed  */
+	if(e->state & GDK_CONTROL_MASK)	/**ignore control keys  */
+		return FALSE;
+	if(e->state &GDK_SHIFT_MASK   && prefs.case_search)	/**ignore shift   */
+		return FALSE;
 	if(e->keyval == 0xff08){/**backspace  */
 		if(idx)
 			--idx;
@@ -933,7 +937,8 @@ static gboolean key_release_cb (GtkWidget *w,GdkEventKey *e, gpointer user)
 		kstr[idx]=0;
 		return 0;
 	}	/**end backspace  */
-	if(e->keyval >'~'){
+	if( e->keyval == 0xffe1 || e->keyval == 0xffe2){
+		printf("Ignoring key '%c' 0x%02x\n",e->keyval,e->keyval);
 		TRACE(g_print("Ignoring key '%c' 0x%02x\n",e->keyval,e->keyval));	
 		return FALSE;
 	}
@@ -1167,22 +1172,9 @@ static gboolean show_history_menu(gpointer data)
   g_signal_connect((GObject*)menu, "event", (GCallback)key_release_cb, (gpointer)&h);
 	/**trap mnemonic events  */
 	/*g_signal_connect((GObject*)menu, "mnemonic-activate", (GCallback)key_release_cb, (gpointer)menu);  */
-  if(prefs.type_search){
-    /* Edit clipboard */
-		h.title_item = gtk_image_menu_item_new_with_label( _("Use Alt-E to edit, Alt-C to clear") );
-    menu_image = gtk_image_new_from_stock(GTK_STOCK_EDIT, GTK_ICON_SIZE_MENU);
-    gtk_image_menu_item_set_image((GtkImageMenuItem*)h.title_item, menu_image);
-    gtk_menu_shell_append((GtkMenuShell*)menu, h.title_item);    
-  }else{
-    menu_item = gtk_image_menu_item_new_with_mnemonic(_("_Edit Clipboard"));
-    menu_image = gtk_image_new_from_stock(GTK_STOCK_EDIT, GTK_ICON_SIZE_MENU);
-    gtk_image_menu_item_set_image((GtkImageMenuItem*)menu_item, menu_image);
-		g_signal_connect((GObject*)menu_item, "activate", (GCallback)edit_selected, (gpointer)&h);
-    gtk_menu_shell_append((GtkMenuShell*)menu, menu_item);
-  }
 
   /* -------------------- */
-  gtk_menu_shell_append((GtkMenuShell*)menu, gtk_separator_menu_item_new());
+  /*gtk_menu_shell_append((GtkMenuShell*)menu, gtk_separator_menu_item_new()); */
   /* Items */
   if ((history != NULL) && (history->data != NULL))
   {
@@ -1290,14 +1282,26 @@ static gboolean show_history_menu(gpointer data)
   }
   /* -------------------- */
   gtk_menu_shell_append((GtkMenuShell*)menu, gtk_separator_menu_item_new());
-  /* Clear */
-	if(0 ==prefs.type_search){
-  menu_item = gtk_image_menu_item_new_with_mnemonic(_("_Clear"));
-  menu_image = gtk_image_new_from_stock(GTK_STOCK_CLEAR, GTK_ICON_SIZE_MENU);
-  gtk_image_menu_item_set_image((GtkImageMenuItem*)menu_item, menu_image);
-	g_signal_connect((GObject*)menu_item, "activate", (GCallback)clear_selected, NULL);
-  gtk_menu_shell_append((GtkMenuShell*)menu, menu_item);
-  }  
+	
+	if(prefs.type_search){
+    /* Edit clipboard */
+		h.title_item = gtk_image_menu_item_new_with_label( _("Use Alt-E to edit, Alt-C to clear") );
+    menu_image = gtk_image_new_from_stock(GTK_STOCK_EDIT, GTK_ICON_SIZE_MENU);
+    gtk_image_menu_item_set_image((GtkImageMenuItem*)h.title_item, menu_image);
+    gtk_menu_shell_append((GtkMenuShell*)menu, h.title_item);    
+  }else{
+    menu_item = gtk_image_menu_item_new_with_mnemonic(_("_Edit Clipboard"));
+    menu_image = gtk_image_new_from_stock(GTK_STOCK_EDIT, GTK_ICON_SIZE_MENU);
+    gtk_image_menu_item_set_image((GtkImageMenuItem*)menu_item, menu_image);
+		g_signal_connect((GObject*)menu_item, "activate", (GCallback)edit_selected, (gpointer)&h);
+    gtk_menu_shell_append((GtkMenuShell*)menu, menu_item);
+		menu_item = gtk_image_menu_item_new_with_mnemonic(_("_Clear"));
+		/* Clear */
+	  menu_image = gtk_image_new_from_stock(GTK_STOCK_CLEAR, GTK_ICON_SIZE_MENU);
+	  gtk_image_menu_item_set_image((GtkImageMenuItem*)menu_item, menu_image);
+		g_signal_connect((GObject*)menu_item, "activate", (GCallback)clear_selected, NULL);
+	  gtk_menu_shell_append((GtkMenuShell*)menu, menu_item);
+  }
   /* Popup the menu... */
   gtk_widget_show_all(menu);
   gtk_menu_popup((GtkMenu*)menu, NULL, NULL, prefs.history_pos?postition_history:NULL, NULL, 1, gtk_get_current_event_time());
