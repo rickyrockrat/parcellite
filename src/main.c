@@ -119,7 +119,7 @@ gchar *check_set_contents ( gchar *text, GtkClipboard *clip)
 		gint len;
 		
 		if(NULL == temp) 
-			goto end;
+			goto done;
 		if(clip == primary){
 			GdkModifierType button_state;
     	gdk_window_get_pointer(NULL, NULL, NULL, &button_state);
@@ -130,12 +130,12 @@ gchar *check_set_contents ( gchar *text, GtkClipboard *clip)
     if (p_strcmp(temp, text) != 0) {
       /* Check if primary option is enabled and if there's text to add */
 			if(clip ==primary) {
-			/*	printf("pri \n"); fflush(NULL); */
+				/*printf("pri "); fflush(NULL);  */
 				if(prefs.use_primary)
 					goto check_opt;
 			}	else{
 				/* Check if clipboard option is enabled and if there's text to add */
-			/*	printf("cli \n"); fflush(NULL); */
+				/*printf("cli "); fflush(NULL);  */
 				if (prefs.use_copy )
 					goto check_opt;
 			}
@@ -181,12 +181,15 @@ process:  /**now process the text.  */
 				temp=g_strstrip(temp);
 			if (p_strcmp(temp, text) != 0) { /**different after processing...  */
 		    /* New  entry */
+				/*printf("txt %p tmp %p ",text,temp); fflush(NULL); */
         g_free(text);
-	      text=rtn = p_strdup(temp);				
+	      text=rtn = p_strdup(temp);			
+				/*printf("dup %p ",text); fflush(NULL); */
 			  delete_duplicate(text);
         append_item(text);
 				/**set clipboard to processed text since it may be different after processing. */
-				gtk_clipboard_set_text(clip, temp, -1);	
+				gtk_clipboard_set_text(clip, text, -1);	
+				/*printf("done \n");fflush(NULL); */
 			}	
 		}	
 	}	
@@ -208,9 +211,9 @@ static gboolean item_check(gpointer data)
   if (prefs.synchronize)
   {
     if(NULL == primary_text)
-      primary_text=clipboard_text;
+      primary_text=p_strdup(clipboard_text);
     else if( NULL == clipboard_text)
-      clipboard_text=primary_text;
+      clipboard_text=p_strdup(primary_text);
     if (p_strcmp(synchronized_text, primary_text) != 0)
     {
       g_free(synchronized_text);
