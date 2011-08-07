@@ -280,8 +280,7 @@ static void action_selected(GtkButton *button, gpointer user_data)
   /* Insert clipboard into command (user_data), and prepare it for execution */
   gchar* clipboard_text = gtk_clipboard_wait_for_text(clipboard);
 	gchar* command=g_strdup_printf((gchar *)user_data,clipboard_text);
-	printf("Got cmd '%s'\n",command);fflush(NULL);
-/*  gchar* command = g_markup_printf_escaped((gchar*)user_data, clipboard_text); */
+	/*printf("Got cmd '%s'\n",command);fflush(NULL); */
   g_free(clipboard_text);
   g_free(user_data);
   gchar* shell_command = g_shell_quote(command);
@@ -425,7 +424,7 @@ static void show_about_dialog(GtkMenuItem *menu_item, gpointer user_data)
   /* This helps prevent multiple instances */
   if (!gtk_grab_get_current())
   {
-    const gchar* authors[] = {"Gilberto \"Xyhthyx\" Miralla <xyhthyx@gmail.com>\nDoug Springer <gpib@rickyrockrat.com>", NULL};
+    const gchar* authors[] = {"Gilberto \"Xyhthyx\" Miralla <xyhthyx@gmail.com>\nDoug Springer <gpib@rickyrockrat.net>", NULL};
     const gchar* license =
       "This program is free software; you can redistribute it and/or modify\n"
       "it under the terms of the GNU General Public License as published by\n"
