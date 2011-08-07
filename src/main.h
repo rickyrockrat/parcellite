@@ -56,6 +56,9 @@ typedef struct
 	gboolean  case_search;      /* turn on case sensitive search */
 	gboolean  type_search;      /* turn on search-as-you-type */
   gint32      data_size;      /**size, in megabytes to limit text copied.  */
+	gboolean  ignore_whiteonly; /** will not add entries that are only whitespace */
+	gboolean  trim_wspace_begend; /** Trims whitespace from beginning and end of line*/
+	gboolean  trim_newline;      /** Trims newlines from lines */
 }
 prefs_t;
 
