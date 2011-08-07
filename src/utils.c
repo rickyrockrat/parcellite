@@ -156,7 +156,7 @@ gboolean parse_options(int argc, char* argv[])
   /* Set description */
   g_option_context_set_description(context,
                                  _("Written by Gilberto \"Xyhthyx\" Miralla.\n"
-                                   "Report bugs to <gpib@rickyrockrat.com>."));
+                                   "Report bugs to <gpib@rickyrockrat.net>."));
   /* Add entries and parse options */
   g_option_context_add_main_entries(context, main_entries, NULL);
   g_option_context_parse(context, &argc, &argv, NULL);
