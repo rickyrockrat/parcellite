@@ -279,7 +279,9 @@ static void action_selected(GtkButton *button, gpointer user_data)
   
   /* Insert clipboard into command (user_data), and prepare it for execution */
   gchar* clipboard_text = gtk_clipboard_wait_for_text(clipboard);
-  gchar* command = g_markup_printf_escaped((gchar*)user_data, clipboard_text);
+	gchar* command=g_strdup_printf((gchar *)user_data,clipboard_text);
+	printf("Got cmd '%s'\n",command);fflush(NULL);
+/*  gchar* command = g_markup_printf_escaped((gchar*)user_data, clipboard_text); */
   g_free(clipboard_text);
   g_free(user_data);
   gchar* shell_command = g_shell_quote(command);
@@ -551,7 +553,8 @@ static gboolean show_actions_menu(gpointer data)
   /* -------------------- */
   gtk_menu_shell_append((GtkMenuShell*)menu, gtk_separator_menu_item_new());
   /* Actions */
-  gchar* path = g_build_filename(g_get_home_dir(), ACTIONS_FILE, NULL);
+  gchar* path = g_build_filename(g_get_user_data_dir(), ACTIONS_FILE, NULL);
+	printf("got path '%s'\n",path); fflush(NULL);
   FILE* actions_file = fopen(path, "rb");
   g_free(path);
   /* Check that it opened and begin read */

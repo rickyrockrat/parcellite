@@ -1,10 +1,11 @@
-v1.0.2rc3	 Thursday, April 14 2011
+v1.0.2rc3	 Sunday, August 7 2011
  Changes
  +Fixed Status Icon missing on execute Action.
  +Fixed Capture Hyperlinks only
  +Added Ignore Whitespace only
  +Added Trim Whitespace
  +Added Trim Newlines
+ +Fixed Actions having HTML markup in the clipboard entry.
  +Fixed search-as-you-type for UTF-8.
  +Updated Russian (Alexander Kazancev).
  +Updated Catalan translation, position type. (Fuertes::Benjami)
