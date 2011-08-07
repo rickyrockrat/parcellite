@@ -1,4 +1,6 @@
 #!/bin/sh
+# For parcellite deb packaging, install these packages (apt-get):
+# dh-make intltool libgtk2.0-dev
 if [ $# -lt 1 ]; then
 	echo "Usage $0 /path/to/source/tar"
 	exit 1
