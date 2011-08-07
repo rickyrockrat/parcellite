@@ -91,105 +91,129 @@ int p_strcmp (const char *str1, const char *str2)
   return strcmp(str1,str2);
 #endif
 }
+
+/***************************************************************************/
+/** Check the given clipboard contents. Recover lost text. Decide if we 
+Add this to the list of clip elements.
+\n\b Arguments:
+\n\b Returns: Whatever was currently placed on the clipboard.
+****************************************************************************/
+gchar *check_set_contents ( gchar *text, GtkClipboard *clip)
+{
+	gchar *temp = gtk_clipboard_wait_for_text(clip);
+	gchar *rtn=text; /**default to last entry  */
+	/*printf("csc %p\n",text); fflush(NULL); */
+	 /* Check if primary contents were lost */
+  if ((temp == NULL) && (text != NULL)) {
+    /* Check contents */
+    gint count;
+    GdkAtom *targets;
+    gboolean contents = gtk_clipboard_wait_for_targets(clip, &targets, &count);
+    g_free(targets);
+    /* Only recover lost contents if there isn't any other type of content in the clipboard */
+    if (!contents) {
+      gtk_clipboard_set_text(clip, text, -1);
+   	}
+   	goto end;
+ 	} else{
+		gint len;
+		
+		if(NULL == temp) 
+			goto done;
+		if(clip == primary){
+			GdkModifierType button_state;
+    	gdk_window_get_pointer(NULL, NULL, NULL, &button_state);
+			if ( button_state & GDK_BUTTON1_MASK )
+				goto end;
+		}
+		/* Check if clip is the same as the last entry */
+    if (p_strcmp(temp, text) != 0) {
+      /* Check if primary option is enabled and if there's text to add */
+			if(clip ==primary) {
+				/*printf("pri "); fflush(NULL);  */
+				if(prefs.use_primary)
+					goto check_opt;
+			}	else{
+				/* Check if clipboard option is enabled and if there's text to add */
+				/*printf("cli "); fflush(NULL);  */
+				if (prefs.use_copy )
+					goto check_opt;
+			}
+		}		
+		goto end;
+				
+check_opt: /**we now check our options...  */		
+		/*printf("opt\n"); fflush(NULL); */
+		if (prefs.hyperlinks_only){
+			 if(is_hyperlink(temp))
+				 	goto process;
+		}	else {
+			/*printf("wo\n"); fflush(NULL); */
+			if(prefs.ignore_whiteonly){
+				gchar *s;
+				for (s=temp; NULL !=s && *s; ++s){
+					if(!isspace(*s)){
+			/*			printf("Saw 0x%x\n",*s); */
+						goto process;
+						break;
+					}
+				}
+			}else
+				goto process;
+		}
+		/**set the clipboard to the last entry - effectively deleting this entry */
+		gtk_clipboard_set_text(clip, text, -1);
+		goto end;
+		
+process:  /**now process the text.  */
+		/*printf("proc\n"); fflush(NULL); */
+		len=strlen(temp);
+		if(len){
+			gchar i;
+			if(prefs.trim_newline){
+				for (i=0;i<len && temp[i]; ++i){
+					if(iscntrl(temp[i]))
+						temp[i]=' ';
+				}
+			}
+				
+			if( prefs.trim_wspace_begend )
+				temp=g_strstrip(temp);
+			if (p_strcmp(temp, text) != 0) { /**different after processing...  */
+		    /* New  entry */
+				/*printf("txt %p tmp %p ",text,temp); fflush(NULL); */
+        g_free(text);
+	      text=rtn = p_strdup(temp);			
+				/*printf("dup %p ",text); fflush(NULL); */
+			  delete_duplicate(text);
+        append_item(text);
+				/**set clipboard to processed text since it may be different after processing. */
+				gtk_clipboard_set_text(clip, text, -1);	
+				/*printf("done \n");fflush(NULL); */
+			}	
+		}	
+	}	
+end:
+	if(NULL != temp)
+		g_free(temp);
+done:
+	return rtn;
+}
+
 /* Called every CHECK_INTERVAL seconds to check for new items */
 static gboolean item_check(gpointer data)
 {
-  /* Grab the current primary and clipboard text */
-  gchar* primary_temp = gtk_clipboard_wait_for_text(primary);
-  gchar* clipboard_temp = gtk_clipboard_wait_for_text(clipboard);
-  
-  /* What follows is an extremely confusing system of tests and crap... */
-  
-  /* Check if primary contents were lost */
-  if ((primary_temp == NULL) && (primary_text != NULL))
-  {
-    /* Check contents */
-    gint count;
-    GdkAtom *targets;
-    gboolean contents = gtk_clipboard_wait_for_targets(primary, &targets, &count);
-    g_free(targets);
-    /* Only recover lost contents if there isn't any other type of content in the clipboard */
-    if (!contents)
-    {
-      gtk_clipboard_set_text(primary, primary_text, -1);
-    }
-  }
-  else
-  {
-    GdkModifierType button_state;
-    gdk_window_get_pointer(NULL, NULL, NULL, &button_state);
-    /* Proceed if mouse button not being held */
-    if ((primary_temp != NULL) && !(button_state & GDK_BUTTON1_MASK))
-    {
-      /* Check if primary is the same as the last entry */
-      if (p_strcmp(primary_temp, primary_text) != 0)
-      {
-        /* New primary entry */
-        g_free(primary_text);
-        primary_text = p_strdup(primary_temp);
-        /* Check if primary option is enabled and if there's text to add */
-        if (prefs.use_primary && primary_text)
-        {
-          /* Check contents before adding */
-          if (prefs.hyperlinks_only && is_hyperlink(primary_text))
-          {
-            delete_duplicate(primary_text);
-            append_item(primary_text);
-          }
-          else
-          {
-            delete_duplicate(primary_text);
-            append_item(primary_text);
-          }
-        }
-      }
-    }
-  }
-  
-  /* Check if clipboard contents were lost */
-  if ((clipboard_temp == NULL) && (clipboard_text != NULL))
-  {
-    /* Check contents */
-    gint count;
-    GdkAtom *targets;
-    gboolean contents = gtk_clipboard_wait_for_targets(clipboard, &targets, &count);
-    g_free(targets);
-		/* Only recover lost contents if there isn't any other type of content in the clipboard */
-		if (!contents)
-		{
-      g_print("Clipboard is null, recovering ...\n");
-      gtk_clipboard_set_text(clipboard, clipboard_text, -1);
-    }
-  }
-  else
-  {
-    /* Check if clipboard is the same as the last entry */
-    if (p_strcmp(clipboard_temp, clipboard_text) != 0)
-    {
-      /* New clipboard entry */
-      g_free(clipboard_text);
-      clipboard_text = p_strdup(clipboard_temp);
-      /* Check if clipboard option is enabled and if there's text to add */
-      if (prefs.use_copy && clipboard_text)
-      {
-        /* Check contents before adding */
-        if (prefs.hyperlinks_only && is_hyperlink(clipboard_text))
-        {
-          delete_duplicate(clipboard_text);
-          append_item(clipboard_text);
-        }
-        else
-        {
-          delete_duplicate(clipboard_text);
-          append_item(clipboard_text);
-        }
-      }
-    }
-  }
-  
+	/*printf("pri %p\n",primary_text); fflush(NULL); */
+  primary_text=check_set_contents (primary_text,primary);
+	/*printf("cli %p\n",clipboard_text); fflush(NULL); */
+	clipboard_text=check_set_contents (clipboard_text,clipboard);
   /* Synchronization */
   if (prefs.synchronize)
   {
+    if(NULL == primary_text)
+      primary_text=p_strdup(clipboard_text);
+    else if( NULL == clipboard_text)
+      clipboard_text=p_strdup(primary_text);
     if (p_strcmp(synchronized_text, primary_text) != 0)
     {
       g_free(synchronized_text);
@@ -203,10 +227,6 @@ static gboolean item_check(gpointer data)
       gtk_clipboard_set_text(primary, clipboard_text, -1);
     }
   }
-  
-  /* Cleanup */
-  g_free(primary_temp);
-  g_free(clipboard_temp);
   
   return TRUE;
 }
@@ -225,7 +245,7 @@ static void *execute_action(void *command)
   	g_print("sytem command '%s' failed\n",(gchar *)command);
   if (!prefs.no_icon)
   {
-	gtk_status_icon_set_from_stock((GtkStatusIcon*)status_icon, PARCELLITE_ICON);
+	gtk_status_icon_set_from_icon_name((GtkStatusIcon*)status_icon, PARCELLITE_ICON);
   gtk_status_icon_set_tooltip((GtkStatusIcon*)status_icon, _("Clipboard Manager"));
   }
   actions_lock = FALSE;
@@ -240,7 +260,7 @@ static void action_exit(GPid pid, gint status, gpointer data)
   g_spawn_close_pid(pid);
   if (!prefs.no_icon)
   {
-		gtk_status_icon_set_from_stock((GtkStatusIcon*)status_icon, PARCELLITE_ICON);
+		gtk_status_icon_set_from_icon_name((GtkStatusIcon*)status_icon, PARCELLITE_ICON);
     gtk_status_icon_set_tooltip((GtkStatusIcon*)status_icon, _("Clipboard Manager"));
   }
   actions_lock = FALSE;
@@ -259,7 +279,9 @@ static void action_selected(GtkButton *button, gpointer user_data)
   
   /* Insert clipboard into command (user_data), and prepare it for execution */
   gchar* clipboard_text = gtk_clipboard_wait_for_text(clipboard);
-  gchar* command = g_markup_printf_escaped((gchar*)user_data, clipboard_text);
+	gchar* command=g_strdup_printf((gchar *)user_data,clipboard_text);
+	printf("Got cmd '%s'\n",command);fflush(NULL);
+/*  gchar* command = g_markup_printf_escaped((gchar*)user_data, clipboard_text); */
   g_free(clipboard_text);
   g_free(user_data);
   gchar* shell_command = g_shell_quote(command);
@@ -271,6 +293,7 @@ static void action_selected(GtkButton *button, gpointer user_data)
   GPid pid;
   gchar **argv;
   g_shell_parse_argv(cmd, NULL, &argv, NULL);
+	/*g_print("cmd '%s' argv '%s'\n",cmd,argv[1]); */
   g_free(cmd);
   g_spawn_async(NULL, argv, NULL, G_SPAWN_DO_NOT_REAP_CHILD, NULL, NULL, &pid, NULL);
   g_child_watch_add(pid, (GChildWatchFunc)action_exit, NULL);
@@ -530,7 +553,8 @@ static gboolean show_actions_menu(gpointer data)
   /* -------------------- */
   gtk_menu_shell_append((GtkMenuShell*)menu, gtk_separator_menu_item_new());
   /* Actions */
-  gchar* path = g_build_filename(g_get_home_dir(), ACTIONS_FILE, NULL);
+  gchar* path = g_build_filename(g_get_user_data_dir(), ACTIONS_FILE, NULL);
+	printf("got path '%s'\n",path); fflush(NULL);
   FILE* actions_file = fopen(path, "rb");
   g_free(path);
   /* Check that it opened and begin read */
@@ -905,6 +929,10 @@ static gboolean key_release_cb (GtkWidget *w,GdkEventKey *e, gpointer user)
 		}
 		return FALSE;
 	}	/**end alt key pressed  */
+	if(e->state & GDK_CONTROL_MASK)	/**ignore control keys  */
+		return FALSE;
+	if(e->state &GDK_SHIFT_MASK   && prefs.case_search)	/**ignore shift   */
+		return FALSE;
 	if(e->keyval == 0xff08){/**backspace  */
 		if(idx)
 			--idx;
@@ -915,7 +943,8 @@ static gboolean key_release_cb (GtkWidget *w,GdkEventKey *e, gpointer user)
 		kstr[idx]=0;
 		return 0;
 	}	/**end backspace  */
-	if(e->keyval >'~'){
+	if( e->keyval == 0xffe1 || e->keyval == 0xffe2){
+		printf("Ignoring key '%c' 0x%02x\n",e->keyval,e->keyval);
 		TRACE(g_print("Ignoring key '%c' 0x%02x\n",e->keyval,e->keyval));	
 		return FALSE;
 	}
@@ -1149,22 +1178,9 @@ static gboolean show_history_menu(gpointer data)
   g_signal_connect((GObject*)menu, "event", (GCallback)key_release_cb, (gpointer)&h);
 	/**trap mnemonic events  */
 	/*g_signal_connect((GObject*)menu, "mnemonic-activate", (GCallback)key_release_cb, (gpointer)menu);  */
-  if(prefs.type_search){
-    /* Edit clipboard */
-		h.title_item = gtk_image_menu_item_new_with_label( _("Use Alt-E to edit, Alt-C to clear") );
-    menu_image = gtk_image_new_from_stock(GTK_STOCK_EDIT, GTK_ICON_SIZE_MENU);
-    gtk_image_menu_item_set_image((GtkImageMenuItem*)h.title_item, menu_image);
-    gtk_menu_shell_append((GtkMenuShell*)menu, h.title_item);    
-  }else{
-    menu_item = gtk_image_menu_item_new_with_mnemonic(_("_Edit Clipboard"));
-    menu_image = gtk_image_new_from_stock(GTK_STOCK_EDIT, GTK_ICON_SIZE_MENU);
-    gtk_image_menu_item_set_image((GtkImageMenuItem*)menu_item, menu_image);
-		g_signal_connect((GObject*)menu_item, "activate", (GCallback)edit_selected, (gpointer)&h);
-    gtk_menu_shell_append((GtkMenuShell*)menu, menu_item);
-  }
 
   /* -------------------- */
-  gtk_menu_shell_append((GtkMenuShell*)menu, gtk_separator_menu_item_new());
+  /*gtk_menu_shell_append((GtkMenuShell*)menu, gtk_separator_menu_item_new()); */
   /* Items */
   if ((history != NULL) && (history->data != NULL))
   {
@@ -1272,14 +1288,26 @@ static gboolean show_history_menu(gpointer data)
   }
   /* -------------------- */
   gtk_menu_shell_append((GtkMenuShell*)menu, gtk_separator_menu_item_new());
-  /* Clear */
-	if(0 ==prefs.type_search){
-  menu_item = gtk_image_menu_item_new_with_mnemonic(_("_Clear"));
-  menu_image = gtk_image_new_from_stock(GTK_STOCK_CLEAR, GTK_ICON_SIZE_MENU);
-  gtk_image_menu_item_set_image((GtkImageMenuItem*)menu_item, menu_image);
-	g_signal_connect((GObject*)menu_item, "activate", (GCallback)clear_selected, NULL);
-  gtk_menu_shell_append((GtkMenuShell*)menu, menu_item);
-  }  
+	
+	if(prefs.type_search){
+    /* Edit clipboard */
+		h.title_item = gtk_image_menu_item_new_with_label( _("Use Alt-E to edit, Alt-C to clear") );
+    menu_image = gtk_image_new_from_stock(GTK_STOCK_EDIT, GTK_ICON_SIZE_MENU);
+    gtk_image_menu_item_set_image((GtkImageMenuItem*)h.title_item, menu_image);
+    gtk_menu_shell_append((GtkMenuShell*)menu, h.title_item);    
+  }else{
+    menu_item = gtk_image_menu_item_new_with_mnemonic(_("_Edit Clipboard"));
+    menu_image = gtk_image_new_from_stock(GTK_STOCK_EDIT, GTK_ICON_SIZE_MENU);
+    gtk_image_menu_item_set_image((GtkImageMenuItem*)menu_item, menu_image);
+		g_signal_connect((GObject*)menu_item, "activate", (GCallback)edit_selected, (gpointer)&h);
+    gtk_menu_shell_append((GtkMenuShell*)menu, menu_item);
+		menu_item = gtk_image_menu_item_new_with_mnemonic(_("_Clear"));
+		/* Clear */
+	  menu_image = gtk_image_new_from_stock(GTK_STOCK_CLEAR, GTK_ICON_SIZE_MENU);
+	  gtk_image_menu_item_set_image((GtkImageMenuItem*)menu_item, menu_image);
+		g_signal_connect((GObject*)menu_item, "activate", (GCallback)clear_selected, NULL);
+	  gtk_menu_shell_append((GtkMenuShell*)menu, menu_item);
+  }
   /* Popup the menu... */
   gtk_widget_show_all(menu);
   gtk_menu_popup((GtkMenu*)menu, NULL, NULL, prefs.history_pos?postition_history:NULL, NULL, 1, gtk_get_current_event_time());

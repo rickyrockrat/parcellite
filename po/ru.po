@@ -3,324 +3,206 @@
 # This file is distributed under the same license as the parcellite package.
 # Alexander Kazancev <kazancas@mandriva.ru>
 #
-#
 msgid ""
 msgstr ""
 "Project-Id-Version: Parcellite\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-12-31 16:51-0500\n"
-"PO-Revision-Date: 2009-03-16 00:53+0100\n"
+"POT-Creation-Date: 2011-05-02 01:40+0400\n"
+"PO-Revision-Date: 2011-05-02 02:16+0300\n"
 "Last-Translator: Alexander Kazancev <kazancas@mandriva.ru>\n"
 "Language-Team: \n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Language: ru_RU\n"
+"X-Poedit-Language: Russian\n"
+"X-Poedit-Country: RUSSIAN FEDERATION\n"
 
-#: ../src/main.c:186 ../src/main.c:222
-msgid "Executing action..."
-msgstr "Запуск действия..."
-
-#: ../src/main.c:192 ../src/main.c:208 ../src/main.c:776
-#: ../data/parcellite.desktop.in.h:1 ../data/parcellite-startup.desktop.in.h:1
-msgid "Clipboard Manager"
-msgstr "Менеджер буфера обмена"
-
-#. Create the dialog
-#: ../src/main.c:271
-msgid "Editing Clipboard"
-msgstr "Редактирование буфера обмена"
-
-#: ../src/main.c:330
-msgid "Clear the history?"
-msgstr "Очистить историю?"
-
-#: ../src/main.c:398
-msgid "Lightweight GTK+ clipboard manager."
-msgstr "Легковесный менеджер буфера обмена на GTK+."
-
-#: ../src/main.c:485
-msgid "<b>None</b>"
-msgstr "<b>Нет</b>"
-
-#. File contained no actions so adding empty
-#. File did not open so adding empty
-#. Nothing in history so adding empty
-#: ../src/main.c:506 ../src/main.c:535 ../src/main.c:660
-msgid "Empty"
-msgstr "Пусто"
-
-#. Edit actions
-#: ../src/main.c:542
-msgid "_Edit actions"
-msgstr "_Править действия"
-
-#. Edit clipboard
-#: ../src/main.c:566
-msgid "_Edit Clipboard"
-msgstr "Править буфер обмена"
-
-#: ../src/utils.c:38 ../src/utils.c:45
-#, c-format
-msgid "Couldn't create directory: %s\n"
-msgstr "Невозможно создание директории: %s\n"
-
-#: ../src/utils.c:84
-msgid "Run as daemon"
-msgstr "Запускать как демон"
-
-#: ../src/utils.c:91
-msgid "Do not use status icon (Ctrl-Alt-P for menu)"
-msgstr "Не использовать иконку статутса (Strg+Alt+P для меню)"
-
-#: ../src/utils.c:98
-msgid "Print clipboard contents"
-msgstr "Напечатать содержимое буфера обмена"
-
-#: ../src/utils.c:105
-msgid "Print primary contents"
-msgstr "Напечатать основное содержимое"
-
-#: ../src/utils.c:117
-msgid ""
-"Clipboard CLI usage examples:\n"
-"\n"
-"  echo \"copied to clipboard\" | parcellite\n"
-"  parcellite \"copied to clipboard\"\n"
-"  echo \"copied to clipboard\" | parcellite -c"
-msgstr ""
-"Пример использования менеджера из командной строки:\n"
-"\n"
-"  echo \"скопировано в буфер\" | parcellite\n"
-"  parcellite \"скопировано в буфер\"\n"
-"  echo \"скопировано в буфер\" | parcellite -o"
-
-#: ../src/utils.c:123
-msgid ""
-"Written by Gilberto \"Xyhthyx\" Miralla.\n"
-"Report bugs to <xyhthyx@gmail.com>."
-msgstr ""
-"Entwickelt von Gilberto \"Xyhthyx\" Miralla.\n"
-"Melden Sie Fehler bitte an <xyhthyx@gmail.com>."
-
-#. Create the dialog
-#: ../src/preferences.c:395
+#: preferences.c:428
 msgid "Preferences"
 msgstr "Настройки"
 
-#: ../src/preferences.c:414
+#: preferences.c:447
 msgid "Behavior"
 msgstr "Поведение"
 
-#: ../src/preferences.c:422
+#: preferences.c:455
 msgid "<b>Clipboards</b>"
 msgstr "<b>Буферы обмена</b>"
 
-#: ../src/preferences.c:429
+#: preferences.c:462
 msgid "Use _Copy (Ctrl-C)"
 msgstr "Использовать буфер _Копировать (Ctrl-C)"
 
-#: ../src/preferences.c:432
+#: preferences.c:465
 msgid "Use _Primary (Selection)"
 msgstr "_Использовать буфер выделения"
 
-#: ../src/preferences.c:435
+#: preferences.c:468
 msgid "S_ynchronize clipboards"
 msgstr "Синхронизировать буферы"
 
-#: ../src/preferences.c:443
+#: preferences.c:476
 msgid "<b>History</b>"
 msgstr "<b>История</b>"
 
-#: ../src/preferences.c:450
+#: preferences.c:483
 msgid "_Save history"
 msgstr "_Сохранять историю"
 
-#: ../src/preferences.c:451
+#: preferences.c:484
 msgid "Save and restore history between sessions"
 msgstr "Сохранять и восстанавливать историю между сессиями"
 
-#: ../src/preferences.c:455
+#: preferences.c:489
+msgid "_Postion history"
+msgstr "_Позиция истории"
+
+#: preferences.c:490
+msgid "Set the location where history appears. If unchecked, appears where the mouse is."
+msgstr "Задает расположение появления истории. Если не отмечено, история появляется в месте расположения курсора."
+
+#: preferences.c:494
+msgid "<b>X</b>"
+msgstr "<b>X</b>"
+
+#: preferences.c:499
+msgid "<b>Y</b>"
+msgstr "<b>Y</b>"
+
+#: preferences.c:508
 msgid "Items in history:"
 msgstr "Элементы в истории:"
 
-#: ../src/preferences.c:468
+#: preferences.c:519
+msgid "Max Data Size (MB)"
+msgstr "Макс. размер данных (Мб)"
+
+#: preferences.c:524
+msgid "Set Maximum amount of data to copy for each entry in MBytes. 0 is no limit."
+msgstr "Установить максимальный размер данных для копирования в каждой записи. 0 - без лимита."
+
+#: preferences.c:529
 msgid "<b>Miscellaneous</b>"
 msgstr "<b>Исключения</b>"
 
-#: ../src/preferences.c:475
+#: preferences.c:537
+msgid "Search As You _Type"
+msgstr "Искать по мере ввода"
+
+#: preferences.c:538
+msgid "If checked, does a search-as-you-type. Turns red if not found. Goes to top (Alt-E) line when no chars are entered for search"
+msgstr "Если отмечено, поиск будет идти по мере набора. Если нет совпадений, становится красным. Переходит к верхней строке (Alt-E) если не введены буквы для поиска"
+
+#: preferences.c:542
+msgid "_Case Sensitive Search"
+msgstr "Пои_ск с учетом регистра"
+
+#: preferences.c:543
+msgid "If checked, does case sensitive search"
+msgstr "Если отмечено, поиск с учетом регистра"
+
+#: preferences.c:547
 msgid "Capture _hyperlinks only"
 msgstr "Захватывать только _гиперссылки"
 
-#: ../src/preferences.c:477
+#: preferences.c:549
 msgid "C_onfirm before clearing history"
 msgstr "_Подтверждение перед очисткой истории"
 
-#: ../src/preferences.c:484
+#: preferences.c:556
 msgid "Display"
 msgstr "Отображение"
 
-#: ../src/preferences.c:492
+#: preferences.c:564
 msgid "<b>Items</b>"
 msgstr "<b>Элементы</b>"
 
-#: ../src/preferences.c:499
+#: preferences.c:571
 msgid "Show in a _single line"
 msgstr "Показывать в одну строку"
 
-#: ../src/preferences.c:501
+#: preferences.c:573
 msgid "Show in _reverse order"
 msgstr "Показывать в обратном порядке"
 
-#: ../src/preferences.c:505
+#: preferences.c:577
 msgid "Character length of items:"
 msgstr "Число символов в элементе "
 
-#: ../src/preferences.c:518
+#: preferences.c:590
 msgid "<b>Omitting</b>"
 msgstr "<b>Исключения</b>"
 
-#: ../src/preferences.c:527
+#: preferences.c:599
 msgid "Omit items in the:"
 msgstr "Исключить элементы в:"
 
-#: ../src/preferences.c:531
+#: preferences.c:603
 msgid "Beginning"
 msgstr "Начале"
 
-#: ../src/preferences.c:532
+#: preferences.c:604
 msgid "Middle"
 msgstr "Середине"
 
-#: ../src/preferences.c:533
+#: preferences.c:605
 msgid "End"
 msgstr "Конце"
 
-#: ../src/preferences.c:540
+#: preferences.c:612
 msgid "Actions"
 msgstr "Действия"
 
-#. Build the actions label
-#: ../src/preferences.c:545
+#: preferences.c:617
 msgid "Control-click Parcellite's tray icon to use actions"
 msgstr "CTRL+клик по иконке Parcellite в трее для выполнения действий"
 
-#: ../src/preferences.c:565
+#: preferences.c:637
 msgid "Action"
 msgstr "Действие"
 
-#: ../src/preferences.c:572
+#: preferences.c:644
 msgid "Command"
 msgstr "Команда"
 
-#: ../src/preferences.c:587
+#: preferences.c:659
 msgid "Add..."
 msgstr "Добавить..."
 
-#: ../src/preferences.c:591
+#: preferences.c:663
 msgid "Remove"
 msgstr "Удалить"
 
-#: ../src/preferences.c:608
+#: preferences.c:680
 msgid "Hotkeys"
 msgstr "Горячие клавиши"
 
-#: ../src/preferences.c:616
+#: preferences.c:688
 msgid "<b>Hotkeys</b>"
 msgstr "<b>Горячие клавиши</b>"
 
-#: ../src/preferences.c:625
+#: preferences.c:697
 msgid "History key combination:"
 msgstr "Вызов Истории"
 
-#: ../src/preferences.c:633
+#: preferences.c:705
 msgid "Actions key combination:"
 msgstr "Вызов Действия"
 
-#: ../src/preferences.c:641
+#: preferences.c:713
 msgid "Menu key combination:"
 msgstr "Вызов меню"
 
-#: ../data/parcellite.desktop.in.h:2 ../data/parcellite-startup.desktop.in.h:2
-msgid "Parcellite"
-msgstr "Parcellite"
+#: main.c:1154
+msgid "Use Alt-E to edit, Alt-C to clear"
+msgstr "Alt+E - редактировать, Alt+C - очистить"
 
-#~ msgid "Could not create thread for executed action\n"
-#~ msgstr "Невозможно создать поток для запускаемого действия\n"
+#: main.c:313
+msgid "Editing Clipboard"
+msgstr "Редактирование буфера обмена"
 
-#~ msgid "<b>Clipboard</b>"
-#~ msgstr "<b>Zwischenablage</b>"
-
-#~ msgid "Save changes"
-#~ msgstr "Änderungen speichern"
-
-#~ msgid "Discard changes"
-#~ msgstr "Änderungen verwerfen"
-
-#~ msgid "Extras"
-#~ msgstr "Extras"
-
-#~ msgid ""
-#~ "Add a new action\n"
-#~ "\"%s\" in a command is replaced with the clipboard contents"
-#~ msgstr "\"%s\" wird mit dem Inhalt der Zwischenablage ersetzt"
-
-#~ msgid "Move selected action up"
-#~ msgstr "Поднять выбранное действие вверх"
-
-#~ msgid "Move selected action down"
-#~ msgstr "Поднять вызванное действие вниз"
-
-#~ msgid "Close"
-#~ msgstr "Schließen"
-
-#~ msgid "New Action"
-#~ msgstr "Neue Aktion"
-
-#~ msgid "<b>Name:</b>"
-#~ msgstr "<b>Name:</b>"
-
-#~ msgid "Name your action"
-#~ msgstr "Benennen Sie Ihre Aktion"
-
-#~ msgid "<b>Command:</b>"
-#~ msgstr "<b>Befehl:</b>"
-
-#~ msgid "Edit Action"
-#~ msgstr "Aktion bearbeiten"
-
-#~ msgid "General"
-#~ msgstr "Allgemein"
-
-#~ msgid "Length in characters of history items:"
-#~ msgstr "Maximale Länge der Zeichen pro Eintrag:"
-
-#~ msgid "History menu global hotkey:"
-#~ msgstr "Globale Tastenkombination für Verlaufsmenü:"
-
-#~ msgid "Actions menu global hotkey:"
-#~ msgstr "Globale Tastenkombination für Aktionsmenü:"
-
-#~ msgid "Single _line mode"
-#~ msgstr "Zei_lenmodus"
-
-#~ msgid "Ignore all non-hyperlink text"
-#~ msgstr "Ignoriere nicht verlinkten Text"
-
-#~ msgid "New"
-#~ msgstr "Neu"
-
-#~ msgid "New action"
-#~ msgstr "Neue Aktion"
-
-#~ msgid "Edit"
-#~ msgstr "Bearbeiten"
-
-#~ msgid "Edit selected"
-#~ msgstr "Auswahl bearbeiten"
-
-#~ msgid "Delete"
-#~ msgstr "Löschen"
-
-#~ msgid "Delete selected"
-#~ msgstr "Auswahl löschen"
+#: main.c:229 main.c:244 main.c:1404
+msgid "Clipboard Manager"
+msgstr "Менеджер буфера обмена"

@@ -21,8 +21,8 @@
 
 G_BEGIN_DECLS
 
-#define CONFIG_DIR  ".local/share/parcellite"
-#define DATA_DIR    ".config/parcellite"
+#define CONFIG_DIR  "parcellite"
+#define DATA_DIR    "parcellite"
 
 gchar *p_strdup( const gchar *str );
 void check_dirs();

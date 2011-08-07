@@ -21,7 +21,7 @@
 
 G_BEGIN_DECLS
 
-#define HISTORY_FILE ".local/share/parcellite/history"
+#define HISTORY_FILE "parcellite/history"
 
 extern GSList* history;
 
