@@ -134,7 +134,7 @@ static void save_preferences()
   /* Check config and data directories */
   check_dirs();
   /* Save key to file */
-  gchar* rc_file = g_build_filename(g_get_home_dir(), PREFERENCES_FILE, NULL);
+  gchar* rc_file = g_build_filename(g_get_user_config_dir(), PREFERENCES_FILE, NULL);
   g_file_set_contents(rc_file, g_key_file_to_data(rc_key, NULL, NULL), -1, NULL);
   g_key_file_free(rc_key);
   g_free(rc_file);
@@ -143,7 +143,7 @@ static void save_preferences()
 /* Read ~/.config/parcellite/parcelliterc */
 void read_preferences()
 {
-  gchar* rc_file = g_build_filename(g_get_home_dir(), PREFERENCES_FILE, NULL);
+	gchar* rc_file = g_build_filename(g_get_user_config_dir(), PREFERENCES_FILE, NULL);
   gint x,y;
   /* Create key */
   GKeyFile* rc_key = g_key_file_new();
@@ -207,7 +207,7 @@ void read_preferences()
 static void read_actions()
 {
   /* Open the file for reading */
-  gchar* path = g_build_filename(g_get_home_dir(), ACTIONS_FILE, NULL);
+  gchar* path = g_build_filename(g_get_user_data_dir(), ACTIONS_FILE, NULL);
   FILE* actions_file = fopen(path, "rb");
   g_free(path);
   /* Check that it opened and begin read */
@@ -247,7 +247,7 @@ static void save_actions()
   /* Check config and data directories */
   check_dirs();
   /* Open the file for writing */
-  gchar* path = g_build_filename(g_get_home_dir(), ACTIONS_FILE, NULL);
+  gchar* path = g_build_filename(g_get_user_data_dir(), ACTIONS_FILE, NULL);
   FILE* actions_file = fopen(path, "wb");
   g_free(path);
   /* Check that it opened and begin write */

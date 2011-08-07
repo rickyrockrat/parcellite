@@ -41,8 +41,8 @@ G_BEGIN_DECLS
 #define DEF_MENU_KEY          "<Ctrl><Alt>P"
 #define DEF_NO_ICON           FALSE
 
-#define ACTIONS_FILE          ".local/share/parcellite/actions"
-#define PREFERENCES_FILE      ".config/parcellite/parcelliterc"
+#define ACTIONS_FILE          "parcellite/actions"
+#define PREFERENCES_FILE      "parcellite/parcelliterc"
 
 void
 read_preferences();
