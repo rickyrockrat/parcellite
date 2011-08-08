@@ -1,4 +1,4 @@
-.TH PARCELLITE 1 "March 17 2008"
+.TH PARCELLITE 1 "August 7 2011"
 .SH NAME
 Parcellite \- Lightweight GTK+ Clipboard Manager
 .SH SYNOPSIS
@@ -11,6 +11,8 @@ who like simplicity.
 
 \fBParcellite\fR features a clipboard CLI. Unrecognized options and the contents
 of your standard input get copied to your clipboard. See \fBCLI EXAMPLES\fR.
+
+.B Look at the tool tips by hovering over each item in the prefrences dialog.
 .SH
 .B OPTIONS
 .TP
@@ -47,14 +49,31 @@ generally checking all these boxes is appropriate.
 .TP 
 .B History 
  Check 'Save history' to save history on close.
- 'Items in History' - set maximum items. Currently limited to 100.
+ 'Position history' - Set the location where history appears. If unchecked, appears where the mouse is.
+ 'X' - X location in pixels. 0 is top of screen.
+ 'Y' - Y location in pixels. 0 is left of screen.
+  
+ 'Max Data Size (MB)' -Set Maximum amount of data to copy for each entry in MBytes. 0 is no limit.
+.TP
+.B Miscellaneous
+ 'Search As You Type' - If checked, does a search-as-you-type. Turns red if not found. Goes to top (Alt-E) line when no chars are entered for search
+  
+ 'Case Sensitive Search' - If checked, does case sensitive search.
+
+ 'Ignore Whitespace Only' - If checked, will ignore any clipboard additions that contain only whitespace.
+
+ 'Trim Whitespace' - If checked, will trim whitespace from beginning and end of entry.
+
+ 'Trim Newlines' - If checked, will replace newlines with spaces.
+
 .SH Display Tab
 .TP 
-'Show in Single line' does nothing
+ 'Show in Single line' does nothing
 .TP 
-'Show in reverse order' reverses the history so the first entry is last and the last is first.
+ 'Show in reverse order' reverses the history so the first entry is last and the last is first.
 .TP 
-'Omit items' referrs to omitting characters that don't fit in the history window width. This is for display only.
+ 'Omit items' referrs to omitting characters that don't fit in the history window width. This is for display only.
+
 .SH History Dialog Behavior
 .B use the Ctrl or Shift key in conjunction with right-click. 
 .TP If you hold Ctrl, then it toggles the delete on a single item. 
