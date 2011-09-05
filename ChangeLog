@@ -1,6 +1,7 @@
 v1.0.2rc4  Monday, September 5 2011
  Changes
  +Fix bugs introduced in clipboard code selection. Should fix primary deselect and file cut/paste issue.
+ +Applied FSF Address change patch from Debian Andrewsomething.
 
 v1.0.2rc3	 Sunday, August 7 2011
  Changes
