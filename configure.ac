@@ -2,7 +2,7 @@
 # Autoconf/automake.
 # -------------------------------------------------------------------------------
 AC_PREREQ([2.5])
-AC_INIT([parcellite], m4_esyscmd([./svnversion.sh | tr -d '\n']), [gpib@rickyrockrat.net])
+AC_INIT([parcellite], [1.0.2rc4], [gpib@rickyrockrat.net])
 # AC_INIT([parcellite], [lollygag], [gpib@rickyrockrat.com])
 AM_INIT_AUTOMAKE([AC_PACKAGE_TARNAME()], [AC_PACKAGE_VERSION()])
 
