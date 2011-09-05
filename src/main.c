@@ -98,12 +98,17 @@ Add this to the list of clip elements.
 \n\b Arguments:
 \n\b Returns: Whatever was currently placed on the clipboard.
 ****************************************************************************/
-gchar *check_set_contents ( gchar *text, GtkClipboard *clip)
+gchar *check_set_contents ( gchar *text, GtkClipboard *clip, gchar **t)
 {
-	gchar *temp = gtk_clipboard_wait_for_text(clip);
+	gchar *temp = NULL;
 	gchar *rtn=text; /**default to last entry  */
+	if(NULL ==t)
+		temp = gtk_clipboard_wait_for_text(clip);
+	else
+	  temp = *t;
 	/*printf("csc %p\n",text); fflush(NULL); */
 	 /* Check if primary contents were lost */
+
   if ((temp == NULL) && (text != NULL)) {
     /* Check contents */
     gint count;
@@ -204,27 +209,32 @@ done:
 static gboolean item_check(gpointer data)
 {
 	/*printf("pri %p\n",primary_text); fflush(NULL); */
-  primary_text=check_set_contents (primary_text,primary);
+	gchar *temp = gtk_clipboard_wait_for_text(clipboard);
+  primary_text=check_set_contents (primary_text,primary,NULL);
 	/*printf("cli %p\n",clipboard_text); fflush(NULL); */
-	clipboard_text=check_set_contents (clipboard_text,clipboard);
+	clipboard_text=check_set_contents (clipboard_text,clipboard,&temp);
   /* Synchronization */
   if (prefs.synchronize)
   {
-    if(NULL == primary_text)
+   /* if(NULL == primary_text)
       primary_text=p_strdup(clipboard_text);
-    else if( NULL == clipboard_text)
-      clipboard_text=p_strdup(primary_text);
-    if (p_strcmp(synchronized_text, primary_text) != 0)
+    if( NULL == clipboard_text)
+      clipboard_text=p_strdup(primary_text);*/
+    if (NULL != primary_text && p_strcmp(synchronized_text, primary_text) != 0)
     {
       g_free(synchronized_text);
       synchronized_text = p_strdup(primary_text);
       gtk_clipboard_set_text(clipboard, primary_text, -1);
+      g_free(clipboard_text);
+      clipboard_text=p_strdup(primary_text);
     }
-    else if (p_strcmp(synchronized_text, clipboard_text) != 0)
+    if (NULL != clipboard_text && p_strcmp(synchronized_text, clipboard_text) != 0)
     {
       g_free(synchronized_text);
       synchronized_text = p_strdup(clipboard_text);
       gtk_clipboard_set_text(primary, clipboard_text, -1);
+      g_free(primary_text);
+      primary_text=p_strdup(clipboard_text);
     }
   }
   
