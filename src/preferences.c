@@ -24,7 +24,7 @@
 #include "keybinder.h"
 #include "preferences.h"
 #include "parcellite-i18n.h"
-
+#define MAX_HISTORY 1000
 /* Declare some widgets */
 GtkWidget *copy_check,
           *primary_check,
@@ -179,7 +179,7 @@ void read_preferences()
     if(prefs.history_x>x) prefs.history_x=x;
       if(prefs.history_y>y) prefs.history_y=y;
   
-    if ((!prefs.history_limit) || (prefs.history_limit > 100) || (prefs.history_limit < 0))
+    if ((!prefs.history_limit) || (prefs.history_limit > MAX_HISTORY) || (prefs.history_limit < 0))
       prefs.history_limit = DEF_HISTORY_LIMIT;
     if ((!prefs.item_length) || (prefs.item_length > 75) || (prefs.item_length < 0))
       prefs.item_length = DEF_ITEM_LENGTH;
@@ -519,7 +519,7 @@ void show_preferences(gint tab)
   label = gtk_label_new(_("Items in history:"));
   gtk_misc_set_alignment((GtkMisc*)label, 0.0, 0.50);
   gtk_box_pack_start((GtkBox*)hbox, label, FALSE, FALSE, 0);
-  adjustment = gtk_adjustment_new(25, 5, 100, 1, 10, 0);
+  adjustment = gtk_adjustment_new(25, 5, MAX_HISTORY, 1, 10, 0);
   history_spin = gtk_spin_button_new((GtkAdjustment*)adjustment, 0.0, 0);
   gtk_spin_button_set_update_policy((GtkSpinButton*)history_spin, GTK_UPDATE_IF_VALID);
   gtk_box_pack_start((GtkBox*)hbox, history_spin, FALSE, FALSE, 0);
