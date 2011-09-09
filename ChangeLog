@@ -1,3 +1,7 @@
+V1.0.2rc5  Friday, September 9 2011 
+ Changes
+ +Revert to rc2 clipboard behaviour. This (really) should fix the primary deselect and file cut/paste issue.
+ 
 v1.0.2rc4  Monday, September 5 2011
  Changes
  +Fix bugs introduced in clipboard code selection. Should fix primary deselect and file cut/paste issue.
