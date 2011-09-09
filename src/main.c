@@ -109,7 +109,7 @@ gchar *check_set_contents ( gchar *text, GtkClipboard *clip, gchar **t)
 	/*printf("csc %p\n",text); fflush(NULL); */
 	 /* Check if primary contents were lost */
 
-  if ((temp == NULL) && (text != NULL)) {
+  if ((NULL == temp) && (NULL != text)) {
     /* Check contents */
     gint count;
     GdkAtom *targets;
@@ -128,7 +128,7 @@ gchar *check_set_contents ( gchar *text, GtkClipboard *clip, gchar **t)
 		if(clip == primary){
 			GdkModifierType button_state;
     	gdk_window_get_pointer(NULL, NULL, NULL, &button_state);
-			if ( button_state & GDK_BUTTON1_MASK )
+			if ( button_state & GDK_BUTTON1_MASK ) /**button down, done.  */
 				goto end;
 		}
 		/* Check if clip is the same as the last entry */
@@ -167,14 +167,14 @@ check_opt: /**we now check our options...  */
 				goto process;
 		}
 		/**set the clipboard to the last entry - effectively deleting this entry */
-		gtk_clipboard_set_text(clip, text, -1);
+		/*gtk_clipboard_set_text(clip, text, -1); */
 		goto end;
 		
 process:  /**now process the text.  */
 		/*printf("proc\n"); fflush(NULL); */
 		len=strlen(temp);
 		if(len){
-			gchar i;
+			gint i;
 			if(prefs.trim_newline){
 				for (i=0;i<len && temp[i]; ++i){
 					if(iscntrl(temp[i]))
@@ -193,7 +193,7 @@ process:  /**now process the text.  */
 			  delete_duplicate(text);
         append_item(text);
 				/**set clipboard to processed text since it may be different after processing. */
-				gtk_clipboard_set_text(clip, text, -1);	
+				/*gtk_clipboard_set_text(clip, text, -1);	 */
 				/*printf("done \n");fflush(NULL); */
 			}	
 		}	
@@ -216,11 +216,7 @@ static gboolean item_check(gpointer data)
   /* Synchronization */
   if (prefs.synchronize)
   {
-   /* if(NULL == primary_text)
-      primary_text=p_strdup(clipboard_text);
-    if( NULL == clipboard_text)
-      clipboard_text=p_strdup(primary_text);*/
-    if (NULL != primary_text && p_strcmp(synchronized_text, primary_text) != 0)
+    if (NULL != primary_text && (p_strcmp(synchronized_text, primary_text) != 0) )
     {
       g_free(synchronized_text);
       synchronized_text = p_strdup(primary_text);
@@ -228,7 +224,7 @@ static gboolean item_check(gpointer data)
       g_free(clipboard_text);
       clipboard_text=p_strdup(primary_text);
     }
-    if (NULL != clipboard_text && p_strcmp(synchronized_text, clipboard_text) != 0)
+    if (NULL != clipboard_text && (p_strcmp(synchronized_text, clipboard_text) != 0) )
     {
       g_free(synchronized_text);
       synchronized_text = p_strdup(clipboard_text);
