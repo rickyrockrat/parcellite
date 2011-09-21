@@ -26,6 +26,7 @@ Download the parcellite source code, then:
 	$ tar zxvf parcellite-x.y.z.tar.gz
 	$ cd parcellite-x.y.z
 	$ ./autogen.sh
+# See note below on OpenBSD
 	$ ./configure
 	$ make
 	$ sudo make install
@@ -37,3 +38,18 @@ or from the subversion checkout:
 	$ ./configure
 	$ make
 	$ sudo make install
+	
+OpenBSD notes:
+
+Thanks to Lawrence Teo for this tidbit on BSD.
+	
+For OpenBSD, you will need to use GNU make instead of BSD make (complains about .desktop files). 
+GNU make is usually available on BSD systems by installing the "gmake" package.
+
+the configure script needs to be invoked as follows on OpenBSD:
+
+   LIBS="`pkg-config --libs gtk+-2.0`" ./configure
+
+If not, configure will report that the gtk >= 2.10.0 requirement is not met on OpenBSD.
+
+
