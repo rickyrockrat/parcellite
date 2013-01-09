@@ -216,7 +216,7 @@ static void read_actions()
     /* Keep a row reference */
     GtkTreeIter row_iter;
     /* Read the size of the first item */
-    gint size;
+    gint size=0;
     if(0 ==fread(&size, 4, 1, actions_file)) g_print("P1:0 Items read\n");
     /* Continue reading until size is 0 */
     while (size != 0)
