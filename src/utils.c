@@ -438,7 +438,7 @@ int write_fifo(struct p_fifo *f, int which, char *buf, int len)
 			g_printf("Unknown fifo %d!\n",which);
 			return -1;
 	}
-	if(NULL ==f || fd <3)
+	if(NULL ==f || fd <3 || NULL ==buf)
 		return -1;
 	if(f->dbg) g_printf("writing '%s'\n",buf);
 	while(len){																							
@@ -491,6 +491,7 @@ struct p_fifo *init_fifo(int mode)
 	}
 	/**set debug here for debug messages ( f->dbg=1)  */
 	f->len=7999;
+/*	f->dbg=1; */
 /*	g_printf("My PID is %d\n",getpid()); */
 	/**we are daemon, and will launch  */
 	if(proc_find("parcellite",NULL)<2){
