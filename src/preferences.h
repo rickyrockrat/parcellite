@@ -42,6 +42,8 @@ G_BEGIN_DECLS
 #define DEF_NO_ICON           FALSE
 
 #define ACTIONS_FILE          "parcellite/actions"
+#define FIFO_FILE_C          "parcellite/fifo_c"
+#define FIFO_FILE_P          "parcellite/fifo_p"
 #define PREFERENCES_FILE      "parcellite/parcelliterc"
 
 void
