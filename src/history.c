@@ -22,7 +22,7 @@
 #include "utils.h"
 #include "history.h"
 
-GSList* history;
+GSList* history=NULL;
 
 /* Reads history from ~/.local/share/parcellite/history */
 void
