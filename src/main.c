@@ -63,6 +63,7 @@ static gchar* synchronized_text;
 static GtkClipboard* primary;
 static GtkClipboard* clipboard;
 static GtkStatusIcon* status_icon;
+struct p_fifo *fifo;
 
 static gboolean actions_lock = FALSE;
 
@@ -205,9 +206,36 @@ done:
 	return rtn;
 }
 
-/* Called every CHECK_INTERVAL seconds to check for new items */
+/***************************************************************************/
+/** Called every CHECK_INTERVAL seconds to check for new items 
+\n\b Arguments:
+\n\b Returns:
+****************************************************************************/
 static gboolean item_check(gpointer data)
 {
+	int n=0;
+	if(fifo->rlen >0){
+		switch(fifo->which){
+			case ID_PRIMARY:
+				if(fifo->dbg) g_printf("Setting PRI '%s'\n",fifo->buf);
+				gtk_clipboard_set_text(primary, fifo->buf, -1);
+/*				primary_text=check_set_contents (fifo->buf,primary,NULL); */
+				fifo->rlen=0;
+				n=1;
+				break;
+			case ID_CLIPBOARD:
+				if(fifo->dbg) g_printf("Setting CLI '%s'\n",fifo->buf);
+				gtk_clipboard_set_text(clipboard, fifo->buf, -1);
+				/*clipboard_text=check_set_contents (fifo->buf,clipboard,NULL); */
+				n=2;
+				fifo->rlen=0;
+				break;
+			default:
+				g_printf("CLIP not set, discarding '%s'\n",fifo->buf);
+				fifo->rlen=0;
+				break;
+		}
+	}
 	/*printf("pri %p\n",primary_text); fflush(NULL); */
 	gchar *temp = gtk_clipboard_wait_for_text(clipboard);
   primary_text=check_set_contents (primary_text,primary,NULL);
@@ -285,8 +313,9 @@ static void action_selected(GtkButton *button, gpointer user_data)
   
   /* Insert clipboard into command (user_data), and prepare it for execution */
   gchar* clipboard_text = gtk_clipboard_wait_for_text(clipboard);
+	/*g_print("Got cmd '%s', text '%s'->",(gchar *)user_data,clipboard_text);fflush(NULL);  */
 	gchar* command=g_strdup_printf((gchar *)user_data,clipboard_text);
-	/*printf("Got cmd '%s'\n",command);fflush(NULL); */
+	/*g_print(" '%s'\n",command);fflush(NULL);  */
   g_free(clipboard_text);
   g_free(user_data);
   gchar* shell_command = g_shell_quote(command);
@@ -298,7 +327,7 @@ static void action_selected(GtkButton *button, gpointer user_data)
   GPid pid;
   gchar **argv;
   g_shell_parse_argv(cmd, NULL, &argv, NULL);
-	/*g_print("cmd '%s' argv '%s'\n",cmd,argv[1]); */
+	/*g_print("cmd '%s' argv '%s' '%s' '%s'\n",cmd,argv[1],argv[2],argv[3]);  */
   g_free(cmd);
   g_spawn_async(NULL, argv, NULL, G_SPAWN_DO_NOT_REAP_CHILD, NULL, NULL, &pid, NULL);
   g_child_watch_add(pid, (GChildWatchFunc)action_exit, NULL);
@@ -542,6 +571,7 @@ static gboolean show_actions_menu(gpointer data)
     /* Append menu item */
     g_signal_connect((GObject*)menu_item, "select", (GCallback)gtk_menu_item_deselect, NULL);
     gtk_menu_shell_append((GtkMenuShell*)menu, menu_item);
+	  g_free(text);
   }
   else
   {
@@ -593,6 +623,7 @@ static gboolean show_actions_menu(gpointer data)
       if(0 ==fread(command, size, 1, actions_file))
       	g_print("4:got 0 items from fread\n");
       command[size] = '\0';
+		  g_print("name='%s' cmd='%s'\n",name,command);
       if(0 ==fread(&size, 4, 1, actions_file))
       	g_print("5:got 0 items from fread\n");
       /* Append the action */
@@ -849,7 +880,8 @@ void postition_history(GtkMenu *menu,gint *x,gint *y,gboolean *push_in, gpointer
 /** This handles events for the history menu, which is the parent of each
 item.
 \n\b Arguments:
-\n\b Returns:
+\n\b Returns: FALSE if key was not handled, TRUE if it was.
+You get two key presses if you return FALSE.
 ****************************************************************************/
 static gboolean key_release_cb (GtkWidget *w,GdkEventKey *e, gpointer user)
 {
@@ -862,7 +894,8 @@ static gboolean key_release_cb (GtkWidget *w,GdkEventKey *e, gpointer user)
   struct history_info *h;
 
   h=(struct history_info *)user;
-	if(0&&   NULL != e ){
+	
+	if(0&&  NULL != e ){
 		if(GDK_MOTION_NOTIFY==e->type)
 			return FALSE;
     printf("krc (%x) S%x T%x C%x,SE%x, G%x, W%p, wdg%p",
@@ -891,7 +924,7 @@ static gboolean key_release_cb (GtkWidget *w,GdkEventKey *e, gpointer user)
 			g_free(kstr);
 		kstr=g_strnfill(KBUF_SIZE+8,0);
 		idx=0;
-		return 0;
+		return FALSE;
 	}else if(NULL == kstr){
 		g_print("kstr null. Not init\n");
 		return FALSE;
@@ -902,8 +935,11 @@ static gboolean key_release_cb (GtkWidget *w,GdkEventKey *e, gpointer user)
   }
   if(0 == prefs.type_search)/**searching is turned off  */
     return FALSE;
+	
   if(GDK_KEY_PRESS == e->type && ' ' == e->keyval) /**ignore space presses  */
     return TRUE;
+	if(GDK_KEY_PRESS == e->type)
+		return FALSE;
     /**pass all other non-release events on  */
   if(GDK_KEY_RELEASE != e->type && GDK_BUTTON_RELEASE != e->type) 
     return FALSE;
@@ -939,6 +975,7 @@ static gboolean key_release_cb (GtkWidget *w,GdkEventKey *e, gpointer user)
 	if(e->state &GDK_SHIFT_MASK   && prefs.case_search)	/**ignore shift   */
 		return FALSE;
 	if(e->keyval == 0xff08){/**backspace  */
+//		g_printf("0x%x bs %d ",e->type,idx);
 		if(idx)
 			--idx;
     else if( NULL != h->clip_item){
@@ -946,15 +983,16 @@ static gboolean key_release_cb (GtkWidget *w,GdkEventKey *e, gpointer user)
     }
     set_widget_bg(NULL,h->menu);
 		kstr[idx]=0;
-		return 0;
+	//	g_printf(" %d\n",idx);
+		return TRUE;
 	}	/**end backspace  */
 	if( e->keyval == 0xffe1 || e->keyval == 0xffe2){
 		printf("Ignoring key '%c' 0x%02x\n",e->keyval,e->keyval);
 		TRACE(g_print("Ignoring key '%c' 0x%02x\n",e->keyval,e->keyval));	
 		return FALSE;
 	}
-         if(e->keyval >= 0xff50 && e->keyval <= 0xff57) /**arrow keys, home,end,pgup,pgdwn  */
-               return FALSE;
+  if(e->keyval >= 0xff50 && e->keyval <= 0xff57) /**arrow keys, home,end,pgup,pgdwn  */
+  	return FALSE;
 	if(idx>=KBUF_SIZE){
 		TRACE(g_print("keys full\n"));
 		return TRUE;
@@ -1442,10 +1480,51 @@ static void parcellite_init()
   }
 }
 
-/* This is Sparta! */
-int
-main(int argc, char *argv[])
+
+/***************************************************************************/
+/** .
+\n\b Arguments: 
+which - which fifo we write to.
+\n\b Returns:
+****************************************************************************/
+void write_stdin(struct p_fifo *fifo, int which)
 {
+  if (!isatty(fileno(stdin)))   {
+    GString* piped_string = g_string_new(NULL);
+    /* Append stdin to string */
+    while (1)    {
+      gchar* buffer = (gchar*)g_malloc(256);
+      if (fgets(buffer, 256, stdin) == NULL)  {
+        g_free(buffer);
+        break;
+      }
+      g_string_append(piped_string, buffer);
+      g_free(buffer);
+    }
+    /* Check if anything was piped in */
+    if (piped_string->len > 0) {
+      /* Truncate new line character */
+      /* g_string_truncate(piped_string, (piped_string->len - 1)); */
+      /* Copy to clipboard */
+	   write_fifo(fifo,which,piped_string->str,piped_string->len);
+     /*sleep(10); */
+      /* Exit */
+      return ;
+    }
+    g_string_free(piped_string, TRUE);
+	 		
+	}
+}
+	
+/***************************************************************************/
+	/** .
+	\n\b Arguments:
+	\n\b Returns:
+	****************************************************************************/
+int main(int argc, char *argv[])
+{
+	struct cmdline_opts *opts;
+	
   bindtextdomain(GETTEXT_PACKAGE, PARCELLITELOCALEDIR);
   bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8");
   textdomain(GETTEXT_PACKAGE);
@@ -1453,46 +1532,75 @@ main(int argc, char *argv[])
   /* Initiate GTK+ */
   gtk_init(&argc, &argv);
   
-  /* Parse options and exit if returns TRUE */
-  if (argc > 1)
-  {
-    if (parse_options(argc, argv))
-      return 0;
-  }
-  /* Read input from stdin (if any) */
-  else
-  {
-    /* Check if stdin is piped */
-    if (!isatty(fileno(stdin)))
-    {
-      GString* piped_string = g_string_new(NULL);
-      /* Append stdin to string */
-      while (1)
-      {
-        gchar* buffer = (gchar*)g_malloc(256);
-        if (fgets(buffer, 256, stdin) == NULL)
-        {
-          g_free(buffer);
-          break;
-        }
-        g_string_append(piped_string, buffer);
-        g_free(buffer);
-      }
-      /* Check if anything was piped in */
-      if (piped_string->len > 0)
-      {
-        /* Truncate new line character */
-        /* g_string_truncate(piped_string, (piped_string->len - 1)); */
-        /* Copy to clipboard */
-        GtkClipboard* clip = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);
-        gtk_clipboard_set_text(clip, piped_string->str, -1);
-        gtk_clipboard_store(clip);
-        /* Exit */
-        return 0;
-      }
-      g_string_free(piped_string, TRUE);
-    }
-  }
+  /* Parse options */
+	opts=parse_options(argc, argv);
+	
+  if(NULL == opts)
+   	return 1;
+	/**get options/cmd line not parsed.  */
+	g_print("%s\n",opts->leftovers);
+	/**init fifo should set up the fifo and the callback (if we are daemon mode)  */
+		if(opts->primary)	{
+			fifo=init_fifo(FIFO_MODE_PRI);
+			if(fifo->dbg) g_printf("Hit PRI opt!\n");
+			
+			if(FIFO_CLIENT == fifo->whoami){
+				write_fifo(fifo,FIFO_MODE_PRI,opts->leftovers,strlen(opts->leftovers));
+	      g_free(opts->leftovers);
+				if(fifo->dbg) g_printf("checking stdin\n");
+				write_stdin(fifo,FIFO_MODE_PRI);
+				usleep(1000);
+			}
+			/* Grab primary */
+	    GtkClipboard* prim = gtk_clipboard_get(GDK_SELECTION_PRIMARY);
+	    /* Print primary text (if any) */
+	    gchar* prim_text = gtk_clipboard_wait_for_text(prim);
+	    if (prim_text)
+	      g_print("%s", prim_text);
+	    g_free(prim_text);
+			
+	  }  else if(opts->clipboard){
+			fifo=init_fifo(FIFO_MODE_CLI);
+			
+			if(FIFO_CLIENT == fifo->whoami){
+				write_fifo(fifo,FIFO_MODE_CLI,opts->leftovers,strlen(opts->leftovers));
+	      g_free(opts->leftovers);
+				write_stdin(fifo,FIFO_MODE_CLI);
+				usleep(1000);
+			}
+	      
+			GtkClipboard* clip = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);
+	    /* Print clipboard text (if any) */
+	    gchar* clip_text = gtk_clipboard_wait_for_text(clip);
+	    if (clip_text)
+	      g_print("%s", clip_text);
+	    g_free(clip_text);
+	  }  else  	{
+			GtkClipboard* clip = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);
+			fifo=init_fifo(FIFO_MODE_NONE);
+				/* Copy from unrecognized options */
+			if(FIFO_CLIENT == fifo->whoami){
+		    write_fifo(fifo,FIFO_MODE_CLI,opts->leftovers,strlen(opts->leftovers));
+	      g_free(opts->leftovers);
+					 /* Check if stdin is piped */
+		    write_stdin(fifo,FIFO_MODE_CLI);
+				usleep(1000);
+			}
+			
+			gchar* clip_text = gtk_clipboard_wait_for_text(clip);
+    	if (clip_text)
+      	g_print("%s", clip_text);
+    	 g_free(clip_text);
+	    
+		}	
+			  /* Run as daemon option */
+  if (opts->daemon && FIFO_DAEMON == fifo->whoami)  {
+    init_daemon_mode();
+  } 
+	if(FIFO_CLIENT == fifo->whoami){
+		close_fifos(fifo);
+		return 0;
+	}	
   
   /* Init Parcellite */
   parcellite_init();
@@ -1512,7 +1620,7 @@ main(int argc, char *argv[])
   g_free(primary_text);
   g_free(clipboard_text);
   g_free(synchronized_text);
-  
+  close_fifos(fifo);
   /* Exit */
   return 0;
 }
