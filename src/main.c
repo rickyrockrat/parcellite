@@ -14,6 +14,10 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ 
+NOTES:
+We keep track of a delete list while the history menu is up. We add/remove items from that 
+list until we get a selection done event, then we delete those items from the real history
  */
 
 #ifdef HAVE_CONFIG_H
@@ -36,17 +40,18 @@
 #define PARCELLITE_ICON "parcellite"
 #define KBUF_SIZE 20
 /**keeps track of each menu item and the element it's created from.  */
-struct item_info {
+struct s_item_info {
 	GtkWidget *item;
 	GSList *element;
 };
 
 struct history_info{
-  GtkWidget *menu;
-  GtkWidget *clip_item;
-	gchar *element_text;
+  GtkWidget *menu;			/**top level history menu  */
+  GtkWidget *clip_item; /**currently selected history item (represents clipboard)  */
+	gchar *element_text;	/**texts of selected history clipboard item  */
   GtkWidget *title_item;
-	GList *item_info; /**struct item_info  */
+	GList *delete_list; /**struct s_item_info - for the delete list  */
+	gint tmp;           /**temp var for usage in popups  */
 };
 GtkWidget *hmenu;
 /* Uncomment the next line to print a debug trace. */
@@ -341,6 +346,71 @@ static void edit_actions_selected(GtkButton *button, gpointer user_data)
   if (!gtk_grab_get_current())
     /* Show the preferences dialog on the actions tab */
     show_preferences(ACTIONS_TAB);
+}
+
+/***************************************************************************/
+/** .
+\n\b Arguments:
+\n\b Returns:
+****************************************************************************/
+gboolean  handle_view_popup_menu (int i, gpointer data)
+{
+  /* we passed the view as userdata when we connected the signal */
+	struct history_info *h=(struct history_info*)data;
+	
+	if(NULL !=h ){
+		GSList* element = g_slist_nth(history, h->tmp);
+		if(NULL !=element)
+		  g_printf("%s ",element->data);
+	}
+	  
+	if(0== i)
+		g_print("canceled\n");
+
+  else g_print ("Move To!\n");
+	/*gtk_widget_grab_focus(h->menu); */
+	return TRUE;
+}
+gboolean  view_popup_menu_on_move (GtkWidget *menuitem, gpointer data)
+{
+	return handle_view_popup_menu(1,data);
+}
+gboolean view_popup_menu_on_cancel (GtkWidget *menuitem, gpointer data)
+{
+	return handle_view_popup_menu(0,data);
+}
+/***************************************************************************/
+/** .
+\n\b Arguments:
+\n\b Returns:
+if (event->type == GDK_BUTTON_PRESS  &&  event->button == 3)
+	view_popup_menu(treeview, event, userdata);
+****************************************************************************/
+void  view_popup_menu (struct history_info *h, GdkEventKey *e, gint index)
+{
+  GtkWidget *menu, *menuitem;
+  menu = gtk_menu_new();
+	h->tmp=index;
+  menuitem = gtk_menu_item_new_with_label("Move To");
+
+  g_signal_connect(menuitem, "activate",(GCallback) view_popup_menu_on_move, (gpointer)h);
+
+  gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuitem);
+	menuitem = gtk_menu_item_new_with_label("Cancel");
+
+  g_signal_connect(menuitem, "activate", (GCallback) view_popup_menu_on_cancel, (gpointer)h);
+
+  gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuitem);
+
+  gtk_widget_show_all(menu);
+
+  /* Note: event can be NULL here when called from view_onPopupMenu;
+   *  gdk_event_get_time() accepts a NULL argument */
+   gtk_menu_popup(GTK_MENU(menu), h->menu, NULL, NULL, NULL,
+									0,
+                 /*(e != NULL) ? ((GdkEventButton *)e)->button : 0, */
+                 gdk_event_get_time((GdkEvent*)e));
+	gtk_widget_grab_focus(menu); 
 }
 
 /* Called when Edit is selected from history menu */
@@ -728,7 +798,7 @@ GList *find_h_item(GList *list,GtkWidget *w, GSList *e)
 {
 	GList *i;
 	for ( i=list; NULL != i; i=i->next){
-		struct item_info *it=(struct item_info *)i->data;
+		struct s_item_info *it=(struct s_item_info *)i->data;
 		if( (NULL == w || it->item ==w) && it->element==e){/**found it  */
 			  /*printf("Found %p\n",i);	fflush(NULL); */
 			return i;
@@ -745,22 +815,22 @@ GList *find_h_item(GList *list,GtkWidget *w, GSList *e)
 void add_h_item(struct history_info *h, GtkWidget *w, GSList* element)
 {
 	GList *ele;
-	struct item_info *i;
-	if(NULL == (ele=find_h_item(h->item_info,w,element) ) ){
-		if(NULL != (i=g_malloc(sizeof(struct item_info)) ) ){
+	struct s_item_info *i;
+	if(NULL == (ele=find_h_item(h->delete_list,w,element) ) ){
+		if(NULL != (i=g_malloc(sizeof(struct s_item_info)) ) ){
 			i->item=w;
 			i->element=element;
-			h->item_info=g_list_prepend(h->item_info,(gpointer)i);
-			/** printf("Added w %p e %p %p\n",w,element,h->item_info);	fflush(NULL);*/
+			h->delete_list=g_list_prepend(h->delete_list,(gpointer)i);
+			/** printf("Added w %p e %p %p\n",w,element,h->delete_list);	fflush(NULL);*/
 		}	
 	}
 }
 
 /***************************************************************************/
 /** Delete an item from the history delete list.
-h->item_info is a GList. The data points to a struct item_info, which
+h->delete_list is a GList. The data points to a struct s_item_info, which
 contains a widget and an element - these latter two are part of the history 
-menu, so we just need to de-allocate the item_info structure, and delete it 
+menu, so we just need to de-allocate the delete_list structure, and delete it 
 from the list.
 \n\b Arguments:
 \n\b Returns:
@@ -768,12 +838,12 @@ from the list.
 void rm_h_item(struct history_info *h, GtkWidget *w, GSList* element)
 {
 	GList *i;
-	if(NULL != (i=find_h_item(h->item_info,w,element) ) ){
+	if(NULL != (i=find_h_item(h->delete_list,w,element) ) ){
 		/*printf("Freeing %p\n",i->data); */
 		g_free(i->data);
 		i->data=NULL;
 		/*fflush(NULL); */
-		h->item_info=g_list_delete_link(h->item_info,i);
+		h->delete_list=g_list_delete_link(h->delete_list,i);
 		/** printf("Removed %p\n",i);	fflush(NULL);*/
 	}
 		
@@ -788,11 +858,11 @@ static gboolean selection_done(GtkMenuShell *menushell, gpointer user_data)
 {
 	struct history_info *h=(struct history_info *)user_data;
 	/*g_print("Got selection_done shell %p data %p\n",menushell,user_data);  */
-	if(NULL != h && NULL != h->item_info){/**have a list of items to delete.  */
+	if(NULL != h && NULL != h->delete_list){/**have a list of items to delete.  */
 		GList *i;
 		/*g_print("Deleting items\n"); */
-		for (i=h->item_info; NULL != i; i=i->next){
-			struct item_info *it=(struct item_info *)i->data;
+		for (i=h->delete_list; NULL != i; i=i->next){
+			struct s_item_info *it=(struct s_item_info *)i->data;
 			/*printf("Free %p.. '%s' ",it->element->data,(char *)(it->element->data)); */
 			g_free(it->element->data);
 			it->element->data=NULL;
@@ -895,7 +965,7 @@ static gboolean key_release_cb (GtkWidget *w,GdkEventKey *e, gpointer user)
 
   h=(struct history_info *)user;
 	
-	if(0&&  NULL != e ){
+	if(0 && NULL != e ){
 		if(GDK_MOTION_NOTIFY==e->type)
 			return FALSE;
     printf("krc (%x) S%x T%x C%x,SE%x, G%x, W%p, wdg%p",
@@ -933,9 +1003,13 @@ static gboolean key_release_cb (GtkWidget *w,GdkEventKey *e, gpointer user)
     g_print("No Event!\n");
     return FALSE;
   }
+		
   if(0 == prefs.type_search)/**searching is turned off  */
     return FALSE;
-	
+	/**ignore left-clicks  */
+	if(GDK_BUTTON_RELEASE==e->type && 3 == ((GdkEventButton *)e)->button)
+		return FALSE;
+		
   if(GDK_KEY_PRESS == e->type && ' ' == e->keyval) /**ignore space presses  */
     return TRUE;
 	if(GDK_KEY_PRESS == e->type)
@@ -1066,7 +1140,7 @@ foundit:
 ****************************************************************************/
 void set_clipboard_text(struct history_info *h, GSList *element)
 {
-	if(NULL == find_h_item(h->item_info,NULL,element)){
+	if(NULL == find_h_item(h->delete_list,NULL,element)){
 		gtk_clipboard_set_text(clipboard, element->data, -1);
 	  gtk_clipboard_set_text(primary, element->data, -1);	
 	}
@@ -1093,10 +1167,10 @@ void handle_history_delete(GSList* element)
 \n\b Arguments:
 \n\b Returns:
 ****************************************************************************/
-void handle_delete_marking(struct history_info *h, GtkWidget *w, gpointer user)
+void handle_delete_marking(struct history_info *h, GtkWidget *w, gint index)
 {
   GtkLabel *l=(GtkLabel *)(gtk_bin_get_child((GtkBin*)w)) ;
-	GSList* element = g_slist_nth(history, GPOINTER_TO_INT(user));
+	GSList* element = g_slist_nth(history, index);
 	if(is_strikethrough(l)){ /**un-highlight  */
 		set_strikethrough(l,FALSE);
 		rm_h_item(h,w,element);
@@ -1133,7 +1207,7 @@ static gboolean my_item_event (GtkWidget *w,GdkEventKey *e, gpointer user)
 		/*printf("state 0x%x\n",enter->state); */
 		/**use shift or right-click  */
 		if(GDK_SHIFT_MASK&enter->state && GDK_BUTTON3_MASK&enter->state)
-			handle_delete_marking(h,w,user);
+			handle_delete_marking(h,w,GPOINTER_TO_INT(user));
 	}
 	if(GDK_KEY_PRESS == e->type){
 		GdkEventKey *k=	(GdkEventKey *)e;
@@ -1147,15 +1221,18 @@ static gboolean my_item_event (GtkWidget *w,GdkEventKey *e, gpointer user)
 		if(3 == b->button){ /**right-click  */
 			gboolean rtn;
 			if(GDK_CONTROL_MASK&b->state){
-				handle_delete_marking(h,w,user);
+				handle_delete_marking(h,w,GPOINTER_TO_INT(user));
 			}else{
+				g_print("Calling popup\n");
+		    view_popup_menu(h,e,GPOINTER_TO_INT(user));
+		#if 0
 				/*printf("Got Right-Click\n");	fflush(NULL); */
-				if(NULL == h->item_info){
+				if(NULL == h->delete_list){
 					handle_history_delete(element);
 					g_signal_emit_by_name ((gpointer)menu,"selection-done");
 				}else /**already have marks, assume we are trying to add one.  */
 					handle_delete_marking(h,w,user);
-					
+		#endif			
 			}
 			return TRUE;
 		}else if( 1 == b->button){
@@ -1209,7 +1286,7 @@ static gboolean show_history_menu(gpointer data)
 	
   h.menu=hmenu=menu;
   h.clip_item=NULL;
-	h.item_info=NULL;
+	h.delete_list=NULL;
 	/*g_print("histmen %p\n",menu); */
 	my_item_event(NULL,NULL,(gpointer)&h); /**init our function  */
 	item_selected(NULL,(gpointer)&h);	/**ditto  */
