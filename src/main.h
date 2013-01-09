@@ -26,6 +26,9 @@ G_BEGIN_DECLS
 #define ACTIONS_TAB    2
 #define POPUP_DELAY    100
 #define CHECK_INTERVAL 500
+#define ID_PRIMARY   0
+#define ID_CLIPBOARD 1
+
 
 typedef struct
 {
