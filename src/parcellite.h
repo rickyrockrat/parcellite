@@ -1,4 +1,4 @@
-/* Copyright (C) 2007-2008 by Xyhthyx <xyhthyx@gmail.com>
+/* Copyright (C) 2011-2012 by rickyrockrat <gpib at rickyrockrat dot net>
  *
  * This file is part of Parcellite.
  *
@@ -15,16 +15,18 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+#ifndef _PARCELLITE_H_
+#define _PARCELLITE_H_ 1
+#include <glib.h>
+#include <gtk/gtk.h>
+#include <string.h>
+#include "daemon.h"
+#include "utils.h"
+#include "preferences.h"
+#include "history.h"
+#include "main.h"
+#include "keybinder.h"
+#include "parcellite-i18n.h"
 
-#ifndef DAEMON_H
-#define DAEMON_H
-
-G_BEGIN_DECLS
-
-#define DAEMON_INTERVAL 500
-
-void init_daemon_mode();
-
-G_END_DECLS
-
+#define PARCELLITE_ICON "parcellite"
 #endif
