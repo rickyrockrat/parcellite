@@ -353,7 +353,7 @@ static void edit_actions_selected(GtkButton *button, gpointer user_data)
 \n\b Arguments:
 \n\b Returns:
 ****************************************************************************/
-gboolean  handle_view_popup_menu (int i, gpointer data)
+gboolean  handle_history_item_right_click (int i, gpointer data)
 {
   /* we passed the view as userdata when we connected the signal */
 	struct history_info *h=(struct history_info*)data;
@@ -371,13 +371,14 @@ gboolean  handle_view_popup_menu (int i, gpointer data)
 	/*gtk_widget_grab_focus(h->menu); */
 	return TRUE;
 }
-gboolean  view_popup_menu_on_move (GtkWidget *menuitem, gpointer data)
+/**callback wrappers for the above function  */
+gboolean  history_item_right_click_on_move (GtkWidget *menuitem, gpointer data)
 {
-	return handle_view_popup_menu(1,data);
+	return handle_history_item_right_click(1,data);
 }
-gboolean view_popup_menu_on_cancel (GtkWidget *menuitem, gpointer data)
+gboolean history_item_right_click_on_cancel (GtkWidget *menuitem, gpointer data)
 {
-	return handle_view_popup_menu(0,data);
+	return handle_history_item_right_click(0,data);
 }
 /***************************************************************************/
 /** .
@@ -386,19 +387,19 @@ gboolean view_popup_menu_on_cancel (GtkWidget *menuitem, gpointer data)
 if (event->type == GDK_BUTTON_PRESS  &&  event->button == 3)
 	view_popup_menu(treeview, event, userdata);
 ****************************************************************************/
-void  view_popup_menu (struct history_info *h, GdkEventKey *e, gint index)
+void  history_item_right_click (struct history_info *h, GdkEventKey *e, gint index)
 {
   GtkWidget *menu, *menuitem;
   menu = gtk_menu_new();
 	h->tmp=index;
   menuitem = gtk_menu_item_new_with_label("Move To");
 
-  g_signal_connect(menuitem, "activate",(GCallback) view_popup_menu_on_move, (gpointer)h);
+  g_signal_connect(menuitem, "activate",(GCallback) history_item_right_click_on_move, (gpointer)h);
 
   gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuitem);
 	menuitem = gtk_menu_item_new_with_label("Cancel");
 
-  g_signal_connect(menuitem, "activate", (GCallback) view_popup_menu_on_cancel, (gpointer)h);
+  g_signal_connect(menuitem, "activate", (GCallback) history_item_right_click_on_cancel, (gpointer)h);
 
   gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuitem);
 
@@ -1224,7 +1225,7 @@ static gboolean my_item_event (GtkWidget *w,GdkEventKey *e, gpointer user)
 				handle_delete_marking(h,w,GPOINTER_TO_INT(user));
 			}else{
 				g_print("Calling popup\n");
-		    view_popup_menu(h,e,GPOINTER_TO_INT(user));
+		    history_item_right_click(h,e,GPOINTER_TO_INT(user));
 		#if 0
 				/*printf("Got Right-Click\n");	fflush(NULL); */
 				if(NULL == h->delete_list){
@@ -1304,38 +1305,42 @@ static gboolean show_history_menu(gpointer data)
   /* -------------------- */
   /*gtk_menu_shell_append((GtkMenuShell*)menu, gtk_separator_menu_item_new()); */
   /* Items */
-  if ((history != NULL) && (history->data != NULL))
-  {
+  if ((history != NULL) && (history->data != NULL)) {
     /* Declare some variables */
     GSList* element;
     gint element_number = 0;
     gchar* primary_temp = gtk_clipboard_wait_for_text(primary);
     gchar* clipboard_temp = gtk_clipboard_wait_for_text(clipboard);
     /* Reverse history if enabled */
-    if (prefs.reverse_history)
-    {
+    if (prefs.reverse_history) {
       history = g_slist_reverse(history);
       element_number = g_slist_length(history) - 1;
     }
     /* Go through each element and adding each */
-    for (element = history; element != NULL; element = element->next)
-    {
+    for (element = history; element != NULL; element = element->next) {
       GString* string = g_string_new((gchar*)element->data);
+		  glong len=g_utf8_strlen(string->str, string->len);
       /* Ellipsize text */
-      if (string->len > prefs.item_length)
-      {
-        switch (prefs.ellipsize)
-        {
+      if (len > prefs.item_length) {
+        switch (prefs.ellipsize) {
           case PANGO_ELLIPSIZE_START:
-            string = g_string_erase(string, 0, string->len-(prefs.item_length));
+          	string = g_string_erase(string, 0, g_utf8_offset_to_pointer(string->str, len - prefs.item_length) - string->str);
+            /*string = g_string_erase(string, 0, string->len-(prefs.item_length)); */
             string = g_string_prepend(string, "...");
             break;
           case PANGO_ELLIPSIZE_MIDDLE:
-            string = g_string_erase(string, (prefs.item_length/2), string->len-(prefs.item_length));
-            string = g_string_insert(string, (string->len/2), "...");
+          	{
+						gchar* p1 = g_utf8_offset_to_pointer(string->str, prefs.item_length / 2);
+            gchar* p2 = g_utf8_offset_to_pointer(string->str, len - prefs.item_length / 2);
+            string = g_string_erase(string, p1 - string->str, p2 - p1);
+            string = g_string_insert(string, p1 - string->str, "...");
+            /** string = g_string_erase(string, (prefs.item_length/2), string->len-(prefs.item_length));
+            string = g_string_insert(string, (string->len/2), "...");*/	
+						}
             break;
           case PANGO_ELLIPSIZE_END:
-            string = g_string_truncate(string, prefs.item_length);
+          	string = g_string_truncate(string, g_utf8_offset_to_pointer(string->str, prefs.item_length) - string->str);
+            /*string = g_string_truncate(string, prefs.item_length); */
             string = g_string_append(string, "...");
             break;
         }
