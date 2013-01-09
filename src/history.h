@@ -25,23 +25,17 @@ G_BEGIN_DECLS
 
 extern GSList* history;
 
-void
-read_history();
+void read_history();
 
-void
-save_history();
+void save_history();
 
-void
-append_item(gchar* item);
+void append_item(gchar* item);
 
-void
-truncate_history();
+void truncate_history();
 
-gpointer
-get_last_item();
+gpointer get_last_item();
 
-void
-delete_duplicate(gchar* item);
+void delete_duplicate(gchar* item);
 
 G_END_DECLS
 
