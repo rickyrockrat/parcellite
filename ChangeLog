@@ -1,4 +1,4 @@
-V1.0.2rc6 Friday, May  2012 
+V1.0.2rc6 Wednesday, Jan 9 2013 
  Changes
  +Applied glib patch from bug 3518845
  +Applied 0 size Action file lockup from bug 3459123
