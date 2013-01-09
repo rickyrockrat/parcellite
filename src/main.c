@@ -953,6 +953,8 @@ static gboolean key_release_cb (GtkWidget *w,GdkEventKey *e, gpointer user)
 		TRACE(g_print("Ignoring key '%c' 0x%02x\n",e->keyval,e->keyval));	
 		return FALSE;
 	}
+         if(e->keyval >= 0xff50 && e->keyval <= 0xff57) /**arrow keys, home,end,pgup,pgdwn  */
+               return FALSE;
 	if(idx>=KBUF_SIZE){
 		TRACE(g_print("keys full\n"));
 		return TRUE;
