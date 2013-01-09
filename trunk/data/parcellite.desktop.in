@@ -1,0 +1,8 @@
+[Desktop Entry]
+_Name=Parcellite
+_Comment=Clipboard Manager
+Icon=parcellite
+Exec=parcellite
+Terminal=false
+Type=Application
+Categories=GTK;GNOME;Application;Utility;

@@ -1,0 +1,23 @@
+Source: parcellite
+Section: misc
+Priority: optional
+Maintainer: Doug Springer <gpib@rickyrockrat.net>, Andrew Starr-Bochicchio <a.starr.b@gmail.com>
+Build-Depends: debhelper (>= 5.0.51~), autotools-dev
+Standards-Version: 3.8.4
+Homepage: http://parcellite.sourceforge.net/
+#Vcs-Git: git://git.debian.org/collab-maint/parcellite.git
+#Vcs-Browser: http://git.debian.org/?p=collab-maint/parcellite.git;a=summary
+
+Package: parcellite
+Architecture: ADD_ARCH_HERE
+Depends: libc6 (>= 2.2), libglib2.0-0 (>= 2.14.0), libgtk2.0-0 (>= 2.10.0), libx11-6 (>= 0)
+Description: lightweight GTK+ clipboard manager
+ Parcellite is a stripped down, basic-features-only clipboard manager
+  with a small memory footprint for those who like simplicity.
+  .
+  Features:
+  .
+   * Keeps a clipboard history.
+   * Various view options to display items the way you like it.
+   * Daemon mode; guard your clipboard contents when you close applications.
+   * Perform custom commands using clipboard contents.

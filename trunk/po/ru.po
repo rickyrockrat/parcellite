@@ -1,0 +1,208 @@
+# Russian translation of parcellite.
+# Copyright (C) 2008 Xyhthyx <xyhthyx@gmail.com>
+# This file is distributed under the same license as the parcellite package.
+# Alexander Kazancev <kazancas@mandriva.ru>
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Parcellite\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2011-05-02 01:40+0400\n"
+"PO-Revision-Date: 2011-05-02 02:16+0300\n"
+"Last-Translator: Alexander Kazancev <kazancas@mandriva.ru>\n"
+"Language-Team: \n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Language: ru_RU\n"
+"X-Poedit-Language: Russian\n"
+"X-Poedit-Country: RUSSIAN FEDERATION\n"
+
+#: preferences.c:428
+msgid "Preferences"
+msgstr "Настройки"
+
+#: preferences.c:447
+msgid "Behavior"
+msgstr "Поведение"
+
+#: preferences.c:455
+msgid "<b>Clipboards</b>"
+msgstr "<b>Буферы обмена</b>"
+
+#: preferences.c:462
+msgid "Use _Copy (Ctrl-C)"
+msgstr "Использовать буфер _Копировать (Ctrl-C)"
+
+#: preferences.c:465
+msgid "Use _Primary (Selection)"
+msgstr "_Использовать буфер выделения"
+
+#: preferences.c:468
+msgid "S_ynchronize clipboards"
+msgstr "Синхронизировать буферы"
+
+#: preferences.c:476
+msgid "<b>History</b>"
+msgstr "<b>История</b>"
+
+#: preferences.c:483
+msgid "_Save history"
+msgstr "_Сохранять историю"
+
+#: preferences.c:484
+msgid "Save and restore history between sessions"
+msgstr "Сохранять и восстанавливать историю между сессиями"
+
+#: preferences.c:489
+msgid "_Postion history"
+msgstr "_Позиция истории"
+
+#: preferences.c:490
+msgid "Set the location where history appears. If unchecked, appears where the mouse is."
+msgstr "Задает расположение появления истории. Если не отмечено, история появляется в месте расположения курсора."
+
+#: preferences.c:494
+msgid "<b>X</b>"
+msgstr "<b>X</b>"
+
+#: preferences.c:499
+msgid "<b>Y</b>"
+msgstr "<b>Y</b>"
+
+#: preferences.c:508
+msgid "Items in history:"
+msgstr "Элементы в истории:"
+
+#: preferences.c:519
+msgid "Max Data Size (MB)"
+msgstr "Макс. размер данных (Мб)"
+
+#: preferences.c:524
+msgid "Set Maximum amount of data to copy for each entry in MBytes. 0 is no limit."
+msgstr "Установить максимальный размер данных для копирования в каждой записи. 0 - без лимита."
+
+#: preferences.c:529
+msgid "<b>Miscellaneous</b>"
+msgstr "<b>Исключения</b>"
+
+#: preferences.c:537
+msgid "Search As You _Type"
+msgstr "Искать по мере ввода"
+
+#: preferences.c:538
+msgid "If checked, does a search-as-you-type. Turns red if not found. Goes to top (Alt-E) line when no chars are entered for search"
+msgstr "Если отмечено, поиск будет идти по мере набора. Если нет совпадений, становится красным. Переходит к верхней строке (Alt-E) если не введены буквы для поиска"
+
+#: preferences.c:542
+msgid "_Case Sensitive Search"
+msgstr "Пои_ск с учетом регистра"
+
+#: preferences.c:543
+msgid "If checked, does case sensitive search"
+msgstr "Если отмечено, поиск с учетом регистра"
+
+#: preferences.c:547
+msgid "Capture _hyperlinks only"
+msgstr "Захватывать только _гиперссылки"
+
+#: preferences.c:549
+msgid "C_onfirm before clearing history"
+msgstr "_Подтверждение перед очисткой истории"
+
+#: preferences.c:556
+msgid "Display"
+msgstr "Отображение"
+
+#: preferences.c:564
+msgid "<b>Items</b>"
+msgstr "<b>Элементы</b>"
+
+#: preferences.c:571
+msgid "Show in a _single line"
+msgstr "Показывать в одну строку"
+
+#: preferences.c:573
+msgid "Show in _reverse order"
+msgstr "Показывать в обратном порядке"
+
+#: preferences.c:577
+msgid "Character length of items:"
+msgstr "Число символов в элементе "
+
+#: preferences.c:590
+msgid "<b>Omitting</b>"
+msgstr "<b>Исключения</b>"
+
+#: preferences.c:599
+msgid "Omit items in the:"
+msgstr "Исключить элементы в:"
+
+#: preferences.c:603
+msgid "Beginning"
+msgstr "Начале"
+
+#: preferences.c:604
+msgid "Middle"
+msgstr "Середине"
+
+#: preferences.c:605
+msgid "End"
+msgstr "Конце"
+
+#: preferences.c:612
+msgid "Actions"
+msgstr "Действия"
+
+#: preferences.c:617
+msgid "Control-click Parcellite's tray icon to use actions"
+msgstr "CTRL+клик по иконке Parcellite в трее для выполнения действий"
+
+#: preferences.c:637
+msgid "Action"
+msgstr "Действие"
+
+#: preferences.c:644
+msgid "Command"
+msgstr "Команда"
+
+#: preferences.c:659
+msgid "Add..."
+msgstr "Добавить..."
+
+#: preferences.c:663
+msgid "Remove"
+msgstr "Удалить"
+
+#: preferences.c:680
+msgid "Hotkeys"
+msgstr "Горячие клавиши"
+
+#: preferences.c:688
+msgid "<b>Hotkeys</b>"
+msgstr "<b>Горячие клавиши</b>"
+
+#: preferences.c:697
+msgid "History key combination:"
+msgstr "Вызов Истории"
+
+#: preferences.c:705
+msgid "Actions key combination:"
+msgstr "Вызов Действия"
+
+#: preferences.c:713
+msgid "Menu key combination:"
+msgstr "Вызов меню"
+
+#: main.c:1154
+msgid "Use Alt-E to edit, Alt-C to clear"
+msgstr "Alt+E - редактировать, Alt+C - очистить"
+
+#: main.c:313
+msgid "Editing Clipboard"
+msgstr "Редактирование буфера обмена"
+
+#: main.c:229 main.c:244 main.c:1404
+msgid "Clipboard Manager"
+msgstr "Менеджер буфера обмена"
