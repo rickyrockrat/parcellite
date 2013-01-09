@@ -25,6 +25,17 @@
 #include "parcellite-i18n.h"
 #include <string.h>
 
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include <unistd.h>
+#include <dirent.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <errno.h>
+
+
 /** Wrapper to replace g_strdup to limit size of text copied from clipboard. 
 g_strndup will dup to the size of the limit, which will waste resources, so
 try to allocate using other methods.
@@ -100,44 +111,48 @@ gboolean is_hyperlink(gchar* text)
   return result;
 }
 
+
+
 /* Parses the program arguments. Returns TRUE if program needs
  * to exit after parsing is complete
  */
-gboolean parse_options(int argc, char* argv[])
+struct cmdline_opts *parse_options(int argc, char* argv[])
 {
-  /* Declare argument options and argument variables */
-  gboolean icon   = FALSE,    daemon = FALSE,
-           clipboard = FALSE, primary = FALSE,
-           exit = FALSE;
-  
+	struct cmdline_opts *opts=g_malloc0(sizeof(struct cmdline_opts));
+	if(NULL == opts){
+		g_printf("Unable to malloc cmdline_opts\n");
+		return NULL;
+	}
+  if (argc <= 1) 
+		return opts;	
   GOptionEntry main_entries[] = 
   {
     {
       "daemon", 'd',
       0,
       G_OPTION_ARG_NONE,
-      &daemon, _("Run as daemon"),
+      &opts->daemon, _("Run as daemon"),
       NULL
     },
     {
       "no-icon", 'n',
       0,
       G_OPTION_ARG_NONE,
-      &icon, _("Do not use status icon (Ctrl-Alt-P for menu)"),
+      &opts->icon, _("Do not use status icon (Ctrl-Alt-P for menu)"),
       NULL
     },
     {
       "clipboard", 'c',
       0,
       G_OPTION_ARG_NONE,
-      &clipboard, _("Print clipboard contents"),
+      &opts->clipboard, _("Print clipboard contents"),
       NULL
     },
     {
       "primary", 'p',
       0,
       G_OPTION_ARG_NONE,
-      &primary, _("Print primary contents"),
+      &opts->primary, _("Print primary contents"),
       NULL
     },
     {
@@ -161,86 +176,371 @@ gboolean parse_options(int argc, char* argv[])
   g_option_context_add_main_entries(context, main_entries, NULL);
   g_option_context_parse(context, &argc, &argv, NULL);
   g_option_context_free(context);
-  
+	opts->leftovers = g_strjoinv(" ", argv + 1);
   /* Check which options were parseed */
   
   /* Do not display icon option */
-  if (icon)
-  {
+  if (opts->icon)  {
     prefs.no_icon = TRUE;
   }
-  /* Run as daemon option */
-  else if (daemon)
-  {
-    init_daemon_mode();
-    exit = TRUE;
+	return opts;
+}
+
+
+/***************************************************************************/
+/** Return a PID given a name. Used to check a if a process is running..
+if 2 or greater, process is running
+\n\b Arguments:
+\n\b Returns:	number of instances of name found
+****************************************************************************/
+int proc_find(const char* name, pid_t *pid) 
+{
+	DIR* dir;
+	FILE* fp;
+	struct dirent* ent;
+  char* endptr;
+  char buf[PATH_MAX];
+	int instances=0;
+
+  if (!(dir = opendir("/proc"))) {
+  	perror("can't open /proc");
+    return -1;
   }
-  /* Print clipboard option */
-  else if (clipboard)
-  {
-    /* Grab clipboard */
-    GtkClipboard* clip = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);
-    
-    /* Check if stdin has text to copy */
-    if (!isatty(fileno(stdin)))
-    {
-      GString* piped_string = g_string_new(NULL);
-      /* Append stdin to string */
-      while (1)
-      {
-        gchar* buffer = (gchar*)g_malloc(256);
-        if (fgets(buffer, 256, stdin) == NULL)
-        {
-          g_free(buffer);
-          break;
-        }
-        g_string_append(piped_string, buffer);
-        g_free(buffer);
-      }
-      /* Check if anything was piped in */
-      if (piped_string->len > 0)
-      {
-        /* Truncate new line character */
-        /* g_string_truncate(piped_string, (piped_string->len - 1)); */
-        /* Copy to clipboard */
-        gtk_clipboard_set_text(clip, piped_string->str, -1);
-        gtk_clipboard_store(clip);
-      }
-      g_string_free(piped_string, TRUE);
+
+  while((ent = readdir(dir)) != NULL) {
+    /* if endptr is not a null character, the directory is not
+     * entirely numeric, so ignore it */
+    long lpid = strtol(ent->d_name, &endptr, 10);
+    if (*endptr != '\0') {
+        continue;
     }
-    /* Print clipboard text (if any) */
-    gchar* clip_text = gtk_clipboard_wait_for_text(clip);
-    if (clip_text)
-      g_print("%s", clip_text);
-    g_free(clip_text);
-    
-    /* Return true so program exits when finished parsing */
-    exit = TRUE;
+    /* try to open the cmdline file */
+    snprintf(buf, sizeof(buf), "/proc/%ld/cmdline", lpid);
+
+    if ((fp= fopen(buf, "r"))) {
+      if (fgets(buf, sizeof(buf), fp) != NULL) {
+				gchar *b=g_path_get_basename(buf);
+	      if (!g_strcmp0(b, name)) {
+					++instances;
+					if(NULL !=pid)
+					  *pid=lpid;
+	      }
+      }
+      fclose(fp);
+    }
+
   }
-  else if (primary)
-  {
-    /* Grab primary */
-    GtkClipboard* prim = gtk_clipboard_get(GDK_SELECTION_PRIMARY);
-    /* Print primary text (if any) */
-    gchar* prim_text = gtk_clipboard_wait_for_text(prim);
-    if (prim_text)
-      g_print("%s", prim_text);
-    g_free(prim_text);
-    
-    /* Return true so program exits when finished parsing */
-    exit = TRUE;
-  }
-  else
-  {
-    /* Copy from unrecognized options */
-    gchar* argv_string = g_strjoinv(" ", argv + 1);
-    GtkClipboard* clip = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);
-    gtk_clipboard_set_text(clip, argv_string, -1);
-    gtk_clipboard_store(clip);
-    g_free(argv_string);
-    /* Return true so program exits when finished parsing */
-    exit = TRUE;
-  }
-  return exit;
+
+  closedir(dir);
+  return instances;
+}
+
+/***************************************************************************/
+/** .
+\n\b Arguments:
+\n\b Returns:
+****************************************************************************/
+gboolean fifo_read_cb (GIOChannel *src,  GIOCondition cond, gpointer data)
+{
+	struct p_fifo *f=(struct p_fifo *)data;
+	int which;
+	if(src == f->g_ch_p)
+		which=FIFO_MODE_PRI;
+	else if(src == f->g_ch_c)
+		which=FIFO_MODE_CLI;
+	else{
+		g_printf("Unable to determine fifo!!\n");
+		return 0;
+	}
+	if(cond & G_IO_HUP){
+	  if(f->dbg) g_printf("gothup ");
+		return FALSE;
+	}
+	if(cond & G_IO_NVAL){
+	  if(f->dbg) g_printf("readnd ");
+		return FALSE;
+	}
+	if(cond & G_IO_IN){
+	  if(f->dbg) g_printf("norm ");
+	}
+	
+  if(f->dbg) g_printf("0x%X Waiting on chars\n",cond);
+	f->rlen=0;
+/** (	while (1) {*/
+		int s;
+		
+		s=read_fifo(f,which);
+/**  		usleep(100);
+		if(-1 == s){
+			g_printf("Error reading fifo\n");
+			return 0;
+		} else if(0 == s)
+			break;
+	}    
+	if(f->rlen>0){
+		g_printf("Setting fifo which\n");
+		f->which=FIFO_MODE_PRI==which?ID_PRIMARY:ID_CLIPBOARD;
+	}    */
+		
+	return TRUE;
+}
+
+/***************************************************************************/
+/** .
+\n\b Arguments:
+\n\b Returns:
+****************************************************************************/
+gint _create_fifo(gchar *f)
+{
+	int i=0;
+	if(0 == access(f,F_OK)	)
+		unlink(f);
+	if(-1 ==mkfifo(f,0660)){
+		perror("mkfifo ");
+		i= -1;
+	}
+	g_free(f);
+	return i;
+}
+/***************************************************************************/
+/** .
+\n\b Arguments:
+\n\b Returns:
+****************************************************************************/
+int create_fifo(void)
+{
+	gchar *f;
+	int i=0;
+	f=g_build_filename(g_get_user_data_dir(), FIFO_FILE_C, NULL);
+	if(-1 ==  _create_fifo(f) )
+		--i;
+	f=g_build_filename(g_get_user_data_dir(), FIFO_FILE_P, NULL);
+	if(-1 ==  _create_fifo(f) )
+		--i;
+	return i;
+}
+
+
+/***************************************************************************/
+/** .
+\n\b Arguments:
+\n\b Returns:
+****************************************************************************/
+int _open_fifo(char *path, int flg)
+{
+	int fd;
+	mode_t mode=0660;
+	fd=open(path,flg,mode);
+	if(fd<3){
+		perror("Unable to open fifo");
+	}
+	g_free(path);
+	return fd;
+}
+/***************************************************************************/
+/** .
+\n\b Arguments:
+\n\b Returns:
+****************************************************************************/
+int open_fifos(struct p_fifo *fifo)
+{
+	int flg;
+	gchar *f;
+	
+	if(FIFO_CLIENT == fifo->whoami)
+		flg=O_WRONLY|O_NONBLOCK;
+	else {/**daemon  if you set O_RDONLY, you get 100%cpu usage from HUP*/
+		flg=O_RDWR|O_NONBLOCK;/*|O_EXCL; */
+	}	
+	
+	f=g_build_filename(g_get_user_data_dir(), FIFO_FILE_P, NULL);
+	if( (fifo->fifo_p=_open_fifo(f,flg))>2 && FIFO_DAEMON == fifo->whoami){
+		if(fifo->dbg) g_printf("PRI fifo %d\n",fifo->fifo_p);
+		fifo->g_ch_p=g_io_channel_unix_new (fifo->fifo_p);
+		g_io_add_watch (fifo->g_ch_p,G_IO_IN|G_IO_HUP,fifo_read_cb,(gpointer)fifo);
+	}
+		
+	f=g_build_filename(g_get_user_data_dir(), FIFO_FILE_C, NULL);
+	if( (fifo->fifo_c=_open_fifo(f,flg)) >2 && FIFO_DAEMON == fifo->whoami){
+		fifo->g_ch_c=g_io_channel_unix_new (fifo->fifo_c);
+		g_io_add_watch (fifo->g_ch_c,G_IO_IN|G_IO_HUP,fifo_read_cb,(gpointer)fifo);
+	}
+	if(fifo->dbg) g_printf("CLI fifo %d PRI fifo %d\n",fifo->fifo_c,fifo->fifo_p);
+	if(fifo->fifo_c <3 || fifo->fifo_p <3)
+		return -1;
+	return 0;
+}
+
+
+/***************************************************************************/
+/** .
+\n\b Arguments:
+\n\b Returns:
+****************************************************************************/
+int read_fifo(struct p_fifo *f, int which)
+{
+	int i,t, fd;
+	i=t=0;
+	
+	switch(which){
+		case FIFO_MODE_PRI:
+			fd=f->fifo_p;
+			f->which=ID_PRIMARY;
+			break;
+		case FIFO_MODE_CLI:
+			fd=f->fifo_c;
+			f->which=ID_CLIPBOARD;
+			break;
+		default:
+			g_printf("Unknown fifo %d!\n",which);
+			return -1;
+	}
+	if(NULL ==f || fd <3 ||NULL == f->buf|| f->len <=0)
+		return -1;
+	while(1){
+		i=read(fd,f->buf,f->len-t);
+		if(i>0)
+			t+=i;
+		else 
+			break;
+	}
+	if( -1 == i){
+		if( EAGAIN != errno){
+			perror("read_fifo");
+			return -1;
+		}
+	}
+	f->buf[t]=0;
+	f->rlen=t;
+	if(t>0)
+	  if(f->dbg) g_printf("%s: Got %d '%s'\n",f->fifo_p==fd?"PRI":"CLI",t,f->buf);
+	return t;
+}
+/***************************************************************************/
+/** .
+\n\b Arguments:
+\n\b Returns:
+****************************************************************************/
+int write_fifo(struct p_fifo *f, int which, char *buf, int len)
+{
+	int i, l,fd;
+	l=0;
+	switch(which){
+		case FIFO_MODE_PRI:
+			if(f->dbg) g_printf("Using pri fifo for write\n");
+			fd=f->fifo_p;
+			break;
+		case FIFO_MODE_CLI:
+			if(f->dbg) g_printf("Using cli fifo for write\n");
+			fd=f->fifo_c;
+			break;
+		default:
+			g_printf("Unknown fifo %d!\n",which);
+			return -1;
+	}
+	if(NULL ==f || fd <3)
+		return -1;
+	if(f->dbg) g_printf("writing '%s'\n",buf);
+	while(len){																							
+		i=write(fd,buf,len);
+		if(i>0)
+			len-=i;
+		++l;
+		if(l>0x7FFE){
+			g_printf("Maxloop hit\n");
+			break;
+		}
+			
+	}
+	if( -1 == i){
+		if( EAGAIN != errno){
+			perror("write_fifo");
+			return -1;
+		}
+	}
+	return 0;
+}
+
+
+
+
+/***************************************************************************/
+/** Figure out who we are, then open the fifo accordingly.
+return the fifo file descriptor, or -1 on error
+GIOChannel*         g_io_channel_unix_new               (int fd);
+
+guint               g_io_add_watch                      (GIOChannel *channel,
+                                                         G_IO_IN    GIOFunc func,
+                                                         gpointer user_data);
+                                                         
+g_io_channel_shutdown(channel,TRUE,NULL);
+\n\b Arguments:
+\n\b Returns:	allocated struct or NULL on fail
+****************************************************************************/
+struct p_fifo *init_fifo(int mode)
+{
+	struct p_fifo *f=g_malloc0(sizeof(struct p_fifo));
+	if(NULL == f){
+		g_printf("Unable to allocate for fifo!!\n");
+		return NULL;
+	}
+	if(NULL == (f->buf=(gchar *)g_malloc0(8000)) ){
+		g_printf("Unable to alloc 8k buffer for fifo! Command Line Input will be ignored.\n");
+		g_free(f);
+		return NULL;
+	}
+	/**set debug here for debug messages ( f->dbg=1)  */
+	f->len=7999;
+/*	g_printf("My PID is %d\n",getpid()); */
+	/**we are daemon, and will launch  */
+	if(proc_find("parcellite",NULL)<2){
+		f->whoami=FIFO_DAEMON;
+		if(f->dbg) g_printf("parcellite not found\n");
+		if(create_fifo() < 0 ){
+			g_printf("error creating fifo\n");
+		  goto err;
+		}	
+		if(open_fifos(f) < 0 ){
+			g_printf("Error opening fifo. Exit\n");
+			goto err;
+		}	
+		return f;
+		  /**We are the client  */
+	}	else{
+		f->whoami=FIFO_CLIENT;
+		if(f->dbg) g_printf("parcellite found\n");
+		if(open_fifos(f) < 0 ){
+			g_printf("Error opening fifo. Exit\n");
+			goto err;
+		}
+		return f;
+	}
+	
+err:
+	close_fifos(f);
+	return NULL;
+	
+}
+
+/***************************************************************************/
+/** .
+\n\b Arguments:
+\n\b Returns:
+****************************************************************************/
+void close_fifos(struct p_fifo *f)
+{
+	if(NULL ==f)
+		return;
+	
+	if(NULL != f->g_ch_p)
+		g_io_channel_shutdown(f->g_ch_p,TRUE,NULL);
+	if(f->fifo_p>0)
+		close(f->fifo_p);
+	
+	if(NULL != f->g_ch_c)
+		g_io_channel_shutdown(f->g_ch_c,TRUE,NULL);
+	if(f->fifo_c>0)
+		close(f->fifo_c);
+	g_free(f);
 }
 
