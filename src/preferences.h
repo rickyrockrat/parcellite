@@ -46,11 +46,46 @@ G_BEGIN_DECLS
 #define FIFO_FILE_P          "parcellite/fifo_p"
 #define PREFERENCES_FILE      "parcellite/parcelliterc"
 
-void
-read_preferences();
+typedef struct
+{
+  gboolean  use_copy;         /* Use copy */
+  gboolean  use_primary;      /* Use primary */
+  gboolean  synchronize;      /* Synchronize copy and primary */
+  
+  gboolean  save_history;     /* Save history */
+  gint      history_limit;    /* Items in history */
+  
+  gboolean  hyperlinks_only;  /* Hyperlinks only */
+  gboolean  confirm_clear;    /* Confirm clear */
+  
+  gboolean  single_line;      /* Show in a single line */
+  gboolean  reverse_history;  /* Show in reverse order */
+  gint      item_length;      /* Length of items */
+  
+  gint      ellipsize;        /* Omitting */
+  
+  gchar*    history_key;      /* History menu hotkey */
+  gchar*    actions_key;      /* Actions menu hotkey */
+  gchar*    menu_key;         /* Parcellite menu hotkey */
+  
+  gboolean  no_icon;          /* No icon */
+	gboolean  history_pos;			/* set postion (or not)  */
+	gint      history_x;        /* location of x location to display history  */	
+	gint      history_y;        /* location of y location to display history  */	
+	gboolean  case_search;      /* turn on case sensitive search */
+	gboolean  type_search;      /* turn on search-as-you-type */
+  gint32      data_size;      /**size, in megabytes to limit text copied.  */
+	gboolean  ignore_whiteonly; /** will not add entries that are only whitespace */
+	gboolean  trim_wspace_begend; /** Trims whitespace from beginning and end of line*/
+	gboolean  trim_newline;      /** Trims newlines from lines */
+}
+prefs_t;
 
-void
-show_preferences(gint tab);
+extern prefs_t prefs;
+
+void read_preferences();
+
+void show_preferences(gint tab);
 
 G_END_DECLS
 

@@ -16,11 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "preferences.h"
-
 #ifndef MAIN_H
 #define MAIN_H
-
+#include "preferences.h"
 G_BEGIN_DECLS
 
 #define ACTIONS_TAB    2
@@ -28,44 +26,6 @@ G_BEGIN_DECLS
 #define CHECK_INTERVAL 500
 #define ID_PRIMARY   0
 #define ID_CLIPBOARD 1
-
-
-typedef struct
-{
-  gboolean  use_copy;         /* Use copy */
-  gboolean  use_primary;      /* Use primary */
-  gboolean  synchronize;      /* Synchronize copy and primary */
-  
-  gboolean  save_history;     /* Save history */
-  gint      history_limit;    /* Items in history */
-  
-  gboolean  hyperlinks_only;  /* Hyperlinks only */
-  gboolean  confirm_clear;    /* Confirm clear */
-  
-  gboolean  single_line;      /* Show in a single line */
-  gboolean  reverse_history;  /* Show in reverse order */
-  gint      item_length;      /* Length of items */
-  
-  gint      ellipsize;        /* Omitting */
-  
-  gchar*    history_key;      /* History menu hotkey */
-  gchar*    actions_key;      /* Actions menu hotkey */
-  gchar*    menu_key;         /* Parcellite menu hotkey */
-  
-  gboolean  no_icon;          /* No icon */
-	gboolean  history_pos;			/* set postion (or not)  */
-	gint      history_x;        /* location of x location to display history  */	
-	gint      history_y;        /* location of y location to display history  */	
-	gboolean  case_search;      /* turn on case sensitive search */
-	gboolean  type_search;      /* turn on search-as-you-type */
-  gint32      data_size;      /**size, in megabytes to limit text copied.  */
-	gboolean  ignore_whiteonly; /** will not add entries that are only whitespace */
-	gboolean  trim_wspace_begend; /** Trims whitespace from beginning and end of line*/
-	gboolean  trim_newline;      /** Trims newlines from lines */
-}
-prefs_t;
-
-extern prefs_t prefs;
 
 int p_strcmp (const char *str1, const char *str2);
 void history_hotkey(char *keystring, gpointer user_data);
