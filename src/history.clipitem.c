@@ -14,13 +14,16 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ 
+build with:
+gcc -Wall `pkg-config --cflags gtk+-2.0` utils.c history.clipitem.c `pkg-config --libs gtk+-2.0` -o history.clipitem
  */
 
 #include <glib.h>
 #include <gtk/gtk.h>
-#include "main.clipitem.h"
+#include "main.h"
 #include "utils.h"
-#include "history.h"
+#include "history.clipitem.h"
 #include <string.h>
 prefs_t prefs = {DEF_USE_COPY,        DEF_USE_PRIMARY,      DEF_SYNCHRONIZE,
                  DEF_SAVE_HISTORY,    DEF_HISTORY_LIMIT,
