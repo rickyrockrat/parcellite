@@ -24,12 +24,47 @@ G_BEGIN_DECLS
 #define CONFIG_DIR  "parcellite"
 #define DATA_DIR    "parcellite"
 
+struct cmdline_opts {
+	gboolean icon;    
+	gboolean daemon;
+	gboolean clipboard;
+	gboolean primary;
+	gboolean exit;
+	gchar *leftovers;
+};
+
 gchar *p_strdup( const gchar *str );
 void check_dirs();
 
 gboolean is_hyperlink(gchar* link);
 
-gboolean parse_options(int argc, char* argv[]);
+struct cmdline_opts *parse_options(int argc, char* argv[]);
+
+#define FIFO_CLIENT 1
+#define FIFO_DAEMON 0
+#define FIFO_MODE_NONE 0
+#define FIFO_MODE_PRI  1 
+#define FIFO_MODE_CLI  2
+
+struct p_fifo {
+	int whoami;					/**client or daemon  */
+	int fifo_p;					/**primary fifo  */
+	int fifo_c;					/**clipboard fifo  */
+	GIOChannel *g_ch_p; /**so we can add watches in the main loop  */
+	GIOChannel *g_ch_c;	/**so we can add watches in the main loop  */
+	gchar *buf;	 /**the data itself  */
+	gint len;		/**total len of buffer (alloc amount)  */
+	gint rlen;	/**received lenght  */
+	gint which;	/**which clipboard the buffer should be written to  */
+	gint dbg;		/**set to debug fifo system  */
+};
+int proc_find(const char* name, pid_t *pid);
+int create_fifo(void);
+int open_fifos(struct p_fifo *fifo);
+int read_fifo(struct p_fifo *f, int which);
+int write_fifo(struct p_fifo *f, int which, char *buf, int len);
+struct p_fifo* init_fifo(int mode);
+void close_fifos(struct p_fifo *p);
 
 G_END_DECLS
 
