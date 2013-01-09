@@ -1,0 +1,329 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Parcellite\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2011-05-29 10:16+0200\n"
+"PO-Revision-Date: 2011-05-29 11:11+0100\n"
+"Last-Translator: Benjamí Fuertes <benjamifuertes@gmail.com>\n"
+"Language-Team: Catalan\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../src/main.c:242
+#: ../src/main.c:277
+msgid "Executing action..."
+msgstr "Executant acció..."
+
+#: ../src/main.c:249
+#: ../src/main.c:264
+#: ../src/main.c:1429
+#: ../data/parcellite.desktop.in.h:1
+#: ../data/parcellite-startup.desktop.in.h:1
+msgid "Clipboard Manager"
+msgstr "Gestor del porta-retalls"
+
+#. Create the dialog
+#: ../src/main.c:334
+msgid "Editing Clipboard"
+msgstr "Editant el porta-retalls"
+
+#: ../src/main.c:384
+msgid "Clear the history?"
+msgstr "¿Esborrar l'historial?"
+
+#: ../src/main.c:451
+msgid "Lightweight GTK+ clipboard manager."
+msgstr "Gestor lleuger del porta-retalls per a GTK+."
+
+#: ../src/main.c:545
+msgid "<b>None</b>"
+msgstr "<b>Cap</b>"
+
+#. File contained no actions so adding empty
+#. File did not open so adding empty
+#. Nothing in history so adding empty
+#: ../src/main.c:567
+#: ../src/main.c:600
+#: ../src/main.c:1282
+msgid "Empty"
+msgstr "Buit"
+
+#. Edit actions
+#: ../src/main.c:607
+msgid "_Edit actions"
+msgstr "_Edita accions"
+
+#. Edit clipboard
+#: ../src/main.c:1291
+msgid "Use Alt-E to edit, Alt-C to clear"
+msgstr "Alt-E per editar, Alt-C per esborrar"
+
+#: ../src/main.c:1296
+msgid "_Edit Clipboard"
+msgstr "_Edita el porta-retalls"
+
+#: ../src/main.c:1301
+msgid "_Clear"
+msgstr "Es_borrar"
+
+#: ../src/utils.c:75
+#: ../src/utils.c:82
+#, c-format
+msgid "Couldn't create directory: %s\n"
+msgstr "No s'ha pogut crear el directori: %s\n"
+
+#: ../src/utils.c:119
+msgid "Run as daemon"
+msgstr "Executar com a procés dimoni"
+
+#: ../src/utils.c:126
+msgid "Do not use status icon (Ctrl-Alt-P for menu)"
+msgstr "No utilitzar l'icona d'estat (Ctrl-Alt-P per el menú)"
+
+#: ../src/utils.c:133
+msgid "Print clipboard contents"
+msgstr "Imprimeix el contingut del porta-retalls"
+
+#: ../src/utils.c:140
+msgid "Print primary contents"
+msgstr "Imprimeix el contingut de la selecció primària"
+
+#: ../src/utils.c:152
+msgid ""
+"Clipboard CLI usage examples:\n"
+"\n"
+"  echo \"copied to clipboard\" | parcellite\n"
+"  parcellite \"copied to clipboard\"\n"
+"  echo \"copied to clipboard\" | parcellite -c"
+msgstr ""
+"Exemples del porta-retalls per la consola:\n"
+"\n"
+"  echo \"copiat al porta-retalls\" | parcellite\n"
+"  parcellite \"copiat al porta-retalls\"\n"
+"  echo \"copiat al porta-retalls\" | parcellite -o"
+
+#: ../src/utils.c:158
+msgid ""
+"Written by Gilberto \"Xyhthyx\" Miralla.\n"
+"Report bugs to <gpib@rickyrockrat.com>."
+msgstr ""
+"Escrit per Gilberto \"Xyhthyx\" Miralla.\n"
+"Informar d'errors a <gpib@rickyrockrat.com>."
+
+#. Create the dialog
+#: ../src/preferences.c:439
+msgid "Preferences"
+msgstr "Preferències"
+
+#: ../src/preferences.c:458
+msgid "Behavior"
+msgstr "Comportament"
+
+#: ../src/preferences.c:466
+msgid "<b>Clipboards</b>"
+msgstr "<b>Porta-retalls</b>"
+
+#: ../src/preferences.c:473
+msgid "Use _Copy (Ctrl-C)"
+msgstr "Utilitza c_opiar (Ctrl-C)"
+
+#: ../src/preferences.c:476
+msgid "Use _Primary (Selection)"
+msgstr "Utilitza la se_lecció primària"
+
+#: ../src/preferences.c:479
+msgid "S_ynchronize clipboards"
+msgstr "_Sincronitza els porta-retalls"
+
+#: ../src/preferences.c:487
+msgid "<b>History</b>"
+msgstr "<b>Historial</b>"
+
+#: ../src/preferences.c:494
+msgid "_Save history"
+msgstr "Desa l'_historial"
+
+#: ../src/preferences.c:495
+msgid "Save and restore history between sessions"
+msgstr "Desa i recupera l'historial entre sessions"
+
+#: ../src/preferences.c:500
+msgid "_Position history"
+msgstr "_Posició de l'historial"
+
+#: ../src/preferences.c:501
+msgid "Set the location where history appears. If unchecked, appears where the mouse is."
+msgstr "Posició on mostrar l'historial. Desactivar per mostrar l'historial  on sigui ratolí."
+
+#: ../src/preferences.c:505
+msgid "<b>X</b>"
+msgstr "<b>X</b>"
+
+#: ../src/preferences.c:510
+msgid "<b>Y</b>"
+msgstr "<b>Y</b>"
+
+#: ../src/preferences.c:519
+msgid "Items in history:"
+msgstr "Elements a l'historial:"
+
+#: ../src/preferences.c:530
+msgid "Max Data Size (MB)"
+msgstr "Tamany màxim de dades en MiB"
+
+#: ../src/preferences.c:535
+msgid "Set Maximum amount of data to copy for each entry in MBytes. 0 is no limit."
+msgstr "Estableix el tamany màxim de dades  per cada entrada en mebibytes. 0 per il·limitat."
+
+#: ../src/preferences.c:540
+msgid "<b>Miscellaneous</b>"
+msgstr "<b>Miscel·lània</b>"
+
+#. *type checkbox
+#: ../src/preferences.c:548
+msgid "Search As You _Type"
+msgstr "Cerca _mentre es tecleja"
+
+#: ../src/preferences.c:549
+msgid "If checked, does a search-as-you-type. Turns red if not found. Goes to top (Alt-E) line when no chars are entered for search"
+msgstr "Si està activat, cerca mentre es tecleja. Canvia a vermell si no hi ha coincidències. Va a la primera línia (Alt-E) si no hi han caràcters per cercar."
+
+#. *case checkbox
+#: ../src/preferences.c:553
+msgid "_Case Sensitive Search"
+msgstr "Di_ferència entre majúscules i minúscules al cercar"
+
+#: ../src/preferences.c:554
+msgid "If checked, does case sensitive search"
+msgstr "Si està activat, diferència entre majúscules i minúscules al cercar"
+
+#. * ignore_whiteonly checkbox
+#: ../src/preferences.c:558
+msgid "_Ignore Whitespace Only"
+msgstr "_Ignora el text en blanc"
+
+#: ../src/preferences.c:559
+msgid "If checked, will ignore any clipboard additions that contain only whitespace."
+msgstr "Si està activat, s'ignoraran les entrades només continguin espais en blanc."
+
+#. * trim_wspace_begend checkbox
+#: ../src/preferences.c:562
+msgid "_Trim Whitespace"
+msgstr "_Elimina espais en blanc"
+
+#: ../src/preferences.c:563
+msgid "If checked, will trim whitespace from beginning and end of entry."
+msgstr "Si està activat, elimina els espais en blanc al principi i al final de l'entrada."
+
+#. * trim_newline checkbox
+#: ../src/preferences.c:566
+msgid "_Trim Newlines"
+msgstr "_Elimina salts de línia"
+
+#: ../src/preferences.c:567
+msgid "If checked, will replace newlines with spaces."
+msgstr "Si està activat, es substitueixen els salts de línia per espais en blanc."
+
+#: ../src/preferences.c:570
+msgid "Capture _hyperlinks only"
+msgstr "C_aptura només els enllaços"
+
+#: ../src/preferences.c:572
+msgid "C_onfirm before clearing history"
+msgstr "Co_nfirma abans d'esborrar l'historial"
+
+#: ../src/preferences.c:579
+msgid "Display"
+msgstr "Mostra"
+
+#: ../src/preferences.c:587
+msgid "<b>Items</b>"
+msgstr "<b>Elements</b>"
+
+#: ../src/preferences.c:594
+msgid "Show in a _single line"
+msgstr "Mo_stra els elements en una sola línea"
+
+#: ../src/preferences.c:596
+msgid "Show in _reverse order"
+msgstr "Mostra els elements en _ordre invers"
+
+#: ../src/preferences.c:600
+msgid "Character length of items:"
+msgstr "Longitud d'elements en caràcters:"
+
+#: ../src/preferences.c:613
+msgid "<b>Omitting</b>"
+msgstr "<b>Ometre</b>"
+
+#: ../src/preferences.c:622
+msgid "Omit items in the:"
+msgstr "Omitir elements al:"
+
+#: ../src/preferences.c:626
+msgid "Beginning"
+msgstr "Principi"
+
+#: ../src/preferences.c:627
+msgid "Middle"
+msgstr "Mitg"
+
+#: ../src/preferences.c:628
+msgid "End"
+msgstr "Final"
+
+#: ../src/preferences.c:635
+msgid "Actions"
+msgstr "Accions"
+
+#. Build the actions label
+#: ../src/preferences.c:640
+msgid "Control-click Parcellite's tray icon to use actions"
+msgstr "Control-clic a l'icona de Parcellite per utilitzar accions"
+
+#: ../src/preferences.c:660
+msgid "Action"
+msgstr "Acció"
+
+#: ../src/preferences.c:667
+msgid "Command"
+msgstr "Ordre"
+
+#: ../src/preferences.c:682
+msgid "Add..."
+msgstr "Afegir..."
+
+#: ../src/preferences.c:686
+msgid "Remove"
+msgstr "Elimina"
+
+#: ../src/preferences.c:703
+msgid "Hotkeys"
+msgstr "Tecles ràpides"
+
+#: ../src/preferences.c:711
+msgid "<b>Hotkeys</b>"
+msgstr "<b>Tecles ràpides</b>"
+
+#: ../src/preferences.c:720
+msgid "History key combination:"
+msgstr "Combinació per l'historial:"
+
+#: ../src/preferences.c:728
+msgid "Actions key combination:"
+msgstr "Combinació per les accions:"
+
+#: ../src/preferences.c:736
+msgid "Menu key combination:"
+msgstr "Combinació per el menú:"
+
+#: ../data/parcellite.desktop.in.h:2
+#: ../data/parcellite-startup.desktop.in.h:2
+msgid "Parcellite"
+msgstr "Parcellite"
+
+#~ msgid "Could not create thread for executed action\n"
+#~ msgstr "No s'ha pogut crear el fil per l'acció executada\n"
+
