@@ -24,20 +24,9 @@ list until we get a selection done event, then we delete those items from the re
 #include <config.h>
 #endif
 
-#include <glib.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <gtk/gtk.h>
-#include <pthread.h>
-#include <string.h>
-#include "main.h"
-#include "utils.h"
-#include "history.h"
-#include "keybinder.h"
-#include "preferences.h"
-#include "parcellite-i18n.h"
+#include "parcellite.h"
 
-#define PARCELLITE_ICON "parcellite"
+
 #define KBUF_SIZE 20
 /**keeps track of each menu item and the element it's created from.  */
 struct s_item_info {
