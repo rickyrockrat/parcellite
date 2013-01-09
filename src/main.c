@@ -490,7 +490,7 @@ static void show_about_dialog(GtkMenuItem *menu_item, gpointer user_data)
                                  "http://parcellite.sourceforge.net");
     
     gtk_about_dialog_set_copyright((GtkAboutDialog*)about_dialog, "Copyright (C) 2007, 2008 Gilberto \"Xyhthyx\" Miralla\n"
-	   "Copyright (C) 2010-2011 Doug Springer");
+	   "Copyright (C) 2010-2013 Doug Springer");
     gtk_about_dialog_set_authors((GtkAboutDialog*)about_dialog, authors);
     gtk_about_dialog_set_translator_credits ((GtkAboutDialog*)about_dialog,
                                              "Miloš Koutný <milos.koutny@gmail.com>\n"
