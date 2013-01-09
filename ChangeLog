@@ -1,3 +1,13 @@
+V1.0.2rc6 Friday, May  2012 
+ Changes
+ +Applied glib patch from bug 3518845
+ +Applied 0 size Action file lockup from bug 3459123
+ +Fixed arrow/home/page up keys messing up search-as-you-type.
+ +Fixed having multiple copies of parcellite. Checks to see if already running.
+ +Fixed double backspace on search-as-you-type.
+ +Fixed command line copies to clipboard. Should work on all X sessions. Note: entry is not 
+  immediately added to clipboard. There is a 1/2 sec delay.
+ 
 V1.0.2rc5  Friday, September 9 2011 
  Changes
  +Fixed the primary deselect and file cut/paste issue.
