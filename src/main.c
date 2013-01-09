@@ -1506,10 +1506,9 @@ void write_stdin(struct p_fifo *fifo, int which)
       /* Truncate new line character */
       /* g_string_truncate(piped_string, (piped_string->len - 1)); */
       /* Copy to clipboard */
-	   write_fifo(fifo,which,piped_string->str,piped_string->len);
+	   write_fifo(fifo,which,piped_string->str,piped_string->len); 
      /*sleep(10); */
       /* Exit */
-      return ;
     }
     g_string_free(piped_string, TRUE);
 	 		
@@ -1534,19 +1533,21 @@ int main(int argc, char *argv[])
   
   /* Parse options */
 	opts=parse_options(argc, argv);
-	
   if(NULL == opts)
    	return 1;
 	/**get options/cmd line not parsed.  */
-	g_print("%s\n",opts->leftovers);
+	if( NULL != opts->leftovers)g_print("%s\n",opts->leftovers);
 	/**init fifo should set up the fifo and the callback (if we are daemon mode)  */
 		if(opts->primary)	{
 			fifo=init_fifo(FIFO_MODE_PRI);
 			if(fifo->dbg) g_printf("Hit PRI opt!\n");
 			
 			if(FIFO_CLIENT == fifo->whoami){
-				write_fifo(fifo,FIFO_MODE_PRI,opts->leftovers,strlen(opts->leftovers));
-	      g_free(opts->leftovers);
+				if(NULL != opts->leftovers){
+					write_fifo(fifo,FIFO_MODE_PRI,opts->leftovers,strlen(opts->leftovers));
+		      g_free(opts->leftovers);	
+				}
+				
 				if(fifo->dbg) g_printf("checking stdin\n");
 				write_stdin(fifo,FIFO_MODE_PRI);
 				usleep(1000);
@@ -1563,8 +1564,10 @@ int main(int argc, char *argv[])
 			fifo=init_fifo(FIFO_MODE_CLI);
 			
 			if(FIFO_CLIENT == fifo->whoami){
-				write_fifo(fifo,FIFO_MODE_CLI,opts->leftovers,strlen(opts->leftovers));
-	      g_free(opts->leftovers);
+				if(NULL != opts->leftovers){
+					write_fifo(fifo,FIFO_MODE_CLI,opts->leftovers,strlen(opts->leftovers));
+		      g_free(opts->leftovers);
+				}	
 				write_stdin(fifo,FIFO_MODE_CLI);
 				usleep(1000);
 			}
@@ -1575,13 +1578,15 @@ int main(int argc, char *argv[])
 	    if (clip_text)
 	      g_print("%s", clip_text);
 	    g_free(clip_text);
-	  }  else  	{
+	  }  else  	{ /*use CLIPBOARD*/
 			GtkClipboard* clip = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);
 			fifo=init_fifo(FIFO_MODE_NONE);
 				/* Copy from unrecognized options */
 			if(FIFO_CLIENT == fifo->whoami){
-		    write_fifo(fifo,FIFO_MODE_CLI,opts->leftovers,strlen(opts->leftovers));
-	      g_free(opts->leftovers);
+			  if(NULL != opts->leftovers){
+			    write_fifo(fifo,FIFO_MODE_CLI,opts->leftovers,strlen(opts->leftovers));
+		      g_free(opts->leftovers);
+				}	
 					 /* Check if stdin is piped */
 		    write_stdin(fifo,FIFO_MODE_CLI);
 				usleep(1000);
