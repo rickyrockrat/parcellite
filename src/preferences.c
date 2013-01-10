@@ -25,6 +25,7 @@ GtkWidget *copy_check,
           *history_spin,
           *charlength_spin,
           *ellipsize_combo,
+          *phistory_key_entry,
           *history_key_entry,
           *actions_key_entry,
           *menu_key_entry,
@@ -46,12 +47,24 @@ GtkWidget *copy_check,
 GtkListStore* actions_list;
 GtkTreeSelection* actions_selection;
 
+/* Init preferences structure */
+prefs_t prefs = {DEF_USE_COPY,        DEF_USE_PRIMARY,      DEF_SYNCHRONIZE,
+                 DEF_SAVE_HISTORY,    DEF_HISTORY_LIMIT,
+                 DEF_HYPERLINKS_ONLY, DEF_CONFIRM_CLEAR,
+                 DEF_SINGLE_LINE,     DEF_REVERSE_HISTORY,  DEF_ITEM_LENGTH,
+                 DEF_ELLIPSIZE,
+                 INIT_HISTORY_KEY,    INIT_ACTIONS_KEY,     INIT_MENU_KEY,
+                 DEF_NO_ICON};
+
 /* Apply the new preferences */
 static void
 apply_preferences()
 {
   /* Unbind the keys before binding new ones */
-  keybinder_unbind(prefs.history_key, history_hotkey);
+  keybinder_unbind(prefs.phistory_key, phistory_hotkey);
+  g_free(prefs.phistory_key);
+  prefs.phistory_key = NULL;
+	keybinder_unbind(prefs.history_key, history_hotkey);
   g_free(prefs.history_key);
   prefs.history_key = NULL;
   keybinder_unbind(prefs.actions_key, actions_hotkey);
@@ -78,6 +91,7 @@ apply_preferences()
   prefs.item_length = gtk_spin_button_get_value_as_int((GtkSpinButton*)charlength_spin);
   prefs.ellipsize = gtk_combo_box_get_active((GtkComboBox*)ellipsize_combo) + 1;
   prefs.history_key = g_strdup(gtk_entry_get_text((GtkEntry*)history_key_entry));
+	prefs.phistory_key = g_strdup(gtk_entry_get_text((GtkEntry*)phistory_key_entry));
   prefs.actions_key = g_strdup(gtk_entry_get_text((GtkEntry*)actions_key_entry));
   prefs.menu_key = g_strdup(gtk_entry_get_text((GtkEntry*)menu_key_entry));
   prefs.case_search = gtk_toggle_button_get_active((GtkToggleButton*)case_search);
@@ -87,6 +101,7 @@ apply_preferences()
 	prefs.trim_newline = gtk_toggle_button_get_active((GtkToggleButton*)trim_newline); 
   
   /* Bind keys and apply the new history limit */
+	keybinder_bind(prefs.phistory_key, phistory_hotkey, NULL);
   keybinder_bind(prefs.history_key, history_hotkey, NULL);
   keybinder_bind(prefs.actions_key, actions_hotkey, NULL);
   keybinder_bind(prefs.menu_key, menu_hotkey, NULL);
@@ -112,7 +127,8 @@ static void save_preferences()
   g_key_file_set_boolean(rc_key, "rc", "reverse_history", prefs.reverse_history);
   g_key_file_set_integer(rc_key, "rc", "item_length", prefs.item_length);
   g_key_file_set_integer(rc_key, "rc", "ellipsize", prefs.ellipsize);
-  g_key_file_set_string(rc_key, "rc", "history_key", prefs.history_key);
+  g_key_file_set_string(rc_key, "rc", "phistory_key", prefs.phistory_key);
+	g_key_file_set_string(rc_key, "rc", "history_key", prefs.history_key);
   g_key_file_set_string(rc_key, "rc", "actions_key", prefs.actions_key);
   g_key_file_set_string(rc_key, "rc", "menu_key", prefs.menu_key);
   g_key_file_set_boolean(rc_key, "rc", "history_pos", prefs.history_pos);
@@ -153,6 +169,7 @@ void read_preferences()
     prefs.reverse_history = g_key_file_get_boolean(rc_key, "rc", "reverse_history", NULL);
     prefs.item_length = g_key_file_get_integer(rc_key, "rc", "item_length", NULL);
     prefs.ellipsize = g_key_file_get_integer(rc_key, "rc", "ellipsize", NULL);
+		prefs.phistory_key = g_key_file_get_string(rc_key, "rc", "phistory_key", NULL);
     prefs.history_key = g_key_file_get_string(rc_key, "rc", "history_key", NULL);
     prefs.actions_key = g_key_file_get_string(rc_key, "rc", "actions_key", NULL);
     prefs.menu_key = g_key_file_get_string(rc_key, "rc", "menu_key", NULL);
@@ -178,6 +195,8 @@ void read_preferences()
       prefs.item_length = DEF_ITEM_LENGTH;
     if ((!prefs.ellipsize) || (prefs.ellipsize > 3) || (prefs.ellipsize < 0))
       prefs.ellipsize = DEF_ELLIPSIZE;
+		if (!prefs.phistory_key)
+      prefs.phistory_key = g_strdup(DEF_PHISTORY_KEY);
     if (!prefs.history_key)
       prefs.history_key = g_strdup(DEF_HISTORY_KEY);
     if (!prefs.actions_key)
@@ -188,6 +207,7 @@ void read_preferences()
   else
   {
     /* Init default keys on error */
+    prefs.phistory_key = g_strdup(DEF_PHISTORY_KEY);
     prefs.history_key = g_strdup(DEF_HISTORY_KEY);
     prefs.actions_key = g_strdup(DEF_ACTIONS_KEY);
     prefs.menu_key = g_strdup(DEF_MENU_KEY);
@@ -708,6 +728,7 @@ void show_preferences(gint tab)
   gtk_container_add((GtkContainer*)frame, alignment);
   vbox = gtk_vbox_new(FALSE, 2);
   gtk_container_add((GtkContainer*)alignment, vbox);
+	/**Add history key  */
   hbox = gtk_hbox_new(TRUE, 4);
   gtk_box_pack_start((GtkBox*)vbox, hbox, FALSE, FALSE, 0);
   label = gtk_label_new(_("History key combination:"));
@@ -716,6 +737,16 @@ void show_preferences(gint tab)
   history_key_entry = gtk_entry_new();
   gtk_entry_set_width_chars((GtkEntry*)history_key_entry, 10);
   gtk_box_pack_end((GtkBox*)hbox, history_key_entry, TRUE, TRUE, 0);
+	/**Add phistory key  */
+	hbox = gtk_hbox_new(TRUE, 4);
+  gtk_box_pack_start((GtkBox*)vbox, hbox, FALSE, FALSE, 0);
+  label = gtk_label_new(_("Persistent History key combination:"));
+	gtk_misc_set_alignment((GtkMisc*)label, 0.0, 0.50);
+  gtk_box_pack_start((GtkBox*)hbox, label, TRUE, TRUE, 0);
+	phistory_key_entry = gtk_entry_new();
+  gtk_entry_set_width_chars((GtkEntry*)phistory_key_entry, 10);
+  gtk_box_pack_end((GtkBox*)hbox, phistory_key_entry, TRUE, TRUE, 0);
+	/**Add Actions key  */
   hbox = gtk_hbox_new(TRUE, 4);
   gtk_box_pack_start((GtkBox*)vbox, hbox, FALSE, FALSE, 0);
   label = gtk_label_new(_("Actions key combination:"));
@@ -724,6 +755,7 @@ void show_preferences(gint tab)
   actions_key_entry = gtk_entry_new();
   gtk_entry_set_width_chars((GtkEntry*)actions_key_entry, 10);
   gtk_box_pack_end((GtkBox*)hbox, actions_key_entry, TRUE, TRUE, 0);
+	/**Add menu key   */
   hbox = gtk_hbox_new(TRUE, 4);
   gtk_box_pack_start((GtkBox*)vbox, hbox, FALSE, FALSE, 0);
   label = gtk_label_new(_("Menu key combination:"));
@@ -749,6 +781,7 @@ void show_preferences(gint tab)
   gtk_spin_button_set_value((GtkSpinButton*)history_x, (gdouble)prefs.history_x);
   gtk_spin_button_set_value((GtkSpinButton*)history_y, (gdouble)prefs.history_y);
   gtk_combo_box_set_active((GtkComboBox*)ellipsize_combo, prefs.ellipsize - 1);
+	gtk_entry_set_text((GtkEntry*)phistory_key_entry, prefs.phistory_key);
   gtk_entry_set_text((GtkEntry*)history_key_entry, prefs.history_key);
   gtk_entry_set_text((GtkEntry*)actions_key_entry, prefs.actions_key);
   gtk_entry_set_text((GtkEntry*)menu_key_entry, prefs.menu_key);
