@@ -140,24 +140,27 @@ done:
 /***************************************************************************/
 /** .
 \n\b Arguments:
-\n\b Returns:
+\n\b Returns:	text that was updated or NULL if not.
 ****************************************************************************/
 gchar *_update_clipboard (GtkClipboard *clip, gchar *n, gchar **old)
 {
-	if(NULL != *old)
-		g_free(*old);
 	
 	if(NULL != n)	{
-		
-		/** if(clip==primary)
+	/**  	if(clip==primary)
 			g_printf("set PRI to %s\n",n);
 		else
 			g_printf("set CLI to %s\n",n);*/
 		gtk_clipboard_set_text(clip, n, -1);
+		if(NULL != *old)
+		  g_free(*old);
 		*old=g_strdup(n);
 		return *old;
-	}else
+	}else{
+		if(NULL != *old)
+		  g_free(*old);
 		*old=NULL;
+	}
+		
 	return NULL;
 }
 
@@ -180,7 +183,7 @@ gboolean is_clipboard_empty(GtkClipboard *clip)
 \n\b Arguments:
 \n\b Returns:
 ****************************************************************************/
-gchar * update_clipboard(GtkClipboard *clip,gchar *intext,  gint mode)
+gchar *update_clipboard(GtkClipboard *clip,gchar *intext,  gint mode)
 {
 	/**current/last item in clipboard  */
 	static gchar *ptext=NULL;
@@ -188,6 +191,8 @@ gchar * update_clipboard(GtkClipboard *clip,gchar *intext,  gint mode)
 	static gchar *last=NULL; /**last text change, for either clipboard  */
 	gchar **existing, *changed=NULL;
 	gchar *processed;
+	if( H_MODE_LAST == mode)
+		return last;
 	
 	existing=clip==primary?&ptext:&ctext;
 	/** if(H_MODE_CHECK!=mode )
@@ -232,7 +237,7 @@ gchar * update_clipboard(GtkClipboard *clip,gchar *intext,  gint mode)
 	
 	*/		
 	
-	if(H_MODE_LIST == mode){ /**just set clipboard contents. Already in list  */
+	if(H_MODE_LIST == mode && p_strcmp(intext,*existing)){ /**just set clipboard contents. Already in list  */
 		last=_update_clipboard(clip,intext,existing);
 		goto done;
 	}
@@ -249,7 +254,7 @@ done:
 }
 
 /***************************************************************************/
-/** Not used. convience function to update both clipboards at the same time
+/** Convience function to update both clipboards at the same time
 \n\b Arguments:
 \n\b Returns:
 ****************************************************************************/
@@ -265,7 +270,7 @@ void update_clipboards(gchar *intext, gint mode)
 ****************************************************************************/
 void check_clipboards(gint mode)
 {
-	gchar *ptext, *ctext;
+	gchar *ptext, *ctext, *last;
 	int n=0;
 	if(fifo->rlen >0){
 		switch(fifo->which){
@@ -294,23 +299,22 @@ void check_clipboards(gint mode)
 	}
 	ptext=update_clipboard(primary, NULL, H_MODE_CHECK);
 	ctext=update_clipboard(clipboard, NULL, H_MODE_CHECK);
+	
 	/*g_printf("pt=%s,ct=%s\n",ptext,ctext); */
   /* Synchronization */
   if (prefs.synchronize)  {
+  
 		if(NULL==ptext && NULL ==ctext)
 			return;
-		if(NULL==ptext)
-			update_clipboard(primary, ctext, H_MODE_LIST);
-		else if(NULL == ctext)
-			update_clipboard(clipboard, ptext, H_MODE_LIST);
-		else {
-			if(p_strcmp(ptext,ctext)){/**default to copy pri to cli  */
-				gchar *last=update_clipboard(NULL, NULL, H_MODE_LAST);
-				/*g_printf("'%s'!='%s'!\n",ptext,ctext); */
-				if( NULL != last)
-				  update_clipboards(last, H_MODE_LIST);
-			}	
+			last=update_clipboard(NULL, NULL, H_MODE_LAST);
+		if( NULL != last && p_strcmp(ptext,ctext)){
+			/**last is a copy, of things that may be deallocated  */
+			last=strdup(last);
+			/*g_printf("Update clipb '%s' '%s' to '%s'\n",ptext,ctext,last); */
+			update_clipboards(last, H_MODE_LIST);
+			g_free(last);
 		}
+		  
 	}	
 	
 		
@@ -1155,10 +1159,13 @@ static gboolean my_item_event (GtkWidget *w,GdkEventKey *e, gpointer user)
 			if(GDK_CONTROL_MASK&b->state){
 				handle_marking(h,w,GPOINTER_TO_INT(user),OPERATE_DELETE);
 			}else{
+				if(GDK_CONTROL_MASK|GDK_SHIFT_MASK&b->state)
+					return FALSE;
 				/*g_print("Calling popup\n"); */
 	      h->wi.event=e;
 	      h->wi.item=w;
 				h->wi.index=GPOINTER_TO_INT(user);
+				
 		    history_item_right_click(h,e,GPOINTER_TO_INT(user));
 			}
 			return TRUE;
