@@ -393,3 +393,58 @@ gpointer get_last_item()
     return NULL;
 }
 
+
+/***************************************************************************/
+/** .
+\n\b Arguments:
+\n\b Returns:
+****************************************************************************/
+int save_history_as_text(gchar *path)
+{
+	FILE* fp = fopen(path, "w");
+  /* Check that it opened and begin write */
+  if (fp)  {
+		gint i;
+    GSList* element;
+    /* Write each element to  file */
+    for (i=0,element = history_list; element != NULL; element = element->next) {
+		  struct history_item *c;
+			c=(struct history_item *)element->data;
+			fprintf(fp,"HIST_%04d %s\n",i,c->text);
+			++i;
+    }
+    fclose(fp);
+  }
+	
+	g_printf("histpath='%s'\n",path);
+}
+/***************************************************************************/
+/** Dialog to save the history file.
+\n\b Arguments:
+\n\b Returns:
+****************************************************************************/
+void history_save_as(GtkMenuItem *menu_item, gpointer user_data)
+{
+	GtkWidget *dialog;
+  dialog = gtk_file_chooser_dialog_new ("Save History File",
+				      NULL,/**parent  */
+				      GTK_FILE_CHOOSER_ACTION_SAVE,
+				      GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+				      GTK_STOCK_SAVE, GTK_RESPONSE_ACCEPT,
+				      NULL);
+	gtk_file_chooser_set_do_overwrite_confirmation (GTK_FILE_CHOOSER (dialog), TRUE);
+/*	if (user_edited_a_new_document)  { */
+	    gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER (dialog), g_get_home_dir());
+	    gtk_file_chooser_set_current_name (GTK_FILE_CHOOSER (dialog), "ParcelliteHistory.txt");
+/**    }
+	else
+	  gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (dialog), filename_for_existing_document);*/	
+	if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_ACCEPT) {
+	    gchar *filename;
+	    filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (dialog));
+	    save_history_as_text (filename);
+	    g_free (filename);
+	  }
+	gtk_widget_destroy (dialog);
+}
+
