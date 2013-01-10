@@ -23,18 +23,28 @@ G_BEGIN_DECLS
 
 #define HISTORY_FILE "parcellite/history"
 
-#define CLIP_TYPE_TEXT 1
-#define CLIP_TYPE_IMG  2
-
-struct clipitem {
+#define CLIP_TYPE_TEXT       0x1
+#define CLIP_TYPE_IMG        0x2
+#define CLIP_TYPE_PERSISTENT 0x4
+/**give us a genric struct for future expansion  */
+struct history_gen{ /**16 bytes, for overlay over res, below.  */
+	gint16 a;
+	gint16 b;
+	gint16 c;
+	gint16 d;
+}__attribute__((__packed__));
+struct history_item {
 	guint32 len; /**length of data item, MUST be first in structure  */
 	gint16 type; /**currently, text or image  */
 	gint16 flags;	/**persistence, or??  */
-	guchar data[1];
+	guint32 res[4];
+	gchar text[8]; /**reserve 64 bits (8 bytes) for pointer to data.  */
 }__attribute__((__packed__));
 
 
-extern GSList* history;
+extern GSList* history_list;
+
+glong validate_utf8_text(gchar *text, glong len);
 
 void read_history();
 
