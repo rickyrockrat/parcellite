@@ -36,6 +36,7 @@ G_BEGIN_DECLS
 #define DEF_REVERSE_HISTORY   FALSE
 #define DEF_ITEM_LENGTH       50
 #define DEF_ELLIPSIZE         2
+#define DEF_PHISTORY_KEY      "<Ctrl><Alt>X"
 #define DEF_HISTORY_KEY       "<Ctrl><Alt>H"
 #define DEF_ACTIONS_KEY       "<Ctrl><Alt>A"
 #define DEF_MENU_KEY          "<Ctrl><Alt>P"
@@ -64,6 +65,7 @@ typedef struct
   
   gint      ellipsize;        /* Omitting */
   
+	gchar*    phistory_key;      /* Persistent History menu hotkey */
   gchar*    history_key;      /* History menu hotkey */
   gchar*    actions_key;      /* Actions menu hotkey */
   gchar*    menu_key;         /* Parcellite menu hotkey */
