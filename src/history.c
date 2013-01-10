@@ -317,6 +317,7 @@ void append_item(gchar* item)
 		struct history_item *c;
 		if(NULL == (c=new_clip_item(CLIP_TYPE_TEXT,strlen(item),item)) )
 			return;
+		g_printf("Append '%s'\n",item);
     /* Prepend new item */
     history_list = g_slist_prepend(history_list, c);
     /* Shorten history if necessary */
@@ -346,6 +347,7 @@ void delete_duplicate(gchar* item)
 		c=(struct history_item *)element->data;
 		if(CLIP_TYPE_TEXT == c->type){
 	    if (g_strcmp0((gchar*)c->text, item) == 0) {
+				g_printf("del dup '%s'\n",c->text);
 	      g_free(element->data);
 	      history_list = g_slist_delete_link(history_list, element);
 	      break;
