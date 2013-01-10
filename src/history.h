@@ -58,6 +58,7 @@ gpointer get_last_item();
 
 void delete_duplicate(gchar* item);
 
+void history_save_as(GtkMenuItem *menu_item, gpointer user_data);
 G_END_DECLS
 
 #endif

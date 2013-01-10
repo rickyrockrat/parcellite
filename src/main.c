@@ -1311,8 +1311,7 @@ next_loop:
 }
 
 /* Called when status icon is right-clicked */
-static void
-show_parcellite_menu(GtkStatusIcon *status_icon, guint button,
+static void  show_parcellite_menu(GtkStatusIcon *status_icon, guint button,
                      guint activate_time,        gpointer user_data)
 {
   /* Declare some variables */
@@ -1324,6 +1323,10 @@ show_parcellite_menu(GtkStatusIcon *status_icon, guint button,
   /* About */
   menu_item = gtk_image_menu_item_new_from_stock(GTK_STOCK_ABOUT, NULL);
   g_signal_connect((GObject*)menu_item, "activate", (GCallback)show_about_dialog, NULL);
+  gtk_menu_shell_append((GtkMenuShell*)menu, menu_item);
+	/* Save History */
+  menu_item = gtk_image_menu_item_new_from_stock(GTK_STOCK_SAVE_AS, NULL);
+  g_signal_connect((GObject*)menu_item, "activate", (GCallback)history_save_as, NULL);
   gtk_menu_shell_append((GtkMenuShell*)menu, menu_item);
   /* Preferences */
   menu_item = gtk_image_menu_item_new_from_stock(GTK_STOCK_PREFERENCES, NULL);
