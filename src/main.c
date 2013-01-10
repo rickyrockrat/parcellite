@@ -211,6 +211,7 @@ static gboolean item_check(gpointer data)
 	if(fifo->rlen >0){
 		switch(fifo->which){
 			case ID_PRIMARY:
+				fifo->rlen=validate_utf8_text(fifo->buf, fifo->rlen);
 				if(fifo->dbg) g_printf("Setting PRI '%s'\n",fifo->buf);
 				gtk_clipboard_set_text(primary, fifo->buf, -1);
 /*				primary_text=check_set_contents (fifo->buf,primary,NULL); */
@@ -218,6 +219,7 @@ static gboolean item_check(gpointer data)
 				n=1;
 				break;
 			case ID_CLIPBOARD:
+				fifo->rlen=validate_utf8_text(fifo->buf, fifo->rlen);
 				if(fifo->dbg) g_printf("Setting CLI '%s'\n",fifo->buf);
 				gtk_clipboard_set_text(clipboard, fifo->buf, -1);
 				/*clipboard_text=check_set_contents (fifo->buf,clipboard,NULL); */
@@ -225,6 +227,7 @@ static gboolean item_check(gpointer data)
 				fifo->rlen=0;
 				break;
 			default:
+				fifo->rlen=validate_utf8_text(fifo->buf, fifo->rlen);
 				g_printf("CLIP not set, discarding '%s'\n",fifo->buf);
 				fifo->rlen=0;
 				break;
@@ -348,9 +351,9 @@ gboolean  handle_history_item_right_click (int i, gpointer data)
 	struct history_info *h=(struct history_info*)data;
 	
 	if(NULL !=h ){
-		GSList* element = g_slist_nth(history, h->tmp);
+		GSList* element = g_slist_nth(history_list, h->tmp);
 		if(NULL !=element)
-		  g_printf("%s ",element->data);
+		  g_printf("%s ",((struct history_item *)(element->data))->text);
 	}
 	  
 	if(0== i)
@@ -482,8 +485,8 @@ static void clear_selected(GtkMenuItem *menu_item, gpointer user_data)
     if (gtk_dialog_run((GtkDialog*)confirm_dialog) == GTK_RESPONSE_OK)
     {
       /* Clear history and free history-related variables */
-      g_slist_free(history);
-      history = NULL;
+      g_slist_free(history_list);
+      history_list = NULL;
       save_history();
       g_free(primary_text);
       g_free(clipboard_text);
@@ -499,8 +502,8 @@ static void clear_selected(GtkMenuItem *menu_item, gpointer user_data)
   else
   {
     /* Clear history and free history-related variables */
-    g_slist_free(history);
-    history = NULL;
+    g_slist_free(history_list);
+    history_list = NULL;
     save_history();
     g_free(primary_text);
     g_free(clipboard_text);
@@ -853,10 +856,10 @@ static gboolean selection_done(GtkMenuShell *menushell, gpointer user_data)
 		/*g_print("Deleting items\n"); */
 		for (i=h->delete_list; NULL != i; i=i->next){
 			struct s_item_info *it=(struct s_item_info *)i->data;
-			/*printf("Free %p.. '%s' ",it->element->data,(char *)(it->element->data)); */
+			/*printf("Free %p.. '%s' ",it->element->data,(char *)(it->((struct history_item *(element->data))->text))); */
 			g_free(it->element->data);
 			it->element->data=NULL;
-			history = g_slist_delete_link(history, it->element);
+			history_list = g_slist_delete_link(history_list, it->element);
 			/** printf("Free %p\n",it);
 			fflush(NULL);*/
 			g_free(it);
@@ -1131,8 +1134,8 @@ foundit:
 void set_clipboard_text(struct history_info *h, GSList *element)
 {
 	if(NULL == find_h_item(h->delete_list,NULL,element)){
-		gtk_clipboard_set_text(clipboard, element->data, -1);
-	  gtk_clipboard_set_text(primary, element->data, -1);	
+		gtk_clipboard_set_text(clipboard, ((struct history_item *)(element->data))->text, -1);
+	  gtk_clipboard_set_text(primary, ((struct history_item *)(element->data))->text, -1);	
 	}
   g_signal_emit_by_name ((gpointer)h->menu,"selection-done");
 }
@@ -1145,7 +1148,7 @@ void set_clipboard_text(struct history_info *h, GSList *element)
 void handle_history_delete(GSList* element)
 {
 	g_free(element->data);
-	history = g_slist_delete_link(history, element);
+	history_list = g_slist_delete_link(history_list, element);
 	/* Save changes */
 	if (prefs.save_history)
 	  save_history();
@@ -1160,7 +1163,7 @@ void handle_history_delete(GSList* element)
 void handle_delete_marking(struct history_info *h, GtkWidget *w, gint index)
 {
   GtkLabel *l=(GtkLabel *)(gtk_bin_get_child((GtkBin*)w)) ;
-	GSList* element = g_slist_nth(history, index);
+	GSList* element = g_slist_nth(history_list, index);
 	if(is_strikethrough(l)){ /**un-highlight  */
 		set_strikethrough(l,FALSE);
 		rm_h_item(h,w,element);
@@ -1206,14 +1209,14 @@ static gboolean my_item_event (GtkWidget *w,GdkEventKey *e, gpointer user)
 	}
 	if(GDK_BUTTON_RELEASE==e->type){
 		GdkEventButton *b=(GdkEventButton *)e;
-		GSList* element = g_slist_nth(history, GPOINTER_TO_INT(user));
-		/*printf("type %x State 0x%x val %x %p '%s'\n",e->type, b->state,b->button,w,(gchar *)element->data);  */
+		GSList* element = g_slist_nth(history_list, GPOINTER_TO_INT(user));
+		/*printf("type %x State 0x%x val %x %p '%s'\n",e->type, b->state,b->button,w,(gchar *)((struct history_item *(element->data))->text));  */
 		if(3 == b->button){ /**right-click  */
 			gboolean rtn;
 			if(GDK_CONTROL_MASK&b->state){
 				handle_delete_marking(h,w,GPOINTER_TO_INT(user));
 			}else{
-				g_print("Calling popup\n");
+				/*g_print("Calling popup\n"); */
 		    history_item_right_click(h,e,GPOINTER_TO_INT(user));
 		#if 0
 				/*printf("Got Right-Click\n");	fflush(NULL); */
@@ -1250,8 +1253,8 @@ static void item_selected(GtkMenuItem *menu_item, gpointer user_data)
 		
 		
 	GdkEventKey *k=(GdkEventKey *)gtk_get_current_event();
-	GSList* element = g_slist_nth(history, GPOINTER_TO_INT(user_data));
-	/*g_print ("item_selected '%s' type %x val %x\n",(gchar *)element->data,k->type, k->keyval);  */
+	GSList* element = g_slist_nth(history_list, GPOINTER_TO_INT(user_data));
+	/*g_print ("item_selected '%s' type %x val %x\n",(gchar *)((struct history_item *(element->data))->text),k->type, k->keyval);  */
 	if(0xFF0d == k->keyval && GDK_KEY_PRESS == k->type){
 		set_clipboard_text(h,element);
 	}
@@ -1294,20 +1297,22 @@ static gboolean show_history_menu(gpointer data)
   /* -------------------- */
   /*gtk_menu_shell_append((GtkMenuShell*)menu, gtk_separator_menu_item_new()); */
   /* Items */
-  if ((history != NULL) && (history->data != NULL)) {
+  if ((history_list != NULL) && (history_list->data != NULL)) {
     /* Declare some variables */
     GSList* element;
+		
     gint element_number = 0;
     gchar* primary_temp = gtk_clipboard_wait_for_text(primary);
     gchar* clipboard_temp = gtk_clipboard_wait_for_text(clipboard);
     /* Reverse history if enabled */
     if (prefs.reverse_history) {
-      history = g_slist_reverse(history);
-      element_number = g_slist_length(history) - 1;
+      history_list = g_slist_reverse(history_list);
+      element_number = g_slist_length(history_list) - 1;
     }
     /* Go through each element and adding each */
-    for (element = history; element != NULL; element = element->next) {
-      GString* string = g_string_new((gchar*)element->data);
+    for (element = history_list; element != NULL; element = element->next) {
+			gchar* hist_text=(gchar*)( ((struct history_item *)(element->data))->text);
+      GString* string = g_string_new(hist_text);
 		  glong len=g_utf8_strlen(string->str, string->len);
       /* Ellipsize text */
       if (len > prefs.item_length) {
@@ -1363,21 +1368,21 @@ static gboolean show_history_menu(gpointer data)
       gtk_label_set_single_line_mode((GtkLabel*)item_label, prefs.single_line);
       
       /* Check if item is also clipboard text and make bold */
-      if ((clipboard_temp) && (p_strcmp((gchar*)element->data, clipboard_temp) == 0))
+      if ((clipboard_temp) && (p_strcmp(hist_text, clipboard_temp) == 0))
       {
         gchar* bold_text = g_markup_printf_escaped("<b>%s</b>", string->str);
         gtk_label_set_markup((GtkLabel*)item_label, bold_text);
         g_free(bold_text);
         h.clip_item=menu_item;
-				h.element_text=(gchar *)element->data;
+				h.element_text=hist_text;
       }
-      else if ((primary_temp) && (p_strcmp((gchar*)element->data, primary_temp) == 0))
+      else if ((primary_temp) && (p_strcmp(hist_text, primary_temp) == 0))
       {
         gchar* italic_text = g_markup_printf_escaped("<i>%s</i>", string->str);
         gtk_label_set_markup((GtkLabel*)item_label, italic_text);
         g_free(italic_text);
         h.clip_item=menu_item;
-			  h.element_text=(gchar *)element->data;
+			  h.element_text=hist_text;
       }
       /* Append item */
       gtk_menu_shell_append((GtkMenuShell*)menu, menu_item);
@@ -1393,7 +1398,7 @@ static gboolean show_history_menu(gpointer data)
     g_free(clipboard_temp);
     /* Return history to normal if reversed */
     if (prefs.reverse_history)
-      history = g_slist_reverse(history);
+      history_list = g_slist_reverse(history_list);
   }
   else
   {
@@ -1692,7 +1697,7 @@ int main(int argc, char *argv[])
   g_free(prefs.history_key);
   g_free(prefs.actions_key);
   g_free(prefs.menu_key);
-  g_slist_free(history);
+  g_slist_free(history_list);
   g_free(primary_text);
   g_free(clipboard_text);
   g_free(synchronized_text);
@@ -1713,14 +1718,14 @@ static void item_selected(GtkMenuItem *menu_item, gpointer user_data)
 	static gint last_state=0;
 	
 	GdkEvent *event=gtk_get_current_event();
-	GSList* element = g_slist_nth(history, GPOINTER_TO_INT(user_data));
+	GSList* element = g_slist_nth(history_list, GPOINTER_TO_INT(user_data));
 	GdkEventKey *k; 
 	k=(GdkEventKey *)event; 
-	g_print ("item_selected '%s' type %x val %x\n",(gchar *)element->data,event->type, k->keyval); 
+	g_print ("item_selected '%s' type %x val %x\n",(gchar *)((struct history_item *(element->data))->text),event->type, k->keyval); 
 	b=(GdkEventButton *)event;
 	TRACE(g_print("Right-click\n!"));	
 	g_free(element->data);
-	history = g_slist_delete_link(history, element);
+	history_list = g_slist_delete_link(history_list, element);
 	/* Save changes */
 	if (prefs.save_history)
 	  save_history();			
@@ -1743,7 +1748,7 @@ static void item_selected(GtkMenuItem *menu_item, gpointer user_data)
       gtk_label_set_single_line_mode((GtkLabel*)item_label, prefs.single_line);
       
       /* Check if item is also clipboard text and make bold */
-      if ((clipboard_temp) && (p_strcmp((gchar*)element->data, clipboard_temp) == 0))
+      if ((clipboard_temp) && (p_strcmp((gchar*)((struct history_item *(element->data))->text), clipboard_temp) == 0))
       {
         gchar* bold_text = g_markup_printf_escaped("<b>%s</b>", string->str);
         gtk_label_set_markup((GtkLabel*)item_label, bold_text);
@@ -1752,10 +1757,10 @@ static void item_selected(GtkMenuItem *menu_item, gpointer user_data)
 		}
 
 	}else {		
-		GSList* element = g_slist_nth(history, GPOINTER_TO_INT(user_data));
+		GSList* element = g_slist_nth(history_list, GPOINTER_TO_INT(user_data));
 	  /* Get the text from the right element and set as clipboard */
-	  gtk_clipboard_set_text(clipboard, (gchar*)element->data, -1);
-	  gtk_clipboard_set_text(primary, (gchar*)element->data, -1);
+	  gtk_clipboard_set_text(clipboard, (gchar*)((struct history_item *(element->data))->text), -1);
+	  gtk_clipboard_set_text(primary, (gchar*)((struct history_item *(element->data))->text), -1);
 	}	
 	
   gdk_event_free(event);		
