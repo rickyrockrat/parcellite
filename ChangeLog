@@ -1,9 +1,12 @@
-V1.0.2rc7 day, mo dom 2013 
+V1.0.2rc7 Thursday, January 10 2013 
  Changes
  +Added patch 3389976 - history menu crash, utf-8
  +Added UTF-8 checks on incomming text streams.
  +Changed history entries to structures (and history file format) to support
   upcoming features.
+ +Added persistent history list and corresponding hot key.
+ +Added Save As for the history file - writes a text file out.
+ +Major rewrite of cliboard handling. It is now very simple and eliminates a lot of CPU.
  
 V1.0.2rc6 Wednesday, January 9 2013 
  Changes
