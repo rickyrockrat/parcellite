@@ -46,9 +46,14 @@ static GtkStatusIcon* status_icon;
 struct p_fifo *fifo;
 
 static gboolean actions_lock = FALSE;
-
+/**defines for moving between clipboard histories  */
 #define HIST_MOVE_TO_CANCEL     0
 #define HIST_MOVE_TO_OK         1
+/**clipboard handling modes  */
+#define H_MODE_INIT  0	/**clear out clipboards  */
+#define H_MODE_NEW  1	/**new text, process it  */
+#define H_MODE_LIST 2	/**from list, just put it on the clip  */
+#define H_MODE_CHECK 3 /**see if there is new/lost contents.   */
 
 
 /**Turns up in 2.16  */
@@ -68,132 +73,200 @@ int p_strcmp (const char *str1, const char *str2)
 }
 
 /***************************************************************************/
-/** Check the given clipboard contents. Recover lost text. Decide if we 
-Add this to the list of clip elements.
+/** Process the text based on our preferences.
 \n\b Arguments:
-\n\b Returns: Whatever was currently placed on the clipboard.
+\n\b Returns: processed text, or NULL if it is invalid.
 ****************************************************************************/
-gchar *check_set_contents ( gchar *text, GtkClipboard *clip, gchar **t)
+gchar *process_new_item(GtkClipboard *clip,gchar *ntext)
 {
-	gchar *temp = NULL;
-	gchar *rtn=text; /**default to last entry  */
-	if(NULL ==t)
-		temp = gtk_clipboard_wait_for_text(clip);
-	else
-	  temp = *t;
-	/*printf("csc %p\n",text); fflush(NULL); */
-	 /* Check if primary contents were lost */
-
-  if ((NULL == temp) && (NULL != text)) {
-    /* Check contents */
-    gint count;
-    GdkAtom *targets;
-    gboolean contents = gtk_clipboard_wait_for_targets(clip, &targets, &count);
-    g_free(targets);
-    /* Only recover lost contents if there isn't any other type of content in the clipboard */
-    if (!contents) {
-      gtk_clipboard_set_text(clip, text, -1);
-   	}
-   	goto end;
- 	} else{
-		gint len;
-		
-		if(NULL == temp) 
-			goto done;
+	glong len;
+	gchar *rtn=NULL;
+	#if 0
 		if(clip == primary){
 			GdkModifierType button_state;
     	gdk_window_get_pointer(NULL, NULL, NULL, &button_state);
 			if ( button_state & GDK_BUTTON1_MASK ) /**button down, done.  */
 				goto end;
 		}
-		/* Check if clip is the same as the last entry */
-    if (p_strcmp(temp, text) != 0) {
-      /* Check if primary option is enabled and if there's text to add */
-			if(clip ==primary) {
-				/*printf("pri "); fflush(NULL);  */
-				if(prefs.use_primary)
-					goto check_opt;
-			}	else{
-				/* Check if clipboard option is enabled and if there's text to add */
-				/*printf("cli "); fflush(NULL);  */
-				if (prefs.use_copy )
-					goto check_opt;
-			}
-		}		
-		goto end;
+	#endif
 				
-check_opt: /**we now check our options...  */		
-		/*printf("opt\n"); fflush(NULL); */
-		if (prefs.hyperlinks_only){
-			 if(is_hyperlink(temp))
-				 	goto process;
-		}	else {
-			/*printf("wo\n"); fflush(NULL); */
-			if(prefs.ignore_whiteonly){
-				gchar *s;
-				for (s=temp; NULL !=s && *s; ++s){
-					if(!isspace(*s)){
-			/*			printf("Saw 0x%x\n",*s); */
-						goto process;
-						break;
-					}
-				}
-			}else
-				goto process;
-		}
-		/**set the clipboard to the last entry - effectively deleting this entry */
-		/*gtk_clipboard_set_text(clip, text, -1); */
-		goto end;
-		
-process:  /**now process the text.  */
-		/*printf("proc\n"); fflush(NULL); */
-		len=strlen(temp);
-		if(len){
-			gint i;
-			if(prefs.trim_newline){
-				for (i=0;i<len && temp[i]; ++i){
-					if(iscntrl(temp[i]))
-						temp[i]=' ';
+/**we now check our options...  */		
+	/*printf("opt\n"); fflush(NULL); */
+	if (prefs.hyperlinks_only){
+		 if(is_hyperlink(ntext))
+			 	goto process;
+	}	else {
+		/*printf("wo\n"); fflush(NULL); */
+		if(prefs.ignore_whiteonly){
+			gchar *s;
+			for (s=ntext; NULL !=s && *s; ++s){
+				if(!isspace(*s)){
+		/*			printf("Saw 0x%x\n",*s); */
+					goto process;
+					break;
 				}
 			}
-				
-			if( prefs.trim_wspace_begend )
-				temp=g_strstrip(temp);
-			if (p_strcmp(temp, text) != 0) { /**different after processing...  */
-		    /* New  entry */
-				/*printf("txt %p tmp %p ",text,temp); fflush(NULL); */
-        g_free(text);
-	      text=rtn = p_strdup(temp);			
-				/*printf("dup %p ",text); fflush(NULL); */
-			  delete_duplicate(text);
-        append_item(text);
-				/**set clipboard to processed text since it may be different after processing. */
-				/*gtk_clipboard_set_text(clip, text, -1);	 */
-				/*printf("done \n");fflush(NULL); */
+		}else
+			goto process;
+	}
+	/**set the clipboard to the last entry - effectively deleting this entry */
+	goto done;
+	
+ process:  /**now process the text.  */
+	/*printf("proc\n"); fflush(NULL); */
+  len=strlen(ntext);/*g_utf8_strlen(ntext,-1); */
+  len= validate_utf8_text(ntext, len);
+	if(len){
+		rtn=ntext;
+		gint i;
+		if(prefs.trim_newline){
+			gchar *c;
+			for (c=ntext;*c;){
+				if(iscntrl(*c))
+					*c=' ';
+				c=g_utf8_next_char(c);
 			}	
-		}	
+		}
+			
+		if( prefs.trim_wspace_begend )
+			ntext=g_strstrip(ntext);
 	}	
-end:
-	if(NULL != temp)
-		g_free(temp);
 done:
-	return rtn;
+	return rtn;	
 }
 
+
 /***************************************************************************/
-/** Called every CHECK_INTERVAL seconds to check for new items 
+/** .
 \n\b Arguments:
 \n\b Returns:
 ****************************************************************************/
-static gboolean item_check(gpointer data)
+void _update_clipboard (GtkClipboard *clip, gchar *n, gchar **old)
 {
+	if(NULL != n)	{
+		
+		/** if(clip==primary)
+			g_printf("set PRI to %s\n",n);
+		else
+			g_printf("set CLI to %s\n",n);*/
+		gtk_clipboard_set_text(clip, n, -1);
+	}
+		
+	if(NULL != *old)
+		g_free(*old);
+	*old=g_strdup(n);
+}
+
+
+/***************************************************************************/
+/** .
+\n\b Arguments:
+\n\b Returns:
+****************************************************************************/
+gboolean is_clipboard_empty(GtkClipboard *clip)
+{
+  int count;
+  GdkAtom *targets;
+  gboolean contents = gtk_clipboard_wait_for_targets(clip, &targets, &count);
+  g_free(targets);
+  return !contents;
+}
+/***************************************************************************/
+/** .
+\n\b Arguments:
+\n\b Returns:
+****************************************************************************/
+gchar * update_clipboard(GtkClipboard *clip,gchar *intext,  gint mode)
+{
+	/**current/last item in clipboard  */
+	static gchar *ptext=NULL;
+	static gchar *ctext=NULL;
+	gchar **existing, *changed=NULL;
+	gchar *processed;
+	
+	existing=clip==primary?&ptext:&ctext;
+	/** if(H_MODE_CHECK!=mode )
+	g_printf("HC%d-%c: in %s,ex %s\n",mode,clip==primary?'p':'c',intext,*existing);*/
+	if( H_MODE_INIT == mode){
+		if(NULL != *existing)
+			g_free(*existing);
+		*existing=NULL;
+		gtk_clipboard_set_text(clip, intext, -1);
+		return NULL;
+	}
+	/**check that our clipboards are valid and user wants to use them  */
+	if((clip != primary && clip != clipboard) ||
+		(clip == primary && !prefs.use_primary) ||
+		(clip == clipboard && !prefs.use_copy))
+			return NULL;
+	
+	/**check for lost contents and restore if lost */
+	/* Only recover lost contents if there isn't any other type of content in the clipboard */
+	if(is_clipboard_empty(clip) && NULL != *existing ) {
+      gtk_clipboard_set_text(clip, *existing, -1);
+  }
+	/**check for changed clipboard content - in all modes */
+	changed=gtk_clipboard_wait_for_text(clip);
+	if(0 == p_strcmp(*existing, changed) ){
+		g_free(changed);                    /**no change, do nothing  */
+		changed=NULL;
+	}	else {
+		if(NULL != (processed=process_new_item(clip,changed)) ){
+			append_item(processed);
+			_update_clipboard(clip,processed,existing);
+		}
+		g_free(changed);
+		changed=NULL;
+	}
+	if( H_MODE_CHECK==mode ){
+		goto done;
+	}
+/**FIXME: Do we use the changed clip item or the one passed to us?  
+	hmmm Use the changed one.
+	
+	*/		
+	
+	if(H_MODE_LIST == mode){ /**just set clipboard contents. Already in list  */
+		_update_clipboard(clip,intext,existing);
+		goto done;
+	}
+	if(H_MODE_NEW==mode){
+		if(NULL != (processed=process_new_item(clip,intext)) ){
+			append_item(processed);
+			_update_clipboard(clip,processed,existing);
+		}else 
+			return NULL;	
+	}
+		
+done:
+	return *existing;
+}
+
+/***************************************************************************/
+/** Not used. convience function to update both clipboards at the same time
+\n\b Arguments:
+\n\b Returns:
+****************************************************************************/
+void update_clipboards(gchar *intext, gint mode)
+{
+	update_clipboard(primary, intext, mode);
+	update_clipboard(clipboard, intext, mode);
+}
+/***************************************************************************/
+/** Checks the clipboards and fifos for changes.
+\n\b Arguments:
+\n\b Returns:
+****************************************************************************/
+void check_clipboards(gint mode)
+{
+	gchar *ptext, *ctext;
 	int n=0;
 	if(fifo->rlen >0){
 		switch(fifo->which){
 			case ID_PRIMARY:
 				fifo->rlen=validate_utf8_text(fifo->buf, fifo->rlen);
 				if(fifo->dbg) g_printf("Setting PRI '%s'\n",fifo->buf);
-				gtk_clipboard_set_text(primary, fifo->buf, -1);
+				update_clipboard(primary, fifo->buf, H_MODE_NEW);
 /*				primary_text=check_set_contents (fifo->buf,primary,NULL); */
 				fifo->rlen=0;
 				n=1;
@@ -201,7 +274,7 @@ static gboolean item_check(gpointer data)
 			case ID_CLIPBOARD:
 				fifo->rlen=validate_utf8_text(fifo->buf, fifo->rlen);
 				if(fifo->dbg) g_printf("Setting CLI '%s'\n",fifo->buf);
-				gtk_clipboard_set_text(clipboard, fifo->buf, -1);
+				update_clipboard(clipboard, fifo->buf, H_MODE_NEW);
 				/*clipboard_text=check_set_contents (fifo->buf,clipboard,NULL); */
 				n=2;
 				fifo->rlen=0;
@@ -213,33 +286,36 @@ static gboolean item_check(gpointer data)
 				break;
 		}
 	}
-	/*printf("pri %p\n",primary_text); fflush(NULL); */
-	gchar *temp = gtk_clipboard_wait_for_text(clipboard);
-  primary_text=check_set_contents (primary_text,primary,NULL);
-	/*printf("cli %p\n",clipboard_text); fflush(NULL); */
-	clipboard_text=check_set_contents (clipboard_text,clipboard,&temp);
+	ptext=update_clipboard(primary, NULL, H_MODE_CHECK);
+	ctext=update_clipboard(clipboard, NULL, H_MODE_CHECK);
+	/*g_printf("pt=%s,ct=%s\n",ptext,ctext); */
   /* Synchronization */
-  if (prefs.synchronize)
-  {
-    if (NULL != primary_text && (p_strcmp(synchronized_text, primary_text) != 0) )
-    {
-      g_free(synchronized_text);
-      synchronized_text = p_strdup(primary_text);
-      gtk_clipboard_set_text(clipboard, primary_text, -1);
-      g_free(clipboard_text);
-      clipboard_text=p_strdup(primary_text);
-    }
-    if (NULL != clipboard_text && (p_strcmp(synchronized_text, clipboard_text) != 0) )
-    {
-      g_free(synchronized_text);
-      synchronized_text = p_strdup(clipboard_text);
-      gtk_clipboard_set_text(primary, clipboard_text, -1);
-      g_free(primary_text);
-      primary_text=p_strdup(clipboard_text);
-    }
-  }
-  
-  return TRUE;
+  if (prefs.synchronize)  {
+		if(NULL==ptext && NULL ==ctext)
+			return;
+		if(NULL==ptext)
+			update_clipboard(primary, ctext, H_MODE_LIST);
+		else if(NULL == ctext)
+			update_clipboard(clipboard, ptext, H_MODE_LIST);
+		else {
+			if(p_strcmp(ptext,ctext)){/**default to copy pri to cli  */
+				/*g_printf("'%s'!='%s'!\n",ptext,ctext); */
+				update_clipboard(clipboard, ptext, H_MODE_LIST);
+			}	
+		}
+	}	
+	
+		
+}
+/***************************************************************************/
+/** Called every CHECK_INTERVAL seconds to check for new items 
+\n\b Arguments:
+\n\b Returns:
+****************************************************************************/
+gboolean check_clipboards_tic(gpointer data)
+{
+	check_clipboards(H_MODE_CHECK);
+	return TRUE;
 }
 
 /* Thread function called for each action performed */
@@ -460,7 +536,7 @@ static void edit_selected(GtkMenuItem *menu_item, gpointer user_data)
       gtk_text_buffer_get_start_iter(clipboard_buffer, &start);
       gtk_text_buffer_get_end_iter(clipboard_buffer, &end);
       gchar* new_clipboard_text = gtk_text_buffer_get_text(clipboard_buffer, &start, &end, TRUE);
-      gtk_clipboard_set_text(clipboard, new_clipboard_text, -1);
+			update_clipboard(clipboard, new_clipboard_text, H_MODE_NEW);
       g_free(new_clipboard_text);
     }
     gtk_widget_destroy(dialog);
@@ -494,8 +570,8 @@ static void clear_selected(GtkMenuItem *menu_item, gpointer user_data)
       primary_text = p_strdup("");
       clipboard_text = p_strdup("");
       synchronized_text = p_strdup("");
-      gtk_clipboard_set_text(primary, "", -1);
-      gtk_clipboard_set_text(clipboard, "", -1);
+		  update_clipboard(primary, "", H_MODE_INIT);
+      update_clipboard(clipboard, "", H_MODE_INIT);
     }
     gtk_widget_destroy(confirm_dialog);
   }
@@ -511,8 +587,8 @@ static void clear_selected(GtkMenuItem *menu_item, gpointer user_data)
     primary_text = p_strdup("");
     clipboard_text = p_strdup("");
     synchronized_text = p_strdup("");
-    gtk_clipboard_set_text(primary, "", -1);
-    gtk_clipboard_set_text(clipboard, "", -1);
+    update_clipboard(primary, "", H_MODE_INIT);
+    update_clipboard(clipboard, "", H_MODE_INIT);
   }
 }
 
@@ -1017,10 +1093,12 @@ foundit:
 void set_clipboard_text(struct history_info *h, GSList *element)
 {
 	if(NULL == find_h_item(h->delete_list,NULL,element)){	/**not in our delete list  */
+		gchar *txt=((struct history_item *)(element->data))->text;
+		/*g_printf("set_clip_text %s\n",txt); */
 		if(prefs.use_copy )
-			gtk_clipboard_set_text(clipboard, ((struct history_item *)(element->data))->text, -1);
+			update_clipboard(clipboard, txt, H_MODE_LIST);
 		if(prefs.use_primary)
-	  	gtk_clipboard_set_text(primary, ((struct history_item *)(element->data))->text, -1);	
+	  	update_clipboard(primary, txt, H_MODE_LIST);	
 	}
   g_signal_emit_by_name ((gpointer)h->menu,"selection-done");
 }
@@ -1324,9 +1402,11 @@ static void  show_parcellite_menu(GtkStatusIcon *status_icon, guint button,
   menu_item = gtk_image_menu_item_new_from_stock(GTK_STOCK_ABOUT, NULL);
   g_signal_connect((GObject*)menu_item, "activate", (GCallback)show_about_dialog, NULL);
   gtk_menu_shell_append((GtkMenuShell*)menu, menu_item);
+	
 	/* Save History */
   menu_item = gtk_image_menu_item_new_from_stock(GTK_STOCK_SAVE_AS, NULL);
   g_signal_connect((GObject*)menu_item, "activate", (GCallback)history_save_as, NULL);
+	gtk_widget_set_tooltip_text(menu_item, _("Save History as a text file. Prepends xHIST_0000 to each entry. x is either P(persistent) or N (normal)"));
   gtk_menu_shell_append((GtkMenuShell*)menu, menu_item);
   /* Preferences */
   menu_item = gtk_image_menu_item_new_from_stock(GTK_STOCK_PREFERENCES, NULL);
@@ -1394,14 +1474,25 @@ static void parcellite_init()
   /* Create clipboard */
   primary = gtk_clipboard_get(GDK_SELECTION_PRIMARY);
   clipboard = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);
-  g_timeout_add(CHECK_INTERVAL, item_check, NULL);
+  g_timeout_add(CHECK_INTERVAL, check_clipboards_tic, NULL);
   
   /* Read preferences */
   read_preferences();
   
   /* Read history */
-  if (prefs.save_history)
-    read_history();
+  if (prefs.save_history){
+		read_history();
+		if(NULL != history_list){
+			struct history_item *c;
+			c=(struct history_item *)(history_list->data);	
+			if(is_clipboard_empty(primary))
+				update_clipboard(primary,c->text,H_MODE_LIST);
+			if(is_clipboard_empty(clipboard))
+				update_clipboard(clipboard,c->text,H_MODE_LIST);
+		}
+		
+	}
+    
   
   /* Bind global keys */
   keybinder_init();
@@ -1570,64 +1661,3 @@ int main(int argc, char *argv[])
   /* Exit */
   return 0;
 }
-#if 0	
-static void item_selected(GtkMenuItem *menu_item, gpointer user_data);
-static void item_selected_(GtkMenuItem *menu_item, gpointer arg, gpointer user_data){
-	item_selected(menu_item,user_data);
-}
-
-/* Called when an item is selected from history menu */
-static void item_selected(GtkMenuItem *menu_item, gpointer user_data)
-{
-	GdkEventButton *b;
-	static gint last_state=0;
-	
-	GdkEvent *event=gtk_get_current_event();
-	GSList* element = g_slist_nth(history_list, GPOINTER_TO_INT(user_data));
-	GdkEventKey *k; 
-	k=(GdkEventKey *)event; 
-	g_print ("item_selected '%s' type %x val %x\n",(gchar *)((struct history_item *(element->data))->text),event->type, k->keyval); 
-	b=(GdkEventButton *)event;
-	TRACE(g_print("Right-click\n!"));	
-	g_free(element->data);
-	history_list = g_slist_delete_link(history_list, element);
-	/* Save changes */
-	if (prefs.save_history)
-	  save_history();			
-	/*does GDK_KEY_PRESS for space, and enter gives 0xff0d*/
-	/*gtk_label_set_markup( GTK_LABEL(gtk_bin_get_child(GTK_BIN (menu_item))), "<span color=\"blue\">Some text</span>" ); */
-	if(GDK_BUTTON_RELEASE==event->type && 3 == b->button){ 
-		/*g_signal_stop_emission_by_name((GObject*)menu_item,"selection-done"); */
-		g_print("%p state=%d(0x%x)\n",menu_item,b->state,b->state);
-		if(b->state !=last_state){/**do something here  */
-			if(b->state & (GDK_CONTROL_MASK|GDK_SHIFT_MASK))
-				selection_active=1;
-#if 0	
-			GDK_CONTROL_MASK
-			GDK_SHIFT_MASK
-			
-			
-			
-	/* Modify menu item label properties */
-      item_label = gtk_bin_get_child((GtkBin*)menu_item);
-      gtk_label_set_single_line_mode((GtkLabel*)item_label, prefs.single_line);
-      
-      /* Check if item is also clipboard text and make bold */
-      if ((clipboard_temp) && (p_strcmp((gchar*)((struct history_item *(element->data))->text), clipboard_temp) == 0))
-      {
-        gchar* bold_text = g_markup_printf_escaped("<b>%s</b>", string->str);
-        gtk_label_set_markup((GtkLabel*)item_label, bold_text);
-        g_free(bold_text);
-#endif
-		}
-
-	}else {		
-		GSList* element = g_slist_nth(history_list, GPOINTER_TO_INT(user_data));
-	  /* Get the text from the right element and set as clipboard */
-	  gtk_clipboard_set_text(clipboard, (gchar*)((struct history_item *(element->data))->text), -1);
-	  gtk_clipboard_set_text(primary, (gchar*)((struct history_item *(element->data))->text), -1);
-	}	
-	
-  gdk_event_free(event);		
-}
-#endif
