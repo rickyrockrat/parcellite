@@ -40,7 +40,8 @@ static gchar* history_magics[]={
 #define HISTORY_FILE0 "parcellite/hist.test"
 
 /***************************************************************************/
-/** Pass in the text via the struct. We assume len is correct.
+/** Pass in the text via the struct. We assume len is correct, and BYTE based,
+not character.
 \n\b Arguments:
 \n\b Returns:	length of resulting string.
 ****************************************************************************/
@@ -304,33 +305,56 @@ struct history_item *new_clip_item(gint type, guint32 len, void *data)
 	c->len=len;
 	return c;
 }
-
+/***************************************************************************/
+/**  checks to see if text is already in history
+\n\b Arguments:
+\n\b Returns:
+****************************************************************************/
+int  is_duplicate(gchar* item)
+{
+  GSList* element;
+	if(NULL ==item)
+		return 1;
+  /* Go through each element compare each */
+  for (element = history_list; element != NULL; element = element->next) {
+	  struct history_item *c;
+		c=(struct history_item *)element->data;
+		if(CLIP_TYPE_TEXT == c->type){
+	    if (g_strcmp0((gchar*)c->text, item) == 0) {
+				return 1;
+	      break;
+	    }
+		}
+  }
+	return 0;
+}
 /***************************************************************************/
 /**  Adds item to the end of history .
 \n\b Arguments:
 \n\b Returns:
 ****************************************************************************/
-
 void append_item(gchar* item)
 {
-  if (item)  {
-		struct history_item *c;
-		if(NULL == (c=new_clip_item(CLIP_TYPE_TEXT,strlen(item),item)) )
-			return;
-		g_printf("Append '%s'\n",item);
-    /* Prepend new item */
-    history_list = g_slist_prepend(history_list, c);
-    /* Shorten history if necessary */
-    GSList* last_possible_element = g_slist_nth(history_list, prefs.history_limit - 1);
-    if (last_possible_element)     {
-      /* Free last posible element and subsequent elements */
-      g_slist_free(last_possible_element->next);
-      last_possible_element->next = NULL;
-    }
-    /* Save changes */
-    if (prefs.save_history)
-      save_history();
+	if(NULL == item)
+		return;
+	if(is_duplicate(item))
+		return;
+	struct history_item *c;
+	if(NULL == (c=new_clip_item(CLIP_TYPE_TEXT,strlen(item),item)) )
+		return;
+	/*g_printf("Append '%s'\n",item); */
+   /* Prepend new item */
+  history_list = g_slist_prepend(history_list, c);
+   /* Shorten history if necessary */
+  GSList* last_possible_element = g_slist_nth(history_list, prefs.history_limit - 1);
+  if (last_possible_element)     {
+     /* Free last posible element and subsequent elements */
+    g_slist_free(last_possible_element->next);
+    last_possible_element->next = NULL;
   }
+   /* Save changes */
+  if (prefs.save_history)
+    save_history();
 }
 
 /***************************************************************************/
@@ -410,7 +434,10 @@ int save_history_as_text(gchar *path)
     for (i=0,element = history_list; element != NULL; element = element->next) {
 		  struct history_item *c;
 			c=(struct history_item *)element->data;
-			fprintf(fp,"HIST_%04d %s\n",i,c->text);
+			if(c->flags & CLIP_TYPE_PERSISTENT)
+				fprintf(fp,"PHIST_%04d %s\n",i,c->text);
+			else
+				fprintf(fp,"NHIST_%04d %s\n",i,c->text);
 			++i;
     }
     fclose(fp);
