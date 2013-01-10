@@ -187,10 +187,10 @@ set_abs_path
 cd "$CDIR"
 set_svn_local
 check_local
-#svn_cp_to_tag
-tag="1.0.2rc7Beta"
-turl="$BURL/tags/$tag"
-CODIR="$ASVN/test.$tag"
+svn_cp_to_tag
+#tag="1.0.2rc7Beta"
+#turl="$BURL/tags/$tag"
+#CODIR="$ASVN/test.$tag"
 test_tag_co
 make_tarball
 test_tarball
