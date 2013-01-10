@@ -13,4 +13,5 @@ parcellite_SOURCES = main.c main.h \
                      history.c history.h \
                      keybinder.c keybinder.h \
                      preferences.c preferences.h \
-                     eggaccelerators.c eggaccelerators.h
+                     eggaccelerators.c eggaccelerators.h \
+                     attr_list.c attr_list.h
