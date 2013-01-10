@@ -54,6 +54,7 @@ static gboolean actions_lock = FALSE;
 #define H_MODE_NEW  1	/**new text, process it  */
 #define H_MODE_LIST 2	/**from list, just put it on the clip  */
 #define H_MODE_CHECK 3 /**see if there is new/lost contents.   */
+#define H_MODE_LAST  4 /**just return the last updated value.  */
 
 
 /**Turns up in 2.16  */
@@ -141,8 +142,11 @@ done:
 \n\b Arguments:
 \n\b Returns:
 ****************************************************************************/
-void _update_clipboard (GtkClipboard *clip, gchar *n, gchar **old)
+gchar *_update_clipboard (GtkClipboard *clip, gchar *n, gchar **old)
 {
+	if(NULL != *old)
+		g_free(*old);
+	
 	if(NULL != n)	{
 		
 		/** if(clip==primary)
@@ -150,11 +154,11 @@ void _update_clipboard (GtkClipboard *clip, gchar *n, gchar **old)
 		else
 			g_printf("set CLI to %s\n",n);*/
 		gtk_clipboard_set_text(clip, n, -1);
-	}
-		
-	if(NULL != *old)
-		g_free(*old);
-	*old=g_strdup(n);
+		*old=g_strdup(n);
+		return *old;
+	}else
+		*old=NULL;
+	return NULL;
 }
 
 
@@ -181,6 +185,7 @@ gchar * update_clipboard(GtkClipboard *clip,gchar *intext,  gint mode)
 	/**current/last item in clipboard  */
 	static gchar *ptext=NULL;
 	static gchar *ctext=NULL;
+	static gchar *last=NULL; /**last text change, for either clipboard  */
 	gchar **existing, *changed=NULL;
 	gchar *processed;
 	
@@ -203,7 +208,8 @@ gchar * update_clipboard(GtkClipboard *clip,gchar *intext,  gint mode)
 	/**check for lost contents and restore if lost */
 	/* Only recover lost contents if there isn't any other type of content in the clipboard */
 	if(is_clipboard_empty(clip) && NULL != *existing ) {
-      gtk_clipboard_set_text(clip, *existing, -1);
+    gtk_clipboard_set_text(clip, *existing, -1);
+		last=*existing;
   }
 	/**check for changed clipboard content - in all modes */
 	changed=gtk_clipboard_wait_for_text(clip);
@@ -213,7 +219,7 @@ gchar * update_clipboard(GtkClipboard *clip,gchar *intext,  gint mode)
 	}	else {
 		if(NULL != (processed=process_new_item(clip,changed)) ){
 			append_item(processed);
-			_update_clipboard(clip,processed,existing);
+			last=_update_clipboard(clip,processed,existing);
 		}
 		g_free(changed);
 		changed=NULL;
@@ -227,13 +233,13 @@ gchar * update_clipboard(GtkClipboard *clip,gchar *intext,  gint mode)
 	*/		
 	
 	if(H_MODE_LIST == mode){ /**just set clipboard contents. Already in list  */
-		_update_clipboard(clip,intext,existing);
+		last=_update_clipboard(clip,intext,existing);
 		goto done;
 	}
 	if(H_MODE_NEW==mode){
 		if(NULL != (processed=process_new_item(clip,intext)) ){
 			append_item(processed);
-			_update_clipboard(clip,processed,existing);
+			last=_update_clipboard(clip,processed,existing);
 		}else 
 			return NULL;	
 	}
@@ -299,8 +305,10 @@ void check_clipboards(gint mode)
 			update_clipboard(clipboard, ptext, H_MODE_LIST);
 		else {
 			if(p_strcmp(ptext,ctext)){/**default to copy pri to cli  */
+				gchar *last=update_clipboard(NULL, NULL, H_MODE_LAST);
 				/*g_printf("'%s'!='%s'!\n",ptext,ctext); */
-				update_clipboard(clipboard, ptext, H_MODE_LIST);
+				if( NULL != last)
+				  update_clipboards(last, H_MODE_LIST);
 			}	
 		}
 	}	
