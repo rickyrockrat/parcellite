@@ -466,6 +466,7 @@ void  history_item_right_click (struct history_info *h, GdkEventKey *e, gint ind
 			/*g_printf("%s ",c->text); */
 		}
 	}
+	/*g_printf("CreatehistR\n"); */
 	if(NULL != c){
 		if(c->flags & CLIP_TYPE_PERSISTENT)
 			menuitem = gtk_menu_item_new_with_label("Move To Normal");
@@ -1012,7 +1013,7 @@ static gboolean key_release_cb (GtkWidget *w,GdkEventKey *e, gpointer user)
 		return FALSE;
 	if(e->state &GDK_SHIFT_MASK   && prefs.case_search)	/**ignore shift   */
 		return FALSE;
-	if(GDK_EXPOSE== e->type || GDK_BUTTON_RELEASE==e->type)	/**fix bug 3560995, item 1/2, red clipboard.  */
+	if( GDK_EXPOSE== e->type || GDK_BUTTON_RELEASE==e->type)	/**fix bug 3560995, item 1/2, red clipboard.  */
 		return FALSE;
 	if(e->keyval == 0xff08){/**backspace  */
 //		g_printf("0x%x bs %d ",e->type,idx);
@@ -1162,9 +1163,9 @@ static gboolean my_item_event (GtkWidget *w,GdkEventKey *e, gpointer user)
 			if(GDK_CONTROL_MASK&b->state){
 				handle_marking(h,w,GPOINTER_TO_INT(user),OPERATE_DELETE);
 			}else{
-				if(GDK_CONTROL_MASK|GDK_SHIFT_MASK&b->state)
+				 if((GDK_CONTROL_MASK|GDK_SHIFT_MASK)&b->state)
 					return FALSE;
-				/*g_print("Calling popup\n"); */
+				/*g_print("Calling popup\n");  */
 	      h->wi.event=e;
 	      h->wi.item=w;
 				h->wi.index=GPOINTER_TO_INT(user);
