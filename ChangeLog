@@ -7,6 +7,7 @@ V1.0.2rc7 Thursday, January 10 2013
  +Added persistent history list and corresponding hot key.
  +Added Save As for the history file - writes a text file out.
  +Major rewrite of cliboard handling. It is now very simple and eliminates a lot of CPU.
+ +Fixed bug 3560995, mouse button events causing false searches.
  
 V1.0.2rc6 Wednesday, January 9 2013 
  Changes

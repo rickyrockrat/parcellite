@@ -929,7 +929,7 @@ static gboolean key_release_cb (GtkWidget *w,GdkEventKey *e, gpointer user)
 
   h=(struct history_info *)user;
 	
-	if(0 && NULL != e ){
+	if(0&& NULL != e ){
 		if(GDK_MOTION_NOTIFY==e->type)
 			return FALSE;
     printf("krc (%x) S%x T%x C%x,SE%x, G%x, W%p, wdg%p",
@@ -944,9 +944,9 @@ static gboolean key_release_cb (GtkWidget *w,GdkEventKey *e, gpointer user)
 			if(GDK_BUTTON_RELEASE==e->type && 3 == b->button){
 				/*toggle-size-request", */
 				/*allow item_selected to get called  */
-				return FALSE;  
+				/*return FALSE;   */
 			}
-			return TRUE;
+			/*return TRUE; */
 		}
 		printf("\n");
 		fflush(NULL);
@@ -1012,6 +1012,8 @@ static gboolean key_release_cb (GtkWidget *w,GdkEventKey *e, gpointer user)
 		return FALSE;
 	if(e->state &GDK_SHIFT_MASK   && prefs.case_search)	/**ignore shift   */
 		return FALSE;
+	if(GDK_EXPOSE== e->type || GDK_BUTTON_RELEASE==e->type)	/**fix bug 3560995, item 1/2, red clipboard.  */
+		return FALSE;
 	if(e->keyval == 0xff08){/**backspace  */
 //		g_printf("0x%x bs %d ",e->type,idx);
 		if(idx)
@@ -1031,6 +1033,7 @@ static gboolean key_release_cb (GtkWidget *w,GdkEventKey *e, gpointer user)
 	}
   if(e->keyval >= 0xff50 && e->keyval <= 0xff57) /**arrow keys, home,end,pgup,pgdwn  */
   	return FALSE;
+  	
 	if(idx>=KBUF_SIZE){
 		TRACE(g_print("keys full\n"));
 		return TRUE;
