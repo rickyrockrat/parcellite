@@ -10,6 +10,7 @@ V1.0.2rc7 Thursday, January 10 2013
  +Major rewrite of cliboard handling. It is now very simple and eliminates a 
   lot of CPU overhead.
  +Fixed bug 3560995, mouse button events causing false searches.
+ +Added appindicator so it appears in unity.
  
 V1.0.2rc6 Wednesday, January 9 2013 
  Changes
