@@ -5,8 +5,10 @@ V1.0.2rc7 Thursday, January 10 2013
  +Changed history entries to structures (and history file format) to support
   upcoming features.
  +Added persistent history list and corresponding hot key.
+ +Added right-click either history list with a Move To or cancel.
  +Added Save As for the history file - writes a text file out.
- +Major rewrite of cliboard handling. It is now very simple and eliminates a lot of CPU.
+ +Major rewrite of cliboard handling. It is now very simple and eliminates a 
+  lot of CPU overhead.
  +Fixed bug 3560995, mouse button events causing false searches.
  
 V1.0.2rc6 Wednesday, January 9 2013 
