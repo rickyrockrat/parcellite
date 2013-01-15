@@ -82,6 +82,8 @@ gchar *process_new_item(GtkClipboard *clip,gchar *ntext)
 {
 	glong len;
 	gchar *rtn=NULL;
+	if(NULL == ntext)
+		return NULL;
 	#if 0
 		if(clip == primary){
 			GdkModifierType button_state;
