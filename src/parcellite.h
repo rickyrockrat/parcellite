@@ -20,6 +20,9 @@
 #include <glib.h>
 #include <gtk/gtk.h>
 #include <string.h>
+#ifdef HAVE_APPINDICATOR
+#include <libappindicator/app-indicator.h>
+#endif
 #include "daemon.h"
 #include "utils.h"
 #include "preferences.h"

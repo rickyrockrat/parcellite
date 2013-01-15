@@ -42,8 +42,13 @@ static gchar* clipboard_text;
 static gchar* synchronized_text;
 static GtkClipboard* primary;
 static GtkClipboard* clipboard;
-static GtkStatusIcon* status_icon;
 struct p_fifo *fifo;
+#ifdef HAVE_APPINDICATOR
+static AppIndicator *indicator=NULL;
+static GtkWidget *indicator_menu = NULL;
+#else
+static GtkStatusIcon *status_icon; 
+#endif
 
 static gboolean actions_lock = FALSE;
 /**defines for moving between clipboard histories  */
@@ -337,18 +342,22 @@ static void *execute_action(void *command)
 {
   /* Execute action */
   actions_lock = TRUE;
+#ifndef HAVE_APPINDICATOR
   if (!prefs.no_icon)
   {
   gtk_status_icon_set_from_stock((GtkStatusIcon*)status_icon, GTK_STOCK_EXECUTE);
   gtk_status_icon_set_tooltip((GtkStatusIcon*)status_icon, _("Executing action..."));
   }
+#endif
   if(system((gchar*)command))
   	g_print("sytem command '%s' failed\n",(gchar *)command);
+ #ifndef HAVE_APPINDICATOR
   if (!prefs.no_icon)
   {
 	gtk_status_icon_set_from_icon_name((GtkStatusIcon*)status_icon, PARCELLITE_ICON);
   gtk_status_icon_set_tooltip((GtkStatusIcon*)status_icon, _("Clipboard Manager"));
   }
+#endif
   actions_lock = FALSE;
   g_free((gchar*)command);
   /* Exit this thread */
@@ -359,11 +368,13 @@ static void *execute_action(void *command)
 static void action_exit(GPid pid, gint status, gpointer data)
 {
   g_spawn_close_pid(pid);
+#ifndef HAVE_APPINDICATOR 	
   if (!prefs.no_icon)
   {
 		gtk_status_icon_set_from_icon_name((GtkStatusIcon*)status_icon, PARCELLITE_ICON);
     gtk_status_icon_set_tooltip((GtkStatusIcon*)status_icon, _("Clipboard Manager"));
   }
+#endif
   actions_lock = FALSE;
 }
 
@@ -372,12 +383,13 @@ static void action_selected(GtkButton *button, gpointer user_data)
 {
   /* Change icon and enable lock */
   actions_lock = TRUE;
+#ifndef HAVE_APPINDICATOR 	
   if (!prefs.no_icon)
   {
     gtk_status_icon_set_from_stock((GtkStatusIcon*)status_icon, GTK_STOCK_EXECUTE);
     gtk_status_icon_set_tooltip((GtkStatusIcon*)status_icon, _("Executing action..."));
   }
-  
+#endif  
   /* Insert clipboard into command (user_data), and prepare it for execution */
   gchar* clipboard_text = gtk_clipboard_wait_for_text(clipboard);
 	/*g_print("Got cmd '%s', text '%s'->",(gchar *)user_data,clipboard_text);fflush(NULL);  */
@@ -1409,9 +1421,12 @@ next_loop:
   return FALSE;
 }
 
-/* Called when status icon is right-clicked */
-static void  show_parcellite_menu(GtkStatusIcon *status_icon, guint button,
-                     guint activate_time,        gpointer user_data)
+/***************************************************************************/
+/** .
+\n\b Arguments:
+\n\b Returns:
+****************************************************************************/
+GtkWidget *create_parcellite_menu(void)
 {
   /* Declare some variables */
   GtkWidget *menu, *menu_item;
@@ -1441,9 +1456,31 @@ static void  show_parcellite_menu(GtkStatusIcon *status_icon, guint button,
   gtk_menu_shell_append((GtkMenuShell*)menu, menu_item);
   /* Popup the menu... */
   gtk_widget_show_all(menu);
-  gtk_menu_popup((GtkMenu*)menu, NULL, NULL, NULL, user_data, button, activate_time);
+  gtk_menu_popup((GtkMenu*)menu, NULL, NULL, NULL, NULL, 0, 0);	
+	return menu;
 }
 
+/* Called when status icon is right-clicked */
+static void  show_parcellite_menu(GtkStatusIcon *status_icon, guint button, guint activate_time,  gpointer data)
+{
+	create_parcellite_menu();
+}
+#ifdef HAVE_APPINDICATOR
+
+void create_app_indicator(void)
+{
+	/* Create the menu */
+	indicator_menu = create_parcellite_menu();
+	/* check if we need to create the indicator or just refresh the menu */
+	if(NULL == indicator) {
+		indicator = app_indicator_new("parcellite", "parcellite-syrayicon", APP_INDICATOR_CATEGORY_APPLICATION_STATUS);
+		app_indicator_set_status (indicator, APP_INDICATOR_STATUS_ACTIVE);
+		app_indicator_set_attention_icon (indicator, "clipit-trayicon");
+	}
+	app_indicator_set_menu (indicator, GTK_MENU (indicator_menu));
+}
+
+#else
 /* Called when status icon is left-clicked */
 static void
 status_icon_clicked(GtkStatusIcon *status_icon, gpointer user_data)
@@ -1465,7 +1502,7 @@ status_icon_clicked(GtkStatusIcon *status_icon, gpointer user_data)
     g_timeout_add(POPUP_DELAY, show_history_menu, GINT_TO_POINTER(HIST_DISPLAY_NORMAL));
   }
 }
-
+#endif
 /* Called when history global hotkey is pressed */
 void history_hotkey(char *keystring, gpointer user_data)
 {
@@ -1486,7 +1523,11 @@ void actions_hotkey(char *keystring, gpointer user_data)
 /* Called when actions global hotkey is pressed */
 void menu_hotkey(char *keystring, gpointer user_data)
 {
+#ifdef HAVE_APPINDICATOR
+	create_app_indicator();
+#else
   show_parcellite_menu(status_icon, 0, 0, NULL);
+#endif
 }
 
 /* Startup calls and initializations */
@@ -1525,10 +1566,15 @@ static void parcellite_init()
   /* Create status icon */
   if (!prefs.no_icon)
   {
+#ifdef HAVE_APPINDICATOR
+	/* Indicator */
+	create_app_indicator();
+#else
 	  status_icon = gtk_status_icon_new_from_icon_name(PARCELLITE_ICON); 
     gtk_status_icon_set_tooltip((GtkStatusIcon*)status_icon, _("Clipboard Manager"));
     g_signal_connect((GObject*)status_icon, "activate", (GCallback)status_icon_clicked, NULL);
     g_signal_connect((GObject*)status_icon, "popup-menu", (GCallback)show_parcellite_menu, NULL);
+#endif
   }
 }
 
