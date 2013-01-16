@@ -2,7 +2,7 @@
 # For parcellite deb packaging, install these packages (apt-get):
 # dh-make intltool libgtk2.0-dev
 if [ $# -lt 1 ]; then
-	echo "Usage $0 /path/to/source/tar"
+	echo "Usage $0 /path/to/source/tar configopts"
 	exit 1
 fi
 DEBEMAIL=gpib@rickyrockrat.net
@@ -21,5 +21,8 @@ rm emacsen-* manpage.* init.d.ex README.Debian
 cd ..
 cp deb/copyright debian
 sed "s/ADD_ARCH_HERE/$ARCH/g" deb/control >debian/control
+if [ -n "$2" ]; then
+  echo "DEB_CONFIGURE_EXTRA_FLAGS += $2" >> debian/rules
+fi
 dpkg-buildpackage -rfakeroot
 
