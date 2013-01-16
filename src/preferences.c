@@ -46,6 +46,7 @@
 #define PREF_TYPE_COMBO  0x30
 #define PREF_TYPE_ENTRY  0x40 /**gchar *  */
 #define PREF_TYPE_ALIGN  0x50 /**label, then align box  */
+#define PREF_TYPE_SPACER 0x60
 #define PREF_TYPE_MASK	 0xF0 
 #define PREF_TYPE_NMASK	 0xF
 
@@ -108,9 +109,15 @@ struct pref_item myprefs[]={
 	{.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_MISC,.name="hyperlinks_only",.type=PREF_TYPE_TOGGLE,.desc="Capture hyperlinks only",.tip=NULL,.val=DEF_HYPERLINKS_ONLY},
 	{.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_MISC,.name="confirm_clear",.type=PREF_TYPE_TOGGLE,.desc="Confirm before clearing history",.tip=NULL,.val=DEF_CONFIRM_CLEAR},
 /**Display  add icon here...*/
+	{.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_DISP,.name="current_on_top",.type=PREF_TYPE_TOGGLE,.desc="Current entry on top",.tip="If checked, places current clipboard entry at top of list. If not checked, history does not get sorted.",.val=TRUE},
   {.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_DISP,.name="single_line",.type=PREF_TYPE_TOGGLE,.desc="Show in a single line",.tip=NULL,.val=DEF_SINGLE_LINE},
   {.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_DISP,.name="reverse_history",.type=PREF_TYPE_TOGGLE,.desc="Show in reverse order",.tip=NULL,.val=DEF_REVERSE_HISTORY},
-  {.adj=&align_line_lim,.cval=NULL,.sig=NULL,.sec=PREF_SEC_DISP,.name="item_length",.type=PREF_TYPE_SPIN,.desc="Character length of items",.tip=NULL,.val=DEF_ITEM_LENGTH},
+	{.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_DISP,.name="nop",.type=PREF_TYPE_SPACER,.desc=" ",.tip=NULL},
+	{.adj=&align_line_lim,.cval=NULL,.sig=NULL,.sec=PREF_SEC_DISP,.name="item_length",.type=PREF_TYPE_SPIN,.desc="  Character length of items",.tip=NULL,.val=DEF_ITEM_LENGTH},  
+  {.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_DISP,.name="nop",.type=PREF_TYPE_SPACER,.desc=" ",.tip=NULL},
+	{.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_DISP,.name="persistent_history",.type=PREF_TYPE_TOGGLE,.desc="Persistent History",.tip="If checked, enables the persistent history.",.val=FALSE},
+	{.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_DISP,.name="persistent_separate",.type=PREF_TYPE_TOGGLE,.desc="Persistent As Separate List",.tip="If checked, puts the persistent history in a new list.",.val=FALSE},
+	{.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_DISP,.name="persistent_on_top",.type=PREF_TYPE_TOGGLE,.desc="Persistent On Top",.tip="If checked, puts the persistent history at the top of the history list.",.val=FALSE},
   {.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_NONE,.name="ellipsize",.type=PREF_TYPE_COMBO,.desc="Omit items in the:",.tip=NULL,.val=DEF_ELLIPSIZE}, 
 	
 /**Action Keys  */
@@ -298,6 +305,42 @@ void bind_itemkey(char *name, void (fhk)(char *, gpointer) )
 	keybinder_bind(p->cval, fhk, NULL);
 }
 
+/***************************************************************************/
+/** .
+\n\b Arguments:
+\n\b Returns:
+****************************************************************************/
+void check_sanity(void)
+{
+	gint32 x,y;
+	postition_history(NULL,&x,&y,NULL, (gpointer)1);
+  if(get_pref_int32("history_x")>x) set_pref_int32("history_x",x);
+  if(get_pref_int32("history_y")>y) set_pref_int32("history_y",y);
+ 	x=get_pref_int32("history_limit");
+  if ((!x) || (x > MAX_HISTORY) || (x < 0))
+    set_pref_int32("history_limit",DEF_HISTORY_LIMIT);
+	x=get_pref_int32("item_length");
+  if ((!x) || (x > 75) || (x < 0))
+    set_pref_int32("item_length",DEF_ITEM_LENGTH);
+	x=get_pref_int32("ellipsize");
+  if ((!x) || (x > 3) || (x < 0))
+     set_pref_int32("ellipsize",DEF_ELLIPSIZE);
+	if (NULL == get_pref_string("phistory_key"))
+    set_pref_string("phistory_key",DEF_PHISTORY_KEY);
+  if (NULL == get_pref_string("history_key"))
+    set_pref_string("history_key", DEF_HISTORY_KEY);
+  if (NULL == get_pref_string("actions_key"))
+    set_pref_string("actions_key",DEF_ACTIONS_KEY);
+  if (NULL == get_pref_string("menu_key"))
+    set_pref_string("menu_key",DEF_MENU_KEY);
+	if(get_pref_int32("persistent_history")){
+	 	if(get_pref_int32("persistent_separate"))
+	 		set_pref_int32("persistent_on_top",0);
+	}else{
+		set_pref_int32("persistent_separate",0);
+	  set_pref_int32("persistent_on_top",0);
+	}
+}
 /* Apply the new preferences */
 static void apply_preferences()
 {
@@ -323,11 +366,13 @@ static void apply_preferences()
 			case PREF_TYPE_ENTRY:
 				myprefs[i].cval=g_strdup(gtk_entry_get_text((GtkEntry*)myprefs[i].w ));
 				break;
+			case PREF_TYPE_SPACER:
+				break;
 			default: if(dbg)g_printf("apply_pref:don't know how to handle type %d\n",myprefs[i].type);
 				break;
 		}
 	}
-  
+  check_sanity();
   /* Bind keys and apply the new history limit */
 	bind_itemkey("phistory_key", phistory_hotkey);
   bind_itemkey("history_key", history_hotkey);
@@ -337,7 +382,11 @@ static void apply_preferences()
 }
 
 
-/* Save preferences to ~/.config/parcellite/parcelliterc */
+/***************************************************************************/
+/** .
+\n\b Arguments:
+\n\b Returns:
+****************************************************************************/
 static void save_preferences()
 {
 	int i;
@@ -358,6 +407,8 @@ static void save_preferences()
 			case PREF_TYPE_ENTRY:
 				g_key_file_set_string(rc_key, "rc", myprefs[i].name, myprefs[i].cval);
 				break;
+			case PREF_TYPE_SPACER:
+				break;
 			default: if(dbg)g_printf("save_pref:don't know how to handle type %d\n",myprefs[i].type);
 				break;
 		}
@@ -373,14 +424,15 @@ static void save_preferences()
 
 
 /***************************************************************************/
-/** .
+/** Read the parcelliterc file.
 \n\b Arguments:
 \n\b Returns:
 ****************************************************************************/
 void read_preferences()
 {
-	gchar* rc_file = g_build_filename(g_get_user_config_dir(), PREFERENCES_FILE, NULL);
-  gint32 x,y,z;
+	gchar *c,*rc_file = g_build_filename(g_get_user_config_dir(), PREFERENCES_FILE, NULL);
+  gint32 z;
+  GError *err;
 	struct pref_item *p;
 	init_pref();
   /* Create key */
@@ -389,21 +441,33 @@ void read_preferences()
 		int i;
 		/* Load values */
 		for (i=0;NULL != myprefs[i].name; ++i){
+		  err=NULL;
 			switch(myprefs[i].type&PREF_TYPE_MASK){
 				case PREF_TYPE_TOGGLE:
-					myprefs[i].val=g_key_file_get_boolean(rc_key, "rc", myprefs[i].name,NULL);
+				  z=g_key_file_get_boolean(rc_key, "rc", myprefs[i].name,&err);
+				  if( NULL ==err)
+							myprefs[i].val=z;
 					break;
 				case PREF_TYPE_COMBO:
 				case PREF_TYPE_SPIN:
-					myprefs[i].val=g_key_file_get_integer(rc_key, "rc", myprefs[i].name,NULL);
+				  z=g_key_file_get_integer(rc_key, "rc", myprefs[i].name,&err);
+				  if( NULL ==err)
+							myprefs[i].val=z;
 					break;
 				case PREF_TYPE_ENTRY:
-					myprefs[i].cval=g_key_file_get_string(rc_key, "rc", myprefs[i].name, NULL);
+				  c=g_key_file_get_string(rc_key, "rc", myprefs[i].name, &err);
+				  if( NULL ==err)
+						myprefs[i].cval=c;
 					break;
-				default: if(dbg)g_printf("read_pref:don't know how to handle type %d\n",myprefs[i].type);
+				case PREF_TYPE_SPACER:
+				break;
+				default: 
+					if(dbg) g_printf("read_pref:don't know how to handle type %d for '%s'\n",myprefs[i].type,myprefs[i].name);
 					continue;
 					break;
 			}
+			if(NULL != err)
+				g_printf("Unable to load pref '%s'\n",myprefs[i].name);
 			if(dbg)g_printf("rp:Set '%s' to %d (%s)\n",myprefs[i].name, myprefs[i].val, myprefs[i].cval);
 		}
     p=get_pref("type_search");
@@ -413,26 +477,7 @@ void read_preferences()
 		}
       
     /* Check for errors and set default values if any */
-    postition_history(NULL,&x,&y,NULL, (gpointer)1);
-    if(get_pref_int32("history_x")>x) set_pref_int32("history_x",x);
-    if(get_pref_int32("history_y")>y) set_pref_int32("history_y",y);
-  	x=get_pref_int32("history_limit");
-    if ((!x) || (x > MAX_HISTORY) || (x < 0))
-      set_pref_int32("history_limit",DEF_HISTORY_LIMIT);
-		x=get_pref_int32("item_length");
-    if ((!x) || (x > 75) || (x < 0))
-      set_pref_int32("item_length",DEF_ITEM_LENGTH);
-		x=get_pref_int32("ellipsize");
-    if ((!x) || (x > 3) || (x < 0))
-      set_pref_int32("ellipsize",DEF_ELLIPSIZE);
-		if (NULL == get_pref_string("phistory_key"))
-      set_pref_string("phistory_key",DEF_PHISTORY_KEY);
-    if (NULL == get_pref_string("history_key"))
-      set_pref_string("history_key", DEF_HISTORY_KEY);
-    if (NULL == get_pref_string("actions_key"))
-      set_pref_string("actions_key",DEF_ACTIONS_KEY);
-    if (NULL == get_pref_string("menu_key"))
-      set_pref_string("menu_key",DEF_MENU_KEY);
+    check_sanity();
   }
   else
   {
@@ -690,6 +735,8 @@ int update_pref_widgets( void)
 			case PREF_TYPE_ENTRY:
 				gtk_entry_set_text((GtkEntry*)myprefs[i].w, myprefs[i].cval);
 				break;
+			case PREF_TYPE_SPACER:
+				break;
 			default: 
 				if(dbg)g_printf("apply_pref:don't know how to handle type %d\n",myprefs[i].type);
 				rtn=-1;
@@ -711,7 +758,7 @@ int add_section(int sec, GtkWidget *parent)
 {
 	int i,no,rtn=0;
 	gint x,y;
-	GtkWidget *hbox, *label;
+	GtkWidget *hbox, *label, *child;
 	for (no=0,i=get_first_pref(sec);sec==myprefs[i].sec; ++i){
 		GtkWidget* packit;
 		switch (myprefs[i].type&PREF_TYPE_MASK){
@@ -741,7 +788,15 @@ int add_section(int sec, GtkWidget *parent)
 				gtk_box_pack_end((GtkBox*)hbox,myprefs[i].w, TRUE, TRUE, 0);
 			  packit=hbox;
 				break;
-			case PREF_TYPE_COMBO:
+			case PREF_TYPE_COMBO: /**handled in show_preferences, only one so  */
+				break;
+			case PREF_TYPE_SPACER:
+				packit=gtk_menu_item_new_with_label("");
+				child=gtk_bin_get_child((GtkBin *)packit);
+				gtk_misc_set_padding((GtkMisc *)child,0,0);
+				gtk_label_set_markup ((GtkLabel *)child, "<span size=\"0\"> </span>");
+				break;
+			
 			default: 
 				if(dbg)g_printf("add_sec:don't know how to handle type %d\n",myprefs[i].type);
 				rtn=-1;
@@ -790,7 +845,9 @@ int add_section(int sec, GtkWidget *parent)
 		if(NULL != myprefs[i].sig)
 			g_signal_connect((GObject*)myprefs[i].w, myprefs[i].sig, (GCallback)myprefs[i].sfunc, myprefs[i].w);
 		if(dbg)g_printf("Packing %s\n",myprefs[i].name);
-		gtk_box_pack_start((GtkBox*)parent, packit, FALSE, FALSE, 0);
+			
+																							/**espand fill padding  */
+		gtk_box_pack_start((GtkBox*)parent, packit, TRUE, TRUE, 0);
 	}
 	if(dbg)g_printf("Ending on %d '%s'\n",i,myprefs[i].name);
 	return rtn;
@@ -891,7 +948,7 @@ void show_preferences(gint tab)
   alignment = gtk_alignment_new(0.50, 0.50, 1.0, 1.0);
   gtk_alignment_set_padding((GtkAlignment*)alignment, 12, 0, 12, 0);
   gtk_container_add((GtkContainer*)frame, alignment);
-  vbox = gtk_vbox_new(FALSE, 2);
+  vbox = gtk_vbox_new(FALSE, 1);
   gtk_container_add((GtkContainer*)alignment, vbox);
 	
 	add_section(PREF_SEC_DISP,vbox);

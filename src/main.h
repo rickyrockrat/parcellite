@@ -27,10 +27,10 @@ G_BEGIN_DECLS
 #define ID_PRIMARY   0
 #define ID_CLIPBOARD 1
 
-#define HIST_DISPLAY_NORMAL     0
-#define HIST_DISPLAY_PERSISTENT	1
+#define HIST_DISPLAY_NORMAL     1
+#define HIST_DISPLAY_PERSISTENT	2
 
-#define KBUF_SIZE 20
+#define KBUF_SIZE 200
 struct widget_info{
 	GtkWidget *menu; /**top level history list window  */
 	GtkWidget *item; /**item we are looking at  */
