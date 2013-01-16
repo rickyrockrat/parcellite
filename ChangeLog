@@ -1,6 +1,6 @@
 V1.0.3 Thursday, January 10 2013 
  Changes
- **This is a major release.
+ **This is a major release.**
  +Added patch 3389976 - history menu crash, utf-8
  +Added UTF-8 checks on incomming text streams.
  +Changed history entries to structures (and history file format) to support
@@ -14,7 +14,10 @@ V1.0.3 Thursday, January 10 2013
  +Added appindicator so it appears in unity.
  +Completely re-wrote prefs sybsystem, so prefs are easier to add.
  +Fixed wide dialog, and quit instant activation.
- 
+ +Added current entry on to preference.
+ +Added locking for clipboard updates.
+ +Fixed lost clip entries when selecting existing history clip entries.
+  
 V1.0.2rc6 Wednesday, January 9 2013 
  Changes
  +Applied glib patch from bug 3518845

@@ -49,7 +49,7 @@ static GtkWidget *indicator_menu = NULL;
 #else
 static GtkStatusIcon *status_icon; 
 #endif
-
+static GMutex *clip_lock;
 static gboolean actions_lock = FALSE;
 /**defines for moving between clipboard histories  */
 #define HIST_MOVE_TO_CANCEL     0
@@ -208,6 +208,7 @@ gchar *update_clipboard(GtkClipboard *clip,gchar *intext,  gint mode)
 		if(NULL != *existing)
 			g_free(*existing);
 		*existing=NULL;
+		if(NULL != intext)
 		gtk_clipboard_set_text(clip, intext, -1);
 		return NULL;
 	}
@@ -220,6 +221,7 @@ gchar *update_clipboard(GtkClipboard *clip,gchar *intext,  gint mode)
 	/**check for lost contents and restore if lost */
 	/* Only recover lost contents if there isn't any other type of content in the clipboard */
 	if(is_clipboard_empty(clip) && NULL != *existing ) {
+		//g_printf("clp empty, set to '%s'\n",*existing);
     gtk_clipboard_set_text(clip, *existing, -1);
 		last=*existing;
   }
@@ -229,10 +231,21 @@ gchar *update_clipboard(GtkClipboard *clip,gchar *intext,  gint mode)
 		g_free(changed);                    /**no change, do nothing  */
 		changed=NULL;
 	}	else {
+		//g_printf("clp changed: ex '%s' is '%s'\n",*existing,changed);
 		if(NULL != (processed=process_new_item(clip,changed)) ){
-			append_item(processed);
 			last=_update_clipboard(clip,processed,existing);
+		}else {/**restore clipboard  */
+			gchar *d;
+			if(NULL ==*existing && NULL != history_list){
+				struct history_item *c;
+				c=(struct history_item *)(history_list->data);	
+				d=c->text;
+			}else d=*existing;
+			if(NULL != d)
+				last=_update_clipboard(clip,d,existing);
 		}
+		if(NULL != last)
+			append_item(last,get_pref_int32("current_on_top")?HIST_DEL|HIST_CHECKDUP:0);
 		g_free(changed);
 		changed=NULL;
 	}
@@ -246,12 +259,16 @@ gchar *update_clipboard(GtkClipboard *clip,gchar *intext,  gint mode)
 	
 	if(H_MODE_LIST == mode && p_strcmp(intext,*existing)){ /**just set clipboard contents. Already in list  */
 		last=_update_clipboard(clip,intext,existing);
+		if(NULL != last){/**maintain persistence, if set  */
+			append_item(last,get_pref_int32("current_on_top")?HIST_DEL|HIST_CHECKDUP|HIST_KEEP_FLAGS:0);
+		}
+			
 		goto done;
-	}
-	if(H_MODE_NEW==mode){
+	}else if(H_MODE_NEW==mode){
 		if(NULL != (processed=process_new_item(clip,intext)) ){
-			append_item(processed);
 			last=_update_clipboard(clip,processed,existing);
+			if(NULL != last)
+				append_item(last,get_pref_int32("current_on_top")?HIST_DEL|HIST_CHECKDUP:0);
 		}else 
 			return NULL;	
 	}
@@ -267,6 +284,7 @@ done:
 ****************************************************************************/
 void update_clipboards(gchar *intext, gint mode)
 {
+	/*g_printf("upclips\n"); */
 	update_clipboard(primary, intext, mode);
 	update_clipboard(clipboard, intext, mode);
 }
@@ -279,6 +297,7 @@ void check_clipboards(gint mode)
 {
 	gchar *ptext, *ctext, *last;
 	int n=0;
+	g_mutex_lock(clip_lock);
 	if(fifo->rlen >0){
 		switch(fifo->which){
 			case ID_PRIMARY:
@@ -317,14 +336,14 @@ void check_clipboards(gint mode)
 		if( NULL != last && p_strcmp(ptext,ctext)){
 			/**last is a copy, of things that may be deallocated  */
 			last=strdup(last);
-			/*g_printf("Update clipb '%s' '%s' to '%s'\n",ptext,ctext,last); */
+			/*g_printf("Update clipb '%s' '%s' to '%s'\n",ptext,ctext,last);  */
 			update_clipboards(last, H_MODE_LIST);
 			g_free(last);
 		}
 		  
 	}	
 	
-		
+	g_mutex_unlock(clip_lock);	
 }
 /***************************************************************************/
 /** Called every CHECK_INTERVAL seconds to check for new items 
@@ -1122,15 +1141,20 @@ foundit:
 ****************************************************************************/
 void set_clipboard_text(struct history_info *h, GSList *element)
 {
+	g_mutex_lock(clip_lock);
 	if(NULL == find_h_item(h->delete_list,NULL,element)){	/**not in our delete list  */
-		gchar *txt=((struct history_item *)(element->data))->text;
-		/*g_printf("set_clip_text %s\n",txt); */
+		/**make a copy of txt, because it gets freed and re-allocated.  */
+		gchar *txt=p_strdup(((struct history_item *)(element->data))->text);
+		/*g_printf("set_clip_text %s\n",txt);  */
 		if(get_pref_int32("use_copy") )
 			update_clipboard(clipboard, txt, H_MODE_LIST);
 		if(get_pref_int32("use_primary"))
 	  	update_clipboard(primary, txt, H_MODE_LIST);	
+		g_free(txt);
 	}
   g_signal_emit_by_name ((gpointer)h->menu,"selection-done");
+	/*g_printf("set_clip_text done\n");  */
+	g_mutex_unlock(clip_lock);
 }
 
 
@@ -1159,7 +1183,7 @@ static gboolean my_item_event (GtkWidget *w,GdkEventKey *e, gpointer user)
 	if(NULL !=h && GDK_ENTER_NOTIFY ==e->type ){/**add to delete   */
 		GdkEventCrossing *enter=(GdkEventCrossing *)e;
 		/*printf("state 0x%x\n",enter->state); */
-		/**use shift or right-click  */
+		/**use shift and right-click  */
 		if(GDK_SHIFT_MASK&enter->state && GDK_BUTTON3_MASK&enter->state)
 			handle_marking(h,w,GPOINTER_TO_INT(user),OPERATE_DELETE);
 	}
@@ -1183,8 +1207,8 @@ static gboolean my_item_event (GtkWidget *w,GdkEventKey *e, gpointer user)
 	      h->wi.event=e;
 	      h->wi.item=w;
 				h->wi.index=GPOINTER_TO_INT(user);
-				
-		    history_item_right_click(h,e,GPOINTER_TO_INT(user));
+				if(get_pref_int32("persistent_history"))
+		      history_item_right_click(h,e,GPOINTER_TO_INT(user));
 			}
 			return TRUE;
 		}else if( 1 == b->button){
@@ -1218,6 +1242,20 @@ static void item_selected(GtkMenuItem *menu_item, gpointer user_data)
 		set_clipboard_text(h,element);
 	}
 }	
+
+/***************************************************************************/
+/** .
+\n\b Arguments:
+\n\b Returns:
+****************************************************************************/
+void write_history_menu_items(GSList *list, GtkWidget *menu)
+{
+	GSList *element;
+	if(NULL == list)
+		return;
+	for (element = list; element != NULL; element = element->next) 
+			gtk_menu_shell_append((GtkMenuShell*)menu,element->data);	
+}
 /***************************************************************************/
 /**  Called when status icon is left-clicked or action key hit.
 \n\b Arguments:
@@ -1230,11 +1268,13 @@ static gboolean show_history_menu(gpointer data)
   GtkWidget *menu,       *menu_item,
             *menu_image, *item_label;
   static struct history_info h;
+	gint nok,pok;
 	h.histno=GPOINTER_TO_INT(data);
 	h.change_flag=0;
   /**init our keystroke function  */
 	key_release_cb(NULL,NULL,NULL);
 	GSList *element, *persistent=NULL;
+	GSList *lhist=NULL;
 	
   /* Create the menu */
   menu = gtk_menu_new();
@@ -1268,16 +1308,16 @@ static gboolean show_history_menu(gpointer data)
     gchar* clipboard_temp = gtk_clipboard_wait_for_text(clipboard);
     /* Reverse history if enabled */
     if (get_pref_int32("reverse_history")) {
-      history_list = g_slist_reverse(history_list);
+      /*history_list = g_slist_reverse(history_list); */
       element_number = g_slist_length(history_list) - 1;
     }
     /* Go through each element and adding each */
     for (element = history_list; element != NULL; element = element->next) {
 			struct history_item *c=(struct history_item *)(element->data);
 			gchar* hist_text=c->text;
-			if(HIST_DISPLAY_NORMAL==h.histno && (c->flags & CLIP_TYPE_PERSISTENT))
+			if(!(HIST_DISPLAY_PERSISTENT&h.histno) && (c->flags & CLIP_TYPE_PERSISTENT))
 				goto next_loop;
-			else if(HIST_DISPLAY_PERSISTENT==h.histno && !(c->flags & CLIP_TYPE_PERSISTENT))
+			else if( !(HIST_DISPLAY_NORMAL&h.histno) && !(c->flags & CLIP_TYPE_PERSISTENT))
 				goto next_loop;
       GString* string = g_string_new(hist_text);
 		  glong len=g_utf8_strlen(string->str, string->len);
@@ -1352,12 +1392,13 @@ static gboolean show_history_menu(gpointer data)
         h.clip_item=menu_item;
 			  h.element_text=hist_text;
       }
-			if(0 && c->flags &CLIP_TYPE_PERSISTENT){
+			if(get_pref_int32("persistent_history") && c->flags &CLIP_TYPE_PERSISTENT){
 				persistent = g_slist_prepend(persistent, menu_item);
 				/*g_printf("persistent %s\n",c->text); */
 			}	else{
 				/* Append item */
-	      gtk_menu_shell_append((GtkMenuShell*)menu, menu_item);	
+				lhist = g_slist_prepend(lhist, menu_item);
+	      
 			}
 				
       
@@ -1373,8 +1414,8 @@ next_loop:
     g_free(primary_temp);
     g_free(clipboard_temp);
     /* Return history to normal if reversed */
-    if (get_pref_int32("reverse_history"))
-      history_list = g_slist_reverse(history_list);
+    /** if (get_pref_int32("reverse_history"))
+      history_list = g_slist_reverse(history_list);*/
   }
   else
   {
@@ -1383,12 +1424,25 @@ next_loop:
     gtk_widget_set_sensitive(menu_item, FALSE);
     gtk_menu_shell_append((GtkMenuShell*)menu, menu_item);
   }
-	if(0 && NULL != persistent){
-		gtk_menu_shell_append((GtkMenuShell*)menu, gtk_separator_menu_item_new());
-		persistent=g_slist_reverse(persistent);
-		for (element = persistent; element != NULL; element = element->next) 
-			gtk_menu_shell_append((GtkMenuShell*)menu,element->data);	
+	if (!get_pref_int32("reverse_history")) {
+		lhist = g_slist_reverse(lhist);
+		persistent = g_slist_reverse(persistent);
+	}	
+/**now actually add them from the list  */	
+	if(get_pref_int32("persistent_history")){
+		if(get_pref_int32("persistent_on_top")){
+			write_history_menu_items(persistent,menu);
+			gtk_menu_shell_append((GtkMenuShell*)menu, gtk_separator_menu_item_new()); 
+			write_history_menu_items(lhist,menu);
+		}	else{
+			write_history_menu_items(lhist,menu);
+			gtk_menu_shell_append((GtkMenuShell*)menu, gtk_separator_menu_item_new()); 
+			write_history_menu_items(persistent,menu);
+		}
+	}else {	/**normal old operation, forget about persistence.  */
+		write_history_menu_items(lhist,menu);
 	}
+	
   /* -------------------- */
   gtk_menu_shell_append((GtkMenuShell*)menu, gtk_separator_menu_item_new());
 	
@@ -1411,7 +1465,8 @@ next_loop:
 		g_signal_connect((GObject*)menu_item, "activate", (GCallback)clear_selected, NULL);
 	  gtk_menu_shell_append((GtkMenuShell*)menu, menu_item);
   }
-	
+	g_slist_free(lhist);
+	g_slist_free(persistent);
   /* Popup the menu... */
   gtk_widget_show_all(menu);
   gtk_menu_popup((GtkMenu*)menu, NULL, NULL, get_pref_int32("history_pos")?postition_history:NULL, NULL, 1, gtk_get_current_event_time());
@@ -1465,6 +1520,24 @@ static void  show_parcellite_menu(GtkStatusIcon *status_icon, guint button, guin
 {
 	create_parcellite_menu(button, activate_time);
 }
+
+/***************************************************************************/
+/** .
+\n\b Arguments:
+\n\b Returns:
+****************************************************************************/
+gint figure_histories(void)
+{
+	gint i;
+	if(get_pref_int32("persistent_history")){ 
+		if(get_pref_int32("persistent_separate"))
+			i=HIST_DISPLAY_NORMAL;
+		else
+			i=HIST_DISPLAY_PERSISTENT|HIST_DISPLAY_NORMAL;
+	}else 
+		i=HIST_DISPLAY_NORMAL;
+	return i;
+}
 #ifdef HAVE_APPINDICATOR
 
 void create_app_indicator(void)
@@ -1482,8 +1555,7 @@ void create_app_indicator(void)
 
 #else
 /* Called when status icon is left-clicked */
-static void
-status_icon_clicked(GtkStatusIcon *status_icon, gpointer user_data)
+static void status_icon_clicked(GtkStatusIcon *status_icon, gpointer user_data)
 {
   /* Check what type of click was recieved */
   GdkModifierType state;
@@ -1499,19 +1571,20 @@ status_icon_clicked(GtkStatusIcon *status_icon, gpointer user_data)
   /* Normal click */
   else
   {
-    g_timeout_add(POPUP_DELAY, show_history_menu, GINT_TO_POINTER(HIST_DISPLAY_NORMAL));
+    g_timeout_add(POPUP_DELAY, show_history_menu, GINT_TO_POINTER(figure_histories()));
   }
 }
 #endif
 /* Called when history global hotkey is pressed */
 void history_hotkey(char *keystring, gpointer user_data)
 {
-  g_timeout_add(POPUP_DELAY, show_history_menu, GINT_TO_POINTER(HIST_DISPLAY_NORMAL));
+  g_timeout_add(POPUP_DELAY, show_history_menu, GINT_TO_POINTER(figure_histories()));
 }
-/* Called when history global hotkey is pressed */
+/* Called when persistent history global hotkey is pressed */
 void phistory_hotkey(char *keystring, gpointer user_data)
 {
-  g_timeout_add(POPUP_DELAY, show_history_menu, GINT_TO_POINTER(HIST_DISPLAY_PERSISTENT));
+	if(get_pref_int32("persistent_history") && get_pref_int32("persistent_separate"))
+    g_timeout_add(POPUP_DELAY, show_history_menu, GINT_TO_POINTER(HIST_DISPLAY_PERSISTENT));
 }
 
 /* Called when actions global hotkey is pressed */
@@ -1537,12 +1610,16 @@ static void parcellite_init()
   primary = gtk_clipboard_get(GDK_SELECTION_PRIMARY);
   clipboard = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);
   g_timeout_add(CHECK_INTERVAL, check_clipboards_tic, NULL);
-  
+	if(FALSE ==g_thread_supported()){
+		g_printf("g_thread not init!\n");
+	}
+	clip_lock= g_mutex_new();
   /* Read preferences */
   read_preferences();
   
   /* Read history */
   if (get_pref_int32("save_history")){
+		/*g_printf("Calling read_hist\n"); */
 		read_history();
 		if(NULL != history_list){
 			struct history_item *c;

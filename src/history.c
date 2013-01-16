@@ -207,13 +207,17 @@ void read_history ()
 			if(c->len != end)
 				g_printf("len check: invalid: ex %d got %d\n",end,c->len);
 			/* Read item and add ending character */
-			if (fread(&c->text,end,1,history_file) != 1)
-				g_printf("history_read: Invalid text!");
-      c->text[end] = 0;
-			c->len=validate_utf8_text(c->text,c->len);
-			if(dbg) g_printf("len %d type %d '%s'\n",c->len,c->type,c->text); 
-      /* Prepend item and read next size */
-      history_list = g_slist_prepend(history_list, c);
+			if (fread(&c->text,end,1,history_file) != 1){
+				c->text[end] = 0;
+				g_printf("history_read: Invalid text!\n'%s'\n",c->text);
+			}	else {
+				c->text[end] = 0;
+				c->len=validate_utf8_text(c->text,c->len);
+				if(dbg) g_printf("len %d type %d '%s'\n",c->len,c->type,c->text); 
+	      /* Prepend item and read next size */
+	      history_list = g_slist_prepend(history_list, c);	
+			}
+      
     }
 done:
 		g_free(magic);
@@ -306,42 +310,64 @@ struct history_item *new_clip_item(gint type, guint32 len, void *data)
 	return c;
 }
 /***************************************************************************/
-/**  checks to see if text is already in history
-\n\b Arguments:
-\n\b Returns:
+/**  checks to see if text is already in history. Also is a find text
+\n\b Arguments: if mode is 1, delete it too.
+\n\b Returns: -1 if not found, or nth element.
 ****************************************************************************/
-int  is_duplicate(gchar* item)
+gint is_duplicate(gchar* item, int mode, gint *flags)
 {
   GSList* element;
+	gint i;
 	if(NULL ==item)
-		return 1;
+		return -1;
   /* Go through each element compare each */
-  for (element = history_list; element != NULL; element = element->next) {
+  for (i=0,element = history_list; element != NULL; element = element->next,++i) {
 	  struct history_item *c;
 		c=(struct history_item *)element->data;
 		if(CLIP_TYPE_TEXT == c->type){
 	    if (g_strcmp0((gchar*)c->text, item) == 0) {
-				return 1;
+				if(NULL != flags){
+					*flags=c->flags;
+				}
+				if(mode){
+					/*g_printf("Freeing '%s'\n",c->text); */
+					g_free(element->data);
+		      history_list = g_slist_delete_link(history_list, element);
+				}
+				return i;
 	      break;
 	    }
 		}
   }
-	return 0;
+	return -1;
 }
 /***************************************************************************/
 /**  Adds item to the end of history .
 \n\b Arguments:
 \n\b Returns:
 ****************************************************************************/
-void append_item(gchar* item)
+void append_item(gchar* item, int checkdup)
 {
+	gint flags=0,node=-1;
 	if(NULL == item)
 		return;
-	if(is_duplicate(item))
-		return;
+/**delete if HIST_DEL flag is set.  */	
+	if( checkdup & HIST_CHECKDUP){
+		node=is_duplicate(item, checkdup & HIST_DEL, &flags);
+		if(node > -1){ /**found it  */
+			if(!(checkdup & HIST_DEL))
+				return;	
+		}
+	}
+	
 	struct history_item *c;
 	if(NULL == (c=new_clip_item(CLIP_TYPE_TEXT,strlen(item),item)) )
 		return;
+	if(node > -1 && (checkdup & HIST_KEEP_FLAGS) ){
+		c->flags=flags;
+		/*g_printf("Restoring '%s'\n",c->text); */
+	}
+		
 	/*g_printf("Append '%s'\n",item); */
    /* Prepend new item */
   history_list = g_slist_prepend(history_list, c);
