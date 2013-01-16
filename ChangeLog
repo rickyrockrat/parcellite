@@ -1,6 +1,6 @@
-V1.0.3 Thursday, January 10 2013 
+V1.1.0 Wednesday, January 16 2013 
  Changes
- **This is a major release.**
+ ***This is a major release.***
  +Added patch 3389976 - history menu crash, utf-8
  +Added UTF-8 checks on incomming text streams.
  +Changed history entries to structures (and history file format) to support
