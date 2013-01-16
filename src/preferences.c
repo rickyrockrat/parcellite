@@ -18,128 +18,350 @@
 
 #include "parcellite.h"
 #define MAX_HISTORY 1000
-/* Declare some widgets */
-GtkWidget *copy_check,
-          *primary_check,
-          *synchronize_check,
-          *history_spin,
-          *charlength_spin,
-          *ellipsize_combo,
-          *phistory_key_entry,
-          *history_key_entry,
-          *actions_key_entry,
-          *menu_key_entry,
-          *save_check,
-          *confirm_check,
-          *reverse_check,
-          *linemode_check,
-          *hyperlinks_check,
-          *history_pos,
-          *history_x,
-          *history_y,
-          *case_search,
-          *type_search,
-          *ignore_whiteonly,
-          *trim_wspace_begend,
-          *trim_newline,
-          *data_size;
+
+#define INIT_HISTORY_KEY      NULL
+#define INIT_ACTIONS_KEY      NULL
+#define INIT_MENU_KEY         NULL
+
+#define DEF_USE_COPY          TRUE
+#define DEF_USE_PRIMARY       FALSE
+#define DEF_SYNCHRONIZE       FALSE
+#define DEF_SAVE_HISTORY      TRUE
+#define DEF_HISTORY_LIMIT     25
+#define DEF_HYPERLINKS_ONLY   FALSE
+#define DEF_CONFIRM_CLEAR     TRUE
+#define DEF_SINGLE_LINE       TRUE
+#define DEF_REVERSE_HISTORY   FALSE
+#define DEF_ITEM_LENGTH       50
+#define DEF_ELLIPSIZE         2
+#define DEF_PHISTORY_KEY      "<Ctrl><Alt>X"
+#define DEF_HISTORY_KEY       "<Ctrl><Alt>H"
+#define DEF_ACTIONS_KEY       "<Ctrl><Alt>A"
+#define DEF_MENU_KEY          "<Ctrl><Alt>P"
+#define DEF_NO_ICON           FALSE
+
+/**allow lower nibble to become the number of items of this type  */
+#define PREF_TYPE_TOGGLE 0x10
+#define PREF_TYPE_SPIN   0x20
+#define PREF_TYPE_COMBO  0x30
+#define PREF_TYPE_ENTRY  0x40 /**gchar *  */
+#define PREF_TYPE_ALIGN  0x50 /**label, then align box  */
+#define PREF_TYPE_MASK	 0xF0 
+#define PREF_TYPE_NMASK	 0xF
+
+#define PREF_SEC_NONE 0
+#define PREF_SEC_CLIP 1
+#define PREF_SEC_HIST 2
+#define PREF_SEC_MISC 3
+#define PREF_SEC_DISP 4
+#define PREF_SEC_ACT	5
+
+struct myadj {
+	gdouble lower;
+	gdouble upper;
+	gdouble step;
+	gdouble page;
+};
+
+struct myadj align_hist_xy={1,0,10,100};
+struct myadj align_data_lim={0,1000,1,10};
+struct myadj align_hist_lim={5, MAX_HISTORY, 1, 10};
+struct myadj align_line_lim={5, 100, 1, 5};
+struct pref_item {
+	gchar *name;		/**name/id to find pref  */
+	gint32 val;			/**int val  */
+	gchar *cval;	 /**char val  */
+	GtkWidget *w;	 /**widget in menu  */
+	gint type;		/**PREF_TYPE_  */
+	gchar *desc; /**shows up in menu  */
+	gchar *tip; /**tooltip */
+	gint sec;	/**cliboard,history, misc,display,hotkeys  */
+	gchar *sig;			 /**signal, if any  */
+	GCallback sfunc; /**function to call  */
+	struct myadj *adj;
+};
+static struct pref_item dummy[2];
+static void check_toggled(GtkToggleButton *togglebutton, gpointer user_data);
+static void search_toggled(GtkToggleButton *b, gpointer user);
+static gint dbg=0;
+
+struct pref_item myprefs[]={
+/**Behaviour  */	
+	/**Clipboards  */
+  {.adj=NULL,.cval=NULL,.sig="toggled",.sfunc=(GCallback)check_toggled,.sec=PREF_SEC_CLIP,.name="use_copy",.type=PREF_TYPE_TOGGLE,.desc="Use _Copy (Ctrl-C)",.tip=NULL,.val=DEF_USE_COPY},
+  {.adj=NULL,.cval=NULL,.sig="toggled",.sfunc=(GCallback)check_toggled,.sec=PREF_SEC_CLIP,.name="use_primary",.type=PREF_TYPE_TOGGLE,.desc="Use _Primary (Selection)",.tip=NULL,.val=DEF_USE_PRIMARY},
+  {.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_CLIP,.name="synchronize",.type=PREF_TYPE_TOGGLE,.desc="S_ynchronize clipboards",.tip=NULL,.val=DEF_SYNCHRONIZE},
+  /**History  */	
+  {.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_HIST,.name="save_history",.type=PREF_TYPE_TOGGLE,.desc="Save history",.tip=NULL,.val=DEF_SAVE_HISTORY},
+  {.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_HIST,.name="history_pos",.type=PREF_TYPE_TOGGLE,.desc="Position history",.tip=NULL,.val=0},
+  {.adj=&align_hist_xy,.cval=NULL,.sig=NULL,.sec=PREF_SEC_HIST,.name="history_x",.type=PREF_TYPE_SPIN,.desc="<b>X</b>",.tip=NULL,.val=1},
+  {.adj=&align_hist_xy,.cval=NULL,.sig=NULL,.sec=PREF_SEC_HIST,.name="history_y",.type=PREF_TYPE_SPIN,.desc="<b>Y</b>",.tip=NULL,.val=1},
+	{.adj=&align_hist_lim,.cval=NULL,.sig=NULL,.sec=PREF_SEC_HIST,.name="history_limit",.type=PREF_TYPE_SPIN,.desc="Items in history",.tip=NULL,.val=DEF_HISTORY_LIMIT},
+  {.adj=&align_data_lim,.cval=NULL,.sig=NULL,.sec=PREF_SEC_HIST,.name="data_size",.type=PREF_TYPE_SPIN,.desc="Max Data Size(MB)",.tip=NULL,.val=0},
+  
+  /**Miscellaneous  */  
+	{.adj=NULL,.cval=NULL,.sig="toggled",.sfunc=(GCallback)search_toggled,.sec=PREF_SEC_MISC,.name="type_search",.type=PREF_TYPE_TOGGLE,.desc="Search As You Type",.tip="If checked, does a search-as-you-type. Turns red if not found. Goes to top (Alt-E) line when no chars are entered for search"},
+  {.adj=NULL,.cval=NULL,.sig="toggled",.sfunc=(GCallback)search_toggled,.sec=PREF_SEC_MISC,.name="case_search",.type=PREF_TYPE_TOGGLE,.desc="Case Sensitive Search",.tip="If checked, does case sensitive search"},
+	{.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_MISC,.name="ignore_whiteonly",.type=PREF_TYPE_TOGGLE,.desc="Ignore Whitespace Only",.tip="If checked, will ignore any clipboard additions that contain only whitespace."},
+	{.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_MISC,.name="trim_wspace_begend",.type=PREF_TYPE_TOGGLE,.desc="Trim Whitespace",.tip="If checked, will trim whitespace from beginning and end of entry."},
+	{.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_MISC,.name="trim_newline",.type=PREF_TYPE_TOGGLE,.desc="Trim Newlines",.tip="If checked, will replace newlines with spaces."},
+	{.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_MISC,.name="hyperlinks_only",.type=PREF_TYPE_TOGGLE,.desc="Capture hyperlinks only",.tip=NULL,.val=DEF_HYPERLINKS_ONLY},
+	{.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_MISC,.name="confirm_clear",.type=PREF_TYPE_TOGGLE,.desc="Confirm before clearing history",.tip=NULL,.val=DEF_CONFIRM_CLEAR},
+/**Display  add icon here...*/
+  {.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_DISP,.name="single_line",.type=PREF_TYPE_TOGGLE,.desc="Show in a single line",.tip=NULL,.val=DEF_SINGLE_LINE},
+  {.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_DISP,.name="reverse_history",.type=PREF_TYPE_TOGGLE,.desc="Show in reverse order",.tip=NULL,.val=DEF_REVERSE_HISTORY},
+  {.adj=&align_line_lim,.cval=NULL,.sig=NULL,.sec=PREF_SEC_DISP,.name="item_length",.type=PREF_TYPE_SPIN,.desc="Character length of items",.tip=NULL,.val=DEF_ITEM_LENGTH},
+  {.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_NONE,.name="ellipsize",.type=PREF_TYPE_COMBO,.desc="Omit items in the:",.tip=NULL,.val=DEF_ELLIPSIZE}, 
+	
+/**Action Keys  */
+  {.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_ACT,.name="history_key",.type=PREF_TYPE_ENTRY,.desc="History key combination:",.tip=NULL},
+	{.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_ACT,.name="phistory_key",.type=PREF_TYPE_ENTRY,.desc="Persistent history key:",.tip=NULL},
+  {.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_ACT,.name="actions_key",.type=PREF_TYPE_ENTRY,.desc="Actions key combination:",.tip=NULL},
+  {.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_ACT,.name="menu_key",.type=PREF_TYPE_ENTRY,.desc="Menu key combination",.tip=NULL},	
+	{.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_NONE,.name="no_icon",.val=FALSE},
+	{.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_NONE,.name=NULL},
+};
 
 GtkListStore* actions_list;
 GtkTreeSelection* actions_selection;
 
-/* Init preferences structure */
-prefs_t prefs = {DEF_USE_COPY,        DEF_USE_PRIMARY,      DEF_SYNCHRONIZE,
-                 DEF_SAVE_HISTORY,    DEF_HISTORY_LIMIT,
-                 DEF_HYPERLINKS_ONLY, DEF_CONFIRM_CLEAR,
-                 DEF_SINGLE_LINE,     DEF_REVERSE_HISTORY,  DEF_ITEM_LENGTH,
-                 DEF_ELLIPSIZE,
-                 INIT_HISTORY_KEY,    INIT_ACTIONS_KEY,     INIT_MENU_KEY,
-                 DEF_NO_ICON};
+/***************************************************************************/
+/** .
+\n\b Arguments:
+\n\b Returns: Structure of item
+****************************************************************************/
+struct pref_item* get_pref(char *name)
+{
+	int i;
+	for (i=0;NULL != myprefs[i].name; ++i){
+		if(!g_strcmp0(myprefs[i].name,name))
+			return &myprefs[i];
+	}	
+	return &dummy[0];
+}
+/***************************************************************************/
+/** .
+\n\b Arguments: pointer of widget
+\n\b Returns: Structure of item
+****************************************************************************/
+struct pref_item* get_pref_by_widget(GtkWidget *w)
+{
+	int i;
+	for (i=0;NULL != myprefs[i].name; ++i){
+		if(w == myprefs[i].w)
+			return &myprefs[i];
+	}	
+	return &dummy[0];
+}
+/***************************************************************************/
+/** Find first item in section.
+\n\b Arguments:
+\n\b Returns: index into struct where found, or end of list
+****************************************************************************/
+int get_first_pref(int section)
+{
+	int i;
+	for (i=0;NULL != myprefs[i].name; ++i){
+		if(section == myprefs[i].sec){
+			if(dbg)g_printf("gfp:returning sec %d, '%s\n",section, myprefs[i].name);
+			return i;
+		}
+			
+	}	
+	if(dbg)g_printf("Didn't find section %d\n",i);
+	return i;
+}                 
+/***************************************************************************/
+/** .
+\n\b Arguments:
+\n\b Returns:
+****************************************************************************/
+int init_pref( void )
+{
+	dummy[0].cval="dummy String";
+	dummy[0].w=NULL;
+	dummy[0].desc="Dummy desc";
+	dummy[0].tip="Dummy tip";
+	dummy[1].name=NULL;
+	dummy[1].sec=PREF_SEC_NONE;
+}
+/***************************************************************************/
+/** set the wideget of item.
+\n\b Arguments:
+\n\b Returns:
+****************************************************************************/
+int set_pref_widget (char *name, GtkWidget *w)
+{
+	struct pref_item *p=get_pref(name);
+	if(NULL == p)
+		return -1;
+	p->w=w;
+}
+/***************************************************************************/
+/** get the char * value of string.
+\n\b Arguments:
+\n\b Returns:
+****************************************************************************/
+GtkWidget *get_pref_widget (char *name)
+{
+	struct pref_item *p=get_pref(name);
+	if(NULL == p)
+		return dummy[0].w;
+	return p->w;
+ }
+/***************************************************************************/
+/** Set the int value of name.
+\n\b Arguments:
+\n\b Returns:
+****************************************************************************/
+int set_pref_int32(char *name, gint32 val)
+{
+	struct pref_item *p=get_pref(name);
+	if(NULL == p)
+		return -1;
+	p->val=val;
+	return 0;
+}
+
+/***************************************************************************/
+/** get the int value of name.
+\n\b Arguments:
+\n\b Returns:
+****************************************************************************/
+gint32 get_pref_int32 (char *name)
+{
+	struct pref_item *p=get_pref(name);
+	if(NULL == p)
+		return -1;
+	return p->val;
+}
+
+/***************************************************************************/
+/** set the char *value of string.
+\n\b Arguments:
+\n\b Returns:
+****************************************************************************/
+int set_pref_string (char *name, char *string)
+{
+	struct pref_item *p=get_pref(name);
+	if(NULL == p)
+		return -1;
+	if(p->cval != NULL)
+		g_free(p->cval);
+	p->cval=g_strdup(string);
+}
+
+/***************************************************************************/
+/** get the char * value of string.
+\n\b Arguments:
+\n\b Returns:
+****************************************************************************/
+gchar *get_pref_string (char *name)
+{
+	struct pref_item *p=get_pref(name);
+	if(NULL == p)
+		return dummy[0].cval;
+	return p->cval;
+ }
+
+/***************************************************************************/
+/** .
+\n\b Arguments:
+\n\b Returns:
+****************************************************************************/
+void unbind_itemkey(char *name, void *fhk )
+{
+	
+	struct pref_item *p=get_pref(name);
+	if(NULL == p){
+		if(dbg)g_printf("pref:null found for %s\n",name);
+		return;
+	}
+	keybinder_unbind(p->cval, fhk);
+	g_free(p->cval);
+	p->cval=NULL;
+	
+}
+
+/***************************************************************************/
+/** .
+\n\b Arguments:
+\n\b Returns:
+****************************************************************************/
+void bind_itemkey(char *name, void (fhk)(char *, gpointer) )
+{
+	struct pref_item *p=get_pref(name);
+	if(NULL ==p){
+		if(dbg)g_printf("pref2:null found for %s\n",name);
+		return;
+	}
+	keybinder_bind(p->cval, fhk, NULL);
+}
 
 /* Apply the new preferences */
-static void
-apply_preferences()
+static void apply_preferences()
 {
+	int i;
   /* Unbind the keys before binding new ones */
-  keybinder_unbind(prefs.phistory_key, phistory_hotkey);
-  g_free(prefs.phistory_key);
-  prefs.phistory_key = NULL;
-	keybinder_unbind(prefs.history_key, history_hotkey);
-  g_free(prefs.history_key);
-  prefs.history_key = NULL;
-  keybinder_unbind(prefs.actions_key, actions_hotkey);
-  g_free(prefs.actions_key);
-  prefs.actions_key = NULL;
-  keybinder_unbind(prefs.menu_key, menu_hotkey);
-  g_free(prefs.menu_key);
-  prefs.menu_key = NULL;
-  
-  /* Get the new preferences */
-  prefs.use_copy = gtk_toggle_button_get_active((GtkToggleButton*)copy_check);
-  prefs.use_primary = gtk_toggle_button_get_active((GtkToggleButton*)primary_check);
-  prefs.synchronize = gtk_toggle_button_get_active((GtkToggleButton*)synchronize_check);
-  prefs.save_history = gtk_toggle_button_get_active((GtkToggleButton*)save_check);
-  prefs.history_limit = gtk_spin_button_get_value_as_int((GtkSpinButton*)history_spin);
-  prefs.history_pos = gtk_toggle_button_get_active((GtkToggleButton*)history_pos);
-  prefs.history_x=gtk_spin_button_get_value_as_int((GtkSpinButton*)history_x);
-  prefs.history_y=gtk_spin_button_get_value_as_int((GtkSpinButton*)history_y);
-  prefs.data_size=gtk_spin_button_get_value_as_int((GtkSpinButton*)data_size);
-  prefs.hyperlinks_only = gtk_toggle_button_get_active((GtkToggleButton*)hyperlinks_check);
-  prefs.confirm_clear = gtk_toggle_button_get_active((GtkToggleButton*)confirm_check);
-  prefs.single_line = gtk_toggle_button_get_active((GtkToggleButton*)linemode_check);
-  prefs.reverse_history = gtk_toggle_button_get_active((GtkToggleButton*)reverse_check);
-  prefs.item_length = gtk_spin_button_get_value_as_int((GtkSpinButton*)charlength_spin);
-  prefs.ellipsize = gtk_combo_box_get_active((GtkComboBox*)ellipsize_combo) + 1;
-  prefs.history_key = g_strdup(gtk_entry_get_text((GtkEntry*)history_key_entry));
-	prefs.phistory_key = g_strdup(gtk_entry_get_text((GtkEntry*)phistory_key_entry));
-  prefs.actions_key = g_strdup(gtk_entry_get_text((GtkEntry*)actions_key_entry));
-  prefs.menu_key = g_strdup(gtk_entry_get_text((GtkEntry*)menu_key_entry));
-  prefs.case_search = gtk_toggle_button_get_active((GtkToggleButton*)case_search);
-  prefs.type_search = gtk_toggle_button_get_active((GtkToggleButton*)type_search);
-	prefs.ignore_whiteonly = gtk_toggle_button_get_active((GtkToggleButton*)ignore_whiteonly);
-	prefs.trim_wspace_begend = gtk_toggle_button_get_active((GtkToggleButton*)trim_wspace_begend);
-	prefs.trim_newline = gtk_toggle_button_get_active((GtkToggleButton*)trim_newline); 
+	unbind_itemkey("phistory_key",phistory_hotkey);
+	
+	unbind_itemkey("history_key", history_hotkey);
+  unbind_itemkey("actions_key", actions_hotkey);
+  unbind_itemkey("menu_key", menu_hotkey);
+	
+  for (i=0;NULL != myprefs[i].name; ++i){
+		switch(myprefs[i].type&PREF_TYPE_MASK){
+			case PREF_TYPE_TOGGLE:
+				myprefs[i].val=gtk_toggle_button_get_active((GtkToggleButton*)myprefs[i].w);
+				break;
+			case PREF_TYPE_SPIN:
+				myprefs[i].val=gtk_spin_button_get_value_as_int((GtkSpinButton*)myprefs[i].w);
+				break;
+			case PREF_TYPE_COMBO:
+				myprefs[i].val=gtk_combo_box_get_active((GtkComboBox*)myprefs[i].w) + 1;
+				break;
+			case PREF_TYPE_ENTRY:
+				myprefs[i].cval=g_strdup(gtk_entry_get_text((GtkEntry*)myprefs[i].w ));
+				break;
+			default: if(dbg)g_printf("apply_pref:don't know how to handle type %d\n",myprefs[i].type);
+				break;
+		}
+	}
   
   /* Bind keys and apply the new history limit */
-	keybinder_bind(prefs.phistory_key, phistory_hotkey, NULL);
-  keybinder_bind(prefs.history_key, history_hotkey, NULL);
-  keybinder_bind(prefs.actions_key, actions_hotkey, NULL);
-  keybinder_bind(prefs.menu_key, menu_hotkey, NULL);
+	bind_itemkey("phistory_key", phistory_hotkey);
+  bind_itemkey("history_key", history_hotkey);
+  bind_itemkey("actions_key", actions_hotkey);
+  bind_itemkey("menu_key", menu_hotkey);
   truncate_history();
 }
+
 
 /* Save preferences to ~/.config/parcellite/parcelliterc */
 static void save_preferences()
 {
+	int i;
   /* Create key */
   GKeyFile* rc_key = g_key_file_new();
-  if(0 == prefs.type_search)
-    prefs.case_search=0;
+  if(0 == get_pref_int32("type_search"))
+    set_pref_int32("case_search",0);
   /* Add values */
-  g_key_file_set_boolean(rc_key, "rc", "use_copy", prefs.use_copy);
-  g_key_file_set_boolean(rc_key, "rc", "use_primary", prefs.use_primary);
-  g_key_file_set_boolean(rc_key, "rc", "synchronize", prefs.synchronize);
-  g_key_file_set_boolean(rc_key, "rc", "save_history", prefs.save_history);
-  g_key_file_set_integer(rc_key, "rc", "history_limit", prefs.history_limit);
-  g_key_file_set_boolean(rc_key, "rc", "hyperlinks_only", prefs.hyperlinks_only);
-  g_key_file_set_boolean(rc_key, "rc", "confirm_clear", prefs.confirm_clear);
-  g_key_file_set_boolean(rc_key, "rc", "single_line", prefs.single_line);
-  g_key_file_set_boolean(rc_key, "rc", "reverse_history", prefs.reverse_history);
-  g_key_file_set_integer(rc_key, "rc", "item_length", prefs.item_length);
-  g_key_file_set_integer(rc_key, "rc", "ellipsize", prefs.ellipsize);
-  g_key_file_set_string(rc_key, "rc", "phistory_key", prefs.phistory_key);
-	g_key_file_set_string(rc_key, "rc", "history_key", prefs.history_key);
-  g_key_file_set_string(rc_key, "rc", "actions_key", prefs.actions_key);
-  g_key_file_set_string(rc_key, "rc", "menu_key", prefs.menu_key);
-  g_key_file_set_boolean(rc_key, "rc", "history_pos", prefs.history_pos);
-  g_key_file_set_integer(rc_key, "rc", "history_x", prefs.history_x);
-  g_key_file_set_integer(rc_key, "rc", "history_y", prefs.history_y);
-  g_key_file_set_boolean(rc_key, "rc", "case_search", prefs.case_search);
-  g_key_file_set_boolean(rc_key, "rc", "type_search", prefs.type_search);
-  g_key_file_set_integer(rc_key, "rc", "data_size", prefs.data_size);
-  g_key_file_set_boolean(rc_key, "rc", "ignore_whiteonly", prefs.ignore_whiteonly);
-  g_key_file_set_boolean(rc_key, "rc", "trim_wspace_begend", prefs.trim_wspace_begend);
-	g_key_file_set_boolean(rc_key, "rc", "trim_newline", prefs.trim_newline);
+	for (i=0;NULL != myprefs[i].name; ++i){
+		switch(myprefs[i].type&PREF_TYPE_MASK){
+			case PREF_TYPE_TOGGLE:
+				g_key_file_set_boolean(rc_key, "rc", myprefs[i].name, myprefs[i].val);
+				break;
+			case PREF_TYPE_COMBO:
+			case PREF_TYPE_SPIN:
+				g_key_file_set_integer(rc_key, "rc", myprefs[i].name, myprefs[i].val);
+				break;
+			case PREF_TYPE_ENTRY:
+				g_key_file_set_string(rc_key, "rc", myprefs[i].name, myprefs[i].cval);
+				break;
+			default: if(dbg)g_printf("save_pref:don't know how to handle type %d\n",myprefs[i].type);
+				break;
+		}
+	}
   /* Check config and data directories */
   check_dirs();
   /* Save key to file */
@@ -149,68 +371,76 @@ static void save_preferences()
   g_free(rc_file);
 }
 
-/* Read ~/.config/parcellite/parcelliterc */
+
+/***************************************************************************/
+/** .
+\n\b Arguments:
+\n\b Returns:
+****************************************************************************/
 void read_preferences()
 {
 	gchar* rc_file = g_build_filename(g_get_user_config_dir(), PREFERENCES_FILE, NULL);
-  gint x,y;
+  gint32 x,y,z;
+	struct pref_item *p;
+	init_pref();
   /* Create key */
   GKeyFile* rc_key = g_key_file_new();
   if (g_key_file_load_from_file(rc_key, rc_file, G_KEY_FILE_NONE, NULL)) {
-    /* Load values */
-    prefs.use_copy = g_key_file_get_boolean(rc_key, "rc", "use_copy", NULL);
-    prefs.use_primary = g_key_file_get_boolean(rc_key, "rc", "use_primary", NULL);
-    prefs.synchronize = g_key_file_get_boolean(rc_key, "rc", "synchronize", NULL);
-    prefs.save_history = g_key_file_get_boolean(rc_key, "rc", "save_history", NULL);
-    prefs.history_limit = g_key_file_get_integer(rc_key, "rc", "history_limit", NULL);
-    prefs.hyperlinks_only = g_key_file_get_boolean(rc_key, "rc", "hyperlinks_only", NULL);
-    prefs.confirm_clear = g_key_file_get_boolean(rc_key, "rc", "confirm_clear", NULL);
-    prefs.single_line = g_key_file_get_boolean(rc_key, "rc", "single_line", NULL);
-    prefs.reverse_history = g_key_file_get_boolean(rc_key, "rc", "reverse_history", NULL);
-    prefs.item_length = g_key_file_get_integer(rc_key, "rc", "item_length", NULL);
-    prefs.ellipsize = g_key_file_get_integer(rc_key, "rc", "ellipsize", NULL);
-		prefs.phistory_key = g_key_file_get_string(rc_key, "rc", "phistory_key", NULL);
-    prefs.history_key = g_key_file_get_string(rc_key, "rc", "history_key", NULL);
-    prefs.actions_key = g_key_file_get_string(rc_key, "rc", "actions_key", NULL);
-    prefs.menu_key = g_key_file_get_string(rc_key, "rc", "menu_key", NULL);
-    prefs.history_pos = g_key_file_get_boolean(rc_key, "rc", "history_pos", NULL);
-    prefs.history_x = g_key_file_get_integer(rc_key, "rc", "history_x", NULL);
-    prefs.history_y = g_key_file_get_integer(rc_key, "rc", "history_y", NULL);
-    prefs.case_search = g_key_file_get_boolean(rc_key, "rc", "case_search", NULL);    
-    prefs.type_search = g_key_file_get_boolean(rc_key, "rc", "type_search", NULL);    
-    prefs.data_size = g_key_file_get_integer(rc_key, "rc", "data_size", NULL);
-		prefs.ignore_whiteonly = g_key_file_get_boolean(rc_key, "rc", "ignore_whiteonly", NULL);    
-		prefs.trim_wspace_begend = g_key_file_get_boolean(rc_key, "rc", "trim_wspace_begend", NULL);    
-		prefs.trim_newline = g_key_file_get_boolean(rc_key, "rc", "trim_newline", NULL);    
-    if(0 == prefs.type_search)
-      prefs.case_search=0;
+		int i;
+		/* Load values */
+		for (i=0;NULL != myprefs[i].name; ++i){
+			switch(myprefs[i].type&PREF_TYPE_MASK){
+				case PREF_TYPE_TOGGLE:
+					myprefs[i].val=g_key_file_get_boolean(rc_key, "rc", myprefs[i].name,NULL);
+					break;
+				case PREF_TYPE_COMBO:
+				case PREF_TYPE_SPIN:
+					myprefs[i].val=g_key_file_get_integer(rc_key, "rc", myprefs[i].name,NULL);
+					break;
+				case PREF_TYPE_ENTRY:
+					myprefs[i].cval=g_key_file_get_string(rc_key, "rc", myprefs[i].name, NULL);
+					break;
+				default: if(dbg)g_printf("read_pref:don't know how to handle type %d\n",myprefs[i].type);
+					continue;
+					break;
+			}
+			if(dbg)g_printf("rp:Set '%s' to %d (%s)\n",myprefs[i].name, myprefs[i].val, myprefs[i].cval);
+		}
+    p=get_pref("type_search");
+    if(0 == p->val){
+			p=get_pref("case_search");
+			p->val=0;
+		}
+      
     /* Check for errors and set default values if any */
     postition_history(NULL,&x,&y,NULL, (gpointer)1);
-    if(prefs.history_x>x) prefs.history_x=x;
-      if(prefs.history_y>y) prefs.history_y=y;
-  
-    if ((!prefs.history_limit) || (prefs.history_limit > MAX_HISTORY) || (prefs.history_limit < 0))
-      prefs.history_limit = DEF_HISTORY_LIMIT;
-    if ((!prefs.item_length) || (prefs.item_length > 75) || (prefs.item_length < 0))
-      prefs.item_length = DEF_ITEM_LENGTH;
-    if ((!prefs.ellipsize) || (prefs.ellipsize > 3) || (prefs.ellipsize < 0))
-      prefs.ellipsize = DEF_ELLIPSIZE;
-		if (!prefs.phistory_key)
-      prefs.phistory_key = g_strdup(DEF_PHISTORY_KEY);
-    if (!prefs.history_key)
-      prefs.history_key = g_strdup(DEF_HISTORY_KEY);
-    if (!prefs.actions_key)
-      prefs.actions_key = g_strdup(DEF_ACTIONS_KEY);
-    if (!prefs.menu_key)
-      prefs.menu_key = g_strdup(DEF_MENU_KEY);
+    if(get_pref_int32("history_x")>x) set_pref_int32("history_x",x);
+    if(get_pref_int32("history_y")>y) set_pref_int32("history_y",y);
+  	x=get_pref_int32("history_limit");
+    if ((!x) || (x > MAX_HISTORY) || (x < 0))
+      set_pref_int32("history_limit",DEF_HISTORY_LIMIT);
+		x=get_pref_int32("item_length");
+    if ((!x) || (x > 75) || (x < 0))
+      set_pref_int32("item_length",DEF_ITEM_LENGTH);
+		x=get_pref_int32("ellipsize");
+    if ((!x) || (x > 3) || (x < 0))
+      set_pref_int32("ellipsize",DEF_ELLIPSIZE);
+		if (NULL == get_pref_string("phistory_key"))
+      set_pref_string("phistory_key",DEF_PHISTORY_KEY);
+    if (NULL == get_pref_string("history_key"))
+      set_pref_string("history_key", DEF_HISTORY_KEY);
+    if (NULL == get_pref_string("actions_key"))
+      set_pref_string("actions_key",DEF_ACTIONS_KEY);
+    if (NULL == get_pref_string("menu_key"))
+      set_pref_string("menu_key",DEF_MENU_KEY);
   }
   else
   {
     /* Init default keys on error */
-    prefs.phistory_key = g_strdup(DEF_PHISTORY_KEY);
-    prefs.history_key = g_strdup(DEF_HISTORY_KEY);
-    prefs.actions_key = g_strdup(DEF_ACTIONS_KEY);
-    prefs.menu_key = g_strdup(DEF_MENU_KEY);
+    set_pref_string("phistory_key",DEF_PHISTORY_KEY);
+    set_pref_string("history_key",DEF_HISTORY_KEY);
+    set_pref_string("actions_key",DEF_ACTIONS_KEY);
+    set_pref_string("menu_key",DEF_MENU_KEY);
   }
   g_key_file_free(rc_key);
   g_free(rc_file);
@@ -311,31 +541,35 @@ static void save_actions()
 /* Called when clipboard checks are pressed */
 static void check_toggled(GtkToggleButton *togglebutton, gpointer user_data)
 {
-  if (gtk_toggle_button_get_active((GtkToggleButton*)copy_check) &&
-      gtk_toggle_button_get_active((GtkToggleButton*)primary_check))
+  if (gtk_toggle_button_get_active((GtkToggleButton*)get_pref_widget("use_copy")) &&
+      gtk_toggle_button_get_active((GtkToggleButton*)get_pref_widget("use_primary")))
   {
     /* Only allow synchronize option if both primary and clipboard are enabled */
-    gtk_widget_set_sensitive((GtkWidget*)synchronize_check, TRUE);
+    gtk_widget_set_sensitive((GtkWidget*)get_pref_widget("synchronize"), TRUE);
   }
   else
   {
     /* Disable synchronize option */
-    gtk_toggle_button_set_active((GtkToggleButton*)synchronize_check, FALSE);
-    gtk_widget_set_sensitive((GtkWidget*)synchronize_check, FALSE);
+    gtk_toggle_button_set_active((GtkToggleButton*)get_pref_widget("synchronize"), FALSE);
+    gtk_widget_set_sensitive((GtkWidget*)get_pref_widget("synchronize"), FALSE);
 
   }
 }
 
 static void search_toggled(GtkToggleButton *b, gpointer user)
 {
-  if(user == case_search){
-    if(TRUE == gtk_toggle_button_get_active((GtkToggleButton*)case_search) && 
-      FALSE == gtk_toggle_button_get_active((GtkToggleButton*)type_search) )
-      gtk_toggle_button_set_active((GtkToggleButton*)type_search, TRUE);
-  }else if( user == type_search){
-    if(FALSE == gtk_toggle_button_get_active((GtkToggleButton*)type_search) &&
-      TRUE == gtk_toggle_button_get_active((GtkToggleButton*)case_search) )
-      gtk_toggle_button_set_active((GtkToggleButton*)case_search, FALSE);    
+	struct pref_item *u,*p;
+	u=get_pref_by_widget((GtkWidget *)user);
+	p=get_pref("case_search");
+	
+  if(u == p){
+    if(TRUE == gtk_toggle_button_get_active((GtkToggleButton*)p->w) && 
+      FALSE == gtk_toggle_button_get_active((GtkToggleButton*)get_pref_widget("type_search")) )
+      gtk_toggle_button_set_active((GtkToggleButton*)get_pref_widget("type_search"), TRUE);
+  }else if( u == get_pref("type_search")){
+    if(FALSE == gtk_toggle_button_get_active((GtkToggleButton*)get_pref_widget("type_search")) &&
+      TRUE == gtk_toggle_button_get_active((GtkToggleButton*)p->w) )
+      gtk_toggle_button_set_active((GtkToggleButton*)p->w, FALSE);    
   }
 
 }
@@ -423,8 +657,7 @@ static void delete_key_pressed(GtkWidget *widget, GdkEventKey *event, gpointer u
 }
 
 /* Called when a cell is edited */
-static void edit_action(GtkCellRendererText *renderer, gchar *path,
-            gchar *new_text,               gpointer cell)
+static void edit_action(GtkCellRendererText *renderer, gchar *path, gchar *new_text,  gpointer cell)
 {
   GtkTreeIter sel_iter;
   /* Check if selected */
@@ -435,18 +668,145 @@ static void edit_action(GtkCellRendererText *renderer, gchar *path,
   }
 }
 
+/***************************************************************************/
+/** .
+\n\b Arguments:
+\n\b Returns:
+****************************************************************************/
+int update_pref_widgets( void)
+{
+	int i,rtn=0;
+	for (i=0;NULL !=myprefs[i].name; ++i){
+		switch (myprefs[i].type&PREF_TYPE_MASK){
+			case PREF_TYPE_TOGGLE:
+				gtk_toggle_button_set_active((GtkToggleButton*)myprefs[i].w, myprefs[i].val);
+				break;
+			case PREF_TYPE_SPIN:
+				gtk_spin_button_set_value((GtkSpinButton*)myprefs[i].w, (gdouble)myprefs[i].val);
+				break;
+			case PREF_TYPE_COMBO:
+				gtk_combo_box_set_active((GtkComboBox*)myprefs[i].w, myprefs[i].val - 1);
+				break;
+			case PREF_TYPE_ENTRY:
+				gtk_entry_set_text((GtkEntry*)myprefs[i].w, myprefs[i].cval);
+				break;
+			default: 
+				if(dbg)g_printf("apply_pref:don't know how to handle type %d\n",myprefs[i].type);
+				rtn=-1;
+				continue;
+				break;
+		}
+		if(dbg)g_printf("up:Set '%s' to %d (%s)\n",myprefs[i].name, myprefs[i].val, myprefs[i].cval);
+	}	
+	
+	return rtn;
+}
+/***************************************************************************/
+/** .
+\n\b Arguments:
+section is the section to add, parent is the box to put it in.
+\n\b Returns: -1 on error;
+****************************************************************************/
+int add_section(int sec, GtkWidget *parent)
+{
+	int i,no,rtn=0;
+	gint x,y;
+	GtkWidget *hbox, *label;
+	for (no=0,i=get_first_pref(sec);sec==myprefs[i].sec; ++i){
+		GtkWidget* packit;
+		switch (myprefs[i].type&PREF_TYPE_MASK){
+			case PREF_TYPE_TOGGLE:
+				myprefs[i].w=gtk_check_button_new_with_mnemonic(_(myprefs[i].desc));
+				packit=myprefs[i].w;
+				break;
+			case PREF_TYPE_SPIN:
+				hbox = gtk_hbox_new(FALSE, 4);  
+  			label = gtk_label_new(_(myprefs[i].desc));
+				gtk_box_pack_start((GtkBox*)hbox, label, FALSE, FALSE, 0);
+  			myprefs[i].w=gtk_spin_button_new((GtkAdjustment*)gtk_adjustment_new ( \
+				myprefs[i].val,myprefs[i].adj->lower,myprefs[i].adj->upper,myprefs[i].adj->step,myprefs[i].adj->page,0 ),10,0); 
+  			gtk_box_pack_start((GtkBox*)hbox, myprefs[i].w, FALSE, FALSE, 0);
+  			gtk_spin_button_set_update_policy((GtkSpinButton*)myprefs[i].w, GTK_UPDATE_IF_VALID);
+  			if(NULL != myprefs[i].tip) gtk_widget_set_tooltip_text(label, _(myprefs[i].tip));
+  			packit=hbox;
+				break;
+			
+			case PREF_TYPE_ENTRY:
+				hbox = gtk_hbox_new(TRUE, 4);
+			  label = gtk_label_new(_(myprefs[i].desc));
+			  gtk_misc_set_alignment((GtkMisc*)label, 0.0, 0.50);
+			  gtk_box_pack_start((GtkBox*)hbox, label, TRUE, TRUE, 0);
+			  myprefs[i].w = gtk_entry_new();
+			  gtk_entry_set_width_chars((GtkEntry*)myprefs[i].w, 10);
+				gtk_box_pack_end((GtkBox*)hbox,myprefs[i].w, TRUE, TRUE, 0);
+			  packit=hbox;
+				break;
+			case PREF_TYPE_COMBO:
+			default: 
+				if(dbg)g_printf("add_sec:don't know how to handle type %d\n",myprefs[i].type);
+				rtn=-1;
+				continue;
+				break;
+		}
+		  
+		/**special handling for history dual spinbox  */
+		if(PREF_SEC_HIST==sec && !g_strcmp0(myprefs[i].name,"save_history") ){
+			if(dbg)g_printf("packing %s\n",myprefs[i].name);
+			/**pack save_history  */
+			gtk_box_pack_start((GtkBox*)parent, packit, FALSE, FALSE, 0);
+			++i;
+	  /**set the history position  */
+		  hbox = gtk_hbox_new(FALSE, 4);
+		  
+			myprefs[i].w= gtk_check_button_new_with_mnemonic(_(myprefs[i].desc));
+			
+		  if(NULL != myprefs[i].tip) gtk_widget_set_tooltip_text(myprefs[i].w, _(myprefs[i].tip));
+		  if(dbg)g_printf("packing %s to hbox\n",myprefs[i].name);
+		  gtk_box_pack_start((GtkBox*)hbox, myprefs[i].w, FALSE, FALSE, 0);
+		  postition_history(NULL,&x,&y,NULL, (gpointer)1);
+			++i;
+		  label = gtk_label_new(NULL);
+		  gtk_label_set_markup((GtkLabel*)label, _(myprefs[i].desc));
+		  gtk_box_pack_start((GtkBox*)hbox, label, FALSE, FALSE, 0);
+		  if(dbg)g_printf("packing label to hbox\n",myprefs[i].name);
+			myprefs[i].w=gtk_spin_button_new((GtkAdjustment*)gtk_adjustment_new ( \
+			myprefs[i].val,myprefs[i].adj->lower,x,myprefs[i].adj->step,myprefs[i].adj->page,0 ),10,0); 
+			if(dbg)g_printf("packing %s to hbox\n",myprefs[i].name);
+		  gtk_box_pack_start((GtkBox*)hbox, myprefs[i].w, FALSE, FALSE, 0);
+			gtk_spin_button_set_update_policy((GtkSpinButton*)myprefs[i].w, GTK_UPDATE_IF_VALID);
+			++i;
+		  label = gtk_label_new(NULL);
+		  gtk_label_set_markup((GtkLabel*)label, _(myprefs[i].desc));
+		  gtk_box_pack_start((GtkBox*)hbox, label, FALSE, FALSE, 0);
+			myprefs[i].w=gtk_spin_button_new((GtkAdjustment*)gtk_adjustment_new ( \
+			myprefs[i].val,myprefs[i].adj->lower,y,myprefs[i].adj->step,myprefs[i].adj->page,0 ),10,0); 
+			if(dbg)g_printf("packing %s to hbox\n",myprefs[i].name);
+		  gtk_box_pack_start((GtkBox*)hbox, myprefs[i].w, FALSE, FALSE, 0);
+		  gtk_spin_button_set_update_policy((GtkSpinButton*)myprefs[i].w, GTK_UPDATE_IF_VALID);
+			packit=hbox;
+		}
+		if(PREF_TYPE_SPIN != myprefs[i].type && NULL != myprefs[i].tip)
+		  gtk_widget_set_tooltip_text(myprefs[i].w, _(myprefs[i].tip));
+		if(NULL != myprefs[i].sig)
+			g_signal_connect((GObject*)myprefs[i].w, myprefs[i].sig, (GCallback)myprefs[i].sfunc, myprefs[i].w);
+		if(dbg)g_printf("Packing %s\n",myprefs[i].name);
+		gtk_box_pack_start((GtkBox*)parent, packit, FALSE, FALSE, 0);
+	}
+	if(dbg)g_printf("Ending on %d '%s'\n",i,myprefs[i].name);
+	return rtn;
+	
+}
 
 /* Shows the preferences dialog on the given tab */
 void show_preferences(gint tab)
 {
   /* Declare some variables */
-  GtkWidget *frame,     *label,
-            *alignment, *hbox,
-            *vbox;
-  
+  GtkWidget *frame,*label,*alignment,*hbox, *vbox;
+	struct pref_item *p;
   GtkObject *adjustment;
   gint x,y;
   GtkTreeViewColumn *tree_column;
+	init_pref();
   
   /* Create the dialog */
   GtkWidget* dialog = gtk_dialog_new_with_buttons(_("Preferences"),     NULL,
@@ -465,7 +825,7 @@ void show_preferences(gint tab)
   gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), notebook, TRUE, TRUE, 2);
 #endif
   
-  /* Build the behavior page */  
+/* Build the behavior page */  
   GtkWidget* page_behavior = gtk_alignment_new(0.50, 0.50, 1.0, 1.0);
   gtk_alignment_set_padding((GtkAlignment*)page_behavior, 12, 6, 12, 6);
   gtk_notebook_append_page((GtkNotebook*)notebook, page_behavior, gtk_label_new(_("Behavior")));
@@ -483,17 +843,11 @@ void show_preferences(gint tab)
   gtk_container_add((GtkContainer*)frame, alignment);
   vbox = gtk_vbox_new(FALSE, 2);
   gtk_container_add((GtkContainer*)alignment, vbox);
-  copy_check = gtk_check_button_new_with_mnemonic(_("Use _Copy (Ctrl-C)"));
-  g_signal_connect((GObject*)copy_check, "toggled", (GCallback)check_toggled, NULL);
-  gtk_box_pack_start((GtkBox*)vbox, copy_check, FALSE, FALSE, 0);
-  primary_check = gtk_check_button_new_with_mnemonic(_("Use _Primary (Selection)"));
-  g_signal_connect((GObject*)primary_check, "toggled", (GCallback)check_toggled, NULL);
-  gtk_box_pack_start((GtkBox*)vbox, primary_check, FALSE, FALSE, 0);
-  synchronize_check = gtk_check_button_new_with_mnemonic(_("S_ynchronize clipboards"));
-  gtk_box_pack_start((GtkBox*)vbox, synchronize_check, FALSE, FALSE, 0);
-  gtk_box_pack_start((GtkBox*)vbox_behavior, frame, FALSE, FALSE, 0);
-  
-  /* Build the history frame */
+	
+	/**build the copy section  */
+	add_section(PREF_SEC_CLIP,vbox);
+	gtk_box_pack_start((GtkBox*)vbox_behavior,frame,FALSE,FALSE,0);
+	/* Build the history frame */
   frame = gtk_frame_new(NULL);
   gtk_frame_set_shadow_type((GtkFrame*)frame, GTK_SHADOW_NONE);
   label = gtk_label_new(NULL);
@@ -504,48 +858,8 @@ void show_preferences(gint tab)
   gtk_container_add((GtkContainer*)frame, alignment);
   vbox = gtk_vbox_new(FALSE, 2);
   gtk_container_add((GtkContainer*)alignment, vbox);
-  save_check = gtk_check_button_new_with_mnemonic(_("_Save history"));
-  gtk_widget_set_tooltip_text(save_check, _("Save and restore history between sessions"));
-  gtk_box_pack_start((GtkBox*)vbox, save_check, FALSE, FALSE, 0);
-  /**set the history position  */
-  hbox = gtk_hbox_new(FALSE, 4);
-  gtk_box_pack_start((GtkBox*)vbox, hbox, FALSE, FALSE, 0);
-  history_pos = gtk_check_button_new_with_mnemonic(_("_Position history"));
-  gtk_widget_set_tooltip_text(history_pos, _("Set the location where history appears. If unchecked, appears where the mouse is."));
-  gtk_box_pack_start((GtkBox*)hbox, history_pos, FALSE, FALSE, 0);
-  postition_history(NULL,&x,&y,NULL, (gpointer)1);
-  label = gtk_label_new(NULL);
-  gtk_label_set_markup((GtkLabel*)label, _("<b>X</b>"));
-  gtk_box_pack_start((GtkBox*)hbox, label, FALSE, FALSE, 0);
-  history_x=gtk_spin_button_new((GtkAdjustment*)gtk_adjustment_new (prefs.history_x,1,x,10,100,0 ),10,0); 
-  gtk_box_pack_start((GtkBox*)hbox, history_x, FALSE, FALSE, 0);
-  label = gtk_label_new(NULL);
-  gtk_label_set_markup((GtkLabel*)label, _("<b>Y</b>"));
-  gtk_box_pack_start((GtkBox*)hbox, label, FALSE, FALSE, 0);
-  history_y=gtk_spin_button_new((GtkAdjustment*)gtk_adjustment_new (prefs.history_y,1,y,10,100,0 ),10,0); 
-  gtk_box_pack_start((GtkBox*)hbox, history_y, FALSE, FALSE, 0);
-  gtk_spin_button_set_update_policy((GtkSpinButton*)history_x, GTK_UPDATE_IF_VALID);
-  gtk_spin_button_set_update_policy((GtkSpinButton*)history_y, GTK_UPDATE_IF_VALID);
-  /* Set items in history  */
-  hbox = gtk_hbox_new(FALSE, 4);
-  gtk_box_pack_start((GtkBox*)vbox, hbox, FALSE, FALSE, 0);
-  label = gtk_label_new(_("Items in history:"));
-  gtk_misc_set_alignment((GtkMisc*)label, 0.0, 0.50);
-  gtk_box_pack_start((GtkBox*)hbox, label, FALSE, FALSE, 0);
-  adjustment = gtk_adjustment_new(25, 5, MAX_HISTORY, 1, 10, 0);
-  history_spin = gtk_spin_button_new((GtkAdjustment*)adjustment, 0.0, 0);
-  gtk_spin_button_set_update_policy((GtkSpinButton*)history_spin, GTK_UPDATE_IF_VALID);
-  gtk_box_pack_start((GtkBox*)hbox, history_spin, FALSE, FALSE, 0);
-  gtk_box_pack_start((GtkBox*)vbox_behavior, frame, FALSE, FALSE, 0);
-/**set data_size  */
-  hbox = gtk_hbox_new(FALSE, 4);  
-  gtk_box_pack_start((GtkBox*)vbox, hbox, FALSE, FALSE, 0);
-  label = gtk_label_new(_("Max Data Size (MB)"));
-  gtk_box_pack_start((GtkBox*)hbox, label, FALSE, FALSE, 0);
-  data_size=gtk_spin_button_new((GtkAdjustment*)gtk_adjustment_new (prefs.data_size,0,1000,1,10,0 ),10,0); 
-  gtk_box_pack_start((GtkBox*)hbox, data_size, FALSE, FALSE, 0);
-  gtk_spin_button_set_update_policy((GtkSpinButton*)data_size, GTK_UPDATE_IF_VALID);
-  gtk_widget_set_tooltip_text(label, _("Set Maximum amount of data to copy for each entry in MBytes. 0 is no limit."));
+	add_section(PREF_SEC_HIST,vbox);
+  gtk_box_pack_start((GtkBox*)vbox_behavior,frame,FALSE,FALSE,0);
   /* Build the miscellaneous frame */
   frame = gtk_frame_new(NULL);
   gtk_frame_set_shadow_type((GtkFrame*)frame, GTK_SHADOW_NONE);
@@ -557,33 +871,8 @@ void show_preferences(gint tab)
   gtk_container_add((GtkContainer*)frame, alignment);
   vbox = gtk_vbox_new(FALSE, 2);
   gtk_container_add((GtkContainer*)alignment, vbox);
-/**type checkbox  */  
-  type_search = gtk_check_button_new_with_mnemonic(_("Search As You _Type"));
-  gtk_widget_set_tooltip_text(type_search, _("If checked, does a search-as-you-type. Turns red if not found. Goes to top (Alt-E) line when no chars are entered for search"));
-  g_signal_connect((GObject*)type_search, "toggled", (GCallback)search_toggled, type_search);
-  gtk_box_pack_start((GtkBox*)vbox, type_search, FALSE, FALSE, 0);
-/**case checkbox  */    
-  case_search = gtk_check_button_new_with_mnemonic(_("_Case Sensitive Search"));
-  gtk_widget_set_tooltip_text(case_search, _("If checked, does case sensitive search"));
-  g_signal_connect((GObject*)case_search, "toggled", (GCallback)search_toggled, case_search);
-  gtk_box_pack_start((GtkBox*)vbox, case_search, FALSE, FALSE, 0);  
-/** ignore_whiteonly checkbox */ 
-	ignore_whiteonly = gtk_check_button_new_with_mnemonic(_("_Ignore Whitespace Only"));
-  gtk_widget_set_tooltip_text(ignore_whiteonly, _("If checked, will ignore any clipboard additions that contain only whitespace."));
-  gtk_box_pack_start((GtkBox*)vbox, ignore_whiteonly, FALSE, FALSE, 0);
-/** trim_wspace_begend checkbox */ 
-	trim_wspace_begend = gtk_check_button_new_with_mnemonic(_("_Trim Whitespace"));
-  gtk_widget_set_tooltip_text(trim_wspace_begend, _("If checked, will trim whitespace from beginning and end of entry."));
-  gtk_box_pack_start((GtkBox*)vbox, trim_wspace_begend, FALSE, FALSE, 0);
-/** trim_newline checkbox */ 
-	trim_newline = gtk_check_button_new_with_mnemonic(_("_Trim Newlines"));
-  gtk_widget_set_tooltip_text(trim_newline, _("If checked, will replace newlines with spaces."));
-  gtk_box_pack_start((GtkBox*)vbox, trim_newline, FALSE, FALSE, 0);
-	
-  hyperlinks_check = gtk_check_button_new_with_mnemonic(_("Capture _hyperlinks only"));
-  gtk_box_pack_start((GtkBox*)vbox, hyperlinks_check, FALSE, FALSE, 0);
-  confirm_check = gtk_check_button_new_with_mnemonic(_("C_onfirm before clearing history"));
-  gtk_box_pack_start((GtkBox*)vbox, confirm_check, FALSE, FALSE, 0);
+/**miscelleaneous  */
+	add_section(PREF_SEC_MISC,vbox);
   gtk_box_pack_start((GtkBox*)vbox_behavior, frame, FALSE, FALSE, 0);
   
   /* Build the display page */
@@ -604,19 +893,9 @@ void show_preferences(gint tab)
   gtk_container_add((GtkContainer*)frame, alignment);
   vbox = gtk_vbox_new(FALSE, 2);
   gtk_container_add((GtkContainer*)alignment, vbox);
-  linemode_check = gtk_check_button_new_with_mnemonic(_("Show in a _single line"));
-  gtk_box_pack_start((GtkBox*)vbox, linemode_check, FALSE, FALSE, 0);
-  reverse_check = gtk_check_button_new_with_mnemonic(_("Show in _reverse order"));
-  gtk_box_pack_start((GtkBox*)vbox, reverse_check, FALSE, FALSE, 0);
-  hbox = gtk_hbox_new(FALSE, 4);
-  gtk_box_pack_start((GtkBox*)vbox, hbox, FALSE, FALSE, 0);
-  label = gtk_label_new(_("Character length of items:"));
-  gtk_misc_set_alignment((GtkMisc*)label, 0.0, 0.50);
-  gtk_box_pack_start((GtkBox*)hbox, label, FALSE, FALSE, 0);
-  adjustment = gtk_adjustment_new(50, 5, 100, 1, 5, 0);
-  charlength_spin = gtk_spin_button_new((GtkAdjustment*)adjustment, 0.0, 0);
-  gtk_spin_button_set_update_policy((GtkSpinButton*)charlength_spin, GTK_UPDATE_IF_VALID);
-  gtk_box_pack_start((GtkBox*)hbox, charlength_spin, FALSE, FALSE, 0);
+	
+	add_section(PREF_SEC_DISP,vbox);
+	
   gtk_box_pack_start((GtkBox*)vbox_display, frame, FALSE, FALSE, 0);
   
   /* Build the omitting frame */
@@ -630,16 +909,19 @@ void show_preferences(gint tab)
   gtk_container_add((GtkContainer*)frame, alignment);
   vbox = gtk_vbox_new(FALSE, 2);
   gtk_container_add((GtkContainer*)alignment, vbox);
+	
+	
   hbox = gtk_hbox_new(FALSE, 4);
   gtk_box_pack_start((GtkBox*)vbox, hbox, FALSE, FALSE, 0);
-  label = gtk_label_new(_("Omit items in the:"));
+	p=get_pref("ellipsize");
+  label = gtk_label_new(_(p->desc));
   gtk_misc_set_alignment((GtkMisc*)label, 0.0, 0.50);
   gtk_box_pack_start((GtkBox*)hbox, label, FALSE, FALSE, 0);
-  ellipsize_combo = gtk_combo_box_new_text();
-  gtk_combo_box_append_text((GtkComboBox*)ellipsize_combo, _("Beginning"));
-  gtk_combo_box_append_text((GtkComboBox*)ellipsize_combo, _("Middle"));
-  gtk_combo_box_append_text((GtkComboBox*)ellipsize_combo, _("End"));
-  gtk_box_pack_start((GtkBox*)hbox, ellipsize_combo, FALSE, FALSE, 0);
+  p->w = gtk_combo_box_new_text();
+  gtk_combo_box_append_text((GtkComboBox*)p->w, _("Beginning"));
+  gtk_combo_box_append_text((GtkComboBox*)p->w, _("Middle"));
+  gtk_combo_box_append_text((GtkComboBox*)p->w, _("End"));
+  gtk_box_pack_start((GtkBox*)hbox, p->w, FALSE, FALSE, 0);
   gtk_box_pack_start((GtkBox*)vbox_display, frame, FALSE, FALSE, 0);
   
   /* Build the actions page */
@@ -728,69 +1010,11 @@ void show_preferences(gint tab)
   gtk_container_add((GtkContainer*)frame, alignment);
   vbox = gtk_vbox_new(FALSE, 2);
   gtk_container_add((GtkContainer*)alignment, vbox);
-	/**Add history key  */
-  hbox = gtk_hbox_new(TRUE, 4);
-  gtk_box_pack_start((GtkBox*)vbox, hbox, FALSE, FALSE, 0);
-  label = gtk_label_new(_("History key combination:"));
-  gtk_misc_set_alignment((GtkMisc*)label, 0.0, 0.50);
-  gtk_box_pack_start((GtkBox*)hbox, label, TRUE, TRUE, 0);
-  history_key_entry = gtk_entry_new();
-  gtk_entry_set_width_chars((GtkEntry*)history_key_entry, 10);
-  gtk_box_pack_end((GtkBox*)hbox, history_key_entry, TRUE, TRUE, 0);
-	/**Add phistory key  */
-	hbox = gtk_hbox_new(TRUE, 4);
-  gtk_box_pack_start((GtkBox*)vbox, hbox, FALSE, FALSE, 0);
-  label = gtk_label_new(_("Persistent History key combination:"));
-	gtk_misc_set_alignment((GtkMisc*)label, 0.0, 0.50);
-  gtk_box_pack_start((GtkBox*)hbox, label, TRUE, TRUE, 0);
-	phistory_key_entry = gtk_entry_new();
-  gtk_entry_set_width_chars((GtkEntry*)phistory_key_entry, 10);
-  gtk_box_pack_end((GtkBox*)hbox, phistory_key_entry, TRUE, TRUE, 0);
-	/**Add Actions key  */
-  hbox = gtk_hbox_new(TRUE, 4);
-  gtk_box_pack_start((GtkBox*)vbox, hbox, FALSE, FALSE, 0);
-  label = gtk_label_new(_("Actions key combination:"));
-  gtk_misc_set_alignment((GtkMisc*)label, 0.0, 0.50);
-  gtk_box_pack_start((GtkBox*)hbox, label, TRUE, TRUE, 0);
-  actions_key_entry = gtk_entry_new();
-  gtk_entry_set_width_chars((GtkEntry*)actions_key_entry, 10);
-  gtk_box_pack_end((GtkBox*)hbox, actions_key_entry, TRUE, TRUE, 0);
-	/**Add menu key   */
-  hbox = gtk_hbox_new(TRUE, 4);
-  gtk_box_pack_start((GtkBox*)vbox, hbox, FALSE, FALSE, 0);
-  label = gtk_label_new(_("Menu key combination:"));
-  gtk_misc_set_alignment((GtkMisc*)label, 0.0, 0.50);
-  gtk_box_pack_start((GtkBox*)hbox, label, TRUE, TRUE, 0);
-  menu_key_entry = gtk_entry_new();
-  gtk_entry_set_width_chars((GtkEntry*)menu_key_entry, 10);
-  gtk_box_pack_end((GtkBox*)hbox, menu_key_entry, TRUE, TRUE, 0);
-  gtk_box_pack_start((GtkBox*)vbox_extras, frame, FALSE, FALSE, 0);
+	add_section(PREF_SEC_ACT,vbox);
+	gtk_box_pack_start((GtkBox*)vbox_extras,frame,FALSE,FALSE,0);
   
   /* Make widgets reflect current preferences */
-  gtk_toggle_button_set_active((GtkToggleButton*)copy_check, prefs.use_copy);
-  gtk_toggle_button_set_active((GtkToggleButton*)primary_check, prefs.use_primary);
-  gtk_toggle_button_set_active((GtkToggleButton*)synchronize_check, prefs.synchronize);
-  gtk_toggle_button_set_active((GtkToggleButton*)save_check, prefs.save_history);
-  gtk_spin_button_set_value((GtkSpinButton*)history_spin, (gdouble)prefs.history_limit);
-  gtk_toggle_button_set_active((GtkToggleButton*)hyperlinks_check, prefs.hyperlinks_only);
-  gtk_toggle_button_set_active((GtkToggleButton*)confirm_check, prefs.confirm_clear);
-  gtk_toggle_button_set_active((GtkToggleButton*)linemode_check, prefs.single_line);
-  gtk_toggle_button_set_active((GtkToggleButton*)reverse_check, prefs.reverse_history);
-  gtk_spin_button_set_value((GtkSpinButton*)charlength_spin, (gdouble)prefs.item_length);
-  gtk_toggle_button_set_active((GtkToggleButton*)history_pos, prefs.history_pos);
-  gtk_spin_button_set_value((GtkSpinButton*)history_x, (gdouble)prefs.history_x);
-  gtk_spin_button_set_value((GtkSpinButton*)history_y, (gdouble)prefs.history_y);
-  gtk_combo_box_set_active((GtkComboBox*)ellipsize_combo, prefs.ellipsize - 1);
-	gtk_entry_set_text((GtkEntry*)phistory_key_entry, prefs.phistory_key);
-  gtk_entry_set_text((GtkEntry*)history_key_entry, prefs.history_key);
-  gtk_entry_set_text((GtkEntry*)actions_key_entry, prefs.actions_key);
-  gtk_entry_set_text((GtkEntry*)menu_key_entry, prefs.menu_key);
-  gtk_toggle_button_set_active((GtkToggleButton*)case_search, prefs.case_search);  
-  gtk_toggle_button_set_active((GtkToggleButton*)type_search, prefs.type_search);  
-  gtk_spin_button_set_value((GtkSpinButton*)data_size, (gdouble)prefs.data_size);
-	gtk_toggle_button_set_active((GtkToggleButton*)ignore_whiteonly, prefs.ignore_whiteonly);  
-	gtk_toggle_button_set_active((GtkToggleButton*)trim_wspace_begend, prefs.trim_wspace_begend);  
-	gtk_toggle_button_set_active((GtkToggleButton*)trim_newline, prefs.trim_newline);  
+	update_pref_widgets();
   
   /* Read actions */
   read_actions();

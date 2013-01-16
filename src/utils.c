@@ -47,11 +47,11 @@ gchar *p_strdup( const gchar *str )
   size_t l,x;
   if(NULL == str)
     return NULL;
-  if(0==prefs.data_size)
+  if(0==get_pref_int32("data_size"))
     return g_strdup(str);
-  x=prefs.data_size*1000000; 
+  x=get_pref_int32("data_size")*1000000; 
   /**use the following to test truncation  */
-  /*x=prefs.data_size*10; */
+  /*x=get_pref_int32("data_size")*10; */
   if(TRUE ==g_utf8_validate (str,-1,NULL)){
 /*    g_printf("UTF8 "); */
     l=g_utf8_strlen(str,-1);
@@ -181,7 +181,7 @@ struct cmdline_opts *parse_options(int argc, char* argv[])
   
   /* Do not display icon option */
   if (opts->icon)  {
-    prefs.no_icon = TRUE;
+		set_pref_int32("no_icon",TRUE);
   }
 	return opts;
 }
