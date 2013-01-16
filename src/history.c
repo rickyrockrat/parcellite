@@ -346,14 +346,14 @@ void append_item(gchar* item)
    /* Prepend new item */
   history_list = g_slist_prepend(history_list, c);
    /* Shorten history if necessary */
-  GSList* last_possible_element = g_slist_nth(history_list, prefs.history_limit - 1);
+  GSList* last_possible_element = g_slist_nth(history_list, get_pref_int32("history_limit") - 1);
   if (last_possible_element)     {
      /* Free last posible element and subsequent elements */
     g_slist_free(last_possible_element->next);
     last_possible_element->next = NULL;
   }
    /* Save changes */
-  if (prefs.save_history)
+  if (get_pref_int32("save_history"))
     save_history();
 }
 
@@ -386,7 +386,7 @@ void truncate_history()
   if (history_list)
   {
     /* Shorten history if necessary */
-    GSList* last_possible_element = g_slist_nth(history_list, prefs.history_limit - 1);
+    GSList* last_possible_element = g_slist_nth(history_list, get_pref_int32("history_limit") - 1);
     if (last_possible_element)
     {
       /* Free last posible element and subsequent elements */
@@ -394,7 +394,7 @@ void truncate_history()
       last_possible_element->next = NULL;
     }
     /* Save changes */
-    if (prefs.save_history)
+    if (get_pref_int32("save_history"))
       save_history();
   }
 }
