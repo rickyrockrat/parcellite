@@ -95,13 +95,13 @@ struct pref_item myprefs[]={
   {.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_CLIP,.name="synchronize",.type=PREF_TYPE_TOGGLE,.desc="S_ynchronize clipboards",.tip="If checked, will keep both clipboards with the same content. If primary is pasted, then copy will have the same data.",.val=DEF_SYNCHRONIZE},
   /**History  */	
   {.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_HIST,.name="save_history",.type=PREF_TYPE_TOGGLE,.desc="Save history",.tip="Save history to a file.",.val=DEF_SAVE_HISTORY},
-  {.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_HIST,.name="history_pos",.type=PREF_TYPE_TOGGLE,.desc="Position history",.tip="If checked, use X, Y to position the history list",.val=0},
-  {.adj=&align_hist_xy,.cval=NULL,.sig=NULL,.sec=PREF_SEC_HIST,.name="history_x",.type=PREF_TYPE_SPIN,.desc="<b>X</b>",.tip=NULL,.val=1},
-  {.adj=&align_hist_xy,.cval=NULL,.sig=NULL,.sec=PREF_SEC_HIST,.name="history_y",.type=PREF_TYPE_SPIN,.desc="<b>Y</b>",.tip="Position in pixels from the top of the screen",.val=1},
+  {.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_HIST,.name="history_pos",.type=PREF_TYPE_TOGGLE|PREF_TYPE_SINGLE_LINE,.desc="Position history",.tip="If checked, use X, Y to position the history list",.val=0},
+  {.adj=&align_hist_xy,.cval=NULL,.sig=NULL,.sec=PREF_SEC_HIST,.name="history_x",.type=PREF_TYPE_SPIN|PREF_TYPE_SINGLE_LINE,.desc="<b>X</b>",.tip=NULL,.val=1},
+  {.adj=&align_hist_xy,.cval=NULL,.sig=NULL,.sec=PREF_SEC_HIST,.name="history_y",.type=PREF_TYPE_SPIN|PREF_TYPE_SINGLE_LINE,.desc="<b>Y</b>",.tip="Position in pixels from the top of the screen",.val=1},
 	{.adj=&align_hist_lim,.cval=NULL,.sig=NULL,.sec=PREF_SEC_HIST,.name="history_limit",.type=PREF_TYPE_SPIN,.desc="Items in history",.tip="Maximun number of cliboard entries to keep",.val=DEF_HISTORY_LIMIT},
   {.adj=&align_data_lim,.cval=NULL,.sig=NULL,.sec=PREF_SEC_HIST,.name="data_size",.type=PREF_TYPE_SPIN,.desc="Max Data Size(MB)",.tip="Maximum data size of entire history list",.val=0},
 	{.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_HIST,.name="nop",.type=PREF_TYPE_SPACER,.desc=" ",.tip=NULL},
-	{.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_HIST,.name="automatic_paste",.type=PREF_TYPE_TOGGLE|1,.desc="Auto Paste",.tip="If checked, will use xdotool to paste wherever the mouse is.",.val=0},
+	{.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_HIST,.name="automatic_paste",.type=PREF_TYPE_TOGGLE|PREF_TYPE_SINGLE_LINE,.desc="Auto Paste",.tip="If checked, will use xdotool to paste wherever the mouse is.",.val=0},
 	{.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_HIST,.name="auto_key",.type=PREF_TYPE_TOGGLE|PREF_TYPE_SINGLE_LINE,.desc="Key",.tip="If checked, will use Ctrl-V paste.",.val=0},
 	{.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_HIST,.name="auto_mouse",.type=PREF_TYPE_TOGGLE|PREF_TYPE_SINGLE_LINE,.desc="Mouse",.tip="If checked, will use middle mouse to paste.",.val=1},
   
@@ -771,31 +771,34 @@ section is the section to add, parent is the box to put it in.
 int add_section(int sec, GtkWidget *parent)
 {
 	int i,rtn=0;
-	gint x,y,number=0;
+	int single_st, single_is;
+	gint x,y,connect;
 	GtkWidget *hbox, *label, *child;
+	GtkWidget* packit;
+	
+	single_st=single_is=0;
 	for (i=get_first_pref(sec);sec==myprefs[i].sec; ++i){
-		GtkWidget* packit;
-		int no=(myprefs[i].type&(PREF_TYPE_NMASK|PREF_TYPE_SINGLE_LINE));
+		connect=1;
+		single_st=(myprefs[i].type&(PREF_TYPE_NMASK|PREF_TYPE_SINGLE_LINE)); /**deterimine if we are in single line  */
+		
+		if(single_st && !single_is){ /**start of single line  */
+			hbox = gtk_hbox_new(FALSE, 2);  /**create hbox  */
+			/*g_printf("alloc %p hbox\n",hbox); */
+			single_is=1;
+		}
+		
 		switch (myprefs[i].type&PREF_TYPE_MASK){
+			
 			case PREF_TYPE_TOGGLE:
-				if(no){	/**do multiple toggle boxes in one line.  */
-					hbox = gtk_hbox_new(FALSE, 2);  
-					for (;sec==myprefs[i].sec && (myprefs[i].type&(PREF_TYPE_NMASK|PREF_TYPE_SINGLE_LINE));++i){
-						myprefs[i].w=gtk_check_button_new_with_mnemonic(_(myprefs[i].desc));
-						gtk_box_pack_start((GtkBox*)hbox,myprefs[i].w , FALSE, FALSE, 0);
-						if(NULL != myprefs[i].tip)
-		  				gtk_widget_set_tooltip_text(myprefs[i].w, _(myprefs[i].tip));
-					}
-					packit=hbox;
-				}	else{
-					myprefs[i].w=gtk_check_button_new_with_mnemonic(_(myprefs[i].desc));
-					packit=myprefs[i].w;	
-				}
-				
+				myprefs[i].w=gtk_check_button_new_with_mnemonic(_(myprefs[i].desc));
+				packit=myprefs[i].w;	
 				break;
+			
 			case PREF_TYPE_SPIN:
-				hbox = gtk_hbox_new(FALSE, 4);  
-  			label = gtk_label_new(_(myprefs[i].desc));
+				if(!single_is)
+					hbox = gtk_hbox_new(FALSE, 4);  
+  			label = gtk_label_new(NULL);
+				gtk_label_set_markup((GtkLabel*)label, _(myprefs[i].desc));
 				gtk_box_pack_start((GtkBox*)hbox, label, FALSE, FALSE, 0);
   			myprefs[i].w=gtk_spin_button_new((GtkAdjustment*)gtk_adjustment_new ( \
 				myprefs[i].val,myprefs[i].adj->lower,myprefs[i].adj->upper,myprefs[i].adj->step,myprefs[i].adj->page,0 ),10,0); 
@@ -806,8 +809,10 @@ int add_section(int sec, GtkWidget *parent)
 				break;
 			
 			case PREF_TYPE_ENTRY:
-				hbox = gtk_hbox_new(TRUE, 4);
-			  label = gtk_label_new(_(myprefs[i].desc));
+				if(!single_is)
+					hbox = gtk_hbox_new(TRUE, 4);
+			  label = gtk_label_new(NULL);
+				gtk_label_set_markup((GtkLabel*)label, _(myprefs[i].desc));
 			  gtk_misc_set_alignment((GtkMisc*)label, 0.0, 0.50);
 			  gtk_box_pack_start((GtkBox*)hbox, label, TRUE, TRUE, 0);
 			  myprefs[i].w = gtk_entry_new();
@@ -816,9 +821,10 @@ int add_section(int sec, GtkWidget *parent)
 			  packit=hbox;
 				break;
 			case PREF_TYPE_COMBO: /**handled in show_preferences, only one so  */
+				continue;
 				break;
 			case PREF_TYPE_SPACER:
-				packit=gtk_menu_item_new_with_label("");
+				packit=myprefs[i].w=gtk_menu_item_new_with_label("");
 				child=gtk_bin_get_child((GtkBin *)packit);
 				gtk_misc_set_padding((GtkMisc *)child,0,0);
 				gtk_label_set_markup ((GtkLabel *)child, "<span size=\"0\"> </span>");
@@ -831,50 +837,31 @@ int add_section(int sec, GtkWidget *parent)
 				break;
 		}
 		  
-		/**special handling for history dual spinbox  */
-		if(PREF_SEC_HIST==sec && !g_strcmp0(myprefs[i].name,"save_history") ){
-			if(dbg)g_printf("packing %s\n",myprefs[i].name);
-			/**pack save_history  */
-			gtk_box_pack_start((GtkBox*)parent, packit, FALSE, FALSE, 0);
-			++i;
-	  /**set the history position  */
-		  hbox = gtk_hbox_new(FALSE, 4);
-		  
-			myprefs[i].w= gtk_check_button_new_with_mnemonic(_(myprefs[i].desc));
-			
-		  if(NULL != myprefs[i].tip) gtk_widget_set_tooltip_text(myprefs[i].w, _(myprefs[i].tip));
-		  if(dbg)g_printf("packing %s to hbox\n",myprefs[i].name);
-		  gtk_box_pack_start((GtkBox*)hbox, myprefs[i].w, FALSE, FALSE, 0);
-		  postition_history(NULL,&x,&y,NULL, (gpointer)1);
-			++i;
-		  label = gtk_label_new(NULL);
-		  gtk_label_set_markup((GtkLabel*)label, _(myprefs[i].desc));
-		  gtk_box_pack_start((GtkBox*)hbox, label, FALSE, FALSE, 0);
-		  if(dbg)g_printf("packing label to hbox\n",myprefs[i].name);
-			myprefs[i].w=gtk_spin_button_new((GtkAdjustment*)gtk_adjustment_new ( \
-			myprefs[i].val,myprefs[i].adj->lower,x,myprefs[i].adj->step,myprefs[i].adj->page,0 ),10,0); 
-			if(dbg)g_printf("packing %s to hbox\n",myprefs[i].name);
-		  gtk_box_pack_start((GtkBox*)hbox, myprefs[i].w, FALSE, FALSE, 0);
-			gtk_spin_button_set_update_policy((GtkSpinButton*)myprefs[i].w, GTK_UPDATE_IF_VALID);
-			++i;
-		  label = gtk_label_new(NULL);
-		  gtk_label_set_markup((GtkLabel*)label, _(myprefs[i].desc));
-		  gtk_box_pack_start((GtkBox*)hbox, label, FALSE, FALSE, 0);
-			myprefs[i].w=gtk_spin_button_new((GtkAdjustment*)gtk_adjustment_new ( \
-			myprefs[i].val,myprefs[i].adj->lower,y,myprefs[i].adj->step,myprefs[i].adj->page,0 ),10,0); 
-			if(dbg)g_printf("packing %s to hbox\n",myprefs[i].name);
-		  gtk_box_pack_start((GtkBox*)hbox, myprefs[i].w, FALSE, FALSE, 0);
-		  gtk_spin_button_set_update_policy((GtkSpinButton*)myprefs[i].w, GTK_UPDATE_IF_VALID);
-			packit=hbox;
-		}
+		/**tooltips are set on the label of the spin box, not the widget and are handled above */
 		if(PREF_TYPE_SPIN != myprefs[i].type && NULL != myprefs[i].tip)
 		  gtk_widget_set_tooltip_text(myprefs[i].w, _(myprefs[i].tip));
-		if(NULL != myprefs[i].sig)
+		
+		if(NULL != myprefs[i].sig && connect)
 			g_signal_connect((GObject*)myprefs[i].w, myprefs[i].sig, (GCallback)myprefs[i].sfunc, myprefs[i].w);
+		
 		if(dbg)g_printf("Packing %s\n",myprefs[i].name);
-			
+		if(single_is){
+			if(packit != hbox){
+				/*g_printf("Packed a slwidget %p<-%p\n",hbox, myprefs[i].w); */
+				gtk_box_pack_start((GtkBox*)hbox,myprefs[i].w , FALSE, FALSE, 0);	
+			}
+			/**else already packed above.  */
+		}	else
 																							/**espand fill padding  */
-		gtk_box_pack_start((GtkBox*)parent, packit, TRUE, TRUE, 0);
+			gtk_box_pack_start((GtkBox*)parent, packit, TRUE, TRUE, 0);
+	/**check for end of single line.  */
+		single_st=(myprefs[i+1].type&(PREF_TYPE_NMASK|PREF_TYPE_SINGLE_LINE)); /**deterimine if we are in single line  */
+		if(single_is && !single_st){/**end of single line  */
+																							/**exp fill padding  */
+			gtk_box_pack_start((GtkBox*)parent, hbox, TRUE, TRUE, 0);		/**pack the hbox into parent  */
+			/*g_printf("pack %p<-%p hbox\n",parent,hbox); */
+			single_is=0;
+		}
 	}
 	if(dbg)g_printf("Ending on %d '%s'\n",i,myprefs[i].name);
 	return rtn;
