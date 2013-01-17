@@ -239,7 +239,8 @@ void rm_h_item(struct history_info *h, GtkWidget *w, GSList* element, gint which
 		
 }
 /***************************************************************************/
-/** .
+/** Handle marking for history window. Also manages adding/removing from 
+the delete list, which gets called when the history window closes.
 \n\b Arguments:
 \n\b Returns:
 ****************************************************************************/
