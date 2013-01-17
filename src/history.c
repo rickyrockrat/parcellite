@@ -326,11 +326,11 @@ gint is_duplicate(gchar* item, int mode, gint *flags)
 		c=(struct history_item *)element->data;
 		if(CLIP_TYPE_TEXT == c->type){
 	    if (g_strcmp0((gchar*)c->text, item) == 0) {
-				if(NULL != flags){
-					*flags=c->flags;
-				}
 				if(mode){
-					/*g_printf("Freeing '%s'\n",c->text); */
+					if(NULL != flags && (CLIP_TYPE_PERSISTENT&c->flags)){
+						*flags=c->flags;
+					}
+					/*g_printf("Freeing 0x%02X '%s'\n",c->flags,c->text);  */
 					g_free(element->data);
 		      history_list = g_list_delete_link(history_list, element);
 				}
@@ -351,10 +351,13 @@ void append_item(gchar* item, int checkdup)
 	gint flags=0,node=-1;
 	if(NULL == item)
 		return;
+	g_mutex_lock(hist_lock);
 /**delete if HIST_DEL flag is set.  */	
 	if( checkdup & HIST_CHECKDUP){
 		node=is_duplicate(item, checkdup & HIST_DEL, &flags);
+		/*g_printf("isd done "); */
 		if(node > -1){ /**found it  */
+			/*g_printf(" found\n"); */
 			if(!(checkdup & HIST_DEL))
 				return;	
 		}
@@ -365,37 +368,31 @@ void append_item(gchar* item, int checkdup)
 		return;
 	if(node > -1 && (checkdup & HIST_KEEP_FLAGS) ){
 		c->flags=flags;
-		/*g_printf("Restoring '%s'\n",c->text); */
+		/*g_printf("Restoring 0x%02X '%s'\n",c->flags,c->text);  */
 	}
 		
 	/*g_printf("Append '%s'\n",item); */
    /* Prepend new item */
   history_list = g_list_prepend(history_list, c);
-   /* Shorten history if necessary */
-  GList* last_possible_element = g_list_nth(history_list, get_pref_int32("history_limit") - 1);
-  if (last_possible_element)     {
-     /* Free last posible element and subsequent elements */
-    g_list_free(last_possible_element->next);
-    last_possible_element->next = NULL;
-  }
-   /* Save changes */
-  if (get_pref_int32("save_history"))
-    save_history();
+  /* Shorten history if necessary */
+  truncate_history();
+	g_mutex_unlock(hist_lock);
 }
 
 /***************************************************************************/
-/**  Deletes duplicate item in history .
+/**  Deletes duplicate item in history . Orphaned function.
 \n\b Arguments:
 \n\b Returns:
 ****************************************************************************/
 void delete_duplicate(gchar* item)
 {
   GList* element;
+	int p=get_pref_int32("persistent_history");
   /* Go through each element compare each */
   for (element = history_list; element != NULL; element = element->next) {
 	  struct history_item *c;
 		c=(struct history_item *)element->data;
-		if(CLIP_TYPE_TEXT == c->type){
+		if( (!p || !(CLIP_TYPE_PERSISTENT&c->flags)) && CLIP_TYPE_TEXT == c->type){
 	    if (g_strcmp0((gchar*)c->text, item) == 0) {
 				g_printf("del dup '%s'\n",c->text);
 	      g_free(element->data);
