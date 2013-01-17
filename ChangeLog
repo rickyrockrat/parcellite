@@ -1,3 +1,8 @@
+V1.1.1 Friday, January 18 2013 
+ Changes
+ +Added tooltips for Primary,copy, and syncronize options.
+ +Fixed lockup bug recently introduced.
+ 
 V1.1.1 Wednesday, January 16 2013 
  Changes
  +Added Paste All on history item right-click.

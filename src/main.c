@@ -46,7 +46,7 @@ static GtkWidget *indicator_menu = NULL;
 #else
 static GtkStatusIcon *status_icon; 
 #endif
-static GMutex *clip_lock;
+static GMutex *clip_lock=NULL;
 static gboolean actions_lock = FALSE;
 /**defines for moving between clipboard histories  */
 #define HIST_MOVE_TO_CANCEL     0
@@ -302,6 +302,7 @@ void check_clipboards(gint mode)
 {
 	gchar *ptext, *ctext, *last;
 	int n=0;
+	/*g_printf("check_clipboards\n"); */
 	g_mutex_lock(clip_lock);
 	if(fifo->rlen >0){
 		switch(fifo->which){
@@ -334,7 +335,7 @@ void check_clipboards(gint mode)
   if (get_pref_int32("synchronize"))  {
   
 		if(NULL==ptext && NULL ==ctext)
-			return;
+			goto done;
 			last=update_clipboard(NULL, NULL, H_MODE_LAST);
 		if( NULL != last && p_strcmp(ptext,ctext)){
 			/**last is a copy, of things that may be deallocated  */
@@ -345,7 +346,7 @@ void check_clipboards(gint mode)
 		}
 		  
 	}	
-	
+done:	
 	g_mutex_unlock(clip_lock);	
 }
 /***************************************************************************/
@@ -1373,6 +1374,7 @@ static gboolean show_history_menu(gpointer data)
 	key_release_cb(NULL,NULL,NULL);
 	GSList *element, *persistent=NULL;
 	GSList *lhist=NULL;
+	int single_line=get_pref_int32("single_line");
 	
   /* Create the menu */
   menu = gtk_menu_new();
@@ -1472,7 +1474,12 @@ static gboolean show_history_menu(gpointer data)
       
       /* Modify menu item label properties */
       item_label = gtk_bin_get_child((GtkBin*)menu_item);
-      gtk_label_set_single_line_mode((GtkLabel*)item_label, get_pref_int32("single_line"));
+			if(single_line){
+				/*gtk_label_set_line_wrap  */
+				gtk_label_set_single_line_mode((GtkLabel*)item_label, TRUE);
+			}	else{
+				gtk_label_set_single_line_mode((GtkLabel*)item_label, FALSE);
+			}
       
       /* Check if item is also clipboard text and make bold */
       if ((clipboard_temp) && (p_strcmp(hist_text, clipboard_temp) == 0))
@@ -1705,14 +1712,11 @@ void menu_hotkey(char *keystring, gpointer user_data)
 /* Startup calls and initializations */
 static void parcellite_init()
 {
-  /* Create clipboard */
-  primary = gtk_clipboard_get(GDK_SELECTION_PRIMARY);
-  clipboard = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);
-  g_timeout_add(CHECK_INTERVAL, check_clipboards_tic, NULL);
 	if(FALSE ==g_thread_supported()){
 		g_printf("g_thread not init!\n");
 	}
 	clip_lock= g_mutex_new();
+	g_mutex_unlock(clip_lock);
   /* Read preferences */
   read_preferences();
   
@@ -1730,7 +1734,10 @@ static void parcellite_init()
 		}
 		
 	}
-    
+	/* Create clipboard */
+  primary = gtk_clipboard_get(GDK_SELECTION_PRIMARY);
+  clipboard = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);
+  g_timeout_add(CHECK_INTERVAL, check_clipboards_tic, NULL);  
   
   /* Bind global keys */
   keybinder_init();
@@ -1883,10 +1890,15 @@ int main(int argc, char *argv[])
   
   /* Init Parcellite */
   parcellite_init();
-  
+  /*g_printf("Start main loop\n"); */
   /* Run GTK+ loop */
   gtk_main();
   
+#ifdef HAVE_APPINDICATOR
+	if (!get_pref_int32("no_icon"))
+		app_indicator_set_status(indicator, APP_INDICATOR_STATUS_PASSIVE);
+#endif
+	
   /* Unbind keys */
 	keybinder_unbind(get_pref_string("phistory_key"), phistory_hotkey);
   keybinder_unbind(get_pref_string("history_key"), history_hotkey);
