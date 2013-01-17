@@ -48,6 +48,7 @@ static GtkStatusIcon *status_icon;
 #endif
 static GMutex *clip_lock=NULL;
 static gboolean actions_lock = FALSE;
+static int show_icon=0;
 /**defines for moving between clipboard histories  */
 #define HIST_MOVE_TO_CANCEL     0
 #define HIST_MOVE_TO_OK         1
@@ -62,6 +63,9 @@ static gboolean actions_lock = FALSE;
 
 #define EDIT_MODE_USE_RIGHT_CLICK 1 /**used in edit dialog creation to determine behaviour. 
                                     If this is set, it will edit the entry, and replace it in the history.  */
+
+/**protos in this file  */
+void create_app_indicator(void);
 
 /**Turns up in 2.16  */
 int p_strcmp (const char *str1, const char *str2)
@@ -357,6 +361,10 @@ done:
 gboolean check_clipboards_tic(gpointer data)
 {
 	check_clipboards(H_MODE_CHECK);
+#ifdef HAVE_APPINDICATOR
+	if(NULL == indicator && show_icon)
+		create_app_indicator();
+#endif
 	return TRUE;
 }
 
@@ -366,7 +374,7 @@ static void *execute_action(void *command)
   /* Execute action */
   actions_lock = TRUE;
 #ifndef HAVE_APPINDICATOR
-  if (!get_pref_int32("no_icon"))
+  if (show_icon)
   {
   gtk_status_icon_set_from_stock((GtkStatusIcon*)status_icon, GTK_STOCK_EXECUTE);
   gtk_status_icon_set_tooltip((GtkStatusIcon*)status_icon, _("Executing action..."));
@@ -375,7 +383,7 @@ static void *execute_action(void *command)
   if(system((gchar*)command))
   	g_print("sytem command '%s' failed\n",(gchar *)command);
  #ifndef HAVE_APPINDICATOR
-  if (!get_pref_int32("no_icon"))
+  if (show_icon)
   {
 	gtk_status_icon_set_from_icon_name((GtkStatusIcon*)status_icon, PARCELLITE_ICON);
   gtk_status_icon_set_tooltip((GtkStatusIcon*)status_icon, _("Clipboard Manager"));
@@ -392,7 +400,7 @@ static void action_exit(GPid pid, gint status, gpointer data)
 {
   g_spawn_close_pid(pid);
 #ifndef HAVE_APPINDICATOR 	
-  if (!get_pref_int32("no_icon"))
+  if (show_icon)
   {
 		gtk_status_icon_set_from_icon_name((GtkStatusIcon*)status_icon, PARCELLITE_ICON);
     gtk_status_icon_set_tooltip((GtkStatusIcon*)status_icon, _("Clipboard Manager"));
@@ -407,7 +415,7 @@ static void action_selected(GtkButton *button, gpointer user_data)
   /* Change icon and enable lock */
   actions_lock = TRUE;
 #ifndef HAVE_APPINDICATOR 	
-  if (!get_pref_int32("no_icon"))
+  if (show_icon)
   {
     gtk_status_icon_set_from_stock((GtkStatusIcon*)status_icon, GTK_STOCK_EXECUTE);
     gtk_status_icon_set_tooltip((GtkStatusIcon*)status_icon, _("Executing action..."));
@@ -554,7 +562,7 @@ gboolean history_item_right_click_on_edit(GtkWidget *menuitem, gpointer data)
 \n\b Arguments:
 \n\b Returns:
 ****************************************************************************/
-gboolean history_item_right_click_on_paste_all(GtkWidget *menuitem, gpointer data)
+gboolean history_item_right_click_on_copy_all(GtkWidget *menuitem, gpointer data)
 {
 	GSList *element;
 	gchar*str=NULL;
@@ -647,8 +655,8 @@ void  history_item_right_click (struct history_info *h, GdkEventKey *e, gint ind
 			/*g_printf("%s ",c->text); */
 		}
 	}
-	menuitem = gtk_menu_item_new_with_label("Paste All");
-  g_signal_connect(menuitem, "activate", (GCallback) history_item_right_click_on_paste_all, (gpointer)h);
+	menuitem = gtk_menu_item_new_with_label("Copy All to Clip");
+  g_signal_connect(menuitem, "activate", (GCallback) history_item_right_click_on_copy_all, (gpointer)h);
   gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuitem);
 	if(get_pref_int32("persistent_history")){
 		/*g_printf("CreatehistR\n"); */
@@ -779,7 +787,7 @@ static void show_about_dialog(GtkMenuItem *menu_item, gpointer user_data)
     gtk_dialog_run((GtkDialog*)about_dialog);
     gtk_widget_destroy(about_dialog);
 #if 0 && HAVE_APPINDICATOR
-	  if(NULL !=indicator && get_pref_int32("no_icon"))
+	  if(NULL !=indicator && !show_icon )
 	  	app_indicator_set_status (indicator, APP_INDICATOR_STATUS_PASSIVE);
 #endif	
   }
@@ -793,7 +801,7 @@ static void preferences_selected(GtkMenuItem *menu_item, gpointer user_data)
 		 /* Show the preferences dialog */
     show_preferences(0);
 #if 0 && HAVE_APPINDICATOR
-	  if(NULL !=indicator && get_pref_int32("no_icon"))
+	  if(NULL !=indicator && !show_icon)
 	  	app_indicator_set_status (indicator, APP_INDICATOR_STATUS_PASSIVE);
 #endif			
 	}
@@ -1665,7 +1673,6 @@ gint figure_histories(void)
 	return i;
 }
 #ifdef HAVE_APPINDICATOR
-
 /***************************************************************************/
 /** .
 \n\b Arguments:
@@ -1684,8 +1691,8 @@ void create_app_indicator(void)
 	}
 	app_indicator_set_menu (indicator, GTK_MENU (indicator_menu));
 }
-
 #else
+	
 /* Called when status icon is left-clicked */
 static void status_icon_clicked(GtkStatusIcon *status_icon, gpointer user_data)
 {
@@ -1707,6 +1714,7 @@ static void status_icon_clicked(GtkStatusIcon *status_icon, gpointer user_data)
   }
 }
 #endif
+
 /* Called when history global hotkey is pressed */
 void history_hotkey(char *keystring, gpointer user_data)
 {
@@ -1752,7 +1760,7 @@ static void parcellite_init()
 	g_mutex_unlock(clip_lock);
   /* Read preferences */
   read_preferences();
-  
+  show_icon=!get_pref_int32("no_icon");
   /* Read history */
   if (get_pref_int32("save_history")){
 		/*g_printf("Calling read_hist\n"); */
@@ -1777,7 +1785,7 @@ static void parcellite_init()
   keybinder_bind(get_pref_string("menu_key"), menu_hotkey, NULL);
   
   /* Create status icon */
-  if (!get_pref_int32("no_icon"))
+  if (show_icon)
   {
 #ifdef HAVE_APPINDICATOR
 	/* Indicator */
@@ -1925,7 +1933,7 @@ int main(int argc, char *argv[])
   gtk_main();
   
 #ifdef HAVE_APPINDICATOR
-	if (!get_pref_int32("no_icon"))
+	if (show_icon)
 		app_indicator_set_status(indicator, APP_INDICATOR_STATUS_PASSIVE);
 #endif
 	

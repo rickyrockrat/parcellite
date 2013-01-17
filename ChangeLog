@@ -3,6 +3,7 @@ V1.1.1 Friday, January 18 2013
  +Added tooltips for Primary,copy, and syncronize options.
  +Fixed lockup bug recently introduced.
  +Fixed status icon showing up with -n in appindicator.
+ +Changed Paste All to Copy All to clip.
  
 V1.1.1 Wednesday, January 16 2013 
  Changes
