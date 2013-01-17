@@ -1213,7 +1213,7 @@ foundit:
 }	
 
 /***************************************************************************/
-/** .
+/** Set clipboard from history list.
 \n\b Arguments:
 \n\b Returns:
 ****************************************************************************/
@@ -1233,6 +1233,25 @@ void set_clipboard_text(struct history_info *h, GSList *element)
   g_signal_emit_by_name ((gpointer)h->menu,"selection-done");
 	/*g_printf("set_clip_text done\n");  */
 	g_mutex_unlock(clip_lock);
+	
+	if (get_pref_int32("automatic_paste")) { /** mousedown 2 */
+		gchar *action=NULL;
+		if(get_pref_int32("auto_mouse"))
+			action="mousedown 2 && xdotool mouseup 2'";
+		else if(get_pref_int32("auto_key"))
+			action="key ctrl+v'";
+		if(NULL == action)
+			return;
+		/**from clipit 1.4.1 */
+    gchar* cmd = g_strconcat("/bin/sh -c 'xdotool ", action, NULL);
+    GPid pid;
+    gchar **argv;
+    g_shell_parse_argv(cmd, NULL, &argv, NULL);
+    g_free(cmd);
+    g_spawn_async(NULL, argv, NULL, G_SPAWN_DO_NOT_REAP_CHILD, NULL, NULL, &pid, NULL);
+    g_child_watch_add(pid, (GChildWatchFunc)action_exit, NULL);
+    g_strfreev(argv);
+  }/**end from clipit 1.4.1 */
 }
 
 

@@ -6,6 +6,8 @@ V1.1.0a Wednesday, January 16 2013
  +Fix Bug 2687052(re-introduced in rc7) that auto-deselects text in apps like LyX and DevHelp. SVN319 
  +Added tooltip for Action/Command column headers.
  +Fixed svnversion.sh so it shows correct svn revision
+ +Added automatic paste via xdotool.
+ +Added multiple items per line on preferences subsytem.
   
 V1.1.0 Wednesday, January 16 2013 
  Changes
