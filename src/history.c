@@ -20,7 +20,7 @@
 
 
 /**This is now a gslist of   */
-GSList* history_list=NULL;
+GList* history_list=NULL;
 static gint dbg=0;
 /**todo:
 handle parcellite history magic:
@@ -94,12 +94,12 @@ void read_history_old ()
 				c->text[size] = 0;
 				c->len=validate_utf8_text(c->text,c->len);
 	      /* Prepend item and read next size */
-	      history_list = g_slist_prepend(history_list, c);
+	      history_list = g_list_prepend(history_list, c);
 			}
     }
     /* Close file and reverse the history to normal */
     fclose(history_file);
-    history_list = g_slist_reverse(history_list);
+    history_list = g_list_reverse(history_list);
   }
 }
 
@@ -115,7 +115,7 @@ void save_history_old()
   g_free(history_path);
   /* Check that it opened and begin write */
   if (history_file)  {
-    GSList* element;
+    GList* element;
     /* Write each element to a binary file */
     for (element = history_list; element != NULL; element = element->next) {
       /* Create new GString from element data, write its length (size)
@@ -215,7 +215,7 @@ void read_history ()
 				c->len=validate_utf8_text(c->text,c->len);
 				if(dbg) g_printf("len %d type %d '%s'\n",c->len,c->type,c->text); 
 	      /* Prepend item and read next size */
-	      history_list = g_slist_prepend(history_list, c);	
+	      history_list = g_list_prepend(history_list, c);	
 			}
       
     }
@@ -223,7 +223,7 @@ done:
 		g_free(magic);
     /* Close file and reverse the history to normal */
     fclose(history_file);
-    history_list = g_slist_reverse(history_list);
+    history_list = g_list_reverse(history_list);
   }
 	if(dbg) g_printf("History read done\n");
 }
@@ -264,7 +264,7 @@ void save_history()
   g_free(history_path);
   /* Check that it opened and begin write */
   if (history_file)  {
-    GSList* element;
+    GList* element;
 		gchar *magic=g_malloc0(2+HISTORY_MAGIC_SIZE);
 	  if( NULL == magic) return;
 		memcpy(magic,history_magics[HISTORY_VERSION-1],strlen(history_magics[HISTORY_VERSION-1]));	
@@ -316,7 +316,7 @@ struct history_item *new_clip_item(gint type, guint32 len, void *data)
 ****************************************************************************/
 gint is_duplicate(gchar* item, int mode, gint *flags)
 {
-  GSList* element;
+  GList* element;
 	gint i;
 	if(NULL ==item)
 		return -1;
@@ -332,7 +332,7 @@ gint is_duplicate(gchar* item, int mode, gint *flags)
 				if(mode){
 					/*g_printf("Freeing '%s'\n",c->text); */
 					g_free(element->data);
-		      history_list = g_slist_delete_link(history_list, element);
+		      history_list = g_list_delete_link(history_list, element);
 				}
 				return i;
 	      break;
@@ -370,12 +370,12 @@ void append_item(gchar* item, int checkdup)
 		
 	/*g_printf("Append '%s'\n",item); */
    /* Prepend new item */
-  history_list = g_slist_prepend(history_list, c);
+  history_list = g_list_prepend(history_list, c);
    /* Shorten history if necessary */
-  GSList* last_possible_element = g_slist_nth(history_list, get_pref_int32("history_limit") - 1);
+  GList* last_possible_element = g_list_nth(history_list, get_pref_int32("history_limit") - 1);
   if (last_possible_element)     {
      /* Free last posible element and subsequent elements */
-    g_slist_free(last_possible_element->next);
+    g_list_free(last_possible_element->next);
     last_possible_element->next = NULL;
   }
    /* Save changes */
@@ -390,7 +390,7 @@ void append_item(gchar* item, int checkdup)
 ****************************************************************************/
 void delete_duplicate(gchar* item)
 {
-  GSList* element;
+  GList* element;
   /* Go through each element compare each */
   for (element = history_list; element != NULL; element = element->next) {
 	  struct history_item *c;
@@ -399,26 +399,37 @@ void delete_duplicate(gchar* item)
 	    if (g_strcmp0((gchar*)c->text, item) == 0) {
 				g_printf("del dup '%s'\n",c->text);
 	      g_free(element->data);
-	      history_list = g_slist_delete_link(history_list, element);
+	      history_list = g_list_delete_link(history_list, element);
 	      break;
 	    }
 		}
   }
 }
 
-/* Truncates history to history_limit items */
+/***************************************************************************/
+/**  Truncates history to history_limit items, while preserving persistent
+    data, if specified by the user. FIXME: This may not shorten the history 
+\n\b Arguments:
+\n\b Returns:
+****************************************************************************/
 void truncate_history()
 {
-  if (history_list)
-  {
-    /* Shorten history if necessary */
-    GSList* last_possible_element = g_slist_nth(history_list, get_pref_int32("history_limit") - 1);
-    if (last_possible_element)
-    {
-      /* Free last posible element and subsequent elements */
-      g_slist_free(last_possible_element->next);
-      last_possible_element->next = NULL;
-    }
+  int p=get_pref_int32("persistent_history");
+  if (history_list)  {
+		guint ll=g_list_length(history_list);
+		guint lim=get_pref_int32("history_limit");
+		if(ll > lim){ /* Shorten history if necessary */
+			GList* last = g_list_last(history_list);	
+			while (last->prev && ll>lim)   {
+	      struct history_item *c=(struct history_item *)last->data;
+				last=last->prev;
+	      if(!p || !(c->flags&CLIP_TYPE_PERSISTENT)){
+					history_list=g_list_remove(history_list,c);
+					--ll;
+				}
+	    }	
+		}
+		
     /* Save changes */
     if (get_pref_int32("save_history"))
       save_history();
@@ -449,13 +460,36 @@ gpointer get_last_item()
 \n\b Arguments:
 \n\b Returns:
 ****************************************************************************/
+void clear_history( void )
+{
+	
+	if( !get_pref_int32("persistent_history")){
+		g_list_free(history_list);
+  	history_list = NULL;
+	}	else{ /**save any persistent items  */
+		GList* element;
+		for (element = history_list; element != NULL; element = element->next) {
+		  struct history_item *c;
+			c=(struct history_item *)element->data;
+			if(!(c->flags & CLIP_TYPE_PERSISTENT))
+				history_list=g_list_remove(history_list,c);
+		}		
+	}
+	
+  save_history();
+}
+/***************************************************************************/
+/** .
+\n\b Arguments:
+\n\b Returns:
+****************************************************************************/
 int save_history_as_text(gchar *path)
 {
 	FILE* fp = fopen(path, "w");
   /* Check that it opened and begin write */
   if (fp)  {
 		gint i;
-    GSList* element;
+    GList* element;
     /* Write each element to  file */
     for (i=0,element = history_list; element != NULL; element = element->next) {
 		  struct history_item *c;

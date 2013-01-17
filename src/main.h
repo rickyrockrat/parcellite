@@ -42,7 +42,7 @@ struct widget_info{
 /**keeps track of each menu item and the element it's created from.  */
 struct s_item_info {
 	GtkWidget *item;
-	GSList *element;
+	GList *element;
 };
 
 struct history_info{

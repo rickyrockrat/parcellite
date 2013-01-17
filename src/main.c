@@ -461,7 +461,7 @@ static void edit_actions_selected(GtkButton *button, gpointer user_data)
 static void edit_selected(GtkMenuItem *menu_item, gpointer user_data)
 {
 	struct history_info *h=(struct history_info*)user_data;
-	GSList* element=NULL;
+	GList* element=NULL;
 	struct history_item *c=NULL;
   /* This helps prevent multiple instances */
   if (!gtk_grab_get_current())  {
@@ -469,7 +469,7 @@ static void edit_selected(GtkMenuItem *menu_item, gpointer user_data)
     /* Create clipboard buffer and set its text */
     GtkTextBuffer* clipboard_buffer = gtk_text_buffer_new(NULL);
 		if(h->wi.tmp1&EDIT_MODE_USE_RIGHT_CLICK){/**use index as pointer to text  */
-			element = g_slist_nth(history_list, h->wi.index);
+			element = g_list_nth(history_list, h->wi.index);
 			if(NULL !=element){
 				c=(struct history_item *)(element->data);
 				current_clipboard_text=p_strdup(c->text);
@@ -564,7 +564,7 @@ gboolean history_item_right_click_on_edit(GtkWidget *menuitem, gpointer data)
 ****************************************************************************/
 gboolean history_item_right_click_on_copy_all(GtkWidget *menuitem, gpointer data)
 {
-	GSList *element;
+	GList *element;
 	gchar*str=NULL;
 	gchar*last=NULL;
 	gchar*delim= g_strcompress(get_pref_string("persistent_delim"));
@@ -608,7 +608,7 @@ gboolean  handle_history_item_right_click (int i, gpointer data)
 	struct history_info *h=(struct history_info*)data;
 	struct history_item *c=NULL;
 	if(NULL !=h ){
-		GSList* element = g_slist_nth(history_list, h->wi.index);
+		GList* element = g_list_nth(history_list, h->wi.index);
 		if(NULL !=element){
 			c=(struct history_item *)(element->data);
 			/*g_printf("%s ",c->text); */
@@ -649,7 +649,7 @@ void  history_item_right_click (struct history_info *h, GdkEventKey *e, gint ind
   menu = gtk_menu_new();
 	struct history_item *c=NULL;
 	if(NULL !=h ){
-		GSList* element = g_slist_nth(history_list, h->wi.index);
+		GList* element = g_list_nth(history_list, h->wi.index);
 		if(NULL !=element){
 			c=(struct history_item *)(element->data);
 			/*g_printf("%s ",c->text); */
@@ -704,9 +704,8 @@ static void clear_selected(GtkMenuItem *menu_item, gpointer user_data)
     
     if (gtk_dialog_run((GtkDialog*)confirm_dialog) == GTK_RESPONSE_OK)    {
       /* Clear history and free history-related variables */
-      g_slist_free(history_list);
-      history_list = NULL;
-      save_history();
+			clear_history();
+      
 		  update_clipboard(primary, "", H_MODE_INIT);
       update_clipboard(clipboard, "", H_MODE_INIT);
     }
@@ -714,7 +713,7 @@ static void clear_selected(GtkMenuItem *menu_item, gpointer user_data)
   }
   else  {
     /* Clear history and free history-related variables */
-    g_slist_free(history_list);
+    g_list_free(history_list);
     history_list = NULL;
     save_history();
     update_clipboard(primary, "", H_MODE_INIT);
@@ -951,7 +950,7 @@ static gboolean selection_done(GtkMenuShell *menushell, gpointer user_data)
 			/*printf("Free %p.. '%s' ",it->element->data,(char *)(it->((struct history_item *(element->data))->text))); */
 			g_free(it->element->data);
 			it->element->data=NULL;
-			history_list = g_slist_delete_link(history_list, it->element);
+			history_list = g_list_delete_link(history_list, it->element);
 			/** printf("Free %p\n",it);
 			fflush(NULL);*/
 			g_free(it);
@@ -1236,7 +1235,7 @@ foundit:
 \n\b Arguments:
 \n\b Returns:
 ****************************************************************************/
-void set_clipboard_text(struct history_info *h, GSList *element)
+void set_clipboard_text(struct history_info *h, GList *element)
 {
 	g_mutex_lock(clip_lock);
 	if(NULL == find_h_item(h->delete_list,NULL,element)){	/**not in our delete list  */
@@ -1310,7 +1309,7 @@ static gboolean my_item_event (GtkWidget *w,GdkEventKey *e, gpointer user)
 	}
 	if(GDK_BUTTON_RELEASE==e->type){
 		GdkEventButton *b=(GdkEventButton *)e;
-		GSList* element = g_slist_nth(history_list, GPOINTER_TO_INT(user));
+		GList* element = g_list_nth(history_list, GPOINTER_TO_INT(user));
 		/*printf("type %x State 0x%x val %x %p '%s'\n",e->type, b->state,b->button,w,(gchar *)((struct history_item *(element->data))->text));  */
 		if(3 == b->button){ /**right-click  */
 			gboolean rtn;
@@ -1352,7 +1351,7 @@ static void item_selected(GtkMenuItem *menu_item, gpointer user_data)
 		
 		
 	GdkEventKey *k=(GdkEventKey *)gtk_get_current_event();
-	GSList* element = g_slist_nth(history_list, GPOINTER_TO_INT(user_data));
+	GList* element = g_list_nth(history_list, GPOINTER_TO_INT(user_data));
 	/*g_print ("item_selected '%s' type %x val %x\n",(gchar *)((struct history_item *(element->data))->text),k->type, k->keyval);  */
 	if(0xFF0d == k->keyval && GDK_KEY_PRESS == k->type){
 		set_clipboard_text(h,element);
@@ -1364,9 +1363,9 @@ static void item_selected(GtkMenuItem *menu_item, gpointer user_data)
 \n\b Arguments:
 \n\b Returns:
 ****************************************************************************/
-void write_history_menu_items(GSList *list, GtkWidget *menu)
+void write_history_menu_items(GList *list, GtkWidget *menu)
 {
-	GSList *element;
+	GList *element;
 	if(NULL == list)
 		return;
 	for (element = list; element != NULL; element = element->next) 
@@ -1390,8 +1389,8 @@ static gboolean show_history_menu(gpointer data)
 	h.element_text=NULL;
   /**init our keystroke function  */
 	key_release_cb(NULL,NULL,NULL);
-	GSList *element, *persistent=NULL;
-	GSList *lhist=NULL;
+	GList *element, *persistent=NULL;
+	GList *lhist=NULL;
 	int single_line=get_pref_int32("single_line");
 	
   /* Create the menu */
@@ -1427,8 +1426,8 @@ static gboolean show_history_menu(gpointer data)
     gchar* clipboard_temp = gtk_clipboard_wait_for_text(clipboard);
     /* Reverse history if enabled */
     if (get_pref_int32("reverse_history")) {
-      /*history_list = g_slist_reverse(history_list); */
-      element_number = g_slist_length(history_list) - 1;
+      /*history_list = g_list_reverse(history_list); */
+      element_number = g_list_length(history_list) - 1;
     }
     /* Go through each element and adding each */
     for (element = history_list; element != NULL; element = element->next) {
@@ -1517,11 +1516,11 @@ static gboolean show_history_menu(gpointer data)
 			  h.element_text=hist_text;
       }
 			if(get_pref_int32("persistent_history") && c->flags &CLIP_TYPE_PERSISTENT){
-				persistent = g_slist_prepend(persistent, menu_item);
+				persistent = g_list_prepend(persistent, menu_item);
 				/*g_printf("persistent %s\n",c->text); */
 			}	else{
 				/* Append item */
-				lhist = g_slist_prepend(lhist, menu_item);
+				lhist = g_list_prepend(lhist, menu_item);
 	      
 			}
 				
@@ -1539,7 +1538,7 @@ next_loop:
     g_free(clipboard_temp);
     /* Return history to normal if reversed */
     /** if (get_pref_int32("reverse_history"))
-      history_list = g_slist_reverse(history_list);*/
+      history_list = g_list_reverse(history_list);*/
   }
   else
   {
@@ -1549,8 +1548,8 @@ next_loop:
     gtk_menu_shell_append((GtkMenuShell*)menu, menu_item);
   }
 	if (!get_pref_int32("reverse_history")) {
-		lhist = g_slist_reverse(lhist);
-		persistent = g_slist_reverse(persistent);
+		lhist = g_list_reverse(lhist);
+		persistent = g_list_reverse(persistent);
 	}	
 /**now actually add them from the list  */	
 	if(get_pref_int32("persistent_history")){
@@ -1589,8 +1588,8 @@ next_loop:
 		g_signal_connect((GObject*)menu_item, "activate", (GCallback)clear_selected, NULL);
 	  gtk_menu_shell_append((GtkMenuShell*)menu, menu_item);
   }
-	g_slist_free(lhist);
-	g_slist_free(persistent);
+	g_list_free(lhist);
+	g_list_free(persistent);
   /* Popup the menu... */
   gtk_widget_show_all(menu);
   gtk_menu_popup((GtkMenu*)menu, NULL, NULL, get_pref_int32("history_pos")?postition_history:NULL, NULL, 1, gtk_get_current_event_time());
@@ -1948,7 +1947,7 @@ int main(int argc, char *argv[])
   g_free(prefs.actions_key);
   g_free(prefs.menu_key);
 	*/
-  g_slist_free(history_list);
+  g_list_free(history_list);
   close_fifos(fifo);
   /* Exit */
   return 0;

@@ -46,7 +46,7 @@ struct history_item {
 }__attribute__((__packed__));
 
 
-extern GSList* history_list;
+extern GList* history_list;
 
 glong validate_utf8_text(gchar *text, glong len);
 
