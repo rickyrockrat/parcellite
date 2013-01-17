@@ -1101,6 +1101,9 @@ static gboolean key_release_cb (GtkWidget *w,GdkEventKey *e, gpointer user)
 		TRACE(g_print("state is %X. Refusing to use mods\n",e->state));
 		return TRUE;
 	} have to use for _ and others*/
+	/**ignore Ctrl-Alt  */
+	if((GDK_CONTROL_MASK|GDK_MOD1_MASK)==(e->state & (GDK_CONTROL_MASK|GDK_MOD1_MASK)))
+		return FALSE;
 	if( e->state & GDK_MOD1_MASK){/**alt key pressed  */
 		if(e->keyval == 'e'){
 			TRACE(g_print("Alt-E\n"));
