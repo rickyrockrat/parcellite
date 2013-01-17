@@ -4,6 +4,7 @@ V1.1.3 Friday, January 19 2013
  +Changed all single lists to double.
  +Cleaned up prefs subsystem code in add_section.
  +Fixed corner case bug with persistent history moving to normal.
+ +Fixed fifo segfault on parcellite fresh install.
  
 V1.1.2 Thursday, January 18 2013 
  Changes
