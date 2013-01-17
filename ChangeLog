@@ -3,6 +3,7 @@ V1.1.3 Friday, January 19 2013
  +Fixed persistent history so it is persistent if checked.
  +Changed all single lists to double.
  +Cleaned up prefs subsystem code in add_section.
+ +Fixed corner case bug with persistent history moving to normal.
  
 V1.1.2 Thursday, January 18 2013 
  Changes

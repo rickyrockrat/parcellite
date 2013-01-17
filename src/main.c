@@ -47,6 +47,7 @@ static GtkWidget *indicator_menu = NULL;
 static GtkStatusIcon *status_icon; 
 #endif
 static GMutex *clip_lock=NULL;
+GMutex *hist_lock=NULL;
 static gboolean actions_lock = FALSE;
 static int show_icon=0;
 /**defines for moving between clipboard histories  */
@@ -223,7 +224,7 @@ gchar *update_clipboard(GtkClipboard *clip,gchar *intext,  gint mode)
 			goto done;
 	}
 	
-	if( H_MODE_IGNORE == mode){
+	if( H_MODE_IGNORE == mode){	/**ignore processing and just put it on the clip.  */
 		gtk_clipboard_set_text(clip, intext, -1);
 		return intext;
 	}
@@ -254,7 +255,7 @@ gchar *update_clipboard(GtkClipboard *clip,gchar *intext,  gint mode)
 				last=_update_clipboard(clip,d,existing);
 		}
 		if(NULL != last)
-			append_item(last,get_pref_int32("current_on_top")?HIST_DEL|HIST_CHECKDUP:0);
+			append_item(last,get_pref_int32("current_on_top")?HIST_DEL|HIST_CHECKDUP|HIST_KEEP_FLAGS:0);
 		g_free(changed);
 		changed=NULL;
 	}
@@ -277,7 +278,7 @@ gchar *update_clipboard(GtkClipboard *clip,gchar *intext,  gint mode)
 		if(NULL != (processed=process_new_item(clip,intext)) ){
 			last=_update_clipboard(clip,processed,existing);
 			if(NULL != last)
-				append_item(last,get_pref_int32("current_on_top")?HIST_DEL|HIST_CHECKDUP:0);
+				append_item(last,get_pref_int32("current_on_top")?HIST_DEL|HIST_CHECKDUP|HIST_KEEP_FLAGS:0);
 		}else 
 			return NULL;	
 	}
@@ -1756,6 +1757,7 @@ static void parcellite_init()
 		g_printf("g_thread not init!\n");
 	}
 	clip_lock= g_mutex_new();
+	hist_lock= g_mutex_new();
 	g_mutex_unlock(clip_lock);
   /* Read preferences */
   read_preferences();
