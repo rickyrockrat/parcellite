@@ -151,7 +151,7 @@ void set_strikethrough(GtkLabel *label, gboolean mode)
 \n\b Arguments:
 \n\b Returns:
 ****************************************************************************/
-GList *find_h_item(GList *list,GtkWidget *w, GSList *e)
+GList *find_h_item(GList *list,GtkWidget *w, GList *e)
 {
 	GList *i;
 	for ( i=list; NULL != i; i=i->next){
@@ -169,7 +169,7 @@ GList *find_h_item(GList *list,GtkWidget *w, GSList *e)
 \n\b Arguments:
 \n\b Returns:
 ****************************************************************************/
-void add_h_item(struct history_info *h, GtkWidget *w, GSList* element, gint which)
+void add_h_item(struct history_info *h, GtkWidget *w, GList* element, gint which)
 {
 	GList *ele;
 	GList *op;
@@ -209,7 +209,7 @@ from the list.
 \n\b Arguments:
 \n\b Returns:
 ****************************************************************************/
-void rm_h_item(struct history_info *h, GtkWidget *w, GSList* element, gint which)
+void rm_h_item(struct history_info *h, GtkWidget *w, GList* element, gint which)
 {
 	GList *i;
 	GList *op;
@@ -247,7 +247,7 @@ the delete list, which gets called when the history window closes.
 void handle_marking(struct history_info *h, GtkWidget *w, gint index, gint which)
 {
   GtkLabel *l=(GtkLabel *)(gtk_bin_get_child((GtkBin*)w)) ;
-	GSList* element = g_slist_nth(history_list, index);
+	GList* element = g_list_nth(history_list, index);
 	if(OPERATE_DELETE == which){
 		if(is_strikethrough(l)){ /**un-highlight  */
 			set_strikethrough(l,FALSE);
