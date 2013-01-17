@@ -312,6 +312,7 @@ int create_fifo(void)
 {
 	gchar *f;
 	int i=0;
+	check_dirs();
 	f=g_build_filename(g_get_user_data_dir(), FIFO_FILE_C, NULL);
 	if(-1 ==  _create_fifo(f) )
 		--i;
