@@ -90,14 +90,7 @@ gchar *process_new_item(GtkClipboard *clip,gchar *ntext)
 	gchar *rtn=NULL;
 	if(NULL == ntext)
 		return NULL;
-	#if 0
-		if(clip == primary){
-			GdkModifierType button_state;
-    	gdk_window_get_pointer(NULL, NULL, NULL, &button_state);
-			if ( button_state & GDK_BUTTON1_MASK ) /**button down, done.  */
-				goto end;
-		}
-	#endif
+	
 				
 /**we now check our options...  */		
 	/*printf("opt\n"); fflush(NULL); */
@@ -218,6 +211,14 @@ gchar *update_clipboard(GtkClipboard *clip,gchar *intext,  gint mode)
 		(clip == primary && !get_pref_int32("use_primary")) ||
 		(clip == clipboard && !get_pref_int32("use_copy")))
 			return NULL;
+	
+	if(H_MODE_CHECK==mode &&clip == primary){/*fix auto-deselect of text in applications like DevHelp and LyX*/
+		GdkModifierType button_state;
+   	gdk_window_get_pointer(NULL, NULL, NULL, &button_state);
+		if ( button_state & (GDK_BUTTON1_MASK|GDK_SHIFT_MASK) ) /**button down, done.  */
+			goto done;
+	}
+	
 	if( H_MODE_IGNORE == mode){
 		gtk_clipboard_set_text(clip, intext, -1);
 		return intext;
