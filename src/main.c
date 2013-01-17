@@ -778,6 +778,10 @@ static void show_about_dialog(GtkMenuItem *menu_item, gpointer user_data)
     /* Run the about dialog */
     gtk_dialog_run((GtkDialog*)about_dialog);
     gtk_widget_destroy(about_dialog);
+#if 0 && HAVE_APPINDICATOR
+	  if(NULL !=indicator && get_pref_int32("no_icon"))
+	  	app_indicator_set_status (indicator, APP_INDICATOR_STATUS_PASSIVE);
+#endif	
   }
 }
 
@@ -785,9 +789,15 @@ static void show_about_dialog(GtkMenuItem *menu_item, gpointer user_data)
 static void preferences_selected(GtkMenuItem *menu_item, gpointer user_data)
 {
   /* This helps prevent multiple instances */
-  if (!gtk_grab_get_current())
-    /* Show the preferences dialog */
+  if (!gtk_grab_get_current()){
+		 /* Show the preferences dialog */
     show_preferences(0);
+#if 0 && HAVE_APPINDICATOR
+	  if(NULL !=indicator && get_pref_int32("no_icon"))
+	  	app_indicator_set_status (indicator, APP_INDICATOR_STATUS_PASSIVE);
+#endif			
+	}
+
 }
 
 /* Called when Quit is selected from right-click menu */
@@ -1632,6 +1642,16 @@ static void  show_parcellite_menu(GtkStatusIcon *status_icon, guint button, guin
 \n\b Arguments:
 \n\b Returns:
 ****************************************************************************/
+gboolean show_parcellite_menu_wrapper(gpointer data)
+{
+	create_parcellite_menu(0, gtk_get_current_event_time());
+}
+
+/***************************************************************************/
+/** .
+\n\b Arguments:
+\n\b Returns:
+****************************************************************************/
 gint figure_histories(void)
 {
 	gint i;
@@ -1646,15 +1666,21 @@ gint figure_histories(void)
 }
 #ifdef HAVE_APPINDICATOR
 
+/***************************************************************************/
+/** .
+\n\b Arguments:
+\n\b Returns:
+****************************************************************************/
 void create_app_indicator(void)
 {
 	/* Create the menu */
 	indicator_menu = create_parcellite_menu(0,gtk_get_current_event_time());
 	/* check if we need to create the indicator or just refresh the menu */
 	if(NULL == indicator) {
-		indicator = app_indicator_new("parcellite", "parcellite-syrayicon", APP_INDICATOR_CATEGORY_APPLICATION_STATUS);
+		indicator = app_indicator_new("parcellite", "parcellite", APP_INDICATOR_CATEGORY_APPLICATION_STATUS);
 		app_indicator_set_status (indicator, APP_INDICATOR_STATUS_ACTIVE);
-		app_indicator_set_attention_icon (indicator, "clipit-trayicon");
+		
+		app_indicator_set_attention_icon (indicator,"parcellite");
 	}
 	app_indicator_set_menu (indicator, GTK_MENU (indicator_menu));
 }
@@ -1703,7 +1729,10 @@ void actions_hotkey(char *keystring, gpointer user_data)
 void menu_hotkey(char *keystring, gpointer user_data)
 {
 #ifdef HAVE_APPINDICATOR
-	create_app_indicator();
+	/*create_app_indicator(); */
+	create_parcellite_menu(0, gtk_get_current_event_time());
+	/** GtkWidget * w=create_parcellite_menu(0, gtk_get_current_event_time());
+	app_indicator_set_menu (indicator, GTK_MENU (w));*/
 #else
   show_parcellite_menu(status_icon, 0, 0, NULL);
 #endif
@@ -1712,6 +1741,10 @@ void menu_hotkey(char *keystring, gpointer user_data)
 /* Startup calls and initializations */
 static void parcellite_init()
 {
+/* Create clipboard */
+  primary = gtk_clipboard_get(GDK_SELECTION_PRIMARY);
+  clipboard = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);
+  
 	if(FALSE ==g_thread_supported()){
 		g_printf("g_thread not init!\n");
 	}
@@ -1732,11 +1765,8 @@ static void parcellite_init()
 			if(is_clipboard_empty(clipboard))
 				update_clipboard(clipboard,c->text,H_MODE_LIST);
 		}
-		
 	}
-	/* Create clipboard */
-  primary = gtk_clipboard_get(GDK_SELECTION_PRIMARY);
-  clipboard = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);
+	
   g_timeout_add(CHECK_INTERVAL, check_clipboards_tic, NULL);  
   
   /* Bind global keys */
