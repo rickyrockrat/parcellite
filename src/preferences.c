@@ -1011,14 +1011,25 @@ void show_preferences(gint tab)
   GtkCellRenderer* name_renderer = gtk_cell_renderer_text_new();
   g_object_set(name_renderer, "editable", TRUE, NULL);
   g_signal_connect((GObject*)name_renderer, "edited", (GCallback)edit_action, (gpointer)0);
+	
+	label=gtk_label_new(_("Action"));
+	gtk_widget_set_tooltip_text(label,"This is the Action Name. \nDO NOT put commands here.");
+	gtk_widget_show (label);
   tree_column = gtk_tree_view_column_new_with_attributes(_("Action"), name_renderer, "text", 0, NULL);
+  gtk_tree_view_column_set_widget(tree_column,label); 
+	
   gtk_tree_view_column_set_resizable(tree_column, TRUE);
   gtk_tree_view_append_column((GtkTreeView*)treeview, tree_column);
   GtkCellRenderer* command_renderer = gtk_cell_renderer_text_new();
   g_object_set(command_renderer, "editable", TRUE, NULL);
   g_object_set(command_renderer, "ellipsize-set", TRUE, "ellipsize", PANGO_ELLIPSIZE_END, NULL);
   g_signal_connect((GObject*)command_renderer, "edited", (GCallback)edit_action, (gpointer)1);
+	
+	label=gtk_label_new(_("Command"));
+	gtk_widget_set_tooltip_text(label,"Put the full commands here. ex echo \"parcellite gave me %s\">>$HOME/ptest");
+	gtk_widget_show (label);
   tree_column = gtk_tree_view_column_new_with_attributes(_("Command"), command_renderer, "text", 1, NULL);
+	gtk_tree_view_column_set_widget(tree_column,label); 
   gtk_tree_view_column_set_expand(tree_column, TRUE);
   gtk_tree_view_append_column((GtkTreeView*)treeview, tree_column);
   gtk_container_add((GtkContainer*)scrolled_window, treeview);
