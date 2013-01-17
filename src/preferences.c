@@ -118,6 +118,8 @@ struct pref_item myprefs[]={
 	{.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_DISP,.name="persistent_history",.type=PREF_TYPE_TOGGLE,.desc="Persistent History",.tip="If checked, enables the persistent history.",.val=FALSE},
 	{.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_DISP,.name="persistent_separate",.type=PREF_TYPE_TOGGLE,.desc="Persistent As Separate List",.tip="If checked, puts the persistent history in a new list.",.val=FALSE},
 	{.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_DISP,.name="persistent_on_top",.type=PREF_TYPE_TOGGLE,.desc="Persistent On Top",.tip="If checked, puts the persistent history at the top of the history list.",.val=FALSE},
+	{.adj=NULL,.cval="\\n",.sig=NULL,.sec=PREF_SEC_DISP,.name="persistent_delim",.type=PREF_TYPE_ENTRY,.desc="Entry Delimiter",.tip="This string will be inserted between each line of history for paste all."},
+	{.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_DISP,.name="nop",.type=PREF_TYPE_SPACER,.desc=" ",.tip=NULL},
   {.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_NONE,.name="ellipsize",.type=PREF_TYPE_COMBO,.desc="Omit items in the:",.tip=NULL,.val=DEF_ELLIPSIZE}, 
 	
 /**Action Keys  */
