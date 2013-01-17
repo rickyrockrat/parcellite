@@ -182,7 +182,8 @@ struct cmdline_opts *parse_options(int argc, char* argv[])
   /* Do not display icon option */
   if (opts->icon)  {
 		set_pref_int32("no_icon",TRUE);
-  }
+  } else
+  	set_pref_int32("no_icon",FALSE);
 	return opts;
 }
 
