@@ -49,6 +49,7 @@
 #define PREF_TYPE_SPACER 0x60
 #define PREF_TYPE_MASK	 0xF0 
 #define PREF_TYPE_NMASK	 0xF
+#define PREF_TYPE_SINGLE_LINE 1
 
 #define PREF_SEC_NONE 0
 #define PREF_SEC_CLIP 1
@@ -80,6 +81,7 @@ struct pref_item {
 	gchar *sig;			 /**signal, if any  */
 	GCallback sfunc; /**function to call  */
 	struct myadj *adj;
+	gchar horiz
 };
 static struct pref_item dummy[2];
 static void check_toggled(GtkToggleButton *togglebutton, gpointer user_data);
@@ -99,6 +101,10 @@ struct pref_item myprefs[]={
   {.adj=&align_hist_xy,.cval=NULL,.sig=NULL,.sec=PREF_SEC_HIST,.name="history_y",.type=PREF_TYPE_SPIN,.desc="<b>Y</b>",.tip=NULL,.val=1},
 	{.adj=&align_hist_lim,.cval=NULL,.sig=NULL,.sec=PREF_SEC_HIST,.name="history_limit",.type=PREF_TYPE_SPIN,.desc="Items in history",.tip=NULL,.val=DEF_HISTORY_LIMIT},
   {.adj=&align_data_lim,.cval=NULL,.sig=NULL,.sec=PREF_SEC_HIST,.name="data_size",.type=PREF_TYPE_SPIN,.desc="Max Data Size(MB)",.tip=NULL,.val=0},
+	{.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_HIST,.name="nop",.type=PREF_TYPE_SPACER,.desc=" ",.tip=NULL},
+	{.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_HIST,.name="automatic_paste",.type=PREF_TYPE_TOGGLE|1,.desc="Auto Paste",.tip="If checked, will use xdotool to paste.",.val=0},
+	{.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_HIST,.name="auto_key",.type=PREF_TYPE_TOGGLE|PREF_TYPE_SINGLE_LINE,.desc="Key",.tip="If checked, will use Ctrl-V paste.",.val=0},
+	{.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_HIST,.name="auto_mouse",.type=PREF_TYPE_TOGGLE|PREF_TYPE_SINGLE_LINE,.desc="Mouse",.tip="If checked, will use middle mouse to paste.",.val=1},
   
   /**Miscellaneous  */  
 	{.adj=NULL,.cval=NULL,.sig="toggled",.sfunc=(GCallback)search_toggled,.sec=PREF_SEC_MISC,.name="type_search",.type=PREF_TYPE_TOGGLE,.desc="Search As You Type",.tip="If checked, does a search-as-you-type. Turns red if not found. Goes to top (Alt-E) line when no chars are entered for search"},
@@ -341,6 +347,12 @@ void check_sanity(void)
 	}else{
 		set_pref_int32("persistent_separate",0);
 	  set_pref_int32("persistent_on_top",0);
+	}
+	if(get_pref_int32("automatic_paste")){
+		if(get_pref_int32("auto_key") && get_pref_int32("auto_mouse"))
+			set_pref_int32("auto_key",0);
+		if(!get_pref_int32("auto_key") && !get_pref_int32("auto_mouse"))
+			set_pref_int32("auto_mouse",1);
 	}
 }
 /* Apply the new preferences */
@@ -758,15 +770,28 @@ section is the section to add, parent is the box to put it in.
 ****************************************************************************/
 int add_section(int sec, GtkWidget *parent)
 {
-	int i,no,rtn=0;
-	gint x,y;
+	int i,rtn=0;
+	gint x,y,number=0;
 	GtkWidget *hbox, *label, *child;
-	for (no=0,i=get_first_pref(sec);sec==myprefs[i].sec; ++i){
+	for (i=get_first_pref(sec);sec==myprefs[i].sec; ++i){
 		GtkWidget* packit;
+		int no=(myprefs[i].type&(PREF_TYPE_NMASK|PREF_TYPE_SINGLE_LINE));
 		switch (myprefs[i].type&PREF_TYPE_MASK){
 			case PREF_TYPE_TOGGLE:
-				myprefs[i].w=gtk_check_button_new_with_mnemonic(_(myprefs[i].desc));
-				packit=myprefs[i].w;
+				if(no){	/**do multiple toggle boxes in one line.  */
+					hbox = gtk_hbox_new(FALSE, 2);  
+					for (;sec==myprefs[i].sec && (myprefs[i].type&(PREF_TYPE_NMASK|PREF_TYPE_SINGLE_LINE));++i){
+						myprefs[i].w=gtk_check_button_new_with_mnemonic(_(myprefs[i].desc));
+						gtk_box_pack_start((GtkBox*)hbox,myprefs[i].w , FALSE, FALSE, 0);
+						if(NULL != myprefs[i].tip)
+		  				gtk_widget_set_tooltip_text(myprefs[i].w, _(myprefs[i].tip));
+					}
+					packit=hbox;
+				}	else{
+					myprefs[i].w=gtk_check_button_new_with_mnemonic(_(myprefs[i].desc));
+					packit=myprefs[i].w;	
+				}
+				
 				break;
 			case PREF_TYPE_SPIN:
 				hbox = gtk_hbox_new(FALSE, 4);  
