@@ -148,7 +148,7 @@ done:
 \n\b Arguments:
 \n\b Returns:	text that was updated or NULL if not.
 ****************************************************************************/
-gchar *_update_clipboard (GtkClipboard *clip, gchar *n, gchar **old)
+gchar *_update_clipboard (GtkClipboard *clip, gchar *n, gchar **old, int set)
 {
 	
 	if(NULL != n)	{
@@ -156,7 +156,8 @@ gchar *_update_clipboard (GtkClipboard *clip, gchar *n, gchar **old)
 			g_printf("set PRI to %s\n",n);
 		else
 			g_printf("set CLI to %s\n",n);*/
-		gtk_clipboard_set_text(clip, n, -1);
+		if( set)
+			gtk_clipboard_set_text(clip, n, -1);
 		if(NULL != *old)
 		  g_free(*old);
 		*old=g_strdup(n);
@@ -184,6 +185,7 @@ gboolean is_clipboard_empty(GtkClipboard *clip)
   g_free(targets);
   return !contents;
 }
+
 /***************************************************************************/
 /** .
 \n\b Arguments:
@@ -197,10 +199,19 @@ gchar *update_clipboard(GtkClipboard *clip,gchar *intext,  gint mode)
 	static gchar *last=NULL; /**last text change, for either clipboard  */
 	gchar **existing, *changed=NULL;
 	gchar *processed;
+	GdkModifierType button_state;
+/*	gchar *clipname; */
+	int set=1;
 	if( H_MODE_LAST == mode)
 		return last;
+	if(clip==primary){
+/*		clipname="PRI "; */
+		existing=&ptext;
+	}	else{
+/*		clipname="CLI "; */
+		existing=&ctext;
+	}
 	
-	existing=clip==primary?&ptext:&ctext;
 	/** if(H_MODE_CHECK!=mode )
 	g_printf("HC%d-%c: in %s,ex %s\n",mode,clip==primary?'p':'c',intext,*existing);*/
 	if( H_MODE_INIT == mode){
@@ -218,20 +229,20 @@ gchar *update_clipboard(GtkClipboard *clip,gchar *intext,  gint mode)
 			return NULL;
 	
 	if(H_MODE_CHECK==mode &&clip == primary){/*fix auto-deselect of text in applications like DevHelp and LyX*/
-		GdkModifierType button_state;
    	gdk_window_get_pointer(NULL, NULL, NULL, &button_state);
 		if ( button_state & (GDK_BUTTON1_MASK|GDK_SHIFT_MASK) ) /**button down, done.  */
 			goto done;
 	}
-	
+	/*g_printf("BS=0x%02X ",button_state); */
 	if( H_MODE_IGNORE == mode){	/**ignore processing and just put it on the clip.  */
+/*		g_printf("%sJustSet '%s'\n",clipname,intext); */
 		gtk_clipboard_set_text(clip, intext, -1);
 		return intext;
 	}
 	/**check for lost contents and restore if lost */
 	/* Only recover lost contents if there isn't any other type of content in the clipboard */
 	if(is_clipboard_empty(clip) && NULL != *existing ) {
-		//g_printf("clp empty, set to '%s'\n",*existing);
+/*		g_printf("%sclp empty, BS=0x%02X set to '%s'\n",clipname,button_state,*existing); */
     gtk_clipboard_set_text(clip, *existing, -1);
 		last=*existing;
   }
@@ -241,18 +252,26 @@ gchar *update_clipboard(GtkClipboard *clip,gchar *intext,  gint mode)
 		g_free(changed);                    /**no change, do nothing  */
 		changed=NULL;
 	}	else {
-		//g_printf("clp changed: ex '%s' is '%s'\n",*existing,changed);
+/*		g_printf("%sclp changed: ex '%s' is '%s'\n",clipname,*existing,changed); */
 		if(NULL != (processed=process_new_item(clip,changed)) ){
-			last=_update_clipboard(clip,processed,existing);
+			if(0 == p_strcmp(processed,changed)) set=0;
+			else set=1;
+				 
+			last=_update_clipboard(clip,processed,existing,set);
 		}else {/**restore clipboard  */
 			gchar *d;
+			
 			if(NULL ==*existing && NULL != history_list){
 				struct history_item *c;
 				c=(struct history_item *)(history_list->data);	
 				d=c->text;
-			}else d=*existing;
-			if(NULL != d)
-				last=_update_clipboard(clip,d,existing);
+			}else 
+				d=*existing;
+			if(NULL != d){
+/*				g_printf("%srestore clp '%s'\n",clipname,d); */
+				last=_update_clipboard(clip,d,existing,1);
+			}
+				
 		}
 		if(NULL != last)
 			append_item(last,get_pref_int32("current_on_top")?HIST_DEL|HIST_CHECKDUP|HIST_KEEP_FLAGS:0);
@@ -267,16 +286,19 @@ gchar *update_clipboard(GtkClipboard *clip,gchar *intext,  gint mode)
 	
 	*/		
 	
-	if(H_MODE_LIST == mode && p_strcmp(intext,*existing)){ /**just set clipboard contents. Already in list  */
-		last=_update_clipboard(clip,intext,existing);
+	if(H_MODE_LIST == mode && 0 != p_strcmp(intext,*existing)){ /**just set clipboard contents. Already in list  */
+/*		g_printf("%sInList '%s' ex '%s'\n",clipname,intext,*existing); */
+		last=_update_clipboard(clip,intext,existing,1);
 		if(NULL != last){/**maintain persistence, if set  */
 			append_item(last,get_pref_int32("current_on_top")?HIST_DEL|HIST_CHECKDUP|HIST_KEEP_FLAGS:0);
 		}
-			
 		goto done;
 	}else if(H_MODE_NEW==mode){
 		if(NULL != (processed=process_new_item(clip,intext)) ){
-			last=_update_clipboard(clip,processed,existing);
+/*			g_printf("%sNEW '%s'\n",clipname,processed); */
+			if(0 == p_strcmp(processed,*existing))set=0;
+			else set=1;
+			last=_update_clipboard(clip,processed,existing,set);
 			if(NULL != last)
 				append_item(last,get_pref_int32("current_on_top")?HIST_DEL|HIST_CHECKDUP|HIST_KEEP_FLAGS:0);
 		}else 
@@ -342,7 +364,7 @@ void check_clipboards(gint mode)
 		if(NULL==ptext && NULL ==ctext)
 			goto done;
 			last=update_clipboard(NULL, NULL, H_MODE_LAST);
-		if( NULL != last && p_strcmp(ptext,ctext)){
+		if( NULL != last && 0 != p_strcmp(ptext,ctext)){
 			/**last is a copy, of things that may be deallocated  */
 			last=strdup(last);
 			/*g_printf("Update clipb '%s' '%s' to '%s'\n",ptext,ctext,last);  */
@@ -894,7 +916,7 @@ static gboolean show_actions_menu(gpointer data)
       	g_print("2:got 0 items from fread\n");
       name[size] = '\0';
       menu_item = gtk_menu_item_new_with_label(name);
-      g_free(name);
+      
       if(0 ==fread(&size, 4, 1, actions_file))
       	g_print("3:got 0 items from fread\n");
       /* Read command */
@@ -909,6 +931,7 @@ static gboolean show_actions_menu(gpointer data)
       gtk_menu_shell_append((GtkMenuShell*)menu, menu_item);
       g_signal_connect((GObject*)menu_item,        "activate",
                        (GCallback)action_selected, (gpointer)command);      
+		  g_free(name);
     }
     fclose(actions_file);
   }
@@ -1702,6 +1725,7 @@ static void status_icon_clicked(GtkStatusIcon *status_icon, gpointer user_data)
   /* Control click */
   if (state == GDK_MOD2_MASK+GDK_CONTROL_MASK || state == GDK_CONTROL_MASK)
   {
+		g_printf("Got Ctrl-click\n");
     if (actions_lock == FALSE)
     {
       g_timeout_add(POPUP_DELAY, show_actions_menu, NULL);
