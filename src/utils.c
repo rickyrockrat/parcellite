@@ -16,21 +16,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <glib.h>
-#include <gtk/gtk.h>
-#include "main.h"
-#include "utils.h"
-#include "daemon.h"
-#include "history.h"
-#include "parcellite-i18n.h"
-#include <string.h>
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
-#include <unistd.h>
-#include <dirent.h>
+#include "parcellite.h"
+/**for our fifo interface  */
 #include <sys/types.h>
+#include <dirent.h> 
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <errno.h>
@@ -194,7 +184,7 @@ if 2 or greater, process is running
 \n\b Arguments:
 \n\b Returns:	number of instances of name found
 ****************************************************************************/
-int proc_find(const char* name, pid_t *pid) 
+int proc_find(const char* name, int mode, pid_t *pid) 
 {
 	DIR* dir;
 	FILE* fp;
@@ -220,12 +210,22 @@ int proc_find(const char* name, pid_t *pid)
 
     if ((fp= fopen(buf, "r"))) {
       if (fgets(buf, sizeof(buf), fp) != NULL) {
-				gchar *b=g_path_get_basename(buf);
-	      if (!g_strcmp0(b, name)) {
-					++instances;
-					if(NULL !=pid)
-					  *pid=lpid;
-	      }
+				if(PROC_MODE_EXACT == mode){
+					gchar *b=g_path_get_basename(buf);
+		      if (!g_strcmp0(b, name)) {
+						++instances;
+						if(NULL !=pid)
+						  *pid=lpid;
+		      }
+				}else if( PROC_MODE_STRSTR == mode){
+					if(NULL !=g_strrstr(buf,name)){
+						++instances;
+						if(NULL !=pid)
+						  *pid=lpid;
+						/*g_printf("Looking for '%s', found '%s'\n",name,buf); */
+					}
+				}
+				
       }
       fclose(fp);
     }
@@ -349,21 +349,21 @@ int open_fifos(struct p_fifo *fifo)
 	int flg;
 	gchar *f;
 	
-	if(FIFO_CLIENT == fifo->whoami)
+	if(PROG_MODE_CLIENT & fifo->whoami)
 		flg=O_WRONLY|O_NONBLOCK;
 	else {/**daemon  if you set O_RDONLY, you get 100%cpu usage from HUP*/
 		flg=O_RDWR|O_NONBLOCK;/*|O_EXCL; */
 	}	
 	
 	f=g_build_filename(g_get_user_data_dir(), FIFO_FILE_P, NULL);
-	if( (fifo->fifo_p=_open_fifo(f,flg))>2 && FIFO_DAEMON == fifo->whoami){
+	if( (fifo->fifo_p=_open_fifo(f,flg))>2 && (PROG_MODE_DAEMON & fifo->whoami)){
 		if(fifo->dbg) g_printf("PRI fifo %d\n",fifo->fifo_p);
 		fifo->g_ch_p=g_io_channel_unix_new (fifo->fifo_p);
 		g_io_add_watch (fifo->g_ch_p,G_IO_IN|G_IO_HUP,fifo_read_cb,(gpointer)fifo);
 	}
 		
 	f=g_build_filename(g_get_user_data_dir(), FIFO_FILE_C, NULL);
-	if( (fifo->fifo_c=_open_fifo(f,flg)) >2 && FIFO_DAEMON == fifo->whoami){
+	if( (fifo->fifo_c=_open_fifo(f,flg)) >2 && (PROG_MODE_DAEMON & fifo->whoami)){
 		fifo->g_ch_c=g_io_channel_unix_new (fifo->fifo_c);
 		g_io_add_watch (fifo->g_ch_c,G_IO_IN|G_IO_HUP,fifo_read_cb,(gpointer)fifo);
 	}
@@ -491,14 +491,15 @@ struct p_fifo *init_fifo(int mode)
 		g_free(f);
 		return NULL;
 	}
-	/**set debug here for debug messages ( f->dbg=1)  */
+	/**set debug here for debug messages */
+	f->dbg=1;  
 	f->len=7999;
 /*	f->dbg=1; */
 /*	g_printf("My PID is %d\n",getpid()); */
 	/**we are daemon, and will launch  */
-	if(proc_find("parcellite",NULL)<2){
-		f->whoami=FIFO_DAEMON;
-		if(f->dbg) g_printf("parcellite not found\n");
+	if(mode&PROG_MODE_DAEMON){
+		f->whoami=PROG_MODE_DAEMON;
+		if(f->dbg) g_printf("running parcellite not found\n");
 		if(create_fifo() < 0 ){
 			g_printf("error creating fifo\n");
 		  goto err;
@@ -510,7 +511,7 @@ struct p_fifo *init_fifo(int mode)
 		return f;
 		  /**We are the client  */
 	}	else{
-		f->whoami=FIFO_CLIENT;
+		f->whoami=PROG_MODE_CLIENT;
 		if(f->dbg) g_printf("parcellite found\n");
 		if(open_fifos(f) < 0 ){
 			g_printf("Error opening fifo. Exit\n");

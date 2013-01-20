@@ -20,9 +20,12 @@
 #include <glib.h>
 #include <gtk/gtk.h>
 #include <string.h>
+#include <unistd.h>
 #ifdef HAVE_APPINDICATOR
 #include <libappindicator/app-indicator.h>
 #endif
+#define PARCELLITE_PROG_NAME "parcellite"
+#define PARCELLITE_ICON PARCELLITE_PROG_NAME
 #include "daemon.h"
 #include "utils.h"
 #include "preferences.h"
@@ -31,6 +34,5 @@
 #include "keybinder.h"
 #include "parcellite-i18n.h"
 #include "attr_list.h"
-
-#define PARCELLITE_ICON "parcellite"
 #endif
+

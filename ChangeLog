@@ -1,6 +1,8 @@
 V1.1.4 Saturday, January 19 2013
  Changes
  +Fixed Visual deselection bug where parcellite was doing unnecessary updates.
+ +Changed appindicator usage. If indicator-appmenu is not strstr found, then use old status icon.
+    This change should revert icon behaviour back to pre-libappindicator, for WMs that are not Unity.
 
 V1.1.3 Thursday, January 17 2013
  Changes
