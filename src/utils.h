@@ -20,9 +20,9 @@
 #define UTILS_H
 
 G_BEGIN_DECLS
-
-#define CONFIG_DIR  "parcellite"
-#define DATA_DIR    "parcellite"
+#include "parcellite.h"
+#define CONFIG_DIR  PARCELLITE_PROG_NAME
+#define DATA_DIR    PARCELLITE_PROG_NAME
 
 struct cmdline_opts {
 	gboolean icon;    
@@ -31,6 +31,7 @@ struct cmdline_opts {
 	gboolean primary;
 	gboolean exit;
 	gchar *leftovers;
+	gint appindicator;
 };
 
 gchar *p_strdup( const gchar *str );
@@ -40,11 +41,14 @@ gboolean is_hyperlink(gchar* link);
 
 struct cmdline_opts *parse_options(int argc, char* argv[]);
 
-#define FIFO_CLIENT 1
-#define FIFO_DAEMON 0
-#define FIFO_MODE_NONE 0
-#define FIFO_MODE_PRI  1 
-#define FIFO_MODE_CLI  2
+#define PROG_MODE_CLIENT 2
+#define PROG_MODE_DAEMON 1
+#define FIFO_MODE_NONE 0x10
+#define FIFO_MODE_PRI  0x20 
+#define FIFO_MODE_CLI  0x40
+
+#define PROC_MODE_EXACT 1
+#define PROC_MODE_STRSTR 2
 
 struct p_fifo {
 	int whoami;					/**client or daemon  */
@@ -58,7 +62,7 @@ struct p_fifo {
 	gint which;	/**which clipboard the buffer should be written to  */
 	gint dbg;		/**set to debug fifo system  */
 };
-int proc_find(const char* name, pid_t *pid);
+int proc_find(const char* name, int mode, pid_t *pid);
 int create_fifo(void);
 int open_fifos(struct p_fifo *fifo);
 int read_fifo(struct p_fifo *f, int which);
