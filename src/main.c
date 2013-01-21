@@ -1627,6 +1627,16 @@ next_loop:
   return FALSE;
 }
 
+
+/***************************************************************************/
+/** .
+\n\b Arguments:
+\n\b Returns:
+****************************************************************************/
+void _show_history_menu (GtkMenuItem *m, gpointer data)
+{
+	g_timeout_add(POPUP_DELAY, show_history_menu, GINT_TO_POINTER(figure_histories()));
+}
 /***************************************************************************/
 /** .
 \n\b Arguments:
@@ -1654,6 +1664,15 @@ GtkWidget *create_parcellite_menu(guint button, guint activate_time)
   menu_item = gtk_image_menu_item_new_from_stock(GTK_STOCK_PREFERENCES, NULL);
   g_signal_connect((GObject*)menu_item, "activate", (GCallback)preferences_selected, NULL);
   gtk_menu_shell_append((GtkMenuShell*)menu, menu_item);
+	if(have_appindicator){
+			/* History */
+		GtkWidget *img=gtk_image_new_from_icon_name(PARCELLITE_ICON,GTK_ICON_SIZE_MENU); 
+	  menu_item = gtk_image_menu_item_new_with_mnemonic(_("_History"));
+		gtk_image_menu_item_set_image((GtkImageMenuItem *)menu_item,img);
+	  g_signal_connect((GObject*)menu_item, "activate", (GCallback)_show_history_menu, NULL);
+	  gtk_menu_shell_append((GtkMenuShell*)menu, menu_item);
+	}
+	
   /* -------------------- */
   gtk_menu_shell_append((GtkMenuShell*)menu, gtk_separator_menu_item_new());
   /* Quit */
@@ -1697,6 +1716,7 @@ gint figure_histories(void)
 			i=HIST_DISPLAY_PERSISTENT|HIST_DISPLAY_NORMAL;
 	}else 
 		i=HIST_DISPLAY_NORMAL;
+	g_printf("Using history 0x%X\n",i);
 	return i;
 }
 #ifdef HAVE_APPINDICATOR
