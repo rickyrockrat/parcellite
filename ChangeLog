@@ -4,6 +4,7 @@ V1.1.4 Saturday, January 19 2013
  +Changed appindicator usage. If indicator-appmenu is not strstr found, then use old status icon.
     This change should revert icon behaviour back to pre-libappindicator, for WMs that are not Unity.
  +Added History to popup menu when running Unity.
+ +Removed Mutex locs for clipboard updates, commented out some debug prints.
 
 V1.1.3 Thursday, January 17 2013
  Changes
