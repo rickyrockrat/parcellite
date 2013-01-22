@@ -331,7 +331,7 @@ void check_clipboards(gint mode)
 	gchar *ptext, *ctext, *last;
 	int n=0;
 	/*g_printf("check_clipboards\n"); */
-	g_mutex_lock(clip_lock);
+	/*g_mutex_lock(clip_lock); */
 	if(fifo->rlen >0){
 		switch(fifo->which){
 			case ID_PRIMARY:
@@ -375,7 +375,8 @@ void check_clipboards(gint mode)
 		  
 	}	
 done:	
-	g_mutex_unlock(clip_lock);	
+	return;
+	/*g_mutex_unlock(clip_lock);	 */
 }
 #ifdef HAVE_APPINDICATOR
 /***************************************************************************/
@@ -1265,7 +1266,7 @@ foundit:
 ****************************************************************************/
 void set_clipboard_text(struct history_info *h, GList *element)
 {
-	g_mutex_lock(clip_lock);
+	/*g_mutex_lock(clip_lock); */
 	if(NULL == find_h_item(h->delete_list,NULL,element)){	/**not in our delete list  */
 		/**make a copy of txt, because it gets freed and re-allocated.  */
 		gchar *txt=p_strdup(((struct history_item *)(element->data))->text);
@@ -1278,7 +1279,7 @@ void set_clipboard_text(struct history_info *h, GList *element)
 	}
   g_signal_emit_by_name ((gpointer)h->menu,"selection-done");
 	/*g_printf("set_clip_text done\n");  */
-	g_mutex_unlock(clip_lock);
+	/*g_mutex_unlock(clip_lock); */
 	
 	if (get_pref_int32("automatic_paste")) { /** mousedown 2 */
 		gchar *action=NULL;
@@ -1716,7 +1717,7 @@ gint figure_histories(void)
 			i=HIST_DISPLAY_PERSISTENT|HIST_DISPLAY_NORMAL;
 	}else 
 		i=HIST_DISPLAY_NORMAL;
-	g_printf("Using history 0x%X\n",i);
+	/*g_printf("Using history 0x%X\n",i); */
 	return i;
 }
 #ifdef HAVE_APPINDICATOR
