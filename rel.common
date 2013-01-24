@@ -165,10 +165,12 @@ setup_ppa (){
  tar --exclude .svn -czf $debdir.orig.tar.gz $debdir
  check_err "tar for ppa"
  cp $debdir/deb/* t/debian
- echo "What series does this apply to? (i.e. precise/natty,etc)"
+ echo "What series does this apply to? (i.e. raring/quantal/precise/oneiric/lucid/hardy,etc)"
  read SERIES
+ echo "What ppa number should we use? (1 for the first, etc.)"
+ read PPANO
 #build changelog
- echo "parcellite (${tag}-1ppa1) $SERIES; urgency=low" > t/debian/changelog
+ echo "parcellite (${tag}-1ppa$PPANO) $SERIES; urgency=low" > t/debian/changelog
  cat $debdir/ChangeLog |while read line; do 
   if [ $(echo "$line"|grep -c V1.0.2rc5) -gt 0 ]; 
     then break 
@@ -196,10 +198,16 @@ setup_ppa (){
  gpg --list-keys
  echo "Which key? 2048R/ABCDEF12 - just need the ABC part"
  read KEYID
- debuild -S -sa "-k $KEYID"
+ echo "Upload source? (y/n)"
+ read YN
+ if [ "$YN" = "y" ]; then
+   debuild -S -sa "-k $KEYID"
+ else
+   debuild -S -sd "-k $KEYID"
+ fi
  check_err "debuild"
  cd ..
- dput ppa:rickyrockrat/ppa ${debdir}-1ppa1_source.changes
+ dput ppa:rickyrockrat/ppa ${debdir}-1ppa$PPANO_source.changes
  check_err "dput"
 }
 # show the links for the user to copy.
