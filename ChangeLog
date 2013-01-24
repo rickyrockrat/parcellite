@@ -3,8 +3,8 @@ V1.1.5 Friday, January 25 2013
 V1.1.4 Saturday, January 19 2013
  Changes
  +Fixed Visual deselection bug where parcellite was doing unnecessary updates.
- +Changed appindicator usage. If indicator-appmenu is not strstr found, then use old status icon.
-    This change should revert icon behaviour back to pre-libappindicator, for WMs that are not Unity.
+ +Changed appindicator usage. If indicator-appmenu is not strstr found, then use old status icon. 
+   +This change should revert icon behaviour back to pre-libappindicator, for WMs that are not Unity.
  +Added History to popup menu when running Unity.
  +Removed Mutex locs for clipboard updates, commented out some debug prints.
 
@@ -39,13 +39,11 @@ V1.1.0 Wednesday, January 16 2013
  ***This is a major release.***
  +Added patch 3389976 - history menu crash, utf-8
  +Added UTF-8 checks on incomming text streams.
- +Changed history entries to structures (and history file format) to support
-  upcoming features.
+ +Changed history entries to structures (and history file format) to support upcoming features.
  +Added persistent history list and corresponding hot key.
  +Added right-click either history list with a Move To or cancel.
  +Added Save As for the history file - writes a text file out.
- +Major rewrite of cliboard handling. It is now very simple and eliminates a 
-  lot of CPU overhead.
+ +Major rewrite of cliboard handling. It is now very simple and eliminates a lot of CPU overhead.
  +Fixed bug 3560995, mouse button events causing false searches.
  +Added appindicator so it appears in unity.
  +Completely re-wrote prefs sybsystem, so prefs are easier to add.
@@ -61,8 +59,8 @@ V1.0.2rc6 Wednesday, January 9 2013
  +Fixed arrow/home/page up keys messing up search-as-you-type.
  +Fixed having multiple copies of parcellite. Checks to see if already running.
  +Fixed double backspace on search-as-you-type.
- +Fixed command line copies to clipboard. Should work on all X sessions. Note: entry is not 
-  immediately added to clipboard. There is a 1/2 sec delay.
+ +Fixed command line copies to clipboard. Should work on all X sessions. 
+   +Note: entry is not immediately added to clipboard. There is a 1/2 sec delay.
  
 V1.0.2rc5  Friday, September 9 2011 
  Changes
