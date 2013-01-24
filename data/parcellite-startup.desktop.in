@@ -5,5 +5,4 @@ Icon=parcellite
 Exec=parcellite
 Terminal=false
 Type=Application
-OnlyShowIn=GNOME;XFCE;
 X-GNOME-Autostart-enabled=true
