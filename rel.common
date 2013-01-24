@@ -179,6 +179,8 @@ setup_ppa (){
  echo " -- Doug Springer <gpib@rickyrockrat.net>  $DATE" >> t/debian/changelog
 # setup control
  sed -i 's!ADD_ARCH_HERE!any!' t/debian/control
+#do compat
+ echo 5 > t/debian/compat
 #build rules
  echo "#!/usr/bin/make -f" > t/debian/rules
  echo "# -*- makefile -*-">> t/debian/rules
