@@ -48,6 +48,7 @@ ask_version () {
   turl="$BURL/tags/$tag"
   tdir="parcellite-$tag"
   CODIR="$ASVN/test.$tag"
+  debdir="parcellite_$tag"
 }
 # Copy the trunk to tag
 svn_cp_to_tag () {
@@ -88,11 +89,17 @@ test_tag_co () {
   mkdir -p "$CODIR"
   check_err "mkdir co"
   cd "$CODIR"
+  if [ -e $tdir/.svn ] ; then
+    echo "$CODIR/$tag alread exists. Not re-checking out"
+    return
+  fi
   echo "performing svn co $turl"
   svn co "$turl"
   check_err "svn co"
-  cd $tag
-  check_err "cd $tag"
+  mv $tag $tdir
+  check_err "mv svn co dir"
+  cd $tdir
+  check_err "cd $tdir"
   rm svnversion.sh
   check_err "rm svnver"
   sed -i "s/\(AC_INIT.*\)m4_.*)\(.*rickyrockrat.*\)/\1[$tag]\2/" configure.ac
@@ -103,8 +110,7 @@ test_tag_co () {
 make_tarball () {
   echo "$FUNCNAME"
   cd "$CODIR"
-  mv $tag $tdir
-  check_err "mv svn co dir"
+  check_err "cd $CODIR"
   tar --exclude .svn -czf $tdir.tar.gz $tdir
   check_err "tar -c"
 }
@@ -145,6 +151,42 @@ set_abs_path () {
     CDIR=$(pwd)
   fi
   echo "Using '$CDIR'"
+}
+# build the ppa & send it to launchpad
+setup_ppa (){
+ echo "$FUNCNAME"
+ cd "$CODIR"
+ check_err "CD $CODIR"
+ mkdir -p ppa/t/debian
+ cp -a $tdir ppa/$debdir
+ cd ppa
+ check_err "mkdir/cd ppa"
+ tar --exclude .svn -czf $debdir.orig.tar.gz $debdir
+ check_err "tar for ppa"
+ cp $debdir/deb/* t/debian
+#build changelog
+ echo "parcellite (${tag}-1ppa1) unstable; urgency=low" > t/debian/changelog
+ sed 's!^.*+!  - !;s!^V!  * V!' $debdir/ChangeLog|grep -v Changes>> t/debian/changelog
+# setup control
+ sed -i 's!ADD_ARCH_HERE!any!' t/debian/control
+#build rules
+ echo "#!/usr/bin/make -f" > t/debian/rules
+ echo "# -*- makefile -*-">> t/debian/rules
+ echo "# Uncomment this to turn on verbose mode.">> t/debian/rules
+ echo "#export DH_VERBOSE=1">> t/debian/rules
+ echo " ">> t/debian/rules
+ echo "%:">> t/debian/rules
+ echo "        dh $@ ">> t/debian/rules
+ echo "DEB_CONFIGURE_EXTRA_FLAGS += --enable-appindicator=yes">> t/debian/rules
+ cd t
+ gpg --list-keys
+ echo "Which key? 2048R/ABCDEF12 - just need the ABC part"
+ read KEYID
+ debuild -S -sa "-k $KEYID"
+ check_err "debuild"
+ cd ..
+ dput ppa:rickyrockrat/ppa ${debdir}-1ppa1_source.changes
+ check_err "dput"
 }
 # show the links for the user to copy.
 show_links () {
