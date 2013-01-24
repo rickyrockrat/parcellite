@@ -162,6 +162,15 @@ setup_ppa (){
  cp -a $tdir ppa/$debdir
  cd ppa
  check_err "mkdir/cd ppa"
+ echo "Set ppa to something different than $tag?"
+ read YN
+ if [ "$YN" = "y" ]; then
+   echo "full tag number (replaces '$tag')?"
+   read tag
+   ndir="parcellite_$tag"
+   mv $debdir $ndir
+   debdir="$ndir"
+ fi
  tar --exclude .svn -czf $debdir.orig.tar.gz $debdir
  check_err "tar for ppa"
  cp $debdir/deb/* t/debian
@@ -170,7 +179,7 @@ setup_ppa (){
  echo "What ppa number should we use? (1 for the first, etc.)"
  read PPANO
 #build changelog
- echo "parcellite (${tag}-1ppa$PPANO) $SERIES; urgency=low" > t/debian/changelog
+ echo "parcellite (${tag}-1ppa${PPANO}) $SERIES; urgency=low" > t/debian/changelog
  cat $debdir/ChangeLog |while read line; do 
   if [ $(echo "$line"|grep -c V1.0.2rc5) -gt 0 ]; 
     then break 
@@ -204,10 +213,14 @@ setup_ppa (){
    debuild -S -sa "-k $KEYID"
  else
    debuild -S -sd "-k $KEYID"
+   mv ../${debdir}-1ppa$PPANO.dsc ../${debdir}-1ppa${PPANO}.dsc.orig
+   gpg --output ../dsc.orig ../${debdir}-1ppa${PPANO}.dsc.orig
+   grep -v orig.tar.gz ../dsc.orig >../dsc.new
+   gpg --clearsign < ../dsc.new > ../${debdir}-1ppa${PPANO}.dsc
  fi
  check_err "debuild"
  cd ..
- dput ppa:rickyrockrat/ppa ${debdir}-1ppa$PPANO_source.changes
+ dput ppa:rickyrockrat/ppa ${debdir}-1ppa${PPANO}_source.changes
  check_err "dput"
 }
 # show the links for the user to copy.
