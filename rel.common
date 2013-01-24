@@ -164,9 +164,19 @@ setup_ppa (){
  tar --exclude .svn -czf $debdir.orig.tar.gz $debdir
  check_err "tar for ppa"
  cp $debdir/deb/* t/debian
+ echo "What series does this apply to? (i.e. precise/natty,etc)"
+ read SERIES
 #build changelog
- echo "parcellite (${tag}-1ppa1) unstable; urgency=low" > t/debian/changelog
- sed 's!^.*+!  - !;s!^V!  * V!' $debdir/ChangeLog|grep -v Changes>> t/debian/changelog
+ echo "parcellite (${tag}-1ppa1) $SERIES; urgency=low" > t/debian/changelog
+ cat $debdir/ChangeLog |while read line; do 
+  if [ $(echo "$line"|grep -c V1.0.2rc5) -gt 0 ]; 
+    then break 
+  else 
+    echo "$line"| sed 's!^.*+!  - !;s!^V!  * V!'|grep -v Changes>> t/debian/changelog
+  fi 
+ done
+ DATE=$(date -R)
+ echo " -- Doug Springer <gpib@rickyrockrat.net>  $DATE" >> t/debian/changelog
 # setup control
  sed -i 's!ADD_ARCH_HERE!any!' t/debian/control
 #build rules
@@ -176,7 +186,8 @@ setup_ppa (){
  echo "#export DH_VERBOSE=1">> t/debian/rules
  echo " ">> t/debian/rules
  echo "%:">> t/debian/rules
- echo "        dh $@ ">> t/debian/rules
+ echo -n -e '\t'>> t/debian/rules
+ echo 'dh $@ '>> t/debian/rules
  echo "DEB_CONFIGURE_EXTRA_FLAGS += --enable-appindicator=yes">> t/debian/rules
  cd t
  gpg --list-keys
