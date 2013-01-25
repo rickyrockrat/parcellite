@@ -187,6 +187,9 @@ setup_ppa (){
 #build our about version number
  if [ "$AI" = "y" ]; then
    AVER="$AVER-app"
+   PPA="ppa:rickyrockrat/parcellite-appindicator"
+ else
+   PPA="ppa:rickyrockrat/parcellite"
  fi
  cd $debdir
  fix_configure_ac "$AVER"
@@ -250,7 +253,8 @@ setup_ppa (){
  echo "Do you want to send the ppa to launchpad for building? (y/n)"
  read YN
  if [ "$YN" = "y" ]; then
-   dput ppa:rickyrockrat/ppa ${debdir}-1ppa${PPANO}_source.changes
+   echo "Sending to $PPA"
+   dput $PPA ${debdir}-1ppa${PPANO}_source.changes
    check_err "dput"
  fi
 }
