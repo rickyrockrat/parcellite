@@ -84,28 +84,35 @@ set_svn_local (){
    exit 1
  fi
 }
+#Fix configure.ac to reflect version and do autogen.
+# assume we are in the top directory 
+# version is in $1
+fix_configure_ac (){
+  rm svnversion.sh
+  check_err "rm svnver"
+  sed -i "s/\(AC_INIT.*\)m4_.*)\(.*rickyrockrat.*\)/\1[$1]\2/" configure.ac
+  check_err "update configure.ac"
+  ./autogen.sh
+}
+
 # make check out dir and and check out tag
 test_tag_co () {
   echo "$FUNCNAME"
   mkdir -p "$CODIR"
   check_err "mkdir co"
   cd "$CODIR"
-  if [ -e $tdir/.svn ] ; then
-    echo "$CODIR/$tag alread exists. Not re-checking out"
+  if [ -e $CODIR/$tag/.svn ] ; then
+    echo "$CODIR/$tag already exists. Not re-checking out"
     return
   fi
   echo "performing svn co $turl"
   svn co "$turl"
   check_err "svn co"
-  mv $tag $tdir
+  cp -a $tag $tdir
   check_err "mv svn co dir"
   cd $tdir
   check_err "cd $tdir"
-  rm svnversion.sh
-  check_err "rm svnver"
-  sed -i "s/\(AC_INIT.*\)m4_.*)\(.*rickyrockrat.*\)/\1[$tag]\2/" configure.ac
-  check_err "update configure.ac"
-  ./autogen.sh
+  fix_configure_ac "$tag"
 }
 # Make the tarball
 make_tarball () {
@@ -161,18 +168,29 @@ setup_ppa (){
  cd "$CODIR"
  check_err "CD $CODIR"
  mkdir -p ppa/t/debian
- cp -a $tdir ppa/$debdir
+ cp -a $tag ppa/$debdir
  cd ppa
  check_err "mkdir/cd ppa"
  echo "Set ppa to something different than $tag?"
- read YN
- if [ "$YN" = "y" ]; then
+ read NT
+ if [ "$NT" = "y" ]; then
    echo "full tag number (replaces '$tag')?"
+   NT="$tag"
    read tag
    ndir="parcellite_$tag"
    mv $debdir $ndir
    debdir="$ndir"
  fi
+ AVER="$tag-ppa"
+ echo "Build with libappindicator? (y/n)"
+ read AI
+#build our about version number
+ if [ "$AI" = "y" ]; then
+   AVER="$AVER-app"
+ fi
+ cd $debdir
+ fix_configure_ac "$AVER"
+ cd ..
  tar --exclude .svn -czf $debdir.orig.tar.gz $debdir
  check_err "tar for ppa"
  cp $debdir/deb/* t/debian
@@ -180,8 +198,7 @@ setup_ppa (){
  read SERIES
  echo "What ppa number should we use? (1 for the first, etc.)"
  read PPANO
- echo "Build with libappindicator?"
- read AI
+ 
 #build changelog
  echo "parcellite (${tag}-1ppa${PPANO}) $SERIES; urgency=low" > t/debian/changelog
  cat $debdir/ChangeLog |while read line; do 
@@ -230,8 +247,12 @@ setup_ppa (){
  fi
  check_err "debuild"
  cd ..
- dput ppa:rickyrockrat/ppa ${debdir}-1ppa${PPANO}_source.changes
- check_err "dput"
+ echo "Do you want to send the ppa to launchpad for building? (y/n)"
+ read YN
+ if [ "$YN" = "y" ]; then
+   dput ppa:rickyrockrat/ppa ${debdir}-1ppa${PPANO}_source.changes
+   check_err "dput"
+ fi
 }
 # show the links for the user to copy.
 show_links () {
