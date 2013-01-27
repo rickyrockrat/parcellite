@@ -3,75 +3,80 @@
 # This file is distributed under the same license as the parcellite package.
 # Eckhard M. Jäger <bart@neeneenee.de>, 2008.
 # Michael Stempin <mstempin@web.de>, 2008.
+# Christoph Wickert <cwickert@fedoraproject.org>, 2009-2013
 #
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: Parcellite\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-03-18 12:00-0400\n"
-"PO-Revision-Date: 2009-03-16 00:53+0100\n"
-"Last-Translator: Michael Stempin <mstempin@web.de>\n"
+"POT-Creation-Date: 2010-01-01 12:21-0500\n"
+"PO-Revision-Date: 2013-01-27 15:26+0100\n"
+"Last-Translator: Christoph Wickert <cwickert@fedoraproject.org>\n"
 "Language-Team: \n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../src/main.c:166
+#: ../src/main.c:186
+#: ../src/main.c:222
 msgid "Executing action..."
-msgstr "Aktion ausführen..."
+msgstr "Aktion ausführen…"
 
-#: ../src/main.c:172 ../src/main.c:704 ../data/parcellite.desktop.in.h:1
+#: ../src/main.c:192
+#: ../src/main.c:208
+#: ../src/main.c:785
+#: ../data/parcellite.desktop.in.h:1
 #: ../data/parcellite-startup.desktop.in.h:1
 msgid "Clipboard Manager"
-msgstr "Zwischenablage-Manager"
-
-#: ../src/main.c:195
-msgid "Could not create thread for executed action\n"
-msgstr "Kann keinen Thread für ausgeführte Aktion anlegen\n"
+msgstr "Verwaltung der Zwischenablage"
 
 #. Create the dialog
-#: ../src/main.c:225
+#: ../src/main.c:271
 msgid "Editing Clipboard"
 msgstr "Zwischenablage bearbeiten"
 
-#: ../src/main.c:284
+#: ../src/main.c:330
 msgid "Clear the history?"
 msgstr "Verlauf leeren?"
 
-#: ../src/main.c:336
+#: ../src/main.c:398
 msgid "Lightweight GTK+ clipboard manager."
 msgstr "Ein schlanker GTK+-Manager für die Zwischenablage."
 
-#: ../src/main.c:423
+#: ../src/main.c:494
 msgid "<b>None</b>"
 msgstr "<b>Nichts</b>"
 
 #. File contained no actions so adding empty
 #. File did not open so adding empty
 #. Nothing in history so adding empty
-#: ../src/main.c:444 ../src/main.c:473 ../src/main.c:588
+#: ../src/main.c:515
+#: ../src/main.c:544
+#: ../src/main.c:669
 msgid "Empty"
 msgstr "Leer"
 
 #. Edit actions
-#: ../src/main.c:480
+#: ../src/main.c:551
 msgid "_Edit actions"
 msgstr "Aktion_en bearbeiten"
 
 #. Edit clipboard
-#: ../src/main.c:504
+#: ../src/main.c:575
 msgid "_Edit Clipboard"
 msgstr "Zwisch_enablage bearbeiten"
 
-#: ../src/utils.c:38 ../src/utils.c:45
+#: ../src/utils.c:38
+#: ../src/utils.c:45
 #, c-format
 msgid "Couldn't create directory: %s\n"
-msgstr "Verzeichnis kann nicht erzeugt werden: %s\n"
+msgstr "Verzeichnis konnte nicht angelegt werden: %s\n"
 
 #: ../src/utils.c:84
 msgid "Run as daemon"
-msgstr "Als Dienst starten"
+msgstr "Als Dienst ausführen"
 
 #: ../src/utils.c:91
 msgid "Do not use status icon (Ctrl-Alt-P for menu)"
@@ -83,7 +88,7 @@ msgstr "Inhalt der Zwischenablage drucken"
 
 #: ../src/utils.c:105
 msgid "Print primary contents"
-msgstr "Inhalt der Zwischenablage drucken"
+msgstr "Inhalt der primären Zwischenablage drucken"
 
 #: ../src/utils.c:117
 msgid ""
@@ -97,7 +102,7 @@ msgstr ""
 "\n"
 "  echo \"In Zwischenablage kopiert\" | parcellite\n"
 "  parcellite \"In Zwischenablage kopiert\"\n"
-"  echo \"In Zwischenablage kopiert\" | parcellite -o"
+"  echo \"In Zwischenablage kopiert\" | parcellite -c"
 
 #: ../src/utils.c:123
 msgid ""
@@ -108,146 +113,150 @@ msgstr ""
 "Melden Sie Fehler bitte an <xyhthyx@gmail.com>."
 
 #. Create the dialog
-#: ../src/preferences.c:375
+#: ../src/preferences.c:395
 msgid "Preferences"
 msgstr "Einstellungen"
 
-#: ../src/preferences.c:390
+#: ../src/preferences.c:414
 msgid "Behavior"
 msgstr "Verhalten"
 
-#: ../src/preferences.c:398
+#: ../src/preferences.c:422
 msgid "<b>Clipboards</b>"
 msgstr "<b>Zwischenablagen</b>"
 
-#: ../src/preferences.c:405
+#: ../src/preferences.c:429
 msgid "Use _Copy (Ctrl-C)"
 msgstr "Kopieren benutzen (Ctrl-C)"
 
-#: ../src/preferences.c:407
+#: ../src/preferences.c:432
 msgid "Use _Primary (Selection)"
 msgstr "_Primäre Zwischenablage benutzen (Auswahl)"
 
-#: ../src/preferences.c:409
+#: ../src/preferences.c:435
 msgid "S_ynchronize clipboards"
 msgstr "Zwischenblagen s_ynchronisieren"
 
-#: ../src/preferences.c:417
+#: ../src/preferences.c:443
 msgid "<b>History</b>"
 msgstr "<b>Verlauf</b>"
 
-#: ../src/preferences.c:424
+#: ../src/preferences.c:450
 msgid "_Save history"
 msgstr "Verlauf _speichern"
 
-#: ../src/preferences.c:425
+#: ../src/preferences.c:451
 msgid "Save and restore history between sessions"
-msgstr "Verlauf zwischen den einzelnen Sitzungen speichern/ wiederherstellen"
+msgstr "Verlauf zwischen Sitzungen speichern und wiederherstellen"
 
-#: ../src/preferences.c:429
+#: ../src/preferences.c:455
 msgid "Items in history:"
 msgstr "Einträge im Verlauf:"
 
-#: ../src/preferences.c:442
+#: ../src/preferences.c:468
 msgid "<b>Miscellaneous</b>"
 msgstr "<b>Verschiedenes</b>"
 
-#: ../src/preferences.c:449
+#: ../src/preferences.c:475
 msgid "Capture _hyperlinks only"
 msgstr "Nur Hyperlinks erfassen"
 
-#: ../src/preferences.c:451
+#: ../src/preferences.c:477
 msgid "C_onfirm before clearing history"
-msgstr "Leeren des Verlaufes bestätigen"
+msgstr "_Leeren des Verlaufes bestätigen"
 
-#: ../src/preferences.c:458
+#: ../src/preferences.c:484
 msgid "Display"
 msgstr "Ansicht"
 
-#: ../src/preferences.c:466
+#: ../src/preferences.c:492
 msgid "<b>Items</b>"
 msgstr "<b>Einträge</b>"
 
-#: ../src/preferences.c:473
+#: ../src/preferences.c:499
 msgid "Show in a _single line"
-msgstr "Als einzelne Zeile anzeigen"
+msgstr "Als _einzelne Zeile anzeigen"
 
-#: ../src/preferences.c:475
+#: ../src/preferences.c:501
 msgid "Show in _reverse order"
-msgstr "In umgekehrter Reihenfolge anzeigen"
+msgstr "In umgekeh_rter Reihenfolge anzeigen"
 
-#: ../src/preferences.c:479
+#: ../src/preferences.c:505
 msgid "Character length of items:"
 msgstr "Länge der Einträge im Verlauf"
 
-#: ../src/preferences.c:492
+#: ../src/preferences.c:518
 msgid "<b>Omitting</b>"
 msgstr "<b>Kürzen</b>"
 
-#: ../src/preferences.c:501
+#: ../src/preferences.c:527
 msgid "Omit items in the:"
 msgstr "Einträge kürzen:"
 
-#: ../src/preferences.c:505
+#: ../src/preferences.c:531
 msgid "Beginning"
 msgstr "Am Anfang"
 
-#: ../src/preferences.c:506
+#: ../src/preferences.c:532
 msgid "Middle"
 msgstr "In der Mitte"
 
-#: ../src/preferences.c:507
+#: ../src/preferences.c:533
 msgid "End"
 msgstr "Am Ende"
 
-#: ../src/preferences.c:514
+#: ../src/preferences.c:540
 msgid "Actions"
 msgstr "Aktionen"
 
 #. Build the actions label
-#: ../src/preferences.c:519
+#: ../src/preferences.c:545
 msgid "Control-click Parcellite's tray icon to use actions"
 msgstr "STRG+Mausklick auf das Parcellite-Symbol um Aktionen auszuführen"
 
-#: ../src/preferences.c:539
+#: ../src/preferences.c:565
 msgid "Action"
 msgstr "Aktion"
 
-#: ../src/preferences.c:546
+#: ../src/preferences.c:572
 msgid "Command"
 msgstr "Befehl"
 
-#: ../src/preferences.c:561
+#: ../src/preferences.c:587
 msgid "Add..."
-msgstr "Hinzufügen..."
+msgstr "Hinzufügen…"
 
-#: ../src/preferences.c:565
+#: ../src/preferences.c:591
 msgid "Remove"
 msgstr "Entfernen"
 
-#: ../src/preferences.c:582
+#: ../src/preferences.c:608
 msgid "Hotkeys"
-msgstr "<b>Tastenkombinationen</b>"
+msgstr "Tastenkombinationen"
 
-#: ../src/preferences.c:590
+#: ../src/preferences.c:616
 msgid "<b>Hotkeys</b>"
 msgstr "<b>Tastenkombinationen</b>"
 
-#: ../src/preferences.c:599
+#: ../src/preferences.c:625
 msgid "History key combination:"
-msgstr "Verlauf Tastenkombination"
+msgstr "Tastenkombination für den Verlauf"
 
-#: ../src/preferences.c:607
+#: ../src/preferences.c:633
 msgid "Actions key combination:"
-msgstr "Aktionen Tastenkombination"
+msgstr "Tastenkombination für Aktionen"
 
-#: ../src/preferences.c:615
+#: ../src/preferences.c:641
 msgid "Menu key combination:"
-msgstr "Menü Tastenkombination"
+msgstr "Tastenkombination für das Menü"
 
-#: ../data/parcellite.desktop.in.h:2 ../data/parcellite-startup.desktop.in.h:2
+#: ../data/parcellite.desktop.in.h:2
+#: ../data/parcellite-startup.desktop.in.h:2
 msgid "Parcellite"
 msgstr "Parcellite"
+
+#~ msgid "Could not create thread for executed action\n"
+#~ msgstr "Thread für ausgeführte Aktion konnte nicht erzeugt werden\n"
 
 #~ msgid "<b>Clipboard</b>"
 #~ msgstr "<b>Zwischenablage</b>"
