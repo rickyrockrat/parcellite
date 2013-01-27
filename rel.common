@@ -160,51 +160,29 @@ set_abs_path () {
   fi
   echo "Using '$CDIR'"
 }
-# build the ppa & send it to launchpad
-# Add this to depends
-# libappindicator-dev
-setup_ppa (){
- echo "$FUNCNAME"
+# setup the directories, build, and send to launchpad
+finish_ppa () {
+#set up the directory
+ if [ "$oldtag" != "$tag" ]; then
+   PDIR="$PDIR-$tag"
+ fi
  cd "$CODIR"
  check_err "CD $CODIR"
- mkdir -p ppa/t/debian
- cp -a $tag ppa/$debdir
- cd ppa
- check_err "mkdir/cd ppa"
- echo "Set ppa to something different than $tag?"
- read NT
- if [ "$NT" = "y" ]; then
-   echo "full tag number (replaces '$tag')?"
-   NT="$tag"
-   read tag
-   ndir="parcellite_$tag"
-   mv $debdir $ndir
-   debdir="$ndir"
- fi
- AVER="$tag-ppa"
- echo "Build with libappindicator? (y/n)"
- read AI
-#build our about version number
- if [ "$AI" = "y" ]; then
-   AVER="$AVER-app"
-   PPA="ppa:rickyrockrat/parcellite-appindicator"
- else
-   PPA="ppa:rickyrockrat/parcellite"
- fi
- cd $debdir
+ mkdir -p "$PDIR/t/debian"
+ cp -a "$oldtag" "$PDIR/$debdir"
+ cd "$PDIR"
+ check_err "mkdir/cd $PDIR" 
+ cd "$debdir"
  fix_configure_ac "$AVER"
  cd ..
- tar --exclude .svn -czf $debdir.orig.tar.gz $debdir
+ tar --exclude .svn -czf "$debdir.orig.tar.gz" "$debdir"
  check_err "tar for ppa"
- cp $debdir/deb/* t/debian
- echo "What series does this apply to? (i.e. raring/quantal/precise/oneiric/lucid/hardy,etc)"
- read SERIES
- echo "What ppa number should we use? (1 for the first, etc.)"
- read PPANO
+ cp "$debdir"/deb/* t/debian
+ 
  
 #build changelog
  echo "parcellite (${tag}-1ppa${PPANO}) $SERIES; urgency=low" > t/debian/changelog
- cat $debdir/ChangeLog |while read line; do 
+ cat "$debdir"/ChangeLog |while read line; do 
   if [ $(echo "$line"|grep -c V1.0.2rc5) -gt 0 ]; 
     then break 
   else 
@@ -243,10 +221,10 @@ setup_ppa (){
    debuild -S -sa "-k $KEYID"
  else
    debuild -S -sd "-k $KEYID"
-   mv ../${debdir}-1ppa$PPANO.dsc ../${debdir}-1ppa${PPANO}.dsc.orig
-   gpg --output ../dsc.orig ../${debdir}-1ppa${PPANO}.dsc.orig
+   mv "../${debdir}-1ppa$PPANO.dsc" "../${debdir}-1ppa${PPANO}.dsc.orig"
+   gpg --output ../dsc.orig "../${debdir}-1ppa${PPANO}.dsc.orig"
    grep -v orig.tar.gz ../dsc.orig >../dsc.new
-   gpg --clearsign < ../dsc.new > ../${debdir}-1ppa${PPANO}.dsc
+   gpg --clearsign < ../dsc.new > "../${debdir}-1ppa${PPANO}.dsc"
  fi
  check_err "debuild"
  cd ..
@@ -254,9 +232,53 @@ setup_ppa (){
  read YN
  if [ "$YN" = "y" ]; then
    echo "Sending to $PPA"
-   dput $PPA ${debdir}-1ppa${PPANO}_source.changes
+   dput $PPA "${debdir}-1ppa${PPANO}_source.changes"
    check_err "dput"
  fi
+}
+# build the ppa & send it to launchpad
+# Add this to depends
+# libappindicator-dev
+setup_ppa (){
+ echo "$FUNCNAME"
+ echo "Set ppa to something different than $tag? (If multiple series set below, auto-adds ~series"
+ read NT
+ oldtag="$tag"
+ if [ "$NT" = "y" ]; then
+   echo "full tag number (replaces '$tag')?"
+   read tag
+ fi
+ 
+ echo "Build with libappindicator? (y/n)"
+ read AI
+ echo "What series does this apply to? (i.e. raring/quantal/precise/oneiric/lucid/hardy,etc)"
+ echo " For multiple series, put spaces between series"
+ read MSERIES
+ echo "What ppa number should we use? (1 for the first, etc.)"
+ read PPANO
+ let i=0
+ for x in $MSERIES; do
+   let i=i+1
+ done 
+ ntag="$tag"
+ for SERIES in $MSERIES; do
+  if [ $i -gt 1 ]; then
+    tag="${ntag}~${SERIES}"
+  fi
+  debdir="parcellite_$tag"
+  AVER="$tag-ppa"
+#build our about version number
+  if [ "$AI" = "y" ]; then
+    AVER="$AVER-app"
+    PPA="ppa:rickyrockrat/parcellite-appindicator"
+    PDIR="ppa-app"
+  else
+    PPA="ppa:rickyrockrat/parcellite"
+    PDIR="ppa"
+  fi
+  finish_ppa
+ done
+
 }
 # show the links for the user to copy.
 show_links () {
