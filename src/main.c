@@ -26,7 +26,21 @@ list until we get a selection done event, then we delete those items from the re
 
 #include "parcellite.h"
 
+/**ACT are actions, and MODE is the mode of the action  */
+/** #define ACT_STOP  0
+#define ACT_RUN   1 */
 
+/** defines the mode of the above actions. These are bit-wise */
+#define CMODE_PRI 1
+#define	CMODE_CLI 2
+#define CMODE_ALL 3 /**needs to be or of the above  */
+
+#define FIFCMD_STOP_PRI "stop_pri"
+#define FIFCMD_STOP_CLI "stop_cli"
+#define FIFCMD_STOP_ALL "stop_all"
+#define FIFCMD_RUN_PRI "run_pri"
+#define FIFCMD_RUN_CLI "run_cli"
+#define FIFCMD_RUN_ALL "run_all"
 
 GtkWidget *hmenu;
 /* Uncomment the next line to print a debug trace. */
@@ -51,6 +65,9 @@ static gboolean actions_lock = FALSE;
 static int show_icon=0;
 static int have_appindicator=0; /**if set, we have a running indicator-appmenu  */
 static gchar *appindicator_process="indicator-appmenu"; /**process name  */
+
+static int cmd_mode=CMODE_ALL; /**both clipboards  */
+/** static int cmd_state=ACT_RUN; running  */
 /**defines for moving between clipboard histories  */
 #define HIST_MOVE_TO_CANCEL     0
 #define HIST_MOVE_TO_OK         1
@@ -321,6 +338,42 @@ void update_clipboards(gchar *intext, gint mode)
 	update_clipboard(primary, intext, mode);
 	update_clipboard(clipboard, intext, mode);
 }
+
+/***************************************************************************/
+/** Run a command. For now, just start and stop
+\n\b Arguments:
+\n\b Returns:
+****************************************************************************/
+void do_command(gchar *buf, gint len)
+{
+  g_printf("Got '%s' cmd\n",buf);
+	if(!p_strcmp(buf,FIFCMD_RUN_ALL)) {
+		cmd_mode|=CMODE_ALL;
+		return;
+	}	
+	if(!p_strcmp(buf,FIFCMD_RUN_CLI)) {
+		cmd_mode|=CMODE_CLI;
+		return;
+	}	
+	if(!p_strcmp(buf,FIFCMD_RUN_PRI)) {
+		cmd_mode|=CMODE_PRI;
+		return;
+	}	
+	if(!p_strcmp(buf,FIFCMD_STOP_ALL)) {
+		cmd_mode&=~(CMODE_ALL);
+		return;
+	}
+		if(!p_strcmp(buf,FIFCMD_STOP_CLI)) {
+		cmd_mode&=~(CMODE_CLI);
+		return;
+	}
+		if(!p_strcmp(buf,FIFCMD_STOP_PRI)) {
+		cmd_mode&=~(CMODE_PRI);
+		return;
+	}
+	
+}
+
 /***************************************************************************/
 /** Checks the clipboards and fifos for changes.
 \n\b Arguments:
@@ -330,8 +383,19 @@ void check_clipboards(gint mode)
 {
 	gchar *ptext, *ctext, *last;
 	int n=0;
+	
 	/*g_printf("check_clipboards\n"); */
 	/*g_mutex_lock(clip_lock); */
+	if(fifo->clen){/**we have a command to execute  */
+			/*fifo->which should be ID_CMD: */
+		if(fifo->dbg) g_printf("Running CMD '%s'\n",fifo->cbuf);
+		do_command(fifo->cbuf, fifo->clen);
+		if(fifo->dbg) g_printf("mode is 0x%X\n",cmd_mode);
+		fifo->clen=0;
+		return;
+	}	
+	if(!(CMODE_ALL & cmd_mode))
+		return;
 	if(fifo->rlen >0){
 		switch(fifo->which){
 			case ID_PRIMARY:
@@ -348,6 +412,7 @@ void check_clipboards(gint mode)
 				n=2;
 				fifo->rlen=0;
 				break;
+			
 			default:
 				fifo->rlen=validate_utf8_text(fifo->buf, fifo->rlen);
 				g_printf("CLIP not set, discarding '%s'\n",fifo->buf);

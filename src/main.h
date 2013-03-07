@@ -29,6 +29,7 @@ extern GMutex *hist_lock;
 #define CHECK_APPINDICATOR_INTERVAL 30000 /**check for existence of indicator-appmenu  */
 #define ID_PRIMARY   0
 #define ID_CLIPBOARD 1
+#define ID_CMD       2
 
 #define HIST_DISPLAY_NORMAL     1
 #define HIST_DISPLAY_PERSISTENT	2
