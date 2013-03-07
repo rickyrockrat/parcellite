@@ -24,6 +24,8 @@ G_BEGIN_DECLS
 #define ACTIONS_FILE          "parcellite/actions"
 #define FIFO_FILE_C          "parcellite/fifo_c"
 #define FIFO_FILE_P          "parcellite/fifo_p"
+#define FIFO_FILE_CMD          "parcellite/fifo_cmd"
+#define FIFO_FILE_DAT         "parcellite/fifo_data"
 #define PREFERENCES_FILE      "parcellite/parcelliterc"
 
 /*struct pref_item* get_pref(char *name); */

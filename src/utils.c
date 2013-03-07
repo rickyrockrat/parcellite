@@ -249,6 +249,8 @@ gboolean fifo_read_cb (GIOChannel *src,  GIOCondition cond, gpointer data)
 		which=FIFO_MODE_PRI;
 	else if(src == f->g_ch_c)
 		which=FIFO_MODE_CLI;
+	else if( src == f->g_ch_cmd)
+		which=FIFO_MODE_CMD;
 	else{
 		g_printf("Unable to determine fifo!!\n");
 		return 0;
@@ -319,6 +321,9 @@ int create_fifo(void)
 	f=g_build_filename(g_get_user_data_dir(), FIFO_FILE_P, NULL);
 	if(-1 ==  _create_fifo(f) )
 		--i;
+	f=g_build_filename(g_get_user_data_dir(), FIFO_FILE_CMD, NULL);
+	if(-1 ==  _create_fifo(f) )
+		--i;
 	return i;
 }
 
@@ -332,7 +337,7 @@ int _open_fifo(char *path, int flg)
 {
 	int fd;
 	mode_t mode=0660;
-	fd=open(path,flg,mode);
+	fd=open(path,flg,mode);												 
 	if(fd<3){
 		perror("Unable to open fifo");
 	}
@@ -367,6 +372,12 @@ int open_fifos(struct p_fifo *fifo)
 		fifo->g_ch_c=g_io_channel_unix_new (fifo->fifo_c);
 		g_io_add_watch (fifo->g_ch_c,G_IO_IN|G_IO_HUP,fifo_read_cb,(gpointer)fifo);
 	}
+	f=g_build_filename(g_get_user_data_dir(), FIFO_FILE_CMD, NULL);
+	if( (fifo->fifo_cmd=_open_fifo(f,flg))>2 && (PROG_MODE_DAEMON & fifo->whoami)){
+		if(fifo->dbg) g_printf("CMD fifo %d\n",fifo->fifo_cmd);
+		fifo->g_ch_cmd=g_io_channel_unix_new (fifo->fifo_cmd);
+		g_io_add_watch (fifo->g_ch_cmd,G_IO_IN|G_IO_HUP,fifo_read_cb,(gpointer)fifo);
+	}
 	if(fifo->dbg) g_printf("CLI fifo %d PRI fifo %d\n",fifo->fifo_c,fifo->fifo_p);
 	if(fifo->fifo_c <3 || fifo->fifo_p <3)
 		return -1;
@@ -381,26 +392,40 @@ int open_fifos(struct p_fifo *fifo)
 ****************************************************************************/
 int read_fifo(struct p_fifo *f, int which)
 {
-	int i,t, fd;
+	int i,t, fd, len, *rlen;
+	char *buf;
 	i=t=0;
 	
 	switch(which){
 		case FIFO_MODE_PRI:
 			fd=f->fifo_p;
 			f->which=ID_PRIMARY;
+			buf=f->buf;
+			len=f->len;
+			rlen=&f->rlen;
 			break;
 		case FIFO_MODE_CLI:
 			fd=f->fifo_c;
 			f->which=ID_CLIPBOARD;
+			buf=f->buf;
+			len=f->len;
+			rlen=&f->rlen;
+			break;
+		case FIFO_MODE_CMD:
+			fd=f->fifo_cmd;
+			f->which=ID_CMD;
+			buf=f->cbuf;
+			len=f->tclen;
+			rlen=&f->clen;
 			break;
 		default:
 			g_printf("Unknown fifo %d!\n",which);
 			return -1;
 	}
-	if(NULL ==f || fd <3 ||NULL == f->buf|| f->len <=0)
+	if(NULL ==f || fd <3 ||NULL == buf|| len <=0)
 		return -1;
 	while(1){
-		i=read(fd,f->buf,f->len-t);
+		i=read(fd,buf,len-t);
 		if(i>0)
 			t+=i;
 		else 
@@ -412,10 +437,10 @@ int read_fifo(struct p_fifo *f, int which)
 			return -1;
 		}
 	}
-	f->buf[t]=0;
-	f->rlen=t;
+	buf[t]=0;
+	*rlen=t;
 	if(t>0)
-	  if(f->dbg) g_printf("%s: Got %d '%s'\n",f->fifo_p==fd?"PRI":"CLI",t,f->buf);
+	  if(f->dbg) g_printf("%s: Got %d '%s'\n",f->fifo_p==fd?"PRI":"CLI",t,buf);
 	return t;
 }
 /***************************************************************************/
@@ -491,9 +516,16 @@ struct p_fifo *init_fifo(int mode)
 		g_free(f);
 		return NULL;
 	}
+	f->len=7999;
+	if(NULL == (f->cbuf=(gchar *)g_malloc0(8000)) ){
+		g_printf("Unable to alloc 8k buffer for fifo! Command Line Input will be ignored.\n");
+		g_free(f);
+		return NULL;
+	}
+	f->tclen=7999;
 	/**set debug here for debug messages */
 	f->dbg=1;  
-	f->len=7999;
+	
 /*	f->dbg=1; */
 /*	g_printf("My PID is %d\n",getpid()); */
 	/**we are daemon, and will launch  */
@@ -547,4 +579,6 @@ void close_fifos(struct p_fifo *f)
 		close(f->fifo_c);
 	g_free(f);
 }
+
+
 
