@@ -24,6 +24,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <errno.h>
+#include <libgen.h>
 
 
 /** Wrapper to replace g_strdup to limit size of text copied from clipboard. 
@@ -57,11 +58,13 @@ gchar *p_strdup( const gchar *str )
 /*  g_printf("str '%s'\n",n);  */
   return n;
 }
+
 /* Creates program related directories if needed */
 void check_dirs()
 {
   gchar* data_dir = g_build_path(G_DIR_SEPARATOR_S, g_get_user_data_dir(), DATA_DIR,  NULL);
   gchar* config_dir = g_build_path(G_DIR_SEPARATOR_S, g_get_user_config_dir(), CONFIG_DIR,  NULL);
+	
   /* Check if data directory exists */
   if (!g_file_test(data_dir, G_FILE_TEST_EXISTS))
   {
@@ -173,10 +176,129 @@ struct cmdline_opts *parse_options(int argc, char* argv[])
 
 
 /***************************************************************************/
+/** Get the current user name by examining the XDG directory.
+\n\b Arguments:
+\n\b Returns: username, if found. Use  g_free.
+****************************************************************************/
+gchar * get_username( void )
+{
+	gchar* username;
+	username = (gchar *)g_getenv ("HOME");
+  if (!username)
+    username = (gchar *)g_get_home_dir ();
+	/*g_printf("get_username: '%s'\n",username); */
+	if(NULL != username ){
+		gchar *t;
+		t=g_strdup (username);
+		username=g_strdup(basename(t));		
+		g_free(t);
+		return username;
+	}
+	return NULL;
+}
+
+
+/***************************************************************************/
+/** Gets a value give the key name from the pid envronment with null-terminated
+strings.
+\n\b Arguments:
+\n\b Returns: value or NULL. Free value with g_free.
+****************************************************************************/
+gchar * get_value_from_env(pid_t pid, gchar *key)
+{
+	GFile *fp;
+	char *env, *envf;
+	gsize elen, i;
+	
+	if(NULL == (envf=(g_malloc(strlen("/proc/9999999/environ"))))) {
+		g_printf("Unable to allocate for environ file name.\n");
+		return NULL;
+	}
+	g_sprintf(envf,"/proc/%ld/environ",pid);
+	fp=g_file_new_for_path(envf);
+	/**this dumps a zero at end of file.  */
+	if(FALSE == g_file_load_contents(fp,NULL,&env,&elen,NULL,NULL)	){
+		g_printf("Error finding '%s' for PID %ld\n",envf,pid);
+		goto error;
+	}
+	/*g_printf("Loaded file '%s', looking for KEY '%s'\n",envf,key); */
+	++elen; /**allow for zero @ end of file.  */
+	for (i=0; i<elen; ++i){
+		gchar *f;
+		f=g_strrstr(&env[i],key);
+		
+		if(NULL != f){
+			if(i==0 || f[-1] == 0){/**beginning terminators  */
+				gsize k;
+				i+=f-&env[i]; /**beginning of string  */
+				while(i<elen && 0!=env[i] && '=' !=env[i]) ++i;
+				if('=' == env[i] ){/**found, return key  */
+					gchar *value=g_strdup(&env[i+1]);
+					/*g_printf("%s=%s\n",key,value); */
+					return value;
+				} /**if we get out of this loop, we are either @ 0 or end of environment.  */
+			}else
+				i+=strlen(f);
+		} else { /**go to end of string, & loop increment will go past 0  */
+			while(i<elen && 0!= env[i]) ++i;
+		}
+	}
+error:
+	if(NULL != envf)
+		g_free (envf);
+	if(NULL != env)																										 
+		g_free(env);
+}
+
+
+/***************************************************************************/
+/** .
+\n\b Arguments:
+\n\b Returns: 1 if user matches what is found in the pid environ, or error
+Returns 0 if the it all works and the user is found in the pid environ.
+****************************************************************************/
+int is_current_user (pid_t pid, int mode)
+{ 
+	int rtn=1;
+	gchar *username=NULL;
+	gchar *user=NULL;
+	if(PROC_MODE_USER_QUALIFY & mode ){
+		username=get_username();
+		if(NULL == username){
+			g_printf("get_username fail\n");
+			goto done;
+		}
+			
+		user=get_value_from_env(pid,"USERNAME");
+		/*g_printf("user='%s'\n",user); */
+		if(NULL == user){
+			goto done;
+		}
+		/*g_printf("We are '%s', Found '%s' for USERNAME in pid %ld\n",username,user,pid); */
+		if(! g_strcmp0(username,user)){
+			/*g_printf("Match\n"); */
+			goto done;
+		}
+		rtn=0;
+	}	/*else g_printf("UQ not set\n"); */
+done:
+	if(NULL != user)
+		g_free(user);
+	if(NULL != username)
+		g_free(username);
+	return rtn;
+}
+/***************************************************************************/
 /** Return a PID given a name. Used to check a if a process is running..
 if 2 or greater, process is running
 \n\b Arguments:
 \n\b Returns:	number of instances of name found
+Note: /proc/pid/environ contains interesting variables:
+HOME
+USERNAME
+LOGNAME
+with this format:
+0x00KEY=VAL0x00
 ****************************************************************************/
 int proc_find(const char* name, int mode, pid_t *pid) 
 {
@@ -186,7 +308,7 @@ int proc_find(const char* name, int mode, pid_t *pid)
   char* endptr;
   char buf[PATH_MAX];
 	int instances=0;
-
+ 
   if (!(dir = opendir("/proc"))) {
   	perror("can't open /proc");
     return -1;
@@ -204,16 +326,18 @@ int proc_find(const char* name, int mode, pid_t *pid)
 
     if ((fp= fopen(buf, "r"))) {
       if (fgets(buf, sizeof(buf), fp) != NULL) {
-				if(PROC_MODE_EXACT == mode){
+				if(PROC_MODE_EXACT & mode){
 					gchar *b=g_path_get_basename(buf);
 		      if (!g_strcmp0(b, name)) {
-						++instances;
+						if(is_current_user(lpid,mode))
+							++instances;
 						if(NULL !=pid)
 						  *pid=lpid;
 		      }
-				}else if( PROC_MODE_STRSTR == mode){
+				}else if( PROC_MODE_STRSTR & mode){
 					if(NULL !=g_strrstr(buf,name)){
-						++instances;
+						if(is_current_user(lpid,mode))
+							++instances;
 						if(NULL !=pid)
 						  *pid=lpid;
 						/*g_printf("Looking for '%s', found '%s'\n",name,buf); */
@@ -518,7 +642,7 @@ struct p_fifo *init_fifo(int mode)
 	}
 	f->tclen=7999;
 	/**set debug here for debug messages */
-	f->dbg=1;  
+	f->dbg=0;  
 	
 /*	f->dbg=1; */
 /*	g_printf("My PID is %d\n",getpid()); */

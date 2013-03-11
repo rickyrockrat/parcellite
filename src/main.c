@@ -451,9 +451,12 @@ done:
 ****************************************************************************/
 gboolean check_for_appindictor( gpointer data)
 { 
+	int mode=PROC_MODE_STRSTR;
 	if(NULL != appindicator_process && !have_appindicator ){
 		g_printf("Looking for '%s'\n",appindicator_process);
-		if(proc_find(appindicator_process,PROC_MODE_STRSTR,NULL) >0){
+		if(get_pref_int32("multi_user"))
+			mode|=PROC_MODE_USER_QUALIFY;
+		if(proc_find(appindicator_process,mode,NULL) >0){
 			have_appindicator=1;
 			if(NULL == indicator && show_icon)
 				create_app_indicator();	
@@ -1875,8 +1878,7 @@ static void parcellite_init()
 	clip_lock= g_mutex_new();
 	hist_lock= g_mutex_new();
 	g_mutex_unlock(clip_lock);
-  /* Read preferences */
-  read_preferences();
+
   show_icon=!get_pref_int32("no_icon");
   /* Read history */
   if (get_pref_int32("save_history")){
@@ -1974,12 +1976,17 @@ int main(int argc, char *argv[])
   
   /* Initiate GTK+ */
   gtk_init(&argc, &argv);
-  
+   /* Read preferences */
+  read_preferences();
   /* Parse options */
 	opts=parse_options(argc, argv);
   if(NULL == opts)
    	return 1;
-	if(proc_find(PARCELLITE_PROG_NAME,PROC_MODE_EXACT,NULL)<2)	/**1 for me, and 1 for a running instance  */
+	mode=PROC_MODE_EXACT;
+	if(get_pref_int32("multi_user"))
+	  mode|=PROC_MODE_USER_QUALIFY;
+	/*g_printf("mode=0x%X\n",mode); */
+	if(proc_find(PARCELLITE_PROG_NAME,mode,NULL)<2)	/**1 for me, and 1 for a running instance  */
 		mode=PROG_MODE_DAEMON; /**first instance  */
 	else
 		mode=PROG_MODE_CLIENT; /**already running, just access fifos & exit.  */
