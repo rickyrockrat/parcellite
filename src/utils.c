@@ -37,30 +37,24 @@ gchar *p_strdup( const gchar *str )
   size_t l,x;
   if(NULL == str)
     return NULL;
-  if(0==get_pref_int32("data_size"))
+	x=get_pref_int32("data_size")*1000000; 
+  if(0 == x)
     return g_strdup(str);
-  x=get_pref_int32("data_size")*1000000; 
-  /**use the following to test truncation  */
-  /*x=get_pref_int32("data_size")*10; */
-  if(TRUE ==g_utf8_validate (str,-1,NULL)){
-/*    g_printf("UTF8 "); */
-    l=g_utf8_strlen(str,-1);
-    u8=1;
-  } else{
-    l=strlen(str);
-    u8=0;
-  }
+		/**use the following to test truncation  */
+	  /*x=get_pref_int32("data_size")*10; */
+  l=strlen(str);
     
-  
+  g_printf("Str '%s' x=%d l=%d u8=%d ",str,x,l,u8);
   if(l>x){
     l=x;
   }
+	g_printf("Tl=%d ",l);
   
   if(NULL !=(n=g_malloc(l+8))){
     n[l+7]=0;
     g_strlcpy(n,str,l+1);
   }
-    
+  g_printf("str '%s'\n",n); 
   return n;
 }
 /* Creates program related directories if needed */

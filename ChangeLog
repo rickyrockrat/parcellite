@@ -3,6 +3,7 @@ V1.1.5 Friday, January 25 2013
  +Updated German Translation fro patch by Christoph Wickert.
  +Fixed bug #79, reverse order doesn't work.
  +Added fifo_cmd, and stop_all, run_all commands.
+ +Fixed bug #82, Parcellite sometimes eats about twenty last characters from a an entry in history.
  
 V1.1.4 Saturday, January 19 2013
  Changes
