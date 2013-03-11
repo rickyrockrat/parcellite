@@ -50,6 +50,7 @@ struct cmdline_opts *parse_options(int argc, char* argv[]);
 
 #define PROC_MODE_EXACT 1
 #define PROC_MODE_STRSTR 2
+#define PROC_MODE_USER_QUALIFY 4
 
 struct p_fifo {
 	int whoami;					/**client or daemon  */
