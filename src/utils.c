@@ -44,17 +44,17 @@ gchar *p_strdup( const gchar *str )
 	  /*x=get_pref_int32("data_size")*10; */
   l=strlen(str);
     
-  g_printf("Str '%s' x=%d l=%d u8=%d ",str,x,l,u8);
+/*  g_printf("Str '%s' x=%d l=%d u8=%d ",str,x,l,u8); */
   if(l>x){
     l=x;
   }
-	g_printf("Tl=%d ",l);
+/*	g_printf("Tl=%d ",l); */
   
   if(NULL !=(n=g_malloc(l+8))){
     n[l+7]=0;
     g_strlcpy(n,str,l+1);
   }
-  g_printf("str '%s'\n",n); 
+/*  g_printf("str '%s'\n",n);  */
   return n;
 }
 /* Creates program related directories if needed */
