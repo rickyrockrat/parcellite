@@ -137,7 +137,7 @@ struct pref_item myprefs[]={
   {.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_NONE,.name="ellipsize",.type=PREF_TYPE_COMBO,.desc="Omit items in the:",.tip=NULL,.val=DEF_ELLIPSIZE}, 
 /**miscellaneous that doesn't fit elswhew  */	
   {.adj=NULL,.cval=NULL,.sig=NULL,.sfunc=NULL,.sec=PREF_SEC_XMISC,.name=NULL,.type=PREF_TYPE_FRAME,.desc="<b>Miscellaneous</b>",.tip=NULL,.val=0},
-	{.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_XMISC,.name="multi_user",.type=PREF_TYPE_TOGGLE,.desc="Multiuser",.tip="If checked, enables checking multiple concurrent user logic. Use if several different users are logged in at the same time.",.val=FALSE},
+	{.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_XMISC,.name="multi_user",.type=PREF_TYPE_TOGGLE,.desc="Multiuser",.tip="If checked, enables checking multiple concurrent user logic. Use if several different users are logged in at the same time.",.val=TRUE},
 	
 /**Action Keys  */
   {.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_ACT,.name="history_key",.type=PREF_TYPE_ENTRY,.desc="History key combination:",.tip=NULL},
