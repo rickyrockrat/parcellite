@@ -48,6 +48,7 @@
 #define PREF_TYPE_ENTRY  0x40 /**gchar *  */
 #define PREF_TYPE_ALIGN  0x50 /**label, then align box  */
 #define PREF_TYPE_SPACER 0x60
+#define PREF_TYPE_FRAME  0x70 /**frame for each section  */
 #define PREF_TYPE_MASK	 0xF0 
 #define PREF_TYPE_NMASK	 0xF
 #define PREF_TYPE_SINGLE_LINE 1
@@ -57,7 +58,9 @@
 #define PREF_SEC_HIST 2
 #define PREF_SEC_MISC 3
 #define PREF_SEC_DISP 4
+
 #define PREF_SEC_ACT	5
+#define PREF_SEC_XMISC 6
 
 struct myadj {
 	gdouble lower;
@@ -91,10 +94,12 @@ static gint dbg=0;
 struct pref_item myprefs[]={
 /**Behaviour  */	
 	/**Clipboards  */
+	{.adj=NULL,.cval=NULL,.sig=NULL,.sfunc=NULL,.sec=PREF_SEC_CLIP,.name=NULL,.type=PREF_TYPE_FRAME,.desc="<b>Clipboards</b>",.tip=NULL,.val=0}, 
   {.adj=NULL,.cval=NULL,.sig="toggled",.sfunc=(GCallback)check_toggled,.sec=PREF_SEC_CLIP,.name="use_copy",.type=PREF_TYPE_TOGGLE,.desc="Use _Copy (Ctrl-C)",.tip="If checked, Use the clipboard, which is Ctrl-C, Ctrl-V",.val=DEF_USE_COPY},
   {.adj=NULL,.cval=NULL,.sig="toggled",.sfunc=(GCallback)check_toggled,.sec=PREF_SEC_CLIP,.name="use_primary",.type=PREF_TYPE_TOGGLE,.desc="Use _Primary (Selection)",.tip="If checked, Use the primary clipboard (mouse highlight-copy, middle mouse button paste)",.val=DEF_USE_PRIMARY},
   {.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_CLIP,.name="synchronize",.type=PREF_TYPE_TOGGLE,.desc="S_ynchronize clipboards",.tip="If checked, will keep both clipboards with the same content. If primary is pasted, then copy will have the same data.",.val=DEF_SYNCHRONIZE},
   /**History  */	
+  {.adj=NULL,.cval=NULL,.sig=NULL,.sfunc=NULL,.sec=PREF_SEC_HIST,.name=NULL,.type=PREF_TYPE_FRAME,.desc="<b>History</b>",.tip=NULL,.val=0},
   {.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_HIST,.name="save_history",.type=PREF_TYPE_TOGGLE,.desc="Save history",.tip="Save history to a file.",.val=DEF_SAVE_HISTORY},
   {.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_HIST,.name="history_pos",.type=PREF_TYPE_TOGGLE|PREF_TYPE_SINGLE_LINE,.desc="Position history",.tip="If checked, use X, Y to position the history list",.val=0},
   {.adj=&align_hist_xy,.cval=NULL,.sig=NULL,.sec=PREF_SEC_HIST,.name="history_x",.type=PREF_TYPE_SPIN|PREF_TYPE_SINGLE_LINE,.desc="<b>X</b>",.tip=NULL,.val=1},
@@ -107,6 +112,7 @@ struct pref_item myprefs[]={
 	{.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_HIST,.name="auto_mouse",.type=PREF_TYPE_TOGGLE|PREF_TYPE_SINGLE_LINE,.desc="Mouse",.tip="If checked, will use middle mouse to paste.",.val=1},
   
   /**Miscellaneous  */  
+	{.adj=NULL,.cval=NULL,.sig=NULL,.sfunc=NULL,.sec=PREF_SEC_MISC,.name=NULL,.type=PREF_TYPE_FRAME,.desc="<b>Miscellaneous</b>",.tip=NULL,.val=0},
 	{.adj=NULL,.cval=NULL,.sig="toggled",.sfunc=(GCallback)search_toggled,.sec=PREF_SEC_MISC,.name="type_search",.type=PREF_TYPE_TOGGLE,.desc="Search As You Type",.tip="If checked, does a search-as-you-type. Turns red if not found. Goes to top (Alt-E) line when no chars are entered for search"},
   {.adj=NULL,.cval=NULL,.sig="toggled",.sfunc=(GCallback)search_toggled,.sec=PREF_SEC_MISC,.name="case_search",.type=PREF_TYPE_TOGGLE,.desc="Case Sensitive Search",.tip="If checked, does case sensitive search"},
 	{.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_MISC,.name="ignore_whiteonly",.type=PREF_TYPE_TOGGLE,.desc="Ignore Whitespace Only",.tip="If checked, will ignore any clipboard additions that contain only whitespace."},
@@ -114,7 +120,9 @@ struct pref_item myprefs[]={
 	{.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_MISC,.name="trim_newline",.type=PREF_TYPE_TOGGLE,.desc="Trim Newlines",.tip="If checked, will replace newlines with spaces."},
 	{.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_MISC,.name="hyperlinks_only",.type=PREF_TYPE_TOGGLE,.desc="Capture hyperlinks only",.tip=NULL,.val=DEF_HYPERLINKS_ONLY},
 	{.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_MISC,.name="confirm_clear",.type=PREF_TYPE_TOGGLE,.desc="Confirm before clearing history",.tip=NULL,.val=DEF_CONFIRM_CLEAR},
+	
 /**Display  add icon here...*/
+	{.adj=NULL,.cval=NULL,.sig=NULL,.sfunc=NULL,.sec=PREF_SEC_DISP,.name=NULL,.type=PREF_TYPE_FRAME,.desc="<b>Items</b>",.tip=NULL,.val=0},
 	{.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_DISP,.name="current_on_top",.type=PREF_TYPE_TOGGLE,.desc="Current entry on top",.tip="If checked, places current clipboard entry at top of list. If not checked, history does not get sorted.",.val=TRUE},
   {.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_DISP,.name="single_line",.type=PREF_TYPE_TOGGLE,.desc="Show in a single line",.tip=NULL,.val=DEF_SINGLE_LINE},
   {.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_DISP,.name="reverse_history",.type=PREF_TYPE_TOGGLE,.desc="Show in reverse order",.tip="If checked, the current entry will be on the bottom instead of the top.",.val=DEF_REVERSE_HISTORY},
@@ -127,6 +135,9 @@ struct pref_item myprefs[]={
 	{.adj=NULL,.cval="\\n",.sig=NULL,.sec=PREF_SEC_DISP,.name="persistent_delim",.type=PREF_TYPE_ENTRY,.desc="Paste All Entry Delimiter",.tip="This string will be inserted between each line of history for paste all."},
 	{.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_DISP,.name="nop",.type=PREF_TYPE_SPACER,.desc=" ",.tip=NULL},
   {.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_NONE,.name="ellipsize",.type=PREF_TYPE_COMBO,.desc="Omit items in the:",.tip=NULL,.val=DEF_ELLIPSIZE}, 
+/**miscellaneous that doesn't fit elswhew  */	
+  {.adj=NULL,.cval=NULL,.sig=NULL,.sfunc=NULL,.sec=PREF_SEC_XMISC,.name=NULL,.type=PREF_TYPE_FRAME,.desc="<b>Miscellaneous</b>",.tip=NULL,.val=0},
+	{.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_XMISC,.name="multi_user",.type=PREF_TYPE_TOGGLE,.desc="Multiuser",.tip="If checked, enables checking multiple concurrent user logic. Use if several different users are logged in at the same time.",.val=FALSE},
 	
 /**Action Keys  */
   {.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_ACT,.name="history_key",.type=PREF_TYPE_ENTRY,.desc="History key combination:",.tip=NULL},
@@ -134,7 +145,7 @@ struct pref_item myprefs[]={
   {.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_ACT,.name="actions_key",.type=PREF_TYPE_ENTRY,.desc="Actions key combination:",.tip=NULL},
   {.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_ACT,.name="menu_key",.type=PREF_TYPE_ENTRY,.desc="Menu key combination",.tip=NULL},	
 	{.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_NONE,.name="no_icon",.val=FALSE},
-	{.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_NONE,.name=NULL},
+	{.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_NONE,.name=NULL,.desc=NULL},
 };
 
 GtkListStore* actions_list;
@@ -148,7 +159,9 @@ GtkTreeSelection* actions_selection;
 struct pref_item* get_pref(char *name)
 {
 	int i;
-	for (i=0;NULL != myprefs[i].name; ++i){
+	for (i=0;NULL != myprefs[i].desc; ++i){
+		if(NULL == myprefs[i].name)
+			continue;
 		if(!g_strcmp0(myprefs[i].name,name))
 			return &myprefs[i];
 	}	
@@ -162,7 +175,9 @@ struct pref_item* get_pref(char *name)
 struct pref_item* get_pref_by_widget(GtkWidget *w)
 {
 	int i;
-	for (i=0;NULL != myprefs[i].name; ++i){
+	for (i=0;NULL != myprefs[i].desc; ++i){
+		if(NULL == myprefs[i].name)
+			continue;
 		if(w == myprefs[i].w)
 			return &myprefs[i];
 	}	
@@ -176,9 +191,9 @@ struct pref_item* get_pref_by_widget(GtkWidget *w)
 int get_first_pref(int section)
 {
 	int i;
-	for (i=0;NULL != myprefs[i].name; ++i){
+	for (i=0;NULL != myprefs[i].desc; ++i){
 		if(section == myprefs[i].sec){
-			if(dbg)g_printf("gfp:returning sec %d, '%s\n",section, myprefs[i].name);
+			if(dbg)g_printf("gfp:returning sec %d, '%s\n",section, myprefs[i].desc);
 			return i;
 		}
 			
@@ -367,7 +382,9 @@ static void apply_preferences()
   unbind_itemkey("actions_key", actions_hotkey);
   unbind_itemkey("menu_key", menu_hotkey);
 	
-  for (i=0;NULL != myprefs[i].name; ++i){
+  for (i=0;NULL != myprefs[i].desc; ++i){
+		if(NULL == myprefs[i].name)
+			continue;
 		switch(myprefs[i].type&PREF_TYPE_MASK){
 			case PREF_TYPE_TOGGLE:
 				myprefs[i].val=gtk_toggle_button_get_active((GtkToggleButton*)myprefs[i].w);
@@ -410,7 +427,9 @@ static void save_preferences()
   if(0 == get_pref_int32("type_search"))
     set_pref_int32("case_search",0);
   /* Add values */
-	for (i=0;NULL != myprefs[i].name; ++i){
+	for (i=0;NULL != myprefs[i].desc; ++i){
+		if(NULL == myprefs[i].name)
+			continue;
 		switch(myprefs[i].type&PREF_TYPE_MASK){
 			case PREF_TYPE_TOGGLE:
 				g_key_file_set_boolean(rc_key, "rc", myprefs[i].name, myprefs[i].val);
@@ -455,7 +474,9 @@ void read_preferences()
   if (g_key_file_load_from_file(rc_key, rc_file, G_KEY_FILE_NONE, NULL)) {
 		int i;
 		/* Load values */
-		for (i=0;NULL != myprefs[i].name; ++i){
+		for (i=0;NULL != myprefs[i].desc; ++i){
+			if(NULL == myprefs[i].name)
+				continue;
 		  err=NULL;
 			switch(myprefs[i].type&PREF_TYPE_MASK){
 				case PREF_TYPE_TOGGLE:
@@ -736,29 +757,32 @@ static void edit_action(GtkCellRendererText *renderer, gchar *path, gchar *new_t
 int update_pref_widgets( void)
 {
 	int i,rtn=0;
-	for (i=0;NULL !=myprefs[i].name; ++i){
-		switch (myprefs[i].type&PREF_TYPE_MASK){
-			case PREF_TYPE_TOGGLE:
-				gtk_toggle_button_set_active((GtkToggleButton*)myprefs[i].w, myprefs[i].val);
-				break;
-			case PREF_TYPE_SPIN:
-				gtk_spin_button_set_value((GtkSpinButton*)myprefs[i].w, (gdouble)myprefs[i].val);
-				break;
-			case PREF_TYPE_COMBO:
-				gtk_combo_box_set_active((GtkComboBox*)myprefs[i].w, myprefs[i].val - 1);
-				break;
-			case PREF_TYPE_ENTRY:
-				gtk_entry_set_text((GtkEntry*)myprefs[i].w, myprefs[i].cval);
-				break;
-			case PREF_TYPE_SPACER:
-				break;
-			default: 
-				if(dbg)g_printf("apply_pref:don't know how to handle type %d\n",myprefs[i].type);
-				rtn=-1;
-				continue;
-				break;
+	for (i=0;NULL !=myprefs[i].desc; ++i){
+		if(NULL != myprefs[i].name){
+			switch (myprefs[i].type&PREF_TYPE_MASK){
+				case PREF_TYPE_TOGGLE:
+					gtk_toggle_button_set_active((GtkToggleButton*)myprefs[i].w, myprefs[i].val);
+					break;
+				case PREF_TYPE_SPIN:
+					gtk_spin_button_set_value((GtkSpinButton*)myprefs[i].w, (gdouble)myprefs[i].val);
+					break;
+				case PREF_TYPE_COMBO:
+					gtk_combo_box_set_active((GtkComboBox*)myprefs[i].w, myprefs[i].val - 1);
+					break;
+				case PREF_TYPE_ENTRY:
+					gtk_entry_set_text((GtkEntry*)myprefs[i].w, myprefs[i].cval);
+					break;
+				case PREF_TYPE_SPACER:
+					break;
+				default: 
+					if(dbg)g_printf("apply_pref:don't know how to handle type %d\n",myprefs[i].type);
+					rtn=-1;
+					continue;
+					break;
+			}
+			if(dbg)g_printf("up:Set '%s' to %d (%s)\n",myprefs[i].name, myprefs[i].val, myprefs[i].cval);	
 		}
-		if(dbg)g_printf("up:Set '%s' to %d (%s)\n",myprefs[i].name, myprefs[i].val, myprefs[i].cval);
+		
 	}	
 	
 	return rtn;
@@ -774,9 +798,9 @@ int add_section(int sec, GtkWidget *parent)
 	int i,rtn=0;
 	int single_st, single_is;
 	gint x,y,connect;
-	GtkWidget *hbox, *label, *child;
+	GtkWidget *hbox, *label, *child, *vbox, *alignment;
 	GtkWidget* packit;
-	
+	vbox=parent;
 	single_st=single_is=0;
 	for (i=get_first_pref(sec);sec==myprefs[i].sec; ++i){
 		connect=1;
@@ -789,7 +813,20 @@ int add_section(int sec, GtkWidget *parent)
 		}
 		
 		switch (myprefs[i].type&PREF_TYPE_MASK){
-			
+			case PREF_TYPE_FRAME:/**must be first in section, since it sets vbox.  */
+					myprefs[i].w= gtk_frame_new(NULL);
+				  gtk_frame_set_shadow_type((GtkFrame*)	myprefs[i].w, GTK_SHADOW_NONE);
+				  label = gtk_label_new(NULL);							/**<b>myprefs[i].descClipboards</b>"  */
+				  gtk_label_set_markup((GtkLabel*)label, myprefs[i].desc);
+				  gtk_frame_set_label_widget((GtkFrame*)	myprefs[i].w, label);
+				  alignment = gtk_alignment_new(0.50, 0.50, 1.0, 1.0);
+				  gtk_alignment_set_padding((GtkAlignment*)alignment, 12, 0, 12, 0);
+				  gtk_container_add((GtkContainer*)	myprefs[i].w, alignment);
+				  vbox = gtk_vbox_new(FALSE, 2);
+				  gtk_container_add((GtkContainer*)alignment, vbox);
+					gtk_box_pack_start((GtkBox*)parent,	myprefs[i].w,FALSE,FALSE,0);	
+				continue;
+				break;
 			case PREF_TYPE_TOGGLE:
 				myprefs[i].w=gtk_check_button_new_with_mnemonic(_(myprefs[i].desc));
 				packit=myprefs[i].w;	
@@ -837,7 +874,7 @@ int add_section(int sec, GtkWidget *parent)
 				continue;
 				break;
 		}
-		  
+		
 		/**tooltips are set on the label of the spin box, not the widget and are handled above */
 		if(PREF_TYPE_SPIN != myprefs[i].type && NULL != myprefs[i].tip)
 		  gtk_widget_set_tooltip_text(myprefs[i].w, _(myprefs[i].tip));
@@ -854,13 +891,13 @@ int add_section(int sec, GtkWidget *parent)
 			/**else already packed above.  */
 		}	else
 																							/**espand fill padding  */
-			gtk_box_pack_start((GtkBox*)parent, packit, TRUE, TRUE, 0);
+			gtk_box_pack_start((GtkBox*)vbox, packit, TRUE, TRUE, 0);
 	/**check for end of single line.  */
 		single_st=(myprefs[i+1].type&(PREF_TYPE_NMASK|PREF_TYPE_SINGLE_LINE)); /**deterimine if we are in single line  */
 		if(single_is && !single_st){/**end of single line  */
 																							/**exp fill padding  */
-			gtk_box_pack_start((GtkBox*)parent, hbox, TRUE, TRUE, 0);		/**pack the hbox into parent  */
-			/*g_printf("pack %p<-%p hbox\n",parent,hbox); */
+			gtk_box_pack_start((GtkBox*)vbox, hbox, TRUE, TRUE, 0);		/**pack the hbox into parent  */
+			/*g_printf("pack %p<-%p hbox\n",vbox,hbox); */
 			single_is=0;
 		}
 	}
@@ -904,48 +941,12 @@ void show_preferences(gint tab)
   GtkWidget* vbox_behavior = gtk_vbox_new(FALSE, 12);
   gtk_container_add((GtkContainer*)page_behavior, vbox_behavior);
   
-  /* Build the clipboards frame */
-  frame = gtk_frame_new(NULL);
-  gtk_frame_set_shadow_type((GtkFrame*)frame, GTK_SHADOW_NONE);
-  label = gtk_label_new(NULL);
-  gtk_label_set_markup((GtkLabel*)label, _("<b>Clipboards</b>"));
-  gtk_frame_set_label_widget((GtkFrame*)frame, label);
-  alignment = gtk_alignment_new(0.50, 0.50, 1.0, 1.0);
-  gtk_alignment_set_padding((GtkAlignment*)alignment, 12, 0, 12, 0);
-  gtk_container_add((GtkContainer*)frame, alignment);
-  vbox = gtk_vbox_new(FALSE, 2);
-  gtk_container_add((GtkContainer*)alignment, vbox);
-	
-	/**build the copy section  */
-	add_section(PREF_SEC_CLIP,vbox);
-	gtk_box_pack_start((GtkBox*)vbox_behavior,frame,FALSE,FALSE,0);
+  /* Build the clipboards frame & copy section */
+	add_section(PREF_SEC_CLIP,vbox_behavior);
 	/* Build the history frame */
-  frame = gtk_frame_new(NULL);
-  gtk_frame_set_shadow_type((GtkFrame*)frame, GTK_SHADOW_NONE);
-  label = gtk_label_new(NULL);
-  gtk_label_set_markup((GtkLabel*)label, _("<b>History</b>"));
-  gtk_frame_set_label_widget((GtkFrame*)frame, label);
-  alignment = gtk_alignment_new(0.50, 0.50, 1.0, 1.0);
-  gtk_alignment_set_padding((GtkAlignment*)alignment, 12, 0, 12, 0);
-  gtk_container_add((GtkContainer*)frame, alignment);
-  vbox = gtk_vbox_new(FALSE, 2);
-  gtk_container_add((GtkContainer*)alignment, vbox);
-	add_section(PREF_SEC_HIST,vbox);
-  gtk_box_pack_start((GtkBox*)vbox_behavior,frame,FALSE,FALSE,0);
+	add_section(PREF_SEC_HIST,vbox_behavior);
   /* Build the miscellaneous frame */
-  frame = gtk_frame_new(NULL);
-  gtk_frame_set_shadow_type((GtkFrame*)frame, GTK_SHADOW_NONE);
-  label = gtk_label_new(NULL);
-  gtk_label_set_markup((GtkLabel*)label, _("<b>Miscellaneous</b>"));
-  gtk_frame_set_label_widget((GtkFrame*)frame, label);
-  alignment = gtk_alignment_new(0.50, 0.50, 1.0, 1.0);
-  gtk_alignment_set_padding((GtkAlignment*)alignment, 12, 0, 12, 0);
-  gtk_container_add((GtkContainer*)frame, alignment);
-  vbox = gtk_vbox_new(FALSE, 2);
-  gtk_container_add((GtkContainer*)alignment, vbox);
-/**miscelleaneous  */
-	add_section(PREF_SEC_MISC,vbox);
-  gtk_box_pack_start((GtkBox*)vbox_behavior, frame, FALSE, FALSE, 0);
+	add_section(PREF_SEC_MISC,vbox_behavior);
   
   /* Build the display page */
   GtkWidget* page_display = gtk_alignment_new(0.50, 0.50, 1.0, 1.0);
@@ -955,21 +956,8 @@ void show_preferences(gint tab)
   gtk_container_add((GtkContainer*)page_display, vbox_display);
   
   /* Build the items frame */
-  frame = gtk_frame_new(NULL);
-  gtk_frame_set_shadow_type((GtkFrame*)frame, GTK_SHADOW_NONE);
-  label = gtk_label_new(NULL);
-  gtk_label_set_markup((GtkLabel*)label, _("<b>Items</b>"));
-  gtk_frame_set_label_widget((GtkFrame*)frame, label);
-  alignment = gtk_alignment_new(0.50, 0.50, 1.0, 1.0);
-  gtk_alignment_set_padding((GtkAlignment*)alignment, 12, 0, 12, 0);
-  gtk_container_add((GtkContainer*)frame, alignment);
-  vbox = gtk_vbox_new(FALSE, 1);
-  gtk_container_add((GtkContainer*)alignment, vbox);
+	add_section(PREF_SEC_DISP,vbox_display);
 	
-	add_section(PREF_SEC_DISP,vbox);
-	
-  gtk_box_pack_start((GtkBox*)vbox_display, frame, FALSE, FALSE, 0);
-  
   /* Build the omitting frame */
   frame = gtk_frame_new(NULL);
   gtk_frame_set_shadow_type((GtkFrame*)frame, GTK_SHADOW_NONE);
@@ -995,6 +983,9 @@ void show_preferences(gint tab)
   gtk_combo_box_append_text((GtkComboBox*)p->w, _("End"));
   gtk_box_pack_start((GtkBox*)hbox, p->w, FALSE, FALSE, 0);
   gtk_box_pack_start((GtkBox*)vbox_display, frame, FALSE, FALSE, 0);
+	
+	/* Build the misc Display frame */
+	add_section(PREF_SEC_XMISC,vbox_display);
   
   /* Build the actions page */
   GtkWidget* page_actions = gtk_alignment_new(0.50, 0.50, 1.0, 1.0);
