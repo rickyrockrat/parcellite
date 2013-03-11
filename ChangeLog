@@ -4,6 +4,7 @@ V1.1.5 Friday, January 25 2013
  +Fixed bug #79, reverse order doesn't work.
  +Added fifo_cmd, and stop_all, run_all commands.
  +Fixed bug #82, Parcellite sometimes eats about twenty last characters from a an entry in history.
+ +Fixed bug where item length reverts to 50 if > 75. Now uses DEF_ITEM_LENGTH_MAX.
  
 V1.1.4 Saturday, January 19 2013
  Changes

@@ -33,6 +33,7 @@
 #define DEF_SINGLE_LINE       TRUE
 #define DEF_REVERSE_HISTORY   FALSE
 #define DEF_ITEM_LENGTH       50
+#define DEF_ITEM_LENGTH_MAX   200
 #define DEF_ELLIPSIZE         2
 #define DEF_PHISTORY_KEY      "<Ctrl><Alt>X"
 #define DEF_HISTORY_KEY       "<Ctrl><Alt>H"
@@ -68,7 +69,7 @@ struct myadj {
 struct myadj align_hist_xy={1,0,10,100};
 struct myadj align_data_lim={0,1000,1,10};
 struct myadj align_hist_lim={5, MAX_HISTORY, 1, 10};
-struct myadj align_line_lim={5, 100, 1, 5};
+struct myadj align_line_lim={5, DEF_ITEM_LENGTH_MAX, 1, 5};
 struct pref_item {
 	gchar *name;		/**name/id to find pref  */
 	gint32 val;			/**int val  */
@@ -327,7 +328,7 @@ void check_sanity(void)
   if ((!x) || (x > MAX_HISTORY) || (x < 0))
     set_pref_int32("history_limit",DEF_HISTORY_LIMIT);
 	x=get_pref_int32("item_length");
-  if ((!x) || (x > 75) || (x < 0))
+  if ((!x) || (x > DEF_ITEM_LENGTH_MAX) || (x < 0))
     set_pref_int32("item_length",DEF_ITEM_LENGTH);
 	x=get_pref_int32("ellipsize");
   if ((!x) || (x > 3) || (x < 0))
