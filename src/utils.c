@@ -215,11 +215,19 @@ gchar * get_value_from_env(pid_t pid, gchar *key)
 		return NULL;
 	}
 	g_sprintf(envf,"/proc/%ld/environ",pid);
+	if(0 != access(envf,  R_OK)){/**doesn't exist, or not our process  */
+		g_printf("Unable to open '%s' for PID %ld\n",envf,pid);
+		goto error;
+	}
 	fp=g_file_new_for_path(envf);
 	/**this dumps a zero at end of file.  */
 	if(FALSE == g_file_load_contents(fp,NULL,&env,&elen,NULL,NULL)	){
 		g_printf("Error finding '%s' for PID %ld\n",envf,pid);
 		goto error;
+	}
+	if(NULL == env){
+		 g_printf("NULL evironment\n");
+		 goto error; 
 	}
 	/*g_printf("Loaded file '%s', looking for KEY '%s'\n",envf,key); */
 	++elen; /**allow for zero @ end of file.  */
@@ -248,6 +256,7 @@ error:
 		g_free (envf);
 	if(NULL != env)																										 
 		g_free(env);
+	return NULL;
 }
 
 
