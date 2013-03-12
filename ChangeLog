@@ -7,6 +7,7 @@ V1.1.5 Friday, January 25 2013
  +Fixed bug where item length reverts to 50 if > 75. Now uses DEF_ITEM_LENGTH_MAX.
  +Added Frame creation to add_section.
  +Fixed bug #81, Cannot run for  multiple users.
+ +Fixed bug #83, Ctrl+c/v does not work for blender.
  
 V1.1.4 Saturday, January 19 2013
  Changes
