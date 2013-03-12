@@ -194,9 +194,9 @@ gchar *_update_clipboard (GtkClipboard *clip, gchar *n, gchar **old, int set)
 /** This DOES NOT WORK!! WTH??.
 Fix is a bit hacky.
 \n\b Arguments:
-\n\b Returns:
+\n\b Returns:	 clipboard contents, to be freed with g_free, or NULL if empty.
 ****************************************************************************/
-gboolean is_clipboard_empty(GtkClipboard *clip)
+gchar *is_clipboard_empty(GtkClipboard *clip)
 {
   /** int count;
   GdkAtom *targets;
@@ -206,10 +206,7 @@ gboolean is_clipboard_empty(GtkClipboard *clip)
   g_free(targets);
 	if(TRUE == contents || count >0)
 		return 0;*/
-	gchar *x=gtk_clipboard_wait_for_text(clip);
-	if(NULL == x) return 1;
-	g_free(x);
-  return 0;
+	return(gtk_clipboard_wait_for_text(clip));
 }
 
 /***************************************************************************/
@@ -267,13 +264,13 @@ gchar *update_clipboard(GtkClipboard *clip,gchar *intext,  gint mode)
 	}
 	/**check for lost contents and restore if lost */
 	/* Only recover lost contents if there isn't any other type of content in the clipboard */
-	if(is_clipboard_empty(clip) && NULL != *existing ) {
+	if(NULL ==(changed=is_clipboard_empty(clip)) && NULL != *existing ) {
 		g_printf("%sclp empty, set to '%s'\n",clip==clipboard?"CLI":"PRI",*existing); 
     gtk_clipboard_set_text(clip, *existing, -1);
 		last=*existing;
   }
 	/**check for changed clipboard content - in all modes */
-	changed=gtk_clipboard_wait_for_text(clip);
+	/*changed=gtk_clipboard_wait_for_text(clip); */
 	if(0 == p_strcmp(*existing, changed) ){
 		g_free(changed);                    /**no change, do nothing  */
 		changed=NULL;
@@ -1892,15 +1889,18 @@ static void parcellite_init()
   show_icon=!get_pref_int32("no_icon");
   /* Read history */
   if (get_pref_int32("save_history")){
+		gchar *x;
 		/*g_printf("Calling read_hist\n"); */
 		read_history();
 		if(NULL != history_list){
 			struct history_item *c;
 			c=(struct history_item *)(history_list->data);	
-			if(is_clipboard_empty(primary))
+			if(NULL == (x=is_clipboard_empty(primary)))
 				update_clipboard(primary,c->text,H_MODE_LIST);
-			if(is_clipboard_empty(clipboard))
+			else g_free (x);
+			if(NULL == (x=is_clipboard_empty(clipboard)))
 				update_clipboard(clipboard,c->text,H_MODE_LIST);
+			else g_free(x);
 		}
 	}
 	
