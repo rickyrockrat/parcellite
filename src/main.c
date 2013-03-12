@@ -18,6 +18,38 @@
 NOTES:
 We keep track of a delete list while the history menu is up. We add/remove items from that 
 list until we get a selection done event, then we delete those items from the real history
+
+From http://standards.freedesktop.org/clipboards-spec/clipboards-latest.txt
+
+Application authors should follow the following guidelines to get
+correct behavior:
+
+ - selecting but with no explicit copy should only set PRIMARY,
+   never CLIPBOARD
+
+ - middle mouse button should paste PRIMARY, never CLIPBOARD
+
+ - explicit cut/copy commands (i.e. menu items, toolbar buttons)
+   should always set CLIPBOARD to the currently-selected data (i.e.
+   conceptually copy PRIMARY to CLIPBOARD)
+
+ - explicit cut/copy commands should always set both CLIPBOARD and
+   PRIMARY, even when copying doesn't involve a selection (e.g. a
+   "copy url" -option which explicitly copies an url without the
+   url being selected first)
+
+ - explicit paste commands should paste CLIPBOARD, not PRIMARY
+
+ - a selection becoming unselected should never unset PRIMARY
+
+ - possibly contradicting the ICCCM, clients don't need to support
+   SECONDARY, though if anyone can figure out what it's good
+   for they should feel free to use it for that
+
+ - cut buffers are evil; they only support ASCII, they don't 
+   work with many clients, and they require data to be 
+   copied to the X server. Therefore clients should avoid 
+   using cut buffers and use only selections.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -859,7 +891,7 @@ static void show_about_dialog(GtkMenuItem *menu_item, gpointer user_data)
                         gtk_widget_render_icon(about_dialog, GTK_STOCK_ABOUT, GTK_ICON_SIZE_MENU, NULL));
     
     gtk_about_dialog_set_name((GtkAboutDialog*)about_dialog, "Parcellite");
-    #ifdef HAVE_CONFIG_H
+    #ifdef HAVE_CONFIG_H	/**VER=555; sed "s#\(.*\)svn.*\".*#\1svn$VER\"#" config.h  */
     gtk_about_dialog_set_version((GtkAboutDialog*)about_dialog, VERSION);
     #endif
     gtk_about_dialog_set_comments((GtkAboutDialog*)about_dialog,

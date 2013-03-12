@@ -15,3 +15,8 @@ parcellite_SOURCES = main.c main.h \
                      preferences.c preferences.h \
                      eggaccelerators.c eggaccelerators.h \
                      attr_list.c attr_list.h
+                     
+$(top_srcdir)/config.h: $(parcellite_SOURCES)
+	GO=$$(grep -c svnversion $(top_srcdir)/configure.ac); if [ "0" != "$$GO" ]; then \
+	VER=$$($(top_srcdir)/svnversion.sh); sed -i "s#\(.*\)svn.*\".*#\1$$VER\"#" $(top_srcdir)/config.h; fi
+	
