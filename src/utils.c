@@ -207,7 +207,7 @@ strings.
 gchar * get_value_from_env(pid_t pid, gchar *key)
 {
 	GFile *fp;
-	char *env, *envf;
+	char *env=NULL, *envf;
 	gsize elen, i;
 	
 	if(NULL == (envf=(g_malloc(strlen("/proc/9999999/environ"))))) {
