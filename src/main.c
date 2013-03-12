@@ -114,7 +114,7 @@ gchar *process_new_item(GtkClipboard *clip,gchar *ntext)
 	if(NULL == ntext)
 		return NULL;
 	
-				
+	
 /**we now check our options...  */		
 	/*printf("opt\n"); fflush(NULL); */
 	if (get_pref_int32("hyperlinks_only")){
@@ -191,17 +191,25 @@ gchar *_update_clipboard (GtkClipboard *clip, gchar *n, gchar **old, int set)
 
 
 /***************************************************************************/
-/** .
+/** This DOES NOT WORK!! WTH??.
+Fix is a bit hacky.
 \n\b Arguments:
 \n\b Returns:
 ****************************************************************************/
 gboolean is_clipboard_empty(GtkClipboard *clip)
 {
-  int count;
+  /** int count;
   GdkAtom *targets;
+	if(clipboard == clip) g_printf("-%s-",gtk_clipboard_wait_for_text(clip));
   gboolean contents = gtk_clipboard_wait_for_targets(clip, &targets, &count);
+	if(clipboard == clip) g_printf("-%s-2nd-",gtk_clipboard_wait_for_text(clip));
   g_free(targets);
-  return !contents;
+	if(TRUE == contents || count >0)
+		return 0;*/
+	gchar *x=gtk_clipboard_wait_for_text(clip);
+	if(NULL == x) return 1;
+	g_free(x);
+  return 0;
 }
 
 /***************************************************************************/
@@ -260,7 +268,7 @@ gchar *update_clipboard(GtkClipboard *clip,gchar *intext,  gint mode)
 	/**check for lost contents and restore if lost */
 	/* Only recover lost contents if there isn't any other type of content in the clipboard */
 	if(is_clipboard_empty(clip) && NULL != *existing ) {
-/*		g_printf("%sclp empty, BS=0x%02X set to '%s'\n",clipname,button_state,*existing); */
+		g_printf("%sclp empty, set to '%s'\n",clip==clipboard?"CLI":"PRI",*existing); 
     gtk_clipboard_set_text(clip, *existing, -1);
 		last=*existing;
   }
@@ -473,6 +481,8 @@ gboolean check_for_appindictor( gpointer data)
 ****************************************************************************/
 gboolean check_clipboards_tic(gpointer data)
 {
+	/** gchar *txt=gtk_clipboard_wait_for_text(clipboard);
+	g_printf("%s\n",txt);*/
 	check_clipboards(H_MODE_CHECK);
 #ifdef HAVE_APPINDICATOR
 	if(have_appindicator){
