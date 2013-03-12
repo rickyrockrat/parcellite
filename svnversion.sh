@@ -22,7 +22,7 @@ else
   fi
   cd "$FULLPATH"
   echo "Using $FULLPATH">>"$CWD/svnversion.log"
-  SVER=$(svn info -r HEAD|grep "Last Changed Rev"|sed 's!.*: !!')
+  SVER=$(svn info .|grep "Revision"|sed 's!.*: !!')
   echo -n "svn$SVER"
   cd $CWD
 fi

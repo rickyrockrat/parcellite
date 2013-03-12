@@ -8,6 +8,9 @@ V1.1.5 Friday, January 25 2013
  +Added Frame creation to add_section.
  +Fixed bug #81, Cannot run for  multiple users.
  +Fixed bug #83, Ctrl+c/v does not work for blender.
+ +Added automake rule to set svn version each time svn version is built.
+ +Fixed svnversion to use local copy.
+ +Added Clipboard standard usage notes to main.c.
  
 V1.1.4 Saturday, January 19 2013
  Changes
