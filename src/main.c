@@ -84,7 +84,7 @@ GtkWidget *hmenu;
 #  define TRACE(x) do {} while (FALSE);
 #endif
 /*uncomment the next line to debug the clipboard updates */
-/*#define DEBUG_UPDATE */
+#define DEBUG_UPDATE 
 #ifdef DEBUG_UPDATE
 #  define DTRACE(x) x
 #else

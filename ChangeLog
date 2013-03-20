@@ -13,6 +13,7 @@ V1.1.5 Tuesday, March 12 2013
  +Added Clipboard standard usage notes to main.c.
  +Fixed Bug 85, Garbage in clipboard when app is closed.
  +Fixed Bug 86, Parcellite not putting history text in clipboard.
+ +Fixed Bug 87,Error converting selection from UTF8_STRING fills X log.
  +Improved documentation for Actions.
  
 V1.1.4 Saturday, January 19 2013
