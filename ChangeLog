@@ -1,16 +1,19 @@
-V1.1.5 Friday, January 25 2013
+V1.1.5 Tuesday, March 12 2013
  +Added ppa script.
  +Updated German Translation fro patch by Christoph Wickert.
- +Fixed bug #79, reverse order doesn't work.
+ +Fixed bug 79, reverse order doesn't work.
  +Added fifo_cmd, and stop_all, run_all commands.
- +Fixed bug #82, Parcellite sometimes eats about twenty last characters from a an entry in history.
+ +Fixed bug 82, Parcellite sometimes eats about twenty last characters from a an entry in history.
  +Fixed bug where item length reverts to 50 if > 75. Now uses DEF_ITEM_LENGTH_MAX.
  +Added Frame creation to add_section.
- +Fixed bug #81, Cannot run for  multiple users.
- +Fixed bug #83, Ctrl+c/v does not work for blender.
+ +Fixed bug 81, Cannot run for  multiple users.
+ +Fixed bug 83, Ctrl+c/v does not work for blender.
  +Added automake rule to set svn version each time svn version is built.
  +Fixed svnversion to use local copy.
  +Added Clipboard standard usage notes to main.c.
+ +Fixed Bug 85, Garbage in clipboard when app is closed.
+ +Fixed Bug 86, Parcellite not putting history text in clipboard.
+ +Improved documentation for Actions.
  
 V1.1.4 Saturday, January 19 2013
  Changes

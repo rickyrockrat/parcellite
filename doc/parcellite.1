@@ -32,7 +32,8 @@ Print clipboard contents
 Print primary contents
 .SH ACTIONS
 \fBParcellite's\fR actions perform commands using the contents of your clipboard. "\fB%s\fR" in the command
-is replaced with the clipboard contents.
+is replaced with the clipboard contents. Use double quotes "\fB%s\fR" to expand env variables like $HOME to /home/your_name
+Use single quotes '%s' to feed your action with env variables without shell expansion.
 .SH CLI EXAMPLES
  echo "copied to clipboard" | parcellite
  parcellite "copied to clipboard"
