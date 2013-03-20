@@ -48,6 +48,8 @@ not character.
 glong validate_utf8_text(gchar *text, glong len)
 {
 	const gchar *valid;
+	if(NULL == text)
+		return 0;
 	text[len]=0;
 	if(FALSE == g_utf8_validate(text,-1,&valid)) {
 		g_printf("Truncating invalid utf8 text entry: ");
