@@ -83,6 +83,14 @@ GtkWidget *hmenu;
 #else
 #  define TRACE(x) do {} while (FALSE);
 #endif
+/*uncomment the next line to debug the clipboard updates */
+/*#define DEBUG_UPDATE */
+#ifdef DEBUG_UPDATE
+#  define DTRACE(x) x
+#else
+#  define DTRACE(x) do {} while (FALSE);
+#endif
+
 static GtkClipboard* primary;
 static GtkClipboard* clipboard;
 struct p_fifo *fifo;
@@ -202,10 +210,12 @@ gchar *_update_clipboard (GtkClipboard *clip, gchar *n, gchar **old, int set)
 {
 	
 	if(NULL != n)	{
-	/**  	if(clip==primary)
+#ifdef DEBUG_TRACE
+	 	if(clip==primary)
 			g_printf("set PRI to %s\n",n);
 		else
-			g_printf("set CLI to %s\n",n);*/
+			g_printf("set CLI to %s\n",n);
+#endif
 		if( set)
 			gtk_clipboard_set_text(clip, n, -1);
 		if(NULL != *old)
@@ -267,8 +277,8 @@ gchar *update_clipboard(GtkClipboard *clip,gchar *intext,  gint mode)
 		existing=&ctext;
 	}
 	
-	/** if(H_MODE_CHECK!=mode )
-	g_printf("HC%d-%c: in %s,ex %s\n",mode,clip==primary?'p':'c',intext,*existing);*/
+	/** if(H_MODE_CHECK!=mode )	 */
+   /*g_printf("HC%d-%c: in %s,ex %s\n",mode,clip==primary?'p':'c',intext,*existing); */
 	if( H_MODE_INIT == mode){
 		if(NULL != *existing)
 			g_free(*existing);
@@ -290,24 +300,35 @@ gchar *update_clipboard(GtkClipboard *clip,gchar *intext,  gint mode)
 	}
 	/*g_printf("BS=0x%02X ",button_state); */
 	if( H_MODE_IGNORE == mode){	/**ignore processing and just put it on the clip.  */
-/*		g_printf("%sJustSet '%s'\n",clipname,intext); */
+		DTRACE(g_printf("%sJustSet '%s'\n",clip==clipboard?"CLI":"PRI",intext)); 
 		gtk_clipboard_set_text(clip, intext, -1);
 		return intext;
 	}
+	if(H_MODE_LIST == mode && 0 != p_strcmp(intext,*existing)){ /**just set clipboard contents. Already in list  */
+		DTRACE(g_printf("%sInList '%s' ex '%s'\n",clip==clipboard?"CLI":"PRI",intext,*existing)); 
+		last=_update_clipboard(clip,intext,existing,1);
+		if(NULL != last){/**maintain persistence, if set  */
+			append_item(last,get_pref_int32("current_on_top")?HIST_DEL|HIST_CHECKDUP|HIST_KEEP_FLAGS:0);
+		}
+		goto done;
+	}
 	/**check for lost contents and restore if lost */
 	/* Only recover lost contents if there isn't any other type of content in the clipboard */
-	if(NULL ==(changed=is_clipboard_empty(clip)) && NULL != *existing ) {
-		g_printf("%sclp empty, set to '%s'\n",clip==clipboard?"CLI":"PRI",*existing); 
+	if(NULL != *existing && NULL ==(changed=is_clipboard_empty(clip)) ) {
+		DTRACE(g_printf("%sclp empty, set to '%s'\n",clip==clipboard?"CLI":"PRI",*existing));  
     gtk_clipboard_set_text(clip, *existing, -1);
 		last=*existing;
+		return *existing;
   }
+	if(NULL == changed)
+		return NULL;																	
 	/**check for changed clipboard content - in all modes */
 	/*changed=gtk_clipboard_wait_for_text(clip); */
 	if(0 == p_strcmp(*existing, changed) ){
 		g_free(changed);                    /**no change, do nothing  */
 		changed=NULL;
 	}	else {
-/*		g_printf("%sclp changed: ex '%s' is '%s'\n",clipname,*existing,changed); */
+		DTRACE(g_printf("%sclp changed: ex '%s' is '%s'\n",clip==clipboard?"CLI":"PRI",*existing,changed)); 
 		if(NULL != (processed=process_new_item(clip,changed)) ){
 			if(0 == p_strcmp(processed,changed)) set=0;
 			else set=1;
@@ -323,7 +344,7 @@ gchar *update_clipboard(GtkClipboard *clip,gchar *intext,  gint mode)
 			}else 
 				d=*existing;
 			if(NULL != d){
-/*				g_printf("%srestore clp '%s'\n",clipname,d); */
+				DTRACE(g_printf("%srestore clp '%s', ex='%s'\n",clip==clipboard?"CLI":"PRI",d,*existing)); 
 				last=_update_clipboard(clip,d,existing,1);
 			}
 				
@@ -341,14 +362,7 @@ gchar *update_clipboard(GtkClipboard *clip,gchar *intext,  gint mode)
 	
 	*/		
 	
-	if(H_MODE_LIST == mode && 0 != p_strcmp(intext,*existing)){ /**just set clipboard contents. Already in list  */
-/*		g_printf("%sInList '%s' ex '%s'\n",clipname,intext,*existing); */
-		last=_update_clipboard(clip,intext,existing,1);
-		if(NULL != last){/**maintain persistence, if set  */
-			append_item(last,get_pref_int32("current_on_top")?HIST_DEL|HIST_CHECKDUP|HIST_KEEP_FLAGS:0);
-		}
-		goto done;
-	}else if(H_MODE_NEW==mode){
+	if(H_MODE_NEW==mode){
 		if(NULL != (processed=process_new_item(clip,intext)) ){
 /*			g_printf("%sNEW '%s'\n",clipname,processed); */
 			if(0 == p_strcmp(processed,*existing))set=0;
