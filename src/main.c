@@ -76,7 +76,7 @@ correct behavior:
 
 GtkWidget *hmenu;
 /* Uncomment the next line to print a debug trace. */
-/*#define DEBUG   */
+/*#define DEBUG    */
 
 #ifdef DEBUG
 #  define TRACE(x) x
@@ -84,7 +84,7 @@ GtkWidget *hmenu;
 #  define TRACE(x) do {} while (FALSE);
 #endif
 /*uncomment the next line to debug the clipboard updates */
-#define DEBUG_UPDATE 
+#define DEBUG_UPDATE 										N
 #ifdef DEBUG_UPDATE
 #  define DTRACE(x) x
 #else
@@ -298,6 +298,9 @@ gchar *update_clipboard(GtkClipboard *clip,gchar *intext,  gint mode)
 		if ( button_state & (GDK_BUTTON1_MASK|GDK_SHIFT_MASK) ) /**button down, done.  */
 			goto done;
 	}
+	if(NULL != intext){
+		validate_utf8_text(intext,strlen(intext));
+	}	
 	/*g_printf("BS=0x%02X ",button_state); */
 	if( H_MODE_IGNORE == mode){	/**ignore processing and just put it on the clip.  */
 		DTRACE(g_printf("%sJustSet '%s'\n",clip==clipboard?"CLI":"PRI",intext)); 
@@ -314,7 +317,12 @@ gchar *update_clipboard(GtkClipboard *clip,gchar *intext,  gint mode)
 	}
 	/**check for lost contents and restore if lost */
 	/* Only recover lost contents if there isn't any other type of content in the clipboard */
-	if(NULL != *existing && NULL ==(changed=is_clipboard_empty(clip)) ) {
+	changed=is_clipboard_empty(clip);
+	if(NULL != changed){
+		validate_utf8_text(changed,strlen(changed));
+	}
+	
+	if(NULL != *existing && NULL == changed ) {
 		DTRACE(g_printf("%sclp empty, set to '%s'\n",clip==clipboard?"CLI":"PRI",*existing));  
     gtk_clipboard_set_text(clip, *existing, -1);
 		last=*existing;
