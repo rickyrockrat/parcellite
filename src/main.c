@@ -104,7 +104,7 @@ GMutex *hist_lock=NULL;
 static gboolean actions_lock = FALSE;
 static int show_icon=0;
 static int have_appindicator=0; /**if set, we have a running indicator-appmenu  */
-static gchar *appindicator_process="indicator-appmenu"; /**process name  */
+static gchar *appindicator_process="indicator-messages-service"; /**process name  */
 
 static int cmd_mode=CMODE_ALL; /**both clipboards  */
 /** static int cmd_state=ACT_RUN; running  */
