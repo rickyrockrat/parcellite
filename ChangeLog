@@ -15,6 +15,7 @@ V1.1.5 Tuesday, March 12 2013
  +Fixed Bug 86, Parcellite not putting history text in clipboard.
  +Fixed Bug 87,Error converting selection from UTF8_STRING fills X log.
  +Improved documentation for Actions.
+ +Fix bug 88, Parcellite does not work with appindicator in Raring.
  
 V1.1.4 Saturday, January 19 2013
  Changes
