@@ -238,6 +238,33 @@ void rm_h_item(struct history_info *h, GtkWidget *w, GList* element, gint which)
 	}
 		
 }
+
+
+/***************************************************************************/
+/** .
+\n\b Arguments:
+\n\b Returns:
+****************************************************************************/
+void remove_deleted_items(struct history_info *h)
+{
+	if(NULL != h && NULL != h->delete_list){/**have a list of items to delete.  */
+		GList *i;
+		/*g_print("Deleting items\n"); */
+		for (i=h->delete_list; NULL != i; i=i->next){
+			struct s_item_info *it=(struct s_item_info *)i->data;
+			/*printf("Free %p.. '%s' ",it->element->data,(char *)(it->((struct history_item *(element->data))->text))); */
+			g_free(it->element->data);
+			it->element->data=NULL;
+			history_list = g_list_delete_link(history_list, it->element);
+			/** printf("Free %p\n",it);
+			fflush(NULL);*/
+			g_free(it);
+		}
+		h->delete_list=NULL;
+		if (get_pref_int32("save_history"))
+		  save_history();
+	}	
+}
 /***************************************************************************/
 /** Handle marking for history window. Also manages adding/removing from 
 the delete list, which gets called when the history window closes.
