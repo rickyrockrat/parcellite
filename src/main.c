@@ -84,7 +84,7 @@ GtkWidget *hmenu;
 #  define TRACE(x) do {} while (FALSE);
 #endif
 /*uncomment the next line to debug the clipboard updates */
-#define DEBUG_UPDATE 										N
+/*#define DEBUG_UPDATE */
 #ifdef DEBUG_UPDATE
 #  define DTRACE(x) x
 #else
@@ -859,6 +859,7 @@ void  history_item_right_click (struct history_info *h, GdkEventKey *e, gint ind
 /* Called when Clear is selected from history menu */
 static void clear_selected(GtkMenuItem *menu_item, gpointer user_data)
 {
+	int clear=1;
   /* Check for confirm clear option */
   if (get_pref_int32("confirm_clear"))  {
     GtkWidget* confirm_dialog = gtk_message_dialog_new(NULL,
@@ -867,23 +868,21 @@ static void clear_selected(GtkMenuItem *menu_item, gpointer user_data)
                                                        GTK_BUTTONS_OK_CANCEL,
                                                        _("Clear the history?"));
     
-    if (gtk_dialog_run((GtkDialog*)confirm_dialog) == GTK_RESPONSE_OK)    {
-      /* Clear history and free history-related variables */
-			clear_history();
-      
-		  update_clipboard(primary, "", H_MODE_INIT);
-      update_clipboard(clipboard, "", H_MODE_INIT);
-    }
-    gtk_widget_destroy(confirm_dialog);
-  }
-  else  {
-    /* Clear history and free history-related variables */
-    g_list_free(history_list);
-    history_list = NULL;
-    save_history();
-    update_clipboard(primary, "", H_MODE_INIT);
+    if (gtk_dialog_run((GtkDialog*)confirm_dialog) != GTK_RESPONSE_OK)    {
+			clear=0;
+		}
+		gtk_widget_destroy(confirm_dialog);
+	}	
+	if(clear){
+		struct history_info *h=(struct history_info *)user_data;
+		/* Clear history and free history-related variables */
+		remove_deleted_items(h); /**fix bug 92, Shift/ctrl right-click followed by clear segfaults/double free.  */	
+		clear_history();
+		/*g_printf("Clear hist done, h=%p, h->delete_list=%p\n",h, h->delete_list); */
+		update_clipboard(primary, "", H_MODE_INIT);
     update_clipboard(clipboard, "", H_MODE_INIT);
-  }
+	}
+      
 }
 
 /* Called when About is selected from right-click menu */
@@ -1099,22 +1098,8 @@ static gboolean show_actions_menu(gpointer data)
 static gboolean selection_done(GtkMenuShell *menushell, gpointer user_data) 
 {
 	struct history_info *h=(struct history_info *)user_data;
-	/*g_print("Got selection_done shell %p data %p\n",menushell,user_data);  */
 	if(NULL != h && NULL != h->delete_list){/**have a list of items to delete.  */
-		GList *i;
-		/*g_print("Deleting items\n"); */
-		for (i=h->delete_list; NULL != i; i=i->next){
-			struct s_item_info *it=(struct s_item_info *)i->data;
-			/*printf("Free %p.. '%s' ",it->element->data,(char *)(it->((struct history_item *(element->data))->text))); */
-			g_free(it->element->data);
-			it->element->data=NULL;
-			history_list = g_list_delete_link(history_list, it->element);
-			/** printf("Free %p\n",it);
-			fflush(NULL);*/
-			g_free(it);
-		}
-		if (get_pref_int32("save_history"))
-		  save_history();
+		remove_deleted_items(h);
 		goto done;
 	}	
 	/*g_print("selection_active=%d\n",selection_active); */
@@ -1290,7 +1275,7 @@ static gboolean key_release_cb (GtkWidget *w,GdkEventKey *e, gpointer user)
 			
 		else if(e->keyval == 'c'){
 			TRACE(g_print("Alt-C\n"));
-			clear_selected(NULL, NULL); 
+			clear_selected(NULL, (gpointer)h); 
 		}	else{
 			TRACE(g_print("Ignoring Alt-%c (0x%02x) state 0x%x",e->keyval,e->keyval,e->state));
 		}
@@ -1743,7 +1728,7 @@ next_loop:
 		/* Clear */
 	  menu_image = gtk_image_new_from_stock(GTK_STOCK_CLEAR, GTK_ICON_SIZE_MENU);
 	  gtk_image_menu_item_set_image((GtkImageMenuItem*)menu_item, menu_image);
-		g_signal_connect((GObject*)menu_item, "activate", (GCallback)clear_selected, NULL);
+		g_signal_connect((GObject*)menu_item, "activate", (GCallback)clear_selected, (gpointer)&h);
 	  gtk_menu_shell_append((GtkMenuShell*)menu, menu_item);
   }
 	g_list_free(lhist);
