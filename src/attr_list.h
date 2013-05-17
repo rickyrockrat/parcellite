@@ -30,6 +30,7 @@ void set_strikethrough(GtkLabel *label, gboolean mode);
 GList *find_h_item(GList *list,GtkWidget *w, GList *e);
 void add_h_item(struct history_info *h, GtkWidget *w, GList* element, gint which);
 void rm_h_item(struct history_info *h, GtkWidget *w, GList* element, gint which);
+void remove_deleted_items(struct history_info *h);
 void handle_marking(struct history_info *h, GtkWidget *w, gint index, gint which);
 #endif
 
