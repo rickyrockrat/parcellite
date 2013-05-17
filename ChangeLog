@@ -1,4 +1,4 @@
-V1.1.5 Tuesday, March 12 2013
+V1.1.5 Friday, May 17 2013
  +Added ppa script.
  +Updated German Translation fro patch by Christoph Wickert.
  +Fixed bug 79, reverse order doesn't work.
@@ -16,6 +16,7 @@ V1.1.5 Tuesday, March 12 2013
  +Fixed Bug 87,Error converting selection from UTF8_STRING fills X log.
  +Improved documentation for Actions.
  +Fix bug 88, Parcellite does not work with appindicator in Raring.
+ +Fix bug 92, Ctrl-Shift/Right-Click followed by Clear produces SegFault/Double Free.
  
 V1.1.4 Saturday, January 19 2013
  Changes
