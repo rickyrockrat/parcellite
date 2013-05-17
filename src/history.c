@@ -464,7 +464,7 @@ void clear_history( void )
 	
 	if( !get_pref_int32("persistent_history")){
 		g_list_free(history_list);
-  	history_list = NULL;
+		history_list = NULL;
 	}	else{ /**save any persistent items  */
 		GList* element;
 		for (element = history_list; element != NULL; element = element->next) {
@@ -474,8 +474,8 @@ void clear_history( void )
 				history_list=g_list_remove(history_list,c);
 		}		
 	}
-	
-  save_history();
+  if (get_pref_int32("save_history"))
+  	save_history();
 }
 /***************************************************************************/
 /** .
