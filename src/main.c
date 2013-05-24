@@ -588,9 +588,9 @@ static void action_selected(GtkButton *button, gpointer user_data)
   }
   /* Insert clipboard into command (user_data), and prepare it for execution */
   gchar* clipboard_text = gtk_clipboard_wait_for_text(clipboard);
-	/*g_print("Got cmd '%s', text '%s'->",(gchar *)user_data,clipboard_text);fflush(NULL);  */
+	g_print("Got cmd '%s', text '%s'->",(gchar *)user_data,clipboard_text);fflush(NULL);  
 	gchar* command=g_strdup_printf((gchar *)user_data,clipboard_text);
-	/*g_print(" '%s'\n",command);fflush(NULL);  */
+	g_print(" '%s'\n",command);fflush(NULL);  
   g_free(clipboard_text);
   g_free(user_data);
   gchar* shell_command = g_shell_quote(command);
@@ -602,7 +602,7 @@ static void action_selected(GtkButton *button, gpointer user_data)
   GPid pid;
   gchar **argv;
   g_shell_parse_argv(cmd, NULL, &argv, NULL);
-	/*g_print("cmd '%s' argv '%s' '%s' '%s'\n",cmd,argv[1],argv[2],argv[3]);  */
+	g_print("cmd '%s' argv '%s' '%s' '%s'\n",cmd,argv[1],argv[2],argv[3]);  
   g_free(cmd);
   g_spawn_async(NULL, argv, NULL, G_SPAWN_DO_NOT_REAP_CHILD, NULL, NULL, &pid, NULL);
   g_child_watch_add(pid, (GChildWatchFunc)action_exit, NULL);
@@ -1380,39 +1380,56 @@ foundit:
 ****************************************************************************/
 void set_clipboard_text(struct history_info *h, GList *element)
 {
+	int auto_whatever=0;
+	gchar *action=NULL;
+	gchar *txt=NULL;
+	gchar *cmd=NULL;
 	/*g_mutex_lock(clip_lock); */
 	if(NULL == find_h_item(h->delete_list,NULL,element)){	/**not in our delete list  */
 		/**make a copy of txt, because it gets freed and re-allocated.  */
-		gchar *txt=p_strdup(((struct history_item *)(element->data))->text);
-		/*g_printf("set_clip_text %s\n",txt);  */
+		txt=p_strdup(((struct history_item *)(element->data))->text);
+		g_printf("set_clip_text %s\n",txt);  
 		if(get_pref_int32("use_copy") )
 			update_clipboard(clipboard, txt, H_MODE_LIST);
 		if(get_pref_int32("use_primary"))
 	  	update_clipboard(primary, txt, H_MODE_LIST);	
-		g_free(txt);
+		
+		auto_whatever=1;
 	}
   g_signal_emit_by_name ((gpointer)h->menu,"selection-done");
+	if(0 == auto_whatever)
+		return;
 	/*g_printf("set_clip_text done\n");  */
 	/*g_mutex_unlock(clip_lock); */
 	
 	if (get_pref_int32("automatic_paste")) { /** mousedown 2 */
-		gchar *action=NULL;
 		if(get_pref_int32("auto_mouse"))
-			action="mousedown 2 && xdotool mouseup 2'";
+			action=g_strdup("mousedown 2 && xdotool mouseup 2'");
 		else if(get_pref_int32("auto_key"))
-			action="key ctrl+v'";
-		if(NULL == action)
-			return;
-		/**from clipit 1.4.1 */
-    gchar* cmd = g_strconcat("/bin/sh -c 'xdotool ", action, NULL);
-    GPid pid;
-    gchar **argv;
-    g_shell_parse_argv(cmd, NULL, &argv, NULL);
-    g_free(cmd);
-    g_spawn_async(NULL, argv, NULL, G_SPAWN_DO_NOT_REAP_CHILD, NULL, NULL, &pid, NULL);
-    g_child_watch_add(pid, (GChildWatchFunc)action_exit, NULL);
-    g_strfreev(argv);
-  }/**end from clipit 1.4.1 */
+			action=g_strdup("key ctrl+v'");
+	}
+	
+	if( get_pref_int32("key_input")) 
+		action=g_strconcat("type \"",txt,"\"'",NULL);
+		
+	if(NULL == action)
+			goto done;
+	/**from clipit 1.4.1 */
+  cmd = g_strconcat("/bin/sh -c 'xdotool ", action, NULL);
+	g_printf("xdotool:'%s'\ntext:'%s'\n",cmd,txt);
+  GPid pid;
+  gchar **argv;
+  g_shell_parse_argv(cmd, NULL, &argv, NULL);
+  g_free(cmd);
+  g_spawn_async(NULL, argv, NULL, G_SPAWN_DO_NOT_REAP_CHILD, NULL, NULL, &pid, NULL);
+  g_child_watch_add(pid, (GChildWatchFunc)action_exit, NULL);
+  g_strfreev(argv);
+  /**end from clipit 1.4.1 */
+done:
+	if(NULL != txt)
+		g_free(txt);
+	if(NULL != action)
+		g_free(action);
 }
 
 
