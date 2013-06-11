@@ -18,6 +18,7 @@ V1.1.5 Friday, May 17 2013
  +Fix bug 88, Parcellite does not work with appindicator in Raring.
  +Fix bug 92, Ctrl-Shift/Right-Click followed by Clear produces SegFault/Double Free.
  +Added Keyboard Input feature.
+ +Fixed bug #94, spam stdout with Looking for 'indicator-menu'.
  
 V1.1.4 Saturday, January 19 2013
  Changes

@@ -512,7 +512,7 @@ gboolean check_for_appindictor( gpointer data)
 { 
 	int mode=PROC_MODE_STRSTR;
 	if(NULL != appindicator_process && !have_appindicator ){
-		g_printf("Looking for '%s'\n",appindicator_process);
+		/*g_printf("Looking for '%s'\n",appindicator_process); */
 		if(get_pref_int32("multi_user"))
 			mode|=PROC_MODE_USER_QUALIFY;
 		if(proc_find(appindicator_process,mode,NULL) >0){
