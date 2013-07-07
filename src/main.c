@@ -248,11 +248,13 @@ gchar *is_clipboard_empty(GtkClipboard *clip)
   g_free(targets);
 	if(TRUE == contents || count >0)
 		return 0;*/
-	return(gtk_clipboard_wait_for_text(clip));
+	if(TRUE == gtk_clipboard_wait_is_text_available(clip))
+		return(gtk_clipboard_wait_for_text(clip));
+	else return NULL;
 }
 
 /***************************************************************************/
-/** .
+/** Update one clipboard at a time.
 \n\b Arguments:
 \n\b Returns:
 ****************************************************************************/
@@ -298,7 +300,7 @@ gchar *update_clipboard(GtkClipboard *clip,gchar *intext,  gint mode)
 		if ( button_state & (GDK_BUTTON1_MASK|GDK_SHIFT_MASK) ) /**button down, done.  */
 			goto done;
 	}
-	if(NULL != intext){
+	if(0 && NULL != intext){ /**we run this in process_new_item  */
 		validate_utf8_text(intext,strlen(intext));
 	}	
 	/*g_printf("BS=0x%02X ",button_state); */
@@ -316,16 +318,24 @@ gchar *update_clipboard(GtkClipboard *clip,gchar *intext,  gint mode)
 		goto done;
 	}
 	/**check for lost contents and restore if lost */
-	/* Only recover lost contents if there isn't any other type of content in the clipboard */
 	changed=is_clipboard_empty(clip);
 	if(NULL != changed){
 		validate_utf8_text(changed,strlen(changed));
 	}
 	
 	if(NULL != *existing && NULL == changed ) {
-		DTRACE(g_printf("%sclp empty, set to '%s'\n",clip==clipboard?"CLI":"PRI",*existing));  
-    gtk_clipboard_set_text(clip, *existing, -1);
-		last=*existing;
+		gint count;
+		GdkAtom *targets;
+		gboolean contents = gtk_clipboard_wait_for_targets(clip, &targets, &count);
+		g_free(targets);
+		DTRACE(g_printf("%sclp empty, ",clip==clipboard?"CLI":"PRI"));
+		/* Only recover lost contents if there isn't any other type of content in the clipboard */
+		if (!contents) {
+			DTRACE(g_printf("set to '%s'\n",*existing));  
+    	gtk_clipboard_set_text(clip, *existing, -1);
+			last=*existing;
+		}	else
+			DTRACE(g_printf("Left Null\n"));  
 		return *existing;
   }
 	if(NULL == changed)
@@ -338,9 +348,9 @@ gchar *update_clipboard(GtkClipboard *clip,gchar *intext,  gint mode)
 	}	else {
 		DTRACE(g_printf("%sclp changed: ex '%s' is '%s'\n",clip==clipboard?"CLI":"PRI",*existing,changed)); 
 		if(NULL != (processed=process_new_item(clip,changed)) ){
-			if(0 == p_strcmp(processed,changed)) set=0;
-			else set=1;
-				 
+			/** if(0 == p_strcmp(processed,changed)) set=0;
+			else set=1; Always set the text.*/
+			set=1;
 			last=_update_clipboard(clip,processed,existing,set);
 		}else {/**restore clipboard  */
 			gchar *d;
@@ -1662,6 +1672,7 @@ static gboolean show_history_menu(gpointer data)
       if ((clipboard_temp) && (p_strcmp(hist_text, clipboard_temp) == 0))
       {
         gchar* bold_text = g_markup_printf_escaped("<b>%s</b>", string->str);
+			  if( NULL == bold_text) g_printf("NulBMKUp:'%s'\n",string->str);
         gtk_label_set_markup((GtkLabel*)item_label, bold_text);
         g_free(bold_text);
         h.clip_item=menu_item;
@@ -1670,6 +1681,7 @@ static gboolean show_history_menu(gpointer data)
       else if ((primary_temp) && (p_strcmp(hist_text, primary_temp) == 0))
       {
         gchar* italic_text = g_markup_printf_escaped("<i>%s</i>", string->str);
+			  if( NULL == italic_text) g_printf("NulIMKUp:'%s'\n",string->str);
         gtk_label_set_markup((GtkLabel*)item_label, italic_text);
         g_free(italic_text);
         h.clip_item=menu_item;
