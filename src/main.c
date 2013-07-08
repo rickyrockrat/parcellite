@@ -323,7 +323,8 @@ gchar *update_clipboard(GtkClipboard *clip,gchar *intext,  gint mode)
 		validate_utf8_text(changed,strlen(changed));
 	}
 	
-	if(NULL != *existing && NULL == changed ) {
+	if(NULL != *existing && NULL == changed && 1 == get_pref_int32("restore_empty")) {
+		
 		gint count;
 		GdkAtom *targets;
 		gboolean contents = gtk_clipboard_wait_for_targets(clip, &targets, &count);
@@ -2060,6 +2061,8 @@ int main(int argc, char *argv[])
 	opts=parse_options(argc, argv);
   if(NULL == opts)
    	return 1;
+	if(opts->exit)
+		return 0;
 	mode=PROC_MODE_EXACT;
 	if(get_pref_int32("multi_user"))
 	  mode|=PROC_MODE_USER_QUALIFY;

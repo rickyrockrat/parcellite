@@ -30,6 +30,7 @@ struct cmdline_opts {
 	gboolean clipboard;
 	gboolean primary;
 	gboolean exit;
+	gboolean version;
 	gchar *leftovers;
 	gint appindicator;
 };
