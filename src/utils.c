@@ -143,6 +143,9 @@ struct cmdline_opts *parse_options(int argc, char* argv[])
       NULL
     },
     {
+		  "version", 'v',0, G_OPTION_ARG_NONE,&opts->version,_("Display Version info"),NULL
+		},
+		{
       NULL
     }
   };
@@ -171,7 +174,17 @@ struct cmdline_opts *parse_options(int argc, char* argv[])
 		set_pref_int32("no_icon",TRUE);
   } else
   	set_pref_int32("no_icon",FALSE);
-	return opts;
+	if(opts->version){
+		gchar *v;
+		#ifdef HAVE_CONFIG_H	/**VER=555; sed "s#\(.*\)svn.*\".*#\1svn$VER\"#" config.h  */
+    	v=VERSION;
+		#else
+			v="Unknown";
+    #endif
+		g_printf("Parcellite %s, GTK %d.%d.%d\n",v, gtk_major_version, gtk_minor_version,gtk_micro_version );
+		opts->exit=1;
+	}
+	return opts;                                                              
 }
 
 
