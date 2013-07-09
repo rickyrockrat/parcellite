@@ -84,7 +84,7 @@ GtkWidget *hmenu;
 #  define TRACE(x) do {} while (FALSE);
 #endif
 /*uncomment the next line to debug the clipboard updates */
-/*#define DEBUG_UPDATE */
+#define DEBUG_UPDATE 
 #ifdef DEBUG_UPDATE
 #  define DTRACE(x) x
 #else
@@ -209,6 +209,7 @@ done:
 gchar *_update_clipboard (GtkClipboard *clip, gchar *n, gchar **old, int set)
 {
 	
+	/*return NULL; */
 	if(NULL != n)	{
 #ifdef DEBUG_TRACE
 	 	if(clip==primary)
@@ -218,11 +219,13 @@ gchar *_update_clipboard (GtkClipboard *clip, gchar *n, gchar **old, int set)
 #endif
 		if( set)
 			gtk_clipboard_set_text(clip, n, -1);
-		if(NULL != *old)
-		  g_free(*old);
-		*old=g_strdup(n);
-		return *old;
-	}else{
+		if(NULL != old ){
+			if( NULL != *old)
+		  	g_free(*old);
+			*old=g_strdup(n);
+			return *old;
+		}	
+	}else if( NULL != old){
 		if(NULL != *old)
 		  g_free(*old);
 		*old=NULL;
@@ -250,7 +253,7 @@ gchar *is_clipboard_empty(GtkClipboard *clip)
 		return 0;*/
 	if(TRUE == gtk_clipboard_wait_is_text_available(clip))
 		return(gtk_clipboard_wait_for_text(clip));
-	else return NULL;
+	return NULL;
 }
 
 /***************************************************************************/
@@ -286,7 +289,8 @@ gchar *update_clipboard(GtkClipboard *clip,gchar *intext,  gint mode)
 			g_free(*existing);
 		*existing=NULL;
 		if(NULL != intext)
-		gtk_clipboard_set_text(clip, intext, -1);
+			_update_clipboard(clip,intext,NULL,1);
+/*		gtk_clipboard_set_text(clip, intext, -1); */
 		return NULL;
 	}
 	/**check that our clipboards are valid and user wants to use them  */
@@ -306,7 +310,8 @@ gchar *update_clipboard(GtkClipboard *clip,gchar *intext,  gint mode)
 	/*g_printf("BS=0x%02X ",button_state); */
 	if( H_MODE_IGNORE == mode){	/**ignore processing and just put it on the clip.  */
 		DTRACE(g_printf("%sJustSet '%s'\n",clip==clipboard?"CLI":"PRI",intext)); 
-		gtk_clipboard_set_text(clip, intext, -1);
+		_update_clipboard(clip,intext,NULL,1);
+		/*gtk_clipboard_set_text(clip, intext, -1); */
 		return intext;
 	}
 	if(H_MODE_LIST == mode && 0 != p_strcmp(intext,*existing)){ /**just set clipboard contents. Already in list  */
@@ -333,7 +338,8 @@ gchar *update_clipboard(GtkClipboard *clip,gchar *intext,  gint mode)
 		/* Only recover lost contents if there isn't any other type of content in the clipboard */
 		if (!contents) {
 			DTRACE(g_printf("set to '%s'\n",*existing));  
-    	gtk_clipboard_set_text(clip, *existing, -1);
+			_update_clipboard(clip, *existing,NULL,1);
+    	/*gtk_clipboard_set_text(clip, *existing, -1); */
 			last=*existing;
 		}	else
 			DTRACE(g_printf("Left Null\n"));  
@@ -347,13 +353,14 @@ gchar *update_clipboard(GtkClipboard *clip,gchar *intext,  gint mode)
 		g_free(changed);                    /**no change, do nothing  */
 		changed=NULL;
 	}	else {
-		DTRACE(g_printf("%sclp changed: ex '%s' is '%s'\n",clip==clipboard?"CLI":"PRI",*existing,changed)); 
+		DTRACE(g_printf("%sclp changed: ex '%s' is '%s' - ",clip==clipboard?"CLI":"PRI",*existing,changed)); 
 		if(NULL != (processed=process_new_item(clip,changed)) ){
-			/** if(0 == p_strcmp(processed,changed)) set=0;
-			else set=1; Always set the text.*/
-			set=1;
+			 if(0 == p_strcmp(processed,*existing)) set=0;
+			else set=1; 
+			DTRACE(g_printf("set=%d\n",set));
+			/*set=1; */ /** Always set the text.*/
 			last=_update_clipboard(clip,processed,existing,set);
-		}else {/**restore clipboard  */
+		}else {/**restore clipboard - new item is binary/garbage/empty */
 			gchar *d;
 			
 			if(NULL ==*existing && NULL != history_list){
@@ -363,7 +370,7 @@ gchar *update_clipboard(GtkClipboard *clip,gchar *intext,  gint mode)
 			}else 
 				d=*existing;
 			if(NULL != d){
-				DTRACE(g_printf("%srestore clp '%s', ex='%s'\n",clip==clipboard?"CLI":"PRI",d,*existing)); 
+				DTRACE(g_printf("\n%srestore clp '%s', ex='%s'\n",clip==clipboard?"CLI":"PRI",d,*existing)); 
 				last=_update_clipboard(clip,d,existing,1);
 			}
 				
