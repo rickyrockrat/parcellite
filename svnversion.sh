@@ -1,5 +1,12 @@
 #!/bin/sh
+ 
 echo "$0">svnversion.log
+if [ -n "$1" ]; then
+  echo "Immediate Mode">>svnversion.log
+  IM=1
+else
+  IM=0
+fi
 which svnversion > _svnversion_test
 if [ $? -ne 0 ] ;then
   echo "svn"
@@ -22,7 +29,12 @@ else
   fi
   cd "$FULLPATH"
   echo "Using $FULLPATH">>"$CWD/svnversion.log"
-  SVER=$(svn st -u|grep -i "revision"|sed 's!.*: !!'|tr -d ' ')
+  SVER=$(svn info .|grep -i "revision"|sed 's!.*: !!'|tr -d ' ')
   echo -n "svn$SVER"
   cd $CWD
+  if [ "$IM" = "1" ]; then
+    sed -i "s#\(.*VERSION \).*#\1\"svn$SVER\"#" config.h
+    echo "Make sure to do svn up in source svn to update local svn info, then run again."
+    echo "Remove src/main.o and recompile"
+  fi
 fi
