@@ -84,7 +84,7 @@ GtkWidget *hmenu;
 #  define TRACE(x) do {} while (FALSE);
 #endif
 /*uncomment the next line to debug the clipboard updates */
-#define DEBUG_UPDATE 
+/** #define DEBUG_UPDATE */
 #ifdef DEBUG_UPDATE
 #  define DTRACE(x) x
 #else
@@ -234,6 +234,20 @@ gchar *_update_clipboard (GtkClipboard *clip, gchar *n, gchar **old, int set)
 	return NULL;
 }
 
+/***************************************************************************/
+/** .
+\n\b Arguments:
+\n\b Returns:
+****************************************************************************/
+gboolean content_exists(GtkClipboard *clip)
+{
+	gint count;
+	GdkAtom *targets;
+	gboolean contents = gtk_clipboard_wait_for_targets(clip, &targets, &count);
+	g_free(targets);
+	return contents;
+}
+
 
 /***************************************************************************/
 /** This DOES NOT WORK!! WTH??.
@@ -299,7 +313,7 @@ gchar *update_clipboard(GtkClipboard *clip,gchar *intext,  gint mode)
 		(clip == clipboard && !get_pref_int32("use_copy")))
 			return NULL;
 	
-	if(H_MODE_CHECK==mode &&clip == primary){/*fix auto-deselect of text in applications like DevHelp and LyX*/
+	if( H_MODE_CHECK==mode &&clip == primary){/*fix auto-deselect of text in applications like DevHelp and LyX*/
    	gdk_window_get_pointer(NULL, NULL, NULL, &button_state);
 		if ( button_state & (GDK_BUTTON1_MASK|GDK_SHIFT_MASK) ) /**button down, done.  */
 			goto done;
@@ -329,14 +343,9 @@ gchar *update_clipboard(GtkClipboard *clip,gchar *intext,  gint mode)
 	}
 	
 	if(NULL != *existing && NULL == changed && 1 == get_pref_int32("restore_empty")) {
-		
-		gint count;
-		GdkAtom *targets;
-		gboolean contents = gtk_clipboard_wait_for_targets(clip, &targets, &count);
-		g_free(targets);
 		DTRACE(g_printf("%sclp empty, ",clip==clipboard?"CLI":"PRI"));
 		/* Only recover lost contents if there isn't any other type of content in the clipboard */
-		if (!contents) {
+		if (!content_exists(clip)) {
 			DTRACE(g_printf("set to '%s'\n",*existing));  
 			_update_clipboard(clip, *existing,NULL,1);
     	/*gtk_clipboard_set_text(clip, *existing, -1); */
@@ -354,10 +363,11 @@ gchar *update_clipboard(GtkClipboard *clip,gchar *intext,  gint mode)
 		changed=NULL;
 	}	else {
 		DTRACE(g_printf("%sclp changed: ex '%s' is '%s' - ",clip==clipboard?"CLI":"PRI",*existing,changed)); 
-		if(NULL != (processed=process_new_item(clip,changed)) ){
-			 if(0 == p_strcmp(processed,*existing)) set=0;
+		if(NULL != (processed=process_new_item(clip,changed)) ){ 
+			/**only check processed/changed. No need to update this clip, since the text is already there.  */
+			 if(0 == p_strcmp(processed,changed)) set=0;
 			else set=1; 
-			DTRACE(g_printf("set=%d\n",set));
+			DTRACE(g_printf("set=%d. p='%s'\n",set,processed));
 			/*set=1; */ /** Always set the text.*/
 			last=_update_clipboard(clip,processed,existing,set);
 		}else {/**restore clipboard - new item is binary/garbage/empty */
