@@ -22,6 +22,7 @@ V1.1.5 Friday, May 17 2013
  +Fixed bug 97, inkscape doesn't work (other objects besides text overwritten from clip).
  +Added Restore Empty option in preferences, and added -v/--version option.
  +Fixed bug 89, odd behaviour with gnome-terminal search. 
+ +Fixed bug 91, gnome-terminal and deselect bug (again).
 
  
 V1.1.4 Saturday, January 19 2013
