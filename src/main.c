@@ -1608,7 +1608,9 @@ static gboolean show_history_menu(gpointer data)
   /* Items */
   if ((history_list != NULL) && (history_list->data != NULL)) {
     /* Declare some variables */
-		
+		gint32 item_length= get_pref_int32("item_length");
+		gint32 ellipsize = get_pref_int32("ellipsize");
+		gint32 persistent_history=get_pref_int32("persistent_history");
     gint element_number = 0;
     gchar* primary_temp = gtk_clipboard_wait_for_text(primary);
     gchar* clipboard_temp = gtk_clipboard_wait_for_text(clipboard);
@@ -1626,19 +1628,23 @@ static gboolean show_history_menu(gpointer data)
 			else if( !(HIST_DISPLAY_NORMAL&h.histno) && !(c->flags & CLIP_TYPE_PERSISTENT))
 				goto next_loop;
       GString* string = g_string_new(hist_text);
+			/**Replace tabs 0x09 with 0xe28692 (UTF-8 right-arrow) 
+			g_utf8_find_next_char(string,end  
+			  g_string_insert_unichar(string,pos gunichar);
+			*/
 		  glong len=g_utf8_strlen(string->str, string->len);
       /* Ellipsize text */
-      if (len > get_pref_int32("item_length")) {
-        switch (get_pref_int32("ellipsize")) {
+      if (len > item_length) {
+        switch (ellipsize) {
           case PANGO_ELLIPSIZE_START:
-          	string = g_string_erase(string, 0, g_utf8_offset_to_pointer(string->str, len - get_pref_int32("item_length")) - string->str);
+          	string = g_string_erase(string, 0, g_utf8_offset_to_pointer(string->str, len - item_length) - string->str);
             /*string = g_string_erase(string, 0, string->len-(get_pref_int32("item_length"))); */
             string = g_string_prepend(string, "...");
             break;
           case PANGO_ELLIPSIZE_MIDDLE:
           	{
-						gchar* p1 = g_utf8_offset_to_pointer(string->str, get_pref_int32("item_length") / 2);
-            gchar* p2 = g_utf8_offset_to_pointer(string->str, len - get_pref_int32("item_length") / 2);
+						gchar* p1 = g_utf8_offset_to_pointer(string->str, item_length / 2);
+            gchar* p2 = g_utf8_offset_to_pointer(string->str, len - item_length / 2);
             string = g_string_erase(string, p1 - string->str, p2 - p1);
             string = g_string_insert(string, p1 - string->str, "...");
             /** string = g_string_erase(string, (get_pref_int32("item_length")/2), string->len-(get_pref_int32("item_length")));
@@ -1646,7 +1652,7 @@ static gboolean show_history_menu(gpointer data)
 						}
             break;
           case PANGO_ELLIPSIZE_END:
-          	string = g_string_truncate(string, g_utf8_offset_to_pointer(string->str, get_pref_int32("item_length")) - string->str);
+          	string = g_string_truncate(string, g_utf8_offset_to_pointer(string->str, item_length) - string->str);
             /*string = g_string_truncate(string, get_pref_int32("item_length")); */
             string = g_string_append(string, "...");
             break;
@@ -1705,7 +1711,7 @@ static gboolean show_history_menu(gpointer data)
         h.clip_item=menu_item;
 			  h.element_text=hist_text;
       }
-			if(get_pref_int32("persistent_history") && c->flags &CLIP_TYPE_PERSISTENT){
+			if(persistent_history && c->flags &CLIP_TYPE_PERSISTENT){
 				persistent = g_list_prepend(persistent, menu_item);
 				/*g_printf("persistent %s\n",c->text); */
 			}	else{
