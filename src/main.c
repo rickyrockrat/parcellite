@@ -83,10 +83,10 @@ GtkWidget *hmenu;
 #else
 #  define TRACE(x) do {} while (FALSE);
 #endif
-/*uncomment the next line to debug the clipboard updates */
-/** #define DEBUG_UPDATE */
+/*uncomment the next line to debug the clipboard updates - must have debug_update enabled in prefs when started. */
+#define DEBUG_UPDATE 
 #ifdef DEBUG_UPDATE
-#  define DTRACE(x) x
+#  define DTRACE(x) if (debug_update) x
 #else
 #  define DTRACE(x) do {} while (FALSE);
 #endif
@@ -107,6 +107,7 @@ static int have_appindicator=0; /**if set, we have a running indicator-appmenu  
 static gchar *appindicator_process="indicator-messages-service"; /**process name  */
 
 static int cmd_mode=CMODE_ALL; /**both clipboards  */
+static int debug_update=0; /**enable DTRACE  */
 /** static int cmd_state=ACT_RUN; running  */
 /**defines for moving between clipboard histories  */
 #define HIST_MOVE_TO_CANCEL     0
@@ -1559,6 +1560,39 @@ void write_history_menu_items(GList *list, GtkWidget *menu)
 	for (element = list; element != NULL; element = element->next) 
 			gtk_menu_shell_append((GtkMenuShell*)menu,element->data);	
 }
+
+/***************************************************************************/
+/** Replace non-printing characters with ??.
+0x09->E28692 - \2192
+0x0a->E2818B - \204b
+space-E290A3 - \u2423 
+\n\b Arguments:
+\n\b Returns:
+****************************************************************************/
+GString* convert_string(GString* s)
+{
+	gchar arrow[4]={0xe2,0x86,0x92,0x00};/**0xe28692 (UTF-8 right-arrow) \\  */
+	gchar pharagraph[4]={0xe2,0x81,0x8b,0x00}; /**utf-8 pharagraph symbol \2192 */
+	gchar square_u[4]={0xe2,0x90,0xA3,0};	 /**square-u \\2423  */
+	gchar *p, *r;
+	gint idx;
+	
+	for (p=s->str; p!= NULL; p=g_utf8_find_next_char(p,s->str+s->len)){
+		switch(*p){
+			case 0x09:r=arrow; break;
+			case 0x0a:r=pharagraph; break;
+			case 0x20:r=square_u; break;
+		  default:r=NULL; break; 
+		}
+		if(NULL !=r ) {/**replace. */
+			gint32 pos=(p-s->str)+1;
+			*p=r[0];
+			s=g_string_insert(s,pos,&r[1]);
+			p=s->str+pos+2;
+		}
+	}
+	return s;
+}
 /***************************************************************************/
 /**  Called when status icon is left-clicked or action key hit.
 \n\b Arguments:
@@ -1611,6 +1645,7 @@ static gboolean show_history_menu(gpointer data)
 		gint32 item_length= get_pref_int32("item_length");
 		gint32 ellipsize = get_pref_int32("ellipsize");
 		gint32 persistent_history=get_pref_int32("persistent_history");
+		gint32 nonprint_disp=get_pref_int32("nonprint_disp");
     gint element_number = 0;
     gchar* primary_temp = gtk_clipboard_wait_for_text(primary);
     gchar* clipboard_temp = gtk_clipboard_wait_for_text(clipboard);
@@ -1628,10 +1663,8 @@ static gboolean show_history_menu(gpointer data)
 			else if( !(HIST_DISPLAY_NORMAL&h.histno) && !(c->flags & CLIP_TYPE_PERSISTENT))
 				goto next_loop;
       GString* string = g_string_new(hist_text);
-			/**Replace tabs 0x09 with 0xe28692 (UTF-8 right-arrow) 
-			g_utf8_find_next_char(string,end  
-			  g_string_insert_unichar(string,pos gunichar);
-			*/
+			if(nonprint_disp)
+				string=convert_string(string);
 		  glong len=g_utf8_strlen(string->str, string->len);
       /* Ellipsize text */
       if (len > item_length) {
@@ -2080,6 +2113,7 @@ int main(int argc, char *argv[])
   gtk_init(&argc, &argv);
    /* Read preferences */
   read_preferences();
+	if(get_pref_int32("debug_update")) debug_update=1;
   /* Parse options */
 	opts=parse_options(argc, argv);
   if(NULL == opts)
