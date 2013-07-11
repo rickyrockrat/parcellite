@@ -26,6 +26,11 @@
 #endif
 #define PARCELLITE_PROG_NAME "parcellite"
 #define PARCELLITE_ICON PARCELLITE_PROG_NAME
+/*uncomment the next line to debug the clipboard updates
+ This provides a debug_update preference. 
+must have debug_update enabled in prefs when started. 
+*/
+#define DEBUG_UPDATE 
 #include "daemon.h"
 #include "utils.h"
 #include "preferences.h"

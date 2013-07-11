@@ -35,6 +35,7 @@ else
   if [ "$IM" = "1" ]; then
     sed -i "s#\(.*VERSION \).*#\1\"svn$SVER\"#" config.h
     echo "Make sure to do svn up in source svn to update local svn info, then run again."
-    echo "Remove src/main.o and recompile"
+    rm src/main.o
+    echo "Removed src/main.o. Recompile."
   fi
 fi

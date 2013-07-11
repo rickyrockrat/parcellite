@@ -83,9 +83,9 @@ GtkWidget *hmenu;
 #else
 #  define TRACE(x) do {} while (FALSE);
 #endif
-/*uncomment the next line to debug the clipboard updates - must have debug_update enabled in prefs when started. */
-#define DEBUG_UPDATE 
+/**see parcellite.h for define  */
 #ifdef DEBUG_UPDATE
+static int debug_update=0; /**disable/enable DTRACE  */
 #  define DTRACE(x) if (debug_update) x
 #else
 #  define DTRACE(x) do {} while (FALSE);
@@ -107,7 +107,6 @@ static int have_appindicator=0; /**if set, we have a running indicator-appmenu  
 static gchar *appindicator_process="indicator-messages-service"; /**process name  */
 
 static int cmd_mode=CMODE_ALL; /**both clipboards  */
-static int debug_update=0; /**enable DTRACE  */
 /** static int cmd_state=ACT_RUN; running  */
 /**defines for moving between clipboard histories  */
 #define HIST_MOVE_TO_CANCEL     0
@@ -2113,7 +2112,9 @@ int main(int argc, char *argv[])
   gtk_init(&argc, &argv);
    /* Read preferences */
   read_preferences();
+#ifdef	DEBUG_UPDATE
 	if(get_pref_int32("debug_update")) debug_update=1;
+#endif
   /* Parse options */
 	opts=parse_options(argc, argv);
   if(NULL == opts)
