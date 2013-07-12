@@ -211,7 +211,7 @@ gchar *_update_clipboard (GtkClipboard *clip, gchar *n, gchar **old, int set)
 	
 	/*return NULL; */
 	if(NULL != n)	{
-#ifdef DEBUG_TRACE
+#ifdef DEBUG_UPDATE
 	 	if(clip==primary)
 			g_printf("set PRI to %s\n",n);
 		else
@@ -1138,7 +1138,8 @@ static gboolean selection_done(GtkMenuShell *menushell, gpointer user_data)
 	}
 		  
 done:
-	gtk_widget_destroy((GtkWidget *)menushell);
+	/*gtk_widget_destroy((GtkWidget *)menushell); */
+	return FALSE;
 }
 
 /***************************************************************************/
@@ -1416,7 +1417,7 @@ void set_clipboard_text(struct history_info *h, GList *element)
 	if(NULL == find_h_item(h->delete_list,NULL,element)){	/**not in our delete list  */
 		/**make a copy of txt, because it gets freed and re-allocated.  */
 		txt=p_strdup(((struct history_item *)(element->data))->text);
-		g_printf("set_clip_text %s\n",txt);  
+		DTRACE(("set_clip_text %s\n",txt));  
 		if(get_pref_int32("use_copy") )
 			update_clipboard(clipboard, txt, H_MODE_LIST);
 		if(get_pref_int32("use_primary"))

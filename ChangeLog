@@ -1,4 +1,4 @@
-V1.1.5 Friday, May 17 2013
+V1.1.5 Friday, July 12 2013
  +Added ppa script.
  +Updated German Translation fro patch by Christoph Wickert.
  +Fixed bug 79, reverse order doesn't work.
@@ -24,7 +24,8 @@ V1.1.5 Friday, May 17 2013
  +Fixed bug 89, odd behaviour with gnome-terminal search. 
  +Fixed bug 91, gnome-terminal and deselect bug (again).
  +Fixed bug 96, entries with lots of tabs too wide/feature-request, alternate non-printing display.
- +Added debug_update preference.
+ +Added debug_update preference (but currently disabled via DEBUG_UPDATE in parcellite.h.
+ +Fixed GTK warning about GTK_IS_WIDGET/GTK_IS_WINDOW when history window closes.
 
  
 V1.1.4 Saturday, January 19 2013
