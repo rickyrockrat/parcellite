@@ -26,6 +26,7 @@ V1.1.5 Friday, July 12 2013
  +Fixed bug 96, entries with lots of tabs too wide/feature-request, alternate non-printing display.
  +Added debug_update preference (but currently disabled via DEBUG_UPDATE in parcellite.h.
  +Fixed GTK warning about GTK_IS_WIDGET/GTK_IS_WINDOW when history window closes.
+ +Changed mulituser logic to look at owner of PID dir in /proc (added pid_to_uid).
 
  
 V1.1.4 Saturday, January 19 2013

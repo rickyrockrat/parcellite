@@ -1138,7 +1138,8 @@ static gboolean selection_done(GtkMenuShell *menushell, gpointer user_data)
 	}
 		  
 done:
-	/*gtk_widget_destroy((GtkWidget *)menushell); */
+	/*gtk_widget_destroy((GtkWidget *)menushell); - fixes annoying GTK_IS_WIDGET/GTK_IS_WINDOW
+	  warnings from GTK when history dialog is destroyed. */
 	return FALSE;
 }
 
