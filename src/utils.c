@@ -372,7 +372,7 @@ int is_current_xsession (pid_t pid)
 	}
 	if(! g_strcmp0(mine,theirs))
 		rtn=1;
-	g_fprintf(stderr,"my='%s', pid %ld='%s'\n",mine,(long)pid,theirs);
+	/*g_fprintf(stderr,"my='%s', pid %ld='%s',match=%d\n",mine,(long)pid,theirs,rtn);  */
 done:
 	if(NULL != mine)
 		g_free(mine);
