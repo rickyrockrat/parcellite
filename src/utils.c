@@ -353,8 +353,42 @@ done:
 }
 
 /***************************************************************************/
+/** .
+\n\b Arguments: Pid to check session type.
+\n\b Returns: 0 if error or not in current session, 1 if it is.
+****************************************************************************/
+int is_current_xsession (pid_t pid)
+{
+	int rtn=0;
+	gchar *mine, *theirs;
+	mine=theirs=NULL;
+	if(NULL == (theirs=get_value_from_env(pid, "XDG_SESSION_COOKIE")) ){
+		g_fprintf(stderr,"Unable to access XDG_SESSION_COOKIE for pid %ld\n",(long)pid);
+		return 0;
+	}
+	if( NULL == (mine=get_value_from_env(getpid(), "XDG_SESSION_COOKIE"))){
+		g_fprintf(stderr,"Unable to access my XDG_SESSION_COOKIE\n");
+		goto done;
+	}
+	if(! g_strcmp0(mine,theirs))
+		rtn=1;
+	g_fprintf(stderr,"my='%s', pid %ld='%s'\n",mine,(long)pid,theirs);
+done:
+	if(NULL != mine)
+		g_free(mine);
+	if(NULL != theirs)
+		g_free(theirs);
+	return rtn;
+}
+/***************************************************************************/
 /** Return a PID given a name. Used to check a if a process is running..
 if 2 or greater, process is running
+TODO: Figure out if we are in the same X instance....Possibly this?
+Get our DISPLAY var
+Display *XOpenDisplay(NULL); --default to DISPLAY env var....
+char *XDisplayString(Display *display);	
+Then grab the Display var from ENV, or just use ENV?? Ugh.
+
 \n\b Arguments: 
 name is name of program to find
 mode sets the mode of the find (exact or partial)
@@ -397,14 +431,14 @@ int proc_find(const char* name, int mode, pid_t *pid)
 				if(PROC_MODE_EXACT & mode){
 					gchar *b=g_path_get_basename(buf);
 		      if (!g_strcmp0(b, name)) {
-						if(is_current_user(lpid,mode))
+						if(is_current_user(lpid,mode) && is_current_xsession(lpid) )
 							++instances;
 						if(NULL !=pid)
 						  *pid=lpid;
 		      }
 				}else if( PROC_MODE_STRSTR & mode){
 					if(NULL !=g_strrstr(buf,name)){
-						if(is_current_user(lpid,mode))
+						if(is_current_user(lpid,mode) && is_current_xsession(lpid))
 							++instances;
 						if(NULL !=pid)
 						  *pid=lpid;
