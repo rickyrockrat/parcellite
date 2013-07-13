@@ -22,6 +22,7 @@
 #include <sys/types.h>
 #include <dirent.h> 
 #include <sys/stat.h>
+#include <pwd.h>
 #include <fcntl.h>
 #include <errno.h>
 #include <libgen.h>
@@ -107,7 +108,7 @@ struct cmdline_opts *parse_options(int argc, char* argv[])
 {
 	struct cmdline_opts *opts=g_malloc0(sizeof(struct cmdline_opts));
 	if(NULL == opts){
-		g_printf("Unable to malloc cmdline_opts\n");
+		g_fprintf(stderr,"Unable to malloc cmdline_opts\n");
 		return NULL;
 	}
   if (argc <= 1) 
@@ -187,13 +188,31 @@ struct cmdline_opts *parse_options(int argc, char* argv[])
 	return opts;                                                              
 }
 
+/***************************************************************************/
+/** Given a PID, look at owner of proc to determine UID.
+\n\b Arguments:
+\n\b Returns:	-1 on error or UID if found
+****************************************************************************/
+int pid_to_uid (pid_t pid )
+{
+	struct stat st;
+	char path[255];
+	snprintf(path, 254, "/proc/%ld", (long)pid);
+	if(0 != stat(path,&st) ){
+		g_fprintf(stderr,"Can't stat '%s'\n",path);
+		perror("");
+		return -1;
+	}
+	/*g_fprintf(stderr,"%ld pid is %ld uid\n",pid,st.st_uid); */
+	return (int)st.st_uid;
+}
 
 /***************************************************************************/
 /** Get the current user name by examining the XDG directory.
 \n\b Arguments:
 \n\b Returns: username, if found. Use  g_free.
 ****************************************************************************/
-gchar * get_username( void )
+gchar * get_username_xdg( void )
 {
 	gchar* username;
 	username = (gchar *)g_getenv ("HOME");
@@ -210,7 +229,25 @@ gchar * get_username( void )
 	return NULL;
 }
 
-
+/***************************************************************************/
+/** Get uid from pid_to_uid, then get the username from userid
+pid_to_uid.struct passwd *getpwuid(uid_t uid); ->  char   *pw_name;
+\n\b Arguments: pid of process to lookup
+\n\b Returns:
+****************************************************************************/
+gchar *get_username_pid( pid_t pid )
+{
+	int uid;
+	struct passwd *p;
+	if(-1 ==(uid=pid_to_uid(pid)) )
+		return NULL;
+	if(NULL == (p=getpwuid((uid_t) uid)) ){
+		perror("Unable to get username from passwd\n");
+		return NULL;
+	}
+	/*g_printf("%ld uid='%s'\n",pid,p->pw_name); */
+	return p->pw_name;
+}
 /***************************************************************************/
 /** Gets a value give the key name from the pid envronment with null-terminated
 strings.
@@ -224,22 +261,22 @@ gchar * get_value_from_env(pid_t pid, gchar *key)
 	gsize elen, i;
 	
 	if(NULL == (envf=(g_malloc(strlen("/proc/9999999/environ"))))) {
-		g_printf("Unable to allocate for environ file name.\n");
+		g_fprintf(stderr,"Unable to allocate for environ file name.\n");
 		return NULL;
 	}
 	g_sprintf(envf,"/proc/%ld/environ",pid);
 	if(0 != access(envf,  R_OK)){/**doesn't exist, or not our process  */
-		g_printf("Unable to open '%s' for PID %ld\n",envf,pid);
+		g_fprintf(stderr,"Unable to open '%s' for PID %ld\n",envf,pid);
 		goto error;
 	}
 	fp=g_file_new_for_path(envf);
 	/**this dumps a zero at end of file.  */
 	if(FALSE == g_file_load_contents(fp,NULL,&env,&elen,NULL,NULL)	){
-		g_printf("Error finding '%s' for PID %ld\n",envf,pid);
+		g_fprintf(stderr,"Error finding '%s' for PID %ld\n",envf,pid);
 		goto error;
 	}
 	if(NULL == env){
-		 g_printf("NULL evironment\n");
+		 g_fprintf(stderr,"NULL evironment\n");
 		 goto error; 
 	}
 	/*g_printf("Loaded file '%s', looking for KEY '%s'\n",envf,key); */
@@ -272,12 +309,15 @@ error:
 	return NULL;
 }
 
-
+/** Stat of the pid in /proc/pid give uid.  Environment is only readable by
+   owner */
 /***************************************************************************/
-/** .
+/** Assume if there is an error, it is a different user/session.
+XDG_SESSION_COOKIE and DBUS_SESSION_BUS_ADDRESS are possible candidates for
+UUIDs.
 \n\b Arguments:
 \n\b Returns: 1 if user matches what is found in the pid environ, or error
-Returns 0 if the it all works and the user is found in the pid environ.
+Returns 0 if it all works and the user is found in the pid environ.
 ****************************************************************************/
 int is_current_user (pid_t pid, int mode)
 { 
@@ -285,13 +325,13 @@ int is_current_user (pid_t pid, int mode)
 	gchar *username=NULL;
 	gchar *user=NULL;
 	if(PROC_MODE_USER_QUALIFY & mode ){
-		username=get_username();
+		username=get_username_pid(getpid());
 		if(NULL == username){
-			g_printf("get_username fail\n");
+			g_fprintf(stderr,"get_username fail\n");
 			goto done;
 		}
-			
-		user=get_value_from_env(pid,"USERNAME");
+		user=get_username_pid(pid);	
+		/*user=get_value_from_env(pid,"USERNAME"); */
 		/*g_printf("user='%s'\n",user); */
 		if(NULL == user){
 			goto done;
@@ -304,16 +344,22 @@ int is_current_user (pid_t pid, int mode)
 		rtn=0;
 	}	/*else g_printf("UQ not set\n"); */
 done:
+	/**  
 	if(NULL != user)
 		g_free(user);
 	if(NULL != username)
-		g_free(username);
+		g_free(username); */
 	return rtn;
 }
+
 /***************************************************************************/
 /** Return a PID given a name. Used to check a if a process is running..
 if 2 or greater, process is running
-\n\b Arguments:
+\n\b Arguments: 
+name is name of program to find
+mode sets the mode of the find (exact or partial)
+pid is a place to put the last found pid
+
 \n\b Returns:	number of instances of name found
 Note: /proc/pid/environ contains interesting variables:
 HOME
@@ -392,22 +438,22 @@ gboolean fifo_read_cb (GIOChannel *src,  GIOCondition cond, gpointer data)
 	else if( src == f->g_ch_cmd)
 		which=FIFO_MODE_CMD;
 	else{
-		g_printf("Unable to determine fifo!!\n");
+		g_fprintf(stderr,"Unable to determine fifo!!\n");
 		return 0;
 	}
 	if(cond & G_IO_HUP){
-	  if(f->dbg) g_printf("gothup ");
+	  if(f->dbg) g_fprintf(stderr,"gothup ");
 		return FALSE;
 	}
 	if(cond & G_IO_NVAL){
-	  if(f->dbg) g_printf("readnd ");
+	  if(f->dbg) g_fprintf(stderr,"readnd ");
 		return FALSE;
 	}
 	if(cond & G_IO_IN){
-	  if(f->dbg) g_printf("norm ");
+	  if(f->dbg) g_fprintf(stderr,"norm ");
 	}
 	
-  if(f->dbg) g_printf("0x%X Waiting on chars\n",cond);
+  if(f->dbg) g_fprintf(stderr,"0x%X Waiting on chars\n",cond);
 	f->rlen=0;
 /** (	while (1) {*/
 		int s;
@@ -502,7 +548,7 @@ int open_fifos(struct p_fifo *fifo)
 	
 	f=g_build_filename(g_get_user_data_dir(), FIFO_FILE_P, NULL);
 	if( (fifo->fifo_p=_open_fifo(f,flg))>2 && (PROG_MODE_DAEMON & fifo->whoami)){
-		if(fifo->dbg) g_printf("PRI fifo %d\n",fifo->fifo_p);
+		if(fifo->dbg) g_fprintf(stderr,"PRI fifo %d\n",fifo->fifo_p);
 		fifo->g_ch_p=g_io_channel_unix_new (fifo->fifo_p);
 		g_io_add_watch (fifo->g_ch_p,G_IO_IN|G_IO_HUP,fifo_read_cb,(gpointer)fifo);
 	}
@@ -514,11 +560,11 @@ int open_fifos(struct p_fifo *fifo)
 	}
 	f=g_build_filename(g_get_user_data_dir(), FIFO_FILE_CMD, NULL);
 	if( (fifo->fifo_cmd=_open_fifo(f,flg))>2 && (PROG_MODE_DAEMON & fifo->whoami)){
-		if(fifo->dbg) g_printf("CMD fifo %d\n",fifo->fifo_cmd);
+		if(fifo->dbg) g_fprintf(stderr,"CMD fifo %d\n",fifo->fifo_cmd);
 		fifo->g_ch_cmd=g_io_channel_unix_new (fifo->fifo_cmd);
 		g_io_add_watch (fifo->g_ch_cmd,G_IO_IN|G_IO_HUP,fifo_read_cb,(gpointer)fifo);
 	}
-	if(fifo->dbg) g_printf("CLI fifo %d PRI fifo %d\n",fifo->fifo_c,fifo->fifo_p);
+	if(fifo->dbg) g_fprintf(stderr,"CLI fifo %d PRI fifo %d\n",fifo->fifo_c,fifo->fifo_p);
 	if(fifo->fifo_c <3 || fifo->fifo_p <3)
 		return -1;
 	return 0;
@@ -559,7 +605,7 @@ int read_fifo(struct p_fifo *f, int which)
 			rlen=&f->clen;
 			break;
 		default:
-			g_printf("Unknown fifo %d!\n",which);
+			g_fprintf(stderr,"Unknown fifo %d!\n",which);
 			return -1;
 	}
 	if(NULL ==f || fd <3 ||NULL == buf|| len <=0)
@@ -580,7 +626,7 @@ int read_fifo(struct p_fifo *f, int which)
 	buf[t]=0;
 	*rlen=t;
 	if(t>0)
-	  if(f->dbg) g_printf("%s: Got %d '%s'\n",f->fifo_p==fd?"PRI":"CLI",t,buf);
+	  if(f->dbg) g_fprintf(stderr,"%s: Got %d '%s'\n",f->fifo_p==fd?"PRI":"CLI",t,buf);
 	return t;
 }
 /***************************************************************************/
@@ -594,27 +640,27 @@ int write_fifo(struct p_fifo *f, int which, char *buf, int len)
 	l=0;
 	switch(which){
 		case FIFO_MODE_PRI:
-			if(f->dbg) g_printf("Using pri fifo for write\n");
+			if(f->dbg) g_fprintf(stderr,"Using pri fifo for write\n");
 			fd=f->fifo_p;
 			break;
 		case FIFO_MODE_CLI:
-			if(f->dbg) g_printf("Using cli fifo for write\n");
+			if(f->dbg) g_fprintf(stderr,"Using cli fifo for write\n");
 			fd=f->fifo_c;
 			break;
 		default:
-			g_printf("Unknown fifo %d!\n",which);
+			g_fprintf(stderr,"Unknown fifo %d!\n",which);
 			return -1;
 	}
 	if(NULL ==f || fd <3 || NULL ==buf)
 		return -1;
-	if(f->dbg) g_printf("writing '%s'\n",buf);
+	if(f->dbg) g_fprintf(stderr,"writing '%s'\n",buf);
 	while(len){																							
 		i=write(fd,buf,len);
 		if(i>0)
 			len-=i;
 		++l;
 		if(l>0x7FFE){
-			g_printf("Maxloop hit\n");
+			g_fprintf(stderr,"Maxloop hit\n");
 			break;
 		}
 			
@@ -648,17 +694,17 @@ struct p_fifo *init_fifo(int mode)
 {
 	struct p_fifo *f=g_malloc0(sizeof(struct p_fifo));
 	if(NULL == f){
-		g_printf("Unable to allocate for fifo!!\n");
+		g_fprintf(stderr,"Unable to allocate for fifo!!\n");
 		return NULL;
 	}
 	if(NULL == (f->buf=(gchar *)g_malloc0(8000)) ){
-		g_printf("Unable to alloc 8k buffer for fifo! Command Line Input will be ignored.\n");
+		g_fprintf(stderr,"Unable to alloc 8k buffer for fifo! Command Line Input will be ignored.\n");
 		g_free(f);
 		return NULL;
 	}
 	f->len=7999;
 	if(NULL == (f->cbuf=(gchar *)g_malloc0(8000)) ){
-		g_printf("Unable to alloc 8k buffer for fifo! Command Line Input will be ignored.\n");
+		g_fprintf(stderr,"Unable to alloc 8k buffer for fifo! Command Line Input will be ignored.\n");
 		g_free(f);
 		return NULL;
 	}
@@ -671,22 +717,22 @@ struct p_fifo *init_fifo(int mode)
 	/**we are daemon, and will launch  */
 	if(mode&PROG_MODE_DAEMON){
 		f->whoami=PROG_MODE_DAEMON;
-		if(f->dbg) g_printf("running parcellite not found\n");
+		if(f->dbg) g_fprintf(stderr,"running parcellite not found\n");
 		if(create_fifo() < 0 ){
-			g_printf("error creating fifo\n");
+			g_fprintf(stderr,"error creating fifo\n");
 		  goto err;
 		}	
 		if(open_fifos(f) < 0 ){
-			g_printf("Error opening fifo. Exit\n");
+			g_fprintf(stderr,"Error opening fifo. Exit\n");
 			goto err;
 		}	
 		return f;
 		  /**We are the client  */
 	}	else{
 		f->whoami=PROG_MODE_CLIENT;
-		if(f->dbg) g_printf("parcellite found\n");
+		if(f->dbg) g_fprintf(stderr,"parcellite found\n");
 		if(open_fifos(f) < 0 ){
-			g_printf("Error opening fifo. Exit\n");
+			g_fprintf(stderr,"Error opening fifo. Exit\n");
 			goto err;
 		}
 		return f;
