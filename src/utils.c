@@ -182,7 +182,7 @@ struct cmdline_opts *parse_options(int argc, char* argv[])
 		#else
 			v="Unknown";
     #endif
-		g_printf("Parcellite %s, GTK %d.%d.%d\n",v, gtk_major_version, gtk_minor_version,gtk_micro_version );
+		g_fprintf(stderr,"Parcellite %s, GTK %d.%d.%d\n",v, gtk_major_version, gtk_minor_version,gtk_micro_version );
 		opts->exit=1;
 	}
 	return opts;                                                              
