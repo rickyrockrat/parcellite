@@ -2145,7 +2145,7 @@ int main(int argc, char *argv[])
 		      g_free(opts->leftovers);	
 				}
 				
-				if(fifo->dbg) g_printf("checking stdin\n");
+				if(fifo->dbg) g_fprintf(stderr,"checking stdin\n");
 				write_stdin(fifo,FIFO_MODE_PRI);
 				usleep(1000);
 			}
