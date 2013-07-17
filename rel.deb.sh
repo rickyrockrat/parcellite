@@ -25,5 +25,14 @@ ask_version
 test_tag_co
 make_tarball
 test_tarball
+# so Unity is a pain...
 build_deb "--enable-appindicator=yes"
+mv $CODIR $CODIR.appind
+echo "output in $CODIR.appind"
+# for everyone else
+build_deb "--enable-appindicator=no"
+mv $CODIR $CODIR.appind
+echo "output in $CODIR.appind"
+show_links
+exit 0
 
