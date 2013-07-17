@@ -15,6 +15,10 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
+# 
+# This script should be run from an uptodate SVN checkout of trunk
+# Run from trunk, it creates directories in the parent.
+#
 # Notes:
 # Do a svn cp:
 #  svn cp  -m"prep for 1.0.2rc3"  https://parcellite.svn.sourceforge.net/svnroot/parcellite/trunk  https://parcellite.svn.sourceforge.net/svnroot/parcellite/tags/1.0.2rc3
