@@ -145,14 +145,25 @@ test_tarball() {
 # the arg is configure options passed to the deb build, i.e.
 # --enable-appindicator=no
 build_deb () {
-  select_gpg_keys
   echo "$FUNCNAME"
   cd "$CODIR/tar_test/$tdir"
   check_err "cd tar_test" 
-  ./build-debpkg.sh ../../$tdir.tar.gz -p $1
+  if [ -n "$1" ]; then
+    _COPT=$(-c $1)
+  fi
+  ./build-debpkg.sh -p ../../$tdir.tar.gz  $_COPT
   check_err "build deb"
   cd ..
   mv *.deb ..
+  cd ..
+  # rename the appind thingy
+  apind=$(echo "$1"|grep appindicator|grep -c "yes")
+  if [ "$apind" = "1" ]; then
+    d=$(ls *.deb);
+    n=$(ls *.deb|sed 's!\.deb!-appind.deb!')
+    mv $d $n
+  fi
+   
 }
 # set our absolute path (or try to)
 set_abs_path () {
@@ -173,8 +184,8 @@ select_gpg_keys () {
  echo "Which key? 2048R/ABCDEF12 - just need the ABC part"
  read KEYID
  G_FULL=$(gpg --fingerprint $KEYID|grep "^uid"|sed -e 's!uid\W*!!')
- GNAME=$(echo "$G_FULL|sed 's!\(.*\) <.*!\1!'
- GEMAIL=$(echo "$G_FULL|sed 's!.* \(.*\)!\1!'|tr -d '<>')
+ GNAME=$(echo "$G_FULL"|sed 's!\(.*\) <.*!\1!')
+ GEMAIL=$(echo "$G_FULL"|sed 's!.* \(.*\)!\1!'|tr -d '<>')
 } 
 
 # setup the directories, build, and send to launchpad
@@ -299,4 +310,6 @@ echo "Source Forge Links"
 echo "The source can be <a href=\"http://sourceforge.net/projects/parcellite/files/parcellite/parcellite-$tag/parcellite-$tag.tar.gz/download\">downloaded here</a>."
 echo "<a href=\"http://sourceforge.net/projects/parcellite/files/parcellite/parcellite-$tag/parcellite_$tag-1_i386.deb/download\">i386</a>"
 echo "<a href=\"http://sourceforge.net/projects/parcellite/files/parcellite/parcellite-$tag/parcellite_$tag-1_amd64.deb/download\">amd64</a>."
+echo "<a href=\"http://sourceforge.net/projects/parcellite/files/parcellite/parcellite-$tag/parcellite_$tag-1_amd64-appindicator.deb/download\">amd64-appindicator</a>."
+
 }
