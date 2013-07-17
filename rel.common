@@ -239,7 +239,7 @@ finish_ppa () {
  fi
  cd t
  select_gpg_keys
- echo "Upload source? (y/n)"
+ echo "Upload source Note: if you dont' currently erros out? (y/n)"
  read YN
  if [ "$YN" = "y" ]; then
    debuild -S -sa "-k $KEYID"
