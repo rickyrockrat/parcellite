@@ -74,7 +74,7 @@ svn_cp_to_tag () {
 #Check to be sure we have the correct directory orientation
 set_svn_local (){
   echo "$FUNCNAME"
-  STERM=$(echo "$BURL"|sed 's!.*:!!')
+  STERM=$(echo "$BURL"|sed 's!.*://!!')
   S=$(grep -c "$STERM" "$CDIR/.svn/entries")
   if [ "$S" = "0" ]; then	
     echo "$CDIR does not appear to be a working local copy"
