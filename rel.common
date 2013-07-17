@@ -74,7 +74,7 @@ svn_cp_to_tag () {
 #Check to be sure we have the correct directory orientation
 set_svn_local (){
   echo "$FUNCNAME"
-  STERM=$(echo "$BURL"|sed 's!.*:!!')
+  STERM=$(echo "$BURL"|sed 's!.*://!!')
   S=$(grep -c "$STERM" "$CDIR/.svn/entries")
   if [ "$S" = "0" ]; then	
     echo "$CDIR does not appear to be a working local copy"
@@ -310,4 +310,6 @@ echo "Source Forge Links"
 echo "The source can be <a href=\"http://sourceforge.net/projects/parcellite/files/parcellite/parcellite-$tag/parcellite-$tag.tar.gz/download\">downloaded here</a>."
 echo "<a href=\"http://sourceforge.net/projects/parcellite/files/parcellite/parcellite-$tag/parcellite_$tag-1_i386.deb/download\">i386</a>"
 echo "<a href=\"http://sourceforge.net/projects/parcellite/files/parcellite/parcellite-$tag/parcellite_$tag-1_amd64.deb/download\">amd64</a>."
+echo "<a href=\"http://sourceforge.net/projects/parcellite/files/parcellite/parcellite-$tag/parcellite_$tag-1_amd64-appindicator.deb/download\">amd64-appindicator</a>."
+
 }
