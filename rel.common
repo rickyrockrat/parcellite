@@ -160,7 +160,7 @@ build_deb () {
   apind=$(echo "$1"|grep appindicator|grep -c "yes")
   if [ "$apind" = "1" ]; then
     d=$(ls *.deb);
-    n=$(ls *.deb|sed 's!\.deb!-appind.deb!)
+    n=$(ls *.deb|sed 's!\.deb!-appind.deb!')
     mv $d $n
   fi
    
