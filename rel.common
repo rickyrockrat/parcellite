@@ -31,7 +31,7 @@ check_local () {
   M=$(svn st|grep -c "^M")
   if [ "$M" != "0" ]; then
     echo "local is not up to date"
-    if [ $1 -eq 1 ]; then
+    if [ "$1" = "1" ]; then
       return
     fi
     exit 1
@@ -65,8 +65,10 @@ svn_cp_to_tag () {
   fi
   echo "Description for tag?"
   read desc
+  echo "username?"
+  read user
   echo "Contacting $PURL for svn cp"
-  svn cp -m"$desc" $BURL/trunk $turl
+  svn cp --username "$user" -m"$desc" $BURL/trunk $turl
   check_err "svn copy"
 }
 #Check to be sure we have the correct directory orientation
