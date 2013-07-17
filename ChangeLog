@@ -28,6 +28,7 @@ V1.1.5 Wednesday, July 17 2013
  +Fixed GTK warning about GTK_IS_WIDGET/GTK_IS_WINDOW when history window closes.
  +Changed mulituser logic to look at owner of PID dir in /proc (added pid_to_uid).
  +Added XDG_SESSION_COOKIE check to see if we are in the same X session for multi-users.
+ +Added gpg key for deb build (does not effect application).
 
  
 V1.1.4 Saturday, January 19 2013
