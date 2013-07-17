@@ -173,8 +173,8 @@ select_gpg_keys () {
  echo "Which key? 2048R/ABCDEF12 - just need the ABC part"
  read KEYID
  G_FULL=$(gpg --fingerprint $KEYID|grep "^uid"|sed -e 's!uid\W*!!')
- GNAME=$(echo "$G_FULL|sed 's!\(.*\) <.*!\1!'
- GEMAIL=$(echo "$G_FULL|sed 's!.* \(.*\)!\1!'|tr -d '<>')
+ GNAME=$(echo "$G_FULL"|sed 's!\(.*\) <.*!\1!'
+ GEMAIL=$(echo "$G_FULL"|sed 's!.* \(.*\)!\1!'|tr -d '<>')
 } 
 
 # setup the directories, build, and send to launchpad
