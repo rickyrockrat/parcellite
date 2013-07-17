@@ -155,6 +155,15 @@ build_deb () {
   check_err "build deb"
   cd ..
   mv *.deb ..
+  cd ..
+  # rename the appind thingy
+  apind=$(echo "$1"|grep appindicator|grep -c "yes")
+  if [ "$apind" = "1" ]; then
+    d=$(ls *.deb);
+    n=$(ls *.deb|sed 's!\.deb!-appind.deb!)
+    mv $d $n
+  fi
+   
 }
 # set our absolute path (or try to)
 set_abs_path () {
