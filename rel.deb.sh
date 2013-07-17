@@ -33,7 +33,6 @@ mv $CODIR.sav $CODIR
 test_tarball
 # for everyone else
 build_deb "--enable-appindicator=no"
-mv $CODIR $CODIR.appind
 echo "output in $CODIR.appind and $CODIR"
 show_links
 exit 0
