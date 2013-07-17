@@ -145,11 +145,12 @@ test_tarball() {
 # the arg is configure options passed to the deb build, i.e.
 # --enable-appindicator=no
 build_deb () {
-  select_gpg_keys
   echo "$FUNCNAME"
   cd "$CODIR/tar_test/$tdir"
   check_err "cd tar_test" 
-  ./build-debpkg.sh ../../$tdir.tar.gz -p $1
+  if [ -n "$1" ]; then
+    _COPT=$(-c $1)
+  ./build-debpkg.sh -p ../../$tdir.tar.gz  $_COPT
   check_err "build deb"
   cd ..
   mv *.deb ..

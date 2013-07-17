@@ -31,7 +31,7 @@ case $_ARCH in
   *) echo "Unknown machine '$_ARCH'. Add machine to this build"
   exit 1;;
 esac
-dh_make -s -f $KEY $TARPATH
+dh_make -s $KEY  -f $TARPATH
 cd debian
 rm emacsen-* manpage.* init.d.ex README.Debian 
 cd ..
