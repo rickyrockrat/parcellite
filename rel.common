@@ -145,10 +145,11 @@ test_tarball() {
 # the arg is configure options passed to the deb build, i.e.
 # --enable-appindicator=no
 build_deb () {
+  select_gpg_keys
   echo "$FUNCNAME"
   cd "$CODIR/tar_test/$tdir"
   check_err "cd tar_test" 
-  ./build-debpkg.sh ../../$tdir.tar.gz "$1"
+  ./build-debpkg.sh ../../$tdir.tar.gz -p $1
   check_err "build deb"
   cd ..
   mv *.deb ..
@@ -162,6 +163,20 @@ set_abs_path () {
   fi
   echo "Using '$CDIR'"
 }
+
+# Select gpg keys
+select_gpg_keys () {
+ if [ -n "$KEYID" ]; then
+   return
+ fi
+ gpg --list-keys
+ echo "Which key? 2048R/ABCDEF12 - just need the ABC part"
+ read KEYID
+ G_FULL=$(gpg --fingerprint $KEYID|grep "^uid"|sed -e 's!uid\W*!!')
+ GNAME=$(echo "$G_FULL|sed 's!\(.*\) <.*!\1!'
+ GEMAIL=$(echo "$G_FULL|sed 's!.* \(.*\)!\1!'|tr -d '<>')
+} 
+
 # setup the directories, build, and send to launchpad
 finish_ppa () {
 #set up the directory
@@ -180,8 +195,6 @@ finish_ppa () {
  tar --exclude .svn -czf "$debdir.orig.tar.gz" "$debdir"
  check_err "tar for ppa"
  cp "$debdir"/deb/* t/debian
- 
- 
 #build changelog
  echo "parcellite (${tag}-1ppa${PPANO}) $SERIES; urgency=low" > t/debian/changelog
  cat "$debdir"/ChangeLog |while read line; do 
@@ -214,9 +227,7 @@ finish_ppa () {
    echo "DEB_CONFIGURE_EXTRA_FLAGS += --enable-appindicator=yes">> t/debian/rules
  fi
  cd t
- gpg --list-keys
- echo "Which key? 2048R/ABCDEF12 - just need the ABC part"
- read KEYID
+ select_gpg_keys
  echo "Upload source? (y/n)"
  read YN
  if [ "$YN" = "y" ]; then
