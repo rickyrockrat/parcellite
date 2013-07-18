@@ -75,15 +75,5 @@ svn_cp_to_tag
 #tag="1.0.2rc7Beta"
 #turl="$BURL/tags/$tag"
 #CODIR="$ASVN/test.$tag"
-test_tag_co
-make_tarball
-test_tarball
-build_deb
-echo "output in $CODIR"
-show_links
-exit 0
-
-
-	 
-
+rel_deb
 
