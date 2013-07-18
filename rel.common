@@ -310,6 +310,26 @@ echo "Source Forge Links"
 echo "The source can be <a href=\"http://sourceforge.net/projects/parcellite/files/parcellite/parcellite-$tag/parcellite-$tag.tar.gz/download\">downloaded here</a>."
 echo "<a href=\"http://sourceforge.net/projects/parcellite/files/parcellite/parcellite-$tag/parcellite_$tag-1_i386.deb/download\">i386</a>"
 echo "<a href=\"http://sourceforge.net/projects/parcellite/files/parcellite/parcellite-$tag/parcellite_$tag-1_amd64.deb/download\">amd64</a>."
-echo "<a href=\"http://sourceforge.net/projects/parcellite/files/parcellite/parcellite-$tag/parcellite_$tag-1_amd64-appindicator.deb/download\">amd64-appindicator</a>."
+echo "<a href=\"http://sourceforge.net/projects/parcellite/files/parcellite/parcellite-$tag/parcellite_$tag-1_amd64-appind.deb/download\">amd64-appind</a>."
+echo "<a href=\"http://sourceforge.net/projects/parcellite/files/parcellite/parcellite-$tag/parcellite_$tag-1_i386-appind.deb/download\">i386-appind</a>."
 
+}
+
+# Finish testing of our svn tag
+rel_deb () {
+test_tag_co
+make_tarball
+cp -a $CODIR $CODIR.sav
+test_tarball
+# so Unity is a pain...
+build_deb "--enable-appindicator=yes"
+mv $CODIR $CODIR.appind
+mv $CODIR.sav $CODIR
+mv $CODIR.appind/*.deb $CODIR
+test_tarball
+# for everyone else
+build_deb "--enable-appindicator=no"
+echo "output in $CODIR"
+show_links
+exit 0
 }

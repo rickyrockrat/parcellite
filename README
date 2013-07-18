@@ -52,4 +52,12 @@ the configure script needs to be invoked as follows on OpenBSD:
 
 If not, configure will report that the gtk >= 2.10.0 requirement is not met on OpenBSD.
 
+Release instructions:
+1) run rel.sh - it copies the trunk to the tag the script asks the developer for.
+2) If 1 doesn't work, rel.deb.sh can be run to complete the .deb builds.
+3) run rel.ppa.sh to build & dput code to the ppa.
+
+All scripts are run from a checked-out svn trunk directory (i.e. same directory as this file).
+
+
 
