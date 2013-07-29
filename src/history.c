@@ -52,10 +52,10 @@ glong validate_utf8_text(gchar *text, glong len)
 		return 0;
 	text[len]=0;
 	if(FALSE == g_utf8_validate(text,-1,&valid)) {
-		g_printf("Truncating invalid utf8 text entry: ");
+		g_fprintf(stderr,"Truncating invalid utf8 text entry: ");
 		len=valid-text;
 		text[len]=0;
-		g_printf("'%s'\n",text);
+		g_fprintf(stderr,"'%s'\n",text);
 	}
 	return len;
 }

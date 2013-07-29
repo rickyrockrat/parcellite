@@ -50,6 +50,12 @@ correct behavior:
    work with many clients, and they require data to be 
    copied to the X server. Therefore clients should avoid 
    using cut buffers and use only selections.
+   
+We can monitor ownership change with:
+// This callback is invoked when the clipboard owner changes.
+void handle_owner_change(GtkClipboard *clipboard, GdkEvent *event,  gpointer data){	}
+}
+g_signal_connect(clipboard, "owner-change",  G_CALLBACK(handle_owner_change), NULL);
  */
 
 #ifdef HAVE_CONFIG_H
@@ -235,7 +241,7 @@ gchar *_update_clipboard (GtkClipboard *clip, gchar *n, gchar **old, int set)
 }
 
 /***************************************************************************/
-/** .
+/** This checks to see if ANY content exists (i.e. like images).
 \n\b Arguments:
 \n\b Returns:
 ****************************************************************************/
@@ -248,10 +254,8 @@ gboolean content_exists(GtkClipboard *clip)
 	return contents;
 }
 
-
 /***************************************************************************/
-/** This DOES NOT WORK!! WTH??.
-Fix is a bit hacky.
+/** 
 \n\b Arguments:
 \n\b Returns:	 clipboard contents, to be freed with g_free, or NULL if empty.
 ****************************************************************************/
@@ -265,8 +269,25 @@ gchar *is_clipboard_empty(GtkClipboard *clip)
   g_free(targets);
 	if(TRUE == contents || count >0)
 		return 0;*/
-	if(TRUE == gtk_clipboard_wait_is_text_available(clip))
-		return(gtk_clipboard_wait_for_text(clip));
+#if 1
+	 if(TRUE == gtk_clipboard_wait_is_text_available(clip))
+   	return(gtk_clipboard_wait_for_text(clip));
+#else	
+	/**attempt to fix  bug 87, Error converting selection from UTF8_STRING  
+	Go http://www.cl.cam.ac.uk/~mgk25/ucs/examples/UTF-8-test.txt
+	line 2.3.4 will reproduce this using FireFox.	*/
+	if(TRUE == gtk_clipboard_wait_is_text_available(clip)){
+		gchar *x=gtk_clipboard_wait_for_text(clip);
+		if(FALSE == g_utf8_validate(x,-1,NULL))
+			gtk_clipboard_set_text(clip,"_BAD_UTF8_",-1);
+		/** ulong l1, l2;
+		l1=strlen*/
+		/**if NULL == x, we have a problem with whatever is in the clipboard.  */
+		/*if(NULL ==x) */
+			
+		return(x);
+	}
+#endif		
 	return NULL;
 }
 
@@ -616,9 +637,9 @@ static void action_selected(GtkButton *button, gpointer user_data)
   }
   /* Insert clipboard into command (user_data), and prepare it for execution */
   gchar* clipboard_text = gtk_clipboard_wait_for_text(clipboard);
-	g_print("Got cmd '%s', text '%s'->",(gchar *)user_data,clipboard_text);fflush(NULL);  
+	g_fprintf(stderr,"Got cmd '%s', text '%s'->",(gchar *)user_data,clipboard_text);fflush(NULL);  
 	gchar* command=g_strdup_printf((gchar *)user_data,clipboard_text);
-	g_print(" '%s'\n",command);fflush(NULL);  
+	g_fprintf(stderr," '%s'\n",command);fflush(NULL);  
   g_free(clipboard_text);
   g_free(user_data);
   gchar* shell_command = g_shell_quote(command);
@@ -630,7 +651,7 @@ static void action_selected(GtkButton *button, gpointer user_data)
   GPid pid;
   gchar **argv;
   g_shell_parse_argv(cmd, NULL, &argv, NULL);
-	g_print("cmd '%s' argv '%s' '%s' '%s'\n",cmd,argv[1],argv[2],argv[3]);  
+	g_fprintf(stderr,"cmd '%s' argv '%s' '%s' '%s'\n",cmd,argv[1],argv[2],argv[3]);  
   g_free(cmd);
   g_spawn_async(NULL, argv, NULL, G_SPAWN_DO_NOT_REAP_CHILD, NULL, NULL, &pid, NULL);
   g_child_watch_add(pid, (GChildWatchFunc)action_exit, NULL);

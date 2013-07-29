@@ -252,17 +252,27 @@ gchar *get_username_pid( pid_t pid )
 /** Gets a value give the key name from the pid envronment with null-terminated
 strings.
 \n\b Arguments:
-\n\b Returns: value or NULL. Free value with g_free.
+\n\b Returns: 
+-1 on error
+0 if not found
+1 if found
+value is filled with value or NULL.
+value or NULL. Free value with g_free.
 ****************************************************************************/
-gchar * get_value_from_env(pid_t pid, gchar *key)
+int get_value_from_env(pid_t pid, gchar *key, char **value)
 {
 	GFile *fp;
 	char *env=NULL, *envf;
 	gsize elen, i;
-	
+	int rtn=-1;
+	if(NULL == value){
+		g_fprintf(stderr,"get_value_from_env: value null!\n");
+		return rtn;
+	}
+	*value=NULL;
 	if(NULL == (envf=(g_malloc(strlen("/proc/9999999/environ"))))) {
 		g_fprintf(stderr,"Unable to allocate for environ file name.\n");
-		return NULL;
+		return rtn;
 	}
 	g_sprintf(envf,"/proc/%ld/environ",pid);
 	if(0 != access(envf,  R_OK)){/**doesn't exist, or not our process  */
@@ -291,9 +301,10 @@ gchar * get_value_from_env(pid_t pid, gchar *key)
 				i+=f-&env[i]; /**beginning of string  */
 				while(i<elen && 0!=env[i] && '=' !=env[i]) ++i;
 				if('=' == env[i] ){/**found, return key  */
-					gchar *value=g_strdup(&env[i+1]);
+					*value=g_strdup(&env[i+1]);
 					/*g_printf("%s=%s\n",key,value); */
-					return value;
+					rtn=1;
+					goto error;
 				} /**if we get out of this loop, we are either @ 0 or end of environment.  */
 			}else
 				i+=strlen(f);
@@ -301,12 +312,14 @@ gchar * get_value_from_env(pid_t pid, gchar *key)
 			while(i<elen && 0!= env[i]) ++i;
 		}
 	}
+	rtn=0;/**not found  */
+	
 error:
 	if(NULL != envf)
 		g_free (envf);
 	if(NULL != env)																										 
 		g_free(env);
-	return NULL;
+	return rtn;
 }
 
 /** Stat of the pid in /proc/pid give uid.  Environment is only readable by
@@ -355,23 +368,37 @@ done:
 /***************************************************************************/
 /** .
 \n\b Arguments: Pid to check session type.
-\n\b Returns: 0 if error or not in current session, 1 if it is.
+\n\b Returns: 
+-1 if error
+0 if not found
+1 if it is found (i.e. in current session)
+2 if it is found, and not in current session
 ****************************************************************************/
-int is_current_xsession (pid_t pid)
+int is_current_xsession_var (pid_t pid, gchar *env_var)
 {
-	int rtn=0;
+	int rtn=-1;
 	gchar *mine, *theirs;
 	mine=theirs=NULL;
-	if(NULL == (theirs=get_value_from_env(pid, "XDG_SESSION_COOKIE")) ){
-		g_fprintf(stderr,"Unable to access XDG_SESSION_COOKIE for pid %ld\n",(long)pid);
-		return 0;
+	if(NULL == env_var){
+		g_fprintf(stderr,"env_var for pid %ld is NULL!\n",(long)pid);
+		return -1;
 	}
-	if( NULL == (mine=get_value_from_env(getpid(), "XDG_SESSION_COOKIE"))){
+	if(-1 == get_value_from_env(pid, env_var,&theirs) ){
+		g_fprintf(stderr,"Unable to access XDG_SESSION_COOKIE for pid %ld\n",(long)pid);
+		return -1;
+	}
+	if( -1 == get_value_from_env(getpid(), "XDG_SESSION_COOKIE",&mine)){
 		g_fprintf(stderr,"Unable to access my XDG_SESSION_COOKIE\n");
 		goto done;
 	}
-	if(! g_strcmp0(mine,theirs))
-		rtn=1;
+	rtn=0;
+	if(NULL != theirs && NULL != mine){
+		if(! g_strcmp0(mine,theirs))
+			rtn=1;	
+		else
+			rtn=2;
+	}
+	
 	/*g_fprintf(stderr,"my='%s', pid %ld='%s',match=%d\n",mine,(long)pid,theirs,rtn);  */
 done:
 	if(NULL != mine)
@@ -379,6 +406,34 @@ done:
 	if(NULL != theirs)
 		g_free(theirs);
 	return rtn;
+}
+
+/***************************************************************************/
+/** Use several methods to figure out the session we are in.
+1) Check XDG_SESSION_COOKIE
+2) Check DISPLAY var
+3) ??
+\n\b Arguments:
+\n\b Returns:
+1 if in current session
+0 if not in current session
+ #-1 if error
+****************************************************************************/
+int is_current_xsession (pid_t pid)
+{
+	int i,x,rtn=1;
+	gchar *names[]={"XDG_SESSION_COOKIE","DISPLAY",NULL};
+		
+	for (i=0;NULL != names[i]; ++i){
+		if((x=is_current_xsession_var(pid,names[i]))>0){
+			if( 1 == x)
+				return 1;
+			else 
+				return 0;
+		}	
+	}
+	/**default to not in current session  */
+	return 0;
 }
 /***************************************************************************/
 /** Return a PID given a name. Used to check a if a process is running..
@@ -431,14 +486,14 @@ int proc_find(const char* name, int mode, pid_t *pid)
 				if(PROC_MODE_EXACT & mode){
 					gchar *b=g_path_get_basename(buf);
 		      if (!g_strcmp0(b, name)) {
-						if(is_current_user(lpid,mode) && is_current_xsession(lpid) )
+						if(is_current_user(lpid,mode) && 1 == is_current_xsession(lpid) )
 							++instances;
 						if(NULL !=pid)
 						  *pid=lpid;
 		      }
 				}else if( PROC_MODE_STRSTR & mode){
 					if(NULL !=g_strrstr(buf,name)){
-						if(is_current_user(lpid,mode) && is_current_xsession(lpid))
+						if(is_current_user(lpid,mode) && 1 == is_current_xsession(lpid))
 							++instances;
 						if(NULL !=pid)
 						  *pid=lpid;
