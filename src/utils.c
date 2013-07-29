@@ -422,7 +422,7 @@ done:
 int is_current_xsession (pid_t pid)
 {
 	int i,x,rtn=1;
-	gchar *names[]={"XDG_SESSION_COOKIE","DISPLAY",NULL};
+	gchar *names[]={"XDG_SESSION_COOKIE","DISPLAY","XDG_SEAT",NULL};
 		
 	for (i=0;NULL != names[i]; ++i){
 		if((x=is_current_xsession_var(pid,names[i]))>0){
