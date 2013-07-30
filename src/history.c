@@ -36,8 +36,8 @@ static gchar* history_magics[]={
 																NULL,
 };
 
-/*#define HISTORY_FILE0 HISTORY_FILE */
-#define HISTORY_FILE0 "parcellite/hist.test"
+#define HISTORY_FILE0 HISTORY_FILE 
+/*#define HISTORY_FILE0 "parcellite/hist.test" */
 
 /***************************************************************************/
 /** Pass in the text via the struct. We assume len is correct, and BYTE based,
