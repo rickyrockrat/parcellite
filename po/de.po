@@ -135,7 +135,7 @@ msgstr "_Primäre Zwischenablage benutzen (Auswahl)"
 
 #: ../src/preferences.c:435
 msgid "S_ynchronize clipboards"
-msgstr "Zwischenblagen s_ynchronisieren"
+msgstr "Zwischenablagen s_ynchronisieren"
 
 #: ../src/preferences.c:443
 msgid "<b>History</b>"
