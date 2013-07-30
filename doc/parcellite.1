@@ -21,7 +21,11 @@ Show help options
 .TP
 .B \-d\fR, \fB\-\-daemon
 Run as daemon. Use this mode if you just want \fBParcellite\fR to keep your clipboard
-and primary contents safe
+and primary contents safe.  Daemon mode just restores clipboard contents if it is lost. 
+It does nothing else, no clipboard history, no clipboard synchronization, no icon, no 
+command line interface, or anything other than restoring clipboard content if it becomes 
+empty. It must be run as the first instance, and will disable the command line interface 
+and all other features of \fBparcellite\fR.
 .TP
 .B \-n\fR, \fB\-\-no-icon
 Do not use status icon
