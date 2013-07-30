@@ -4,6 +4,9 @@ V1.1.6 Tuesday, July 30 2013
  +Fixed bug where if fifo are not found in client mode, parcellite segfaults.
  +Apply patch for typo in German translation, patch #30.
  +Updated parcellite.pot (cd po && make update-po).
+ +Changed name of history file from hist.test to history (debug escape). 
+   To restore the history, Quit Parcellite, then cd to $HOME/.local/share/parcellite
+   mv hist.test history
  
 V1.1.5 Wednesday, July 17 2013
  +Added ppa script.
