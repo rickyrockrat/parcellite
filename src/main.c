@@ -2157,7 +2157,7 @@ int main(int argc, char *argv[])
 	if( NULL != opts->leftovers)g_print("%s\n",opts->leftovers);
 	/**init fifo should set up the fifo and the callback (if we are daemon mode)  */
 		if(opts->primary)	{
-			fifo=init_fifo(FIFO_MODE_PRI|mode);
+			if(NULL == (fifo=init_fifo(FIFO_MODE_PRI|mode))) return 1;
 			if(fifo->dbg) g_printf("Hit PRI opt!\n");
 			
 			if(PROG_MODE_CLIENT & mode){
@@ -2179,7 +2179,7 @@ int main(int argc, char *argv[])
 	    g_free(prim_text);
 			
 	  }  else if(opts->clipboard){
-			fifo=init_fifo(FIFO_MODE_CLI|mode);
+			if(NULL == (fifo=init_fifo(FIFO_MODE_CLI|mode))) return 1;
 			
 			if(PROG_MODE_CLIENT & mode){
 				if(NULL != opts->leftovers){
@@ -2198,7 +2198,7 @@ int main(int argc, char *argv[])
 	    g_free(clip_text);
 	  }  else  	{ /*use CLIPBOARD*/
 			GtkClipboard* clip = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);
-			fifo=init_fifo(FIFO_MODE_NONE|mode);
+			if(NULL == (fifo=init_fifo(FIFO_MODE_NONE|mode))) return 1;
 				/* Copy from unrecognized options */
 			if(PROG_MODE_CLIENT & mode){
 			  if(NULL != opts->leftovers){
