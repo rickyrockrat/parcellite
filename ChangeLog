@@ -3,6 +3,7 @@ V1.1.6 Tuesday, July 30 2013
   introduced by multi-user fix.
  +Fixed bug where if fifo are not found in client mode, parcellite segfaults.
  +Apply patch for typo in German translation, patch #30.
+ +Updated parcellite.pot (cd po && make update-po).
  
 V1.1.5 Wednesday, July 17 2013
  +Added ppa script.

@@ -60,4 +60,5 @@ Release instructions:
 All scripts are run from a checked-out svn trunk directory (i.e. same directory as this file).
 
 
+To update the pot file, cd to po, then run make update-po.
 
