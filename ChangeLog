@@ -1,3 +1,8 @@
+V1.1.6 Tuesday, July 30 2013
+ +Fixed Bug #99, Broken CLI functionality. Now looks at XDG_SESSION_COOKIE, XDG_SEAT, and DISPLAY, 
+  introduced by multi-user fix.
+ +Fixed bug where if fifo are not found in client mode, parcellite segfaults.
+ 
 V1.1.5 Wednesday, July 17 2013
  +Added ppa script.
  +Updated German Translation from patch by Christoph Wickert.

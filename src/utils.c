@@ -26,7 +26,14 @@
 #include <fcntl.h>
 #include <errno.h>
 #include <libgen.h>
-
+/**set this to debug looking up user environment vars to see other instances
+of parcellite  */
+/**#define DEBUG_MULTI  */
+#ifdef DEBUG_MULTI
+#  define DMTRACE(x) x
+#else
+#  define DMTRACE(x) do {} while (FALSE);
+#endif
 
 /** Wrapper to replace g_strdup to limit size of text copied from clipboard. 
 g_strndup will dup to the size of the limit, which will waste resources, so
@@ -384,15 +391,18 @@ int is_current_xsession_var (pid_t pid, gchar *env_var)
 		return -1;
 	}
 	if(-1 == get_value_from_env(pid, env_var,&theirs) ){
-		g_fprintf(stderr,"Unable to access XDG_SESSION_COOKIE for pid %ld\n",(long)pid);
+		g_fprintf(stderr,"Unable to access '%s' for pid %ld\n",env_var,(long)pid);
 		return -1;
 	}
-	if( -1 == get_value_from_env(getpid(), "XDG_SESSION_COOKIE",&mine)){
-		g_fprintf(stderr,"Unable to access my XDG_SESSION_COOKIE\n");
+	if( -1 == get_value_from_env(getpid(),env_var,&mine)){
+		g_fprintf(stderr,"Unable to access my '%s'\n",env_var);
 		goto done;
 	}
 	rtn=0;
+	if(NULL == theirs)	DMTRACE(g_fprintf(stderr,"Their Null "));
+	if(NULL == mine )   DMTRACE(g_fprintf(stderr,"Mine Null "));
 	if(NULL != theirs && NULL != mine){
+		DMTRACE(g_fprintf(stderr,"Both found "));
 		if(! g_strcmp0(mine,theirs))
 			rtn=1;	
 		else
@@ -422,14 +432,19 @@ done:
 int is_current_xsession (pid_t pid)
 {
 	int i,x,rtn=1;
-	gchar *names[]={"XDG_SESSION_COOKIE","DISPLAY","XDG_SEAT",NULL};
+	gchar *names[]={"XDG_SESSION_COOKIE","XDG_SEAT","DISPLAY",NULL};
 		
 	for (i=0;NULL != names[i]; ++i){
+		DMTRACE(g_fprintf(stderr,"@%s ",names[i]));
 		if((x=is_current_xsession_var(pid,names[i]))>0){
-			if( 1 == x)
+			if( 1 == x){
+				DMTRACE(g_fprintf(stderr," Found \n"));
 				return 1;
-			else 
+			}	else {
+				DMTRACE(g_fprintf(stderr," Not Found \n"));
 				return 0;
+			}
+				
 		}	
 	}
 	/**default to not in current session  */
@@ -614,7 +629,8 @@ int _open_fifo(char *path, int flg)
 	mode_t mode=0660;
 	fd=open(path,flg,mode);												 
 	if(fd<3){
-		perror("Unable to open fifo");
+		fprintf(stderr,"Unable to open fifo '%s' ",path);
+		perror("");
 	}
 	g_free(path);
 	return fd;
@@ -801,7 +817,7 @@ struct p_fifo *init_fifo(int mode)
 	/**set debug here for debug messages */
 	f->dbg=0;  
 	
-/*	f->dbg=1; */
+/*	f->dbg=1;  */
 /*	g_printf("My PID is %d\n",getpid()); */
 	/**we are daemon, and will launch  */
 	if(mode&PROG_MODE_DAEMON){
