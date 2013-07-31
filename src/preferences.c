@@ -823,7 +823,7 @@ int add_section(int sec, GtkWidget *parent)
 			case PREF_TYPE_FRAME:/**must be first in section, since it sets vbox.  */
 					myprefs[i].w= gtk_frame_new(NULL);
 				  gtk_frame_set_shadow_type((GtkFrame*)	myprefs[i].w, GTK_SHADOW_NONE);
-				  label = gtk_label_new(NULL);							/**<b>myprefs[i].descClipboards</b>"  */
+				  label = gtk_label_new(NULL);							/**<b>myprefs[i].desc  */
 				  gtk_label_set_markup((GtkLabel*)label, myprefs[i].desc);
 				  gtk_frame_set_label_widget((GtkFrame*)	myprefs[i].w, label);
 				  alignment = gtk_alignment_new(0.50, 0.50, 1.0, 1.0);

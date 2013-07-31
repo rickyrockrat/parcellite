@@ -71,6 +71,7 @@ set_abs_path
 cd "$CDIR"
 set_svn_local
 check_local
+update_pot
 svn_cp_to_tag
 #tag="1.0.2rc7Beta"
 #turl="$BURL/tags/$tag"

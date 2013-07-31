@@ -333,3 +333,12 @@ echo "output in $CODIR"
 show_links
 exit 0
 }
+#update the .pot file for translators
+update_pot () {
+cp $CDIR/po/parcellite.pot $CDIR/_parcellite.pot
+$CDIR/extract_strings.sh
+_DIFF=$(diff -q $CDIR/_parcellite.pot $CDIR/po/parcellite.pot|grep -c differ)
+if [ "0" != "$_DIFF" ]; then
+  svn ci -m"Updated parcellite.pot"
+fi
+}
