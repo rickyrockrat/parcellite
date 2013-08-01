@@ -344,3 +344,20 @@ if [ "0" != "$_DIFF" ]; then
 fi
 rm $CDIR/_$_PO
 }
+check_translations () {
+  let err=0
+  for f in $(ls po/*.po); do
+     MSG=$(msgfmt -o  _tmp_po $f 2>&1) 
+     POE=$(echo "MSG"|grep -ic error) 
+     if	[ "0" != "$POE" ]; then
+       echo "Error on '$f':"
+       echo "$MSG"
+       let err=err+1
+     fi
+     rm _tmp_po
+  done
+  if [ $err -ne 0 ]; then
+    echo "Errors in Translation files. Abort."
+    exit 1
+  fi
+}
