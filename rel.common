@@ -344,6 +344,7 @@ if [ "0" != "$_DIFF" ]; then
 fi
 rm $CDIR/_$_PO
 }
+#Check the translations for errors
 check_translations () {
   let err=0
   for f in $(ls po/*.po); do
