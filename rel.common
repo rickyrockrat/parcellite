@@ -436,7 +436,7 @@ copy_files_to_sourceforge () {
    tlist="$tlist $CODIR/$f"
  done
  cp $CDIR/ChangeLog $CODIR/README.txt
- tlist="$tlist  $CODIR/README.txt"
+ tlist="$tlist  $CODIR/README.txt  $CODIR/parcellite-${tag}.tar.gz"
  echo "Copy files $tlist"
  echo "To $NDIR"
  scp $tlist $user@shell.sourceforge.net:$NDIR
