@@ -1,9 +1,12 @@
+V1.1.7 Thursday, August 1 2013
+ +Added remote i386 build and upload to sourceforge.
+
 V1.1.6 Thursday, August 1 2013
  +Fixed Bug #99, Broken CLI functionality. Now looks at XDG_SESSION_COOKIE, XDG_SEAT, and DISPLAY, 
   introduced by multi-user fix.
  +Fixed bug where if fifo are not found in client mode, parcellite segfaults.
  +Apply patch for typo in German translation, patch #30.
- +Updated parcellite.pot (cd po && make update-po).
+ +Updated parcellite.pot (./extract_strings.sh).
  +Changed name of history file from hist.test to history (debug escape). 
    To restore the history, Quit Parcellite, then cd to $HOME/.local/share/parcellite
    mv hist.test history

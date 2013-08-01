@@ -1,2 +1,5 @@
 + Dialog with listed history contents for searching and removing.
 + Static entries.
++ Add auto-update of Wordpress:
+ scp user@shell.sourceforge.net:/home/project-web/parcellite/htdocs/wp-content/uploads/js_cache/tinymce_1a60aaf59360855aa0d7d0c5a41c8ef5.gz
++ Add visual feedback when using the history search function.
