@@ -78,4 +78,5 @@ update_pot
 #turl="$BURL/tags/$tag"
 #CODIR="$ASVN/test.$tag"
 rel_deb
+remote_i386
 
