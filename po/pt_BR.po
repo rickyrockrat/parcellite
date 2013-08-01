@@ -4,249 +4,464 @@
 # This file is distributed under the same license as the parcellite package.
 #
 #
-# Phantom X <megaphantomx at bol.com.br>, 2008, 2009.
+# Phantom X <megaphantomx at bol.com.br>, 2008, 2009, 2013.
 msgid ""
 msgstr ""
 "Project-Id-Version: pt_BR\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-03-18 12:08-0400\n"
-"PO-Revision-Date: 2009-03-13 22:30-0300\n"
-"Last-Translator: Phantom X <megaphantomx at bol.com.br>\n"
-"Language-Team: Português do Brasil <pt@li.org>\n"
+"POT-Creation-Date: 2013-07-31 09:56-0600\n"
+"PO-Revision-Date: 2013-07-31 19:29-0300\n"
+"Last-Translator: Phantom X <megaphantomx at bol dot com dot br>\n"
+"Language-Team: Brazilian Portuguese <>\n"
+"Language: pt_BR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.11.4\n"
+"X-Generator: Lokalize 1.5\n"
 "Plural-Forms:  nplurals=2; plural=(n > 1);\n"
 
-#: ../src/main.c:166
-msgid "Executing action..."
-msgstr "Executando ação..."
+msgid "Action"
+msgstr "Ação"
 
-#: ../src/main.c:172 ../src/main.c:704 ../data/parcellite.desktop.in.h:1
-#: ../data/parcellite-startup.desktop.in.h:1
-msgid "Clipboard Manager"
-msgstr "Gerenciador de Área de Transferência"
+msgid "Actions"
+msgstr "Ações"
 
-#: ../src/main.c:195
-msgid "Could not create thread for executed action\n"
-msgstr "Impossível criar processo para a ação executada\n"
+msgid "Actions key combination:"
+msgstr "Combinação de teclas de Ações:"
 
-#. Create the dialog
-#: ../src/main.c:225
-msgid "Editing Clipboard"
-msgstr "Editando a Área de Transferência"
+msgid "Add..."
+msgstr "Adicionar..."
 
-#: ../src/main.c:284
-msgid "Clear the history?"
-msgstr "Limpar o histórico?"
+msgid "along with this program.  If not, see <http://www.gnu.org/licenses/>.;"
+msgstr ""
 
-#: ../src/main.c:336
-msgid "Lightweight GTK+ clipboard manager."
-msgstr "Gerenciador de Área de Transferência em GTK+ leve."
+msgid "Alternate Non-printing Display"
+msgstr "Exibição sem impressão alternativa"
 
-#: ../src/main.c:423
+msgid "(at your option) any later version."
+msgstr ""
+
+msgid "Auto Paste"
+msgstr "Auto Colar"
+
+msgid "Beginning"
+msgstr "Início"
+
+msgid "Behavior"
+msgstr "Comportamento"
+
 msgid "<b>None</b>"
 msgstr "<b>Nenhum</b>"
 
-#. File contained no actions so adding empty
-#. File did not open so adding empty
-#. Nothing in history so adding empty
-#: ../src/main.c:444 ../src/main.c:473 ../src/main.c:588
-msgid "Empty"
-msgstr "Vazio"
+msgid "but WITHOUT ANY WARRANTY; without even the implied warranty of"
+msgstr ""
 
-#. Edit actions
-#: ../src/main.c:480
-msgid "_Edit actions"
-msgstr "_Editar ações"
+msgid "Capture hyperlinks only"
+msgstr "Capturar somente _hyperlinks"
 
-#. Edit clipboard
-#: ../src/main.c:504
-msgid "_Edit Clipboard"
-msgstr "_Editar Área de Transferência"
+msgid "Case Sensitive Search"
+msgstr "Busca com Caso Sensitivo"
 
-#: ../src/utils.c:38 ../src/utils.c:45
-#, c-format
-msgid "Couldn't create directory: %s\n"
-msgstr "Impossível criar diretório: %s\n"
+msgid "_Clear"
+msgstr "_Limpar"
 
-#: ../src/utils.c:84
-msgid "Run as daemon"
-msgstr "Executar como daemon"
+msgid "Clear the history?"
+msgstr "Limpar o histórico?"
 
-#: ../src/utils.c:91
+msgid "Clipboard CLI usage examples:"
+msgstr "Exemplos de uso de área de transferência em CLI:"
+
+msgid "Clipboard Manager"
+msgstr "Gerenciador de Área de Transferência"
+
+msgid "Clipboards"
+msgstr "Áreas de Transferência "
+
+msgid "Command"
+msgstr "Comando"
+
+msgid "Confirm before clearing history"
+msgstr "Confirmar antes de limpar o histórico"
+
+msgid "Control-click Parcellite's tray icon to use actions"
+msgstr "Control-clique no ícone da bandeja do Parcellite para usar ações"
+
+msgid ""
+"Copyright (C) 2007, 2008 Gilberto \"Xyhthyx\" MirallaCopyright (C) 2010-2013 "
+"Doug Springer"
+msgstr ""
+
+msgid "Couldn't create directory: %s"
+msgstr "Impossível criar diretório: %s"
+
+msgid "Current entry on top"
+msgstr "Entrada atual no topo"
+
+msgid "DebugUpdate"
+msgstr ""
+
+msgid "Display"
+msgstr "Exibir"
+
+msgid "Display Version info"
+msgstr "Exibir info de versão"
+
 msgid "Do not use status icon (Ctrl-Alt-P for menu)"
 msgstr "Não usar ícone de status (Ctrl-Alt-P para o menu)"
 
-#: ../src/utils.c:98
+msgid "Dummy desc"
+msgstr ""
+
+msgid "Dummy tip"
+msgstr ""
+
+msgid "_Edit actions"
+msgstr "_Editar ações"
+
+msgid "_Edit Clipboard"
+msgstr "_Editar Área de Transferência"
+
+msgid "Editing Clipboard"
+msgstr "Editando a Área de Transferência"
+
+msgid "Empty"
+msgstr "Vazio"
+
+msgid "End"
+msgstr "Fim"
+
+msgid "Executing action..."
+msgstr "Executando ação..."
+
+msgid ""
+"Gilberto \"Xyhthyx\" Miralla <xyhthyx@gmail.com>Doug Springer "
+"<gpib@rickyrockrat.net>"
+msgstr ""
+
+msgid "GNU General Public License for more details."
+msgstr ""
+
+msgid "History"
+msgstr "Histórico"
+
+msgid "_History"
+msgstr "_Histórico"
+
+msgid "History key combination:"
+msgstr "Combinação de teclas do Histórico:"
+
+msgid "Hotkeys"
+msgstr "Atalhos"
+
+msgid ""
+"If checked, does a search-as-you-type. Turns red if not found. Goes to top "
+"(Alt-E) line when no chars are entered for search"
+msgstr ""
+"Se ativo, faz busca-ao-digitar. Fica vermelho se não encontrado. Vai a linha "
+"do topo (Alt-E) se nada for inserido para buscar."
+
+msgid "If checked, does case sensitive search"
+msgstr "Se ativo, faz busca com caso sensitivo"
+
+msgid ""
+"If checked, enables checking multiple concurrent user logic. Use if several "
+"different users are logged in at the same time."
+msgstr ""
+"Se ativo, habilita verificação de múltiplos usuários simultâneos. Use se "
+"vários "
+"usuários diferentes estão autenticados ao mesmo tempo."
+
+msgid ""
+"If checked, enables debug prints on clipboard update logic. This only takes "
+"effect when enabled at start up, and may be disabled at compile time."
+msgstr ""
+"Se ativo, habilita exibições de debug na lógica de área de transferência. "
+"Somente "
+"tem efeito quando ativado no início e pode ser desativado em tempo de "
+"compilação."
+
+msgid "If checked, enables the persistent history."
+msgstr "Se ativo, habilita o histórico persistente."
+
+msgid ""
+"If checked, places current clipboard entry at top of list. If not checked, "
+"history does not get sorted."
+msgstr ""
+"Se ativo, coloca a entrada de área de transferência atual no topo da lista. "
+"Se não, "
+"histórico não é organizado."
+
+msgid "If checked, puts the persistent history at the top of the history list."
+msgstr ""
+"Se ativo, coloca o histórico persistente no topo da lista de histórico."
+
+msgid "If checked, puts the persistent history in a new list."
+msgstr "Se ativo, coloca o histórico permanente em um nova lista."
+
+msgid "If checked, the current entry will be on the bottom instead of the top."
+msgstr "Se ativo, a entrada atual ficará no fundo em vez do topo."
+
+msgid "If checked, Use the clipboard, which is Ctrl-C, Ctrl-V"
+msgstr "Se ativo, usa a área de transferência, com Ctrl-C, Ctrl-V"
+
+msgid ""
+"If checked, Use the primary clipboard (mouse highlight-copy, middle mouse "
+"button paste)"
+msgstr ""
+"Se ativo, usa a área de transferência primária (realce com mouse-cópia, botão "
+"do meio cola)"
+
+msgid "If checked, use X, Y to position the history list"
+msgstr "Se ativo, usa X, Y para posicionar a lista de histórico"
+
+msgid ""
+"If checked, will display tabs with Right arrow (utf8,\\2192), newlines with "
+"pharagrph(\\204b), and spaces with square-u(\\2423)."
+msgstr ""
+"Se ativo, exibirá abas com a seta direita (utf8,\\2192), novas linhas com "
+"parágrafo(\\204b), e espaços com square-u(\\2423)."
+
+msgid "If checked, will emit the history entry via the keyboard entry."
+msgstr "Se ativo, emitirá a entrada do histórico via entrada de teclado."
+
+msgid ""
+"If checked, will ignore any clipboard additions that contain only whitespace."
+msgstr ""
+"Se ativo, ignorará qualquer adição à área de transferência que contiver "
+"somente espaço em branco."
+
+msgid ""
+"If checked, will keep both clipboards with the same content. If primary is "
+"pasted, then copy will have the same data."
+msgstr ""
+"Se ativo, manterá ambas áreas de transferência como o mesmo conteúdo. Se a "
+"primária for colada, então a cópia terá os mesmos dados."
+
+msgid "If checked, will replace newlines with spaces."
+msgstr "Se ativo, substituirá novas linhas por espaços."
+
+msgid "If checked, will restore clipboard entry on application exit."
+msgstr ""
+"Se ativo, recuperará a entrada da área de transferência na saída da aplicação."
+
+msgid "If checked, will trim whitespace from beginning and end of entry."
+msgstr "Se ativo, eliminará espaços em branco no início e fim da entrada."
+
+msgid "If checked, will use Ctrl-V paste."
+msgstr "Se ativo, usará Ctrl-v para colar."
+
+msgid "If checked, will use middle mouse to paste."
+msgstr "Se ativo, usará botão do meio do mouse para colar."
+
+msgid "If checked, will use xdotool to paste wherever the mouse is."
+msgstr "Se ativo, usará xdotool para colar onde o mouse estiver."
+
+msgid "Ignore Whitespace Only"
+msgstr "Ignora somente espaços em branco"
+
+msgid "Items"
+msgstr ""
+
+msgid "Items in history"
+msgstr "Itens no histórico"
+
+msgid "it under the terms of the GNU General Public License as published by"
+msgstr ""
+
+msgid "Key"
+msgstr "Tecla"
+
+msgid "Keyboard Input"
+msgstr "Entrada de teclado"
+
+msgid "Lightweight GTK+ clipboard manager."
+msgstr "Gerenciador de Área de Transferência em GTK+ leve."
+
+msgid "Max Data Size(MB)"
+msgstr "Tamanho máximo de dados (MB)"
+
+msgid "Maximum data size of entire history list"
+msgstr "Tamanho máximo de dados da lista inteira de histórico"
+
+msgid "Maximun number of cliboard entries to keep"
+msgstr "Número máximo de entradas na área de transferência para manter"
+
+msgid "Menu key combination"
+msgstr "Combinação de teclas do Menu"
+
+msgid "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the"
+msgstr ""
+
+msgid "Middle"
+msgstr "Centro"
+
+msgid "Miscellaneous"
+msgstr "Vários"
+
+msgid "Mouse"
+msgstr ""
+
+msgid "Multiuser"
+msgstr "Multiusuário"
+
+msgid "Omit items in the:"
+msgstr "Omitir itens no:"
+
+msgid "Omitting"
+msgstr "Omitindo"
+
+msgid "Paste All Entry Delimiter"
+msgstr "Delimitador de entrada de colagem total"
+
+msgid "Persistent As Separate List"
+msgstr "Persistente como lista separada"
+
+msgid "Persistent History"
+msgstr "Histórico persistente"
+
+msgid "Persistent history key:"
+msgstr "Tecla de histórico persistente:"
+
+msgid "Persistent On Top"
+msgstr "Persistente no topo"
+
+msgid "Position history"
+msgstr "Posição do no histórico"
+
+msgid "Position in pixels from the top of the screen"
+msgstr "Posição em pixels a partir do topo da tela"
+
+msgid "Preferences"
+msgstr "Preferências"
+
 msgid "Print clipboard contents"
 msgstr "Imprimir conteúdo da área de transferência"
 
-#: ../src/utils.c:105
 msgid "Print primary contents"
 msgstr "Imprimir conteúdo primário"
 
-#: ../src/utils.c:117
-msgid ""
-"Clipboard CLI usage examples:\n"
-"\n"
-"  echo \"copied to clipboard\" | parcellite\n"
-"  parcellite \"copied to clipboard\"\n"
-"  echo \"copied to clipboard\" | parcellite -c"
-msgstr ""
-"Exemplo de uso da Área de Transferência no terminal:\n"
-"\n"
-"  echo \"copiado para a área de transferência\" | parcellite\n"
-"  parcellite \"copiado para a área de transferência\"\n"
-"  echo \"copiado para a área de transferência\" | parcellite -c"
+msgid "Remove"
+msgstr "Remover"
 
-#: ../src/utils.c:123
+msgid "Restore Empty"
+msgstr "Recuperar vazio"
+
+msgid "Run as daemon"
+msgstr "Executar como daemon"
+
+msgid "Save history"
+msgstr "Salvar histórico"
+
 msgid ""
-"Written by Gilberto \"Xyhthyx\" Miralla.\n"
-"Report bugs to <xyhthyx@gmail.com>."
+"Save History as a text file. Prepends xHIST_0000 to each entry. x is either "
+"P(persistent) or N (normal)"
+msgstr ""
+"Salvar histórico como um arquivo de texto. Precede xHIST_0000 em cada "
+"entrada. x pode "
+"ser P (persistente ou N (normal)"
+
+msgid "Save history to a file."
+msgstr "Salvar histórico em um arquivo."
+
+msgid "Search As You Type"
+msgstr "Buscar ao digitar"
+
+msgid "Show in a single line"
+msgstr "Exibir em uma única linha"
+
+msgid "Show in reverse order"
+msgstr "Exibir em ordem reversa"
+
+msgid "Character length of items"
+msgstr "Quantidade de caracteres dos itens"
+
+msgid "S_ynchronize clipboards"
+msgstr "S_incronizar áreas de transferência"
+
+msgid "the Free Software Foundation; either version 3 of the License, or"
+msgstr ""
+
+msgid "This is the Action Name. DO NOT put commands here."
+msgstr "Isto é o Nome de Ação, NÃO coloque comandos aqui."
+
+msgid "This program is distributed in the hope that it will be useful,"
+msgstr ""
+
+msgid "This program is free software; you can redistribute it and/or modify"
+msgstr ""
+
+msgid ""
+"This string will be inserted between each line of history for paste all."
+msgstr ""
+"Esta expressão será inserida entre cada linha do histórico para colagem total."
+
+msgid "Trim Newlines"
+msgstr "_Eliminar novas linhas"
+
+msgid "Trim Whitespace"
+msgstr "_Eliminar espaço em branco"
+
+msgid "Use Alt-E to edit, Alt-C to clear"
+msgstr "Alt-E para editar, Alt-C para limpar"
+
+msgid "Use _Copy (Ctrl-C)"
+msgstr "Usar _Cópia (Ctrl-C)"
+
+msgid "Use _Primary (Selection)"
+msgstr "Usar Seleção _Primária"
+
+msgid "Written by Gilberto \"Xyhthyx\" Miralla and Doug Springer."
 msgstr ""
 "Escrito por Gilberto \"Xyhthyx\" Miralla.\n"
 "Reportar bugs para <xyhthyx@gmail.com>."
 
-#. Create the dialog
-#: ../src/preferences.c:375
-msgid "Preferences"
-msgstr "Preferências"
+msgid "X"
+msgstr ""
 
-#: ../src/preferences.c:390
-msgid "Behavior"
-msgstr "Comportamento"
+msgid "Y"
+msgstr ""
 
-#: ../src/preferences.c:398
-msgid "<b>Clipboards</b>"
-msgstr "<b>Áreas de Transferência</b>"
+msgid "You should have received a copy of the GNU General Public License"
+msgstr ""
 
-#: ../src/preferences.c:405
-msgid "Use _Copy (Ctrl-C)"
-msgstr "Usar _Cópia (Ctrl-C)"
+#~ msgid ""
+#~ "Clipboard CLI usage examples:\n"
+#~ "\n"
+#~ "  echo \"copied to clipboard\" | parcellite\n"
+#~ "  parcellite \"copied to clipboard\"\n"
+#~ "  echo \"copied to clipboard\" | parcellite -c"
+#~ msgstr ""
+#~ "Exemplo de uso da Área de Transferência no terminal:\n"
+#~ "\n"
+#~ "  echo \"copiado para a área de transferência\" | parcellite\n"
+#~ "  parcellite \"copiado para a área de transferência\"\n"
+#~ "  echo \"copiado para a área de transferência\" | parcellite -c"
 
-#: ../src/preferences.c:407
-msgid "Use _Primary (Selection)"
-msgstr "Usar Seleção _Primária"
+#~ msgid "Save and restore history between sessions"
+#~ msgstr "Salvar e restaurar histórico entre as sessões"
 
-#: ../src/preferences.c:409
-msgid "S_ynchronize clipboards"
-msgstr "S_incronizar áreas de transferência"
+#~ msgid ""
+#~ "Set the location where history appears. If unchecked, appears where the "
+#~ "mouse is."
+#~ msgstr ""
+#~ "Configurar posição onde o histórico aparece. Se desativado, aparece onde "
+#~ "o mouse está."
 
-#: ../src/preferences.c:417
-msgid "<b>History</b>"
-msgstr "<b>Histórico</b>"
+#~ msgid ""
+#~ "Set Maximum amount of data to copy for each entry in MBytes. 0 is no "
+#~ "limit."
+#~ msgstr ""
+#~ "Configurar quantidade máxima de dados para cada entrada em MBytes. 0 é "
+#~ "sem limite."
 
-#: ../src/preferences.c:424
-msgid "_Save history"
-msgstr "_Salvar histórico"
+#~ msgid "<b>Items</b>"
+#~ msgstr "<b>Itens</b>"
 
-#: ../src/preferences.c:425
-msgid "Save and restore history between sessions"
-msgstr "Salvar e restaurar histórico entre as sessões"
+#~ msgid "<b>Hotkeys</b>"
+#~ msgstr "<b>Atalhos</b>"
 
-#: ../src/preferences.c:429
-msgid "Items in history:"
-msgstr "Itens no histórico:"
+#~ msgid "Parcellite"
+#~ msgstr "Parcellite"
 
-#: ../src/preferences.c:442
-msgid "<b>Miscellaneous</b>"
-msgstr "<b>Vários</b>"
-
-#: ../src/preferences.c:449
-msgid "Capture _hyperlinks only"
-msgstr "Capturar somente _hyperlinks"
-
-#: ../src/preferences.c:451
-msgid "C_onfirm before clearing history"
-msgstr "C_onfirmar antes de limpar o histórico"
-
-#: ../src/preferences.c:458
-msgid "Display"
-msgstr "Exibir"
-
-#: ../src/preferences.c:466
-msgid "<b>Items</b>"
-msgstr "<b>Itens</b>"
-
-#: ../src/preferences.c:473
-msgid "Show in a _single line"
-msgstr "Exibir em uma _única linha"
-
-#: ../src/preferences.c:475
-msgid "Show in _reverse order"
-msgstr "Exibir em ordem _reversa"
-
-#: ../src/preferences.c:479
-msgid "Character length of items:"
-msgstr "Quantidade de caracteres dos itens:"
-
-#: ../src/preferences.c:492
-msgid "<b>Omitting</b>"
-msgstr "<b>Omitindo</b>"
-
-#: ../src/preferences.c:501
-msgid "Omit items in the:"
-msgstr "Omitir itens no:"
-
-#: ../src/preferences.c:505
-msgid "Beginning"
-msgstr "Início"
-
-#: ../src/preferences.c:506
-msgid "Middle"
-msgstr "Centro"
-
-#: ../src/preferences.c:507
-msgid "End"
-msgstr "Fim"
-
-#: ../src/preferences.c:514
-msgid "Actions"
-msgstr "Ações"
-
-#. Build the actions label
-#: ../src/preferences.c:519
-msgid "Control-click Parcellite's tray icon to use actions"
-msgstr "Control-clique no ícone da bandeja do Parcellite para usar ações"
-
-#: ../src/preferences.c:539
-msgid "Action"
-msgstr "Ação"
-
-#: ../src/preferences.c:546
-msgid "Command"
-msgstr "Comando"
-
-#: ../src/preferences.c:561
-msgid "Add..."
-msgstr "Adicionar..."
-
-#: ../src/preferences.c:565
-msgid "Remove"
-msgstr "Remover"
-
-#: ../src/preferences.c:582
-msgid "Hotkeys"
-msgstr "Atalhos"
-
-#: ../src/preferences.c:590
-msgid "<b>Hotkeys</b>"
-msgstr "<b>Atalhos</b>"
-
-#: ../src/preferences.c:599
-msgid "History key combination:"
-msgstr "Combinação de teclas do Histórico:"
-
-#: ../src/preferences.c:607
-msgid "Actions key combination:"
-msgstr "Combinação de teclas de Ações:"
-
-#: ../src/preferences.c:615
-msgid "Menu key combination:"
-msgstr "Combinação de teclas do Menu:"
-
-#: ../data/parcellite.desktop.in.h:2 ../data/parcellite-startup.desktop.in.h:2
-msgid "Parcellite"
-msgstr "Parcellite"
+#~ msgid "Could not create thread for executed action\n"
+#~ msgstr "Impossível criar processo para a ação executada\n"
