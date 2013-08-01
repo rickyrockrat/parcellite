@@ -50,6 +50,15 @@ ask_version () {
   CODIR="$ASVN/test.$tag"
   debdir="parcellite_$tag"
 }
+# Ask username for sourceforge
+ask_user () {
+  echo "$FUNCNAME"
+  if [ -n "$user" ]; then
+    return
+  fi
+  echo "username?"
+  read user
+}
 # Copy the trunk to tag
 svn_cp_to_tag () {
   echo "$FUNCNAME"
@@ -65,8 +74,7 @@ svn_cp_to_tag () {
   fi
   echo "Description for tag?"
   read desc
-  echo "username?"
-  read user
+  ask_user
   echo "Contacting $PURL for svn cp"
   svn cp --username "$user" -m"$desc" $BURL/trunk $turl
   check_err "svn copy"
@@ -276,8 +284,12 @@ setup_ppa (){
  echo "Build with libappindicator? (y/n)"
  read AI
  echo "What series does this apply to? (i.e. raring/quantal/precise/oneiric/lucid/hardy,etc)"
- echo " For multiple series, put spaces between series"
+ echo " For multiple series, put spaces between series (enter just uses all)"
  read MSERIES
+ if [ -z "$MSERIES" ]; then
+   echo "Selecting all.."
+   MSERIES="raring quantal precise oneiric lucid"
+ fi
  echo "What ppa number should we use? (1 for the first, etc.)"
  read PPANO
  let i=0
@@ -362,3 +374,59 @@ check_translations () {
     exit 1
   fi
 }
+
+#
+copy_files_to_sourceforge () {
+ ask_version 
+ for f in "amd64 amd64-appind i386 i386-appind"; do
+   flist="$flist parcellite_${tag}-1_$f.deb"
+ done
+ let i=0
+ for f in $flist; do
+   if [ -e $CODIR/$f ]; then
+     echo "Found $f"
+     let i=i+1
+   else
+     echo "$CODIR/$f does not exist"
+   fi
+ done
+ if [ $i -lt 4 ]; then
+   echo "File list is not complete. Continue anyway?"
+   read YN
+   if [ "$YN" != "y" ]; then
+     echo "User aborted."
+     exit 1
+   fi
+ fi
+ ask_user
+# Send the command to create a shell
+ echo "When you get to command line, type exit"
+ ssh -t $user,parcellite@shell.sourceforge.net create
+ TO_DIR="/home/frs/project/parcellite/parcellite"
+ NDIR="$TO_DIR/parcellite-$tag"
+ echo "Creating directory $NDIR"
+ ssh $user@shell.sourceforge.net mkdir $NDIR
+ for f in $flist; do
+   tlist="$tlist $CODIR/$f"
+ done
+ echo "Copy files $tlist"
+ echo "To $NDIR"
+ scp $tlist $user@shell.sourceforge.net:$NDIR
+}
+
+remote_i386 () {
+  ask_version
+  echo "Build deb files on remote machine?"
+  read YN
+  if [ "$YN" != "y" ]; then
+    echo "User aborted remote build"
+    exit 1
+  fi
+  echo "user@machine for ssh?"
+  read userat
+  echo "Building on remote"
+  ssh $userat "cd /src/parcellite; svn co https://parcellite.svn.sourceforge.net/svnroot/parcellite/tags/$tag $tag-i386; cd $tag-i386; ./rel.deb"
+  echo "Copying deb files from remote"
+  scp ${userat}:/src/parcellite/test.$tag/*.deb $CODIR
+}
+
