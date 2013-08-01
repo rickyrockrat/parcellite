@@ -162,10 +162,7 @@ struct cmdline_opts *parse_options(int argc, char* argv[])
   GOptionContext* context = g_option_context_new(NULL);
   /* Set summary */
   g_option_context_set_summary(context,
-                             _("Clipboard CLI usage examples:\n\n"
-                               "  echo \"copied to clipboard\" | parcellite\n"
-                               "  parcellite \"copied to clipboard\"\n"
-                               "  echo \"copied to clipboard\" | parcellite -c"));
+                             _("Clipboard CLI usage examples:\n\n  echo \"copied to clipboard\" | parcellite\n  parcellite \"copied to clipboard\"\n  echo \"copied to clipboard\" | parcellite -c"));
   /* Set description */
   g_option_context_set_description(context,
                                  _("Written by Gilberto \"Xyhthyx\" Miralla and Doug Springer.\nReport bugs to <gpib@rickyrockrat.net>."));
