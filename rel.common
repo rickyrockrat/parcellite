@@ -149,7 +149,7 @@ build_deb () {
   cd "$CODIR/tar_test/$tdir"
   check_err "cd tar_test" 
   if [ -n "$1" ]; then
-    _COPT=$(-c $1)
+    _COPT="-c $1"
   fi
   ./build-debpkg.sh -p ../../$tdir.tar.gz  $_COPT
   check_err "build deb"
