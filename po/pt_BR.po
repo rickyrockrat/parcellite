@@ -32,14 +32,8 @@ msgstr "Combinação de teclas de Ações:"
 msgid "Add..."
 msgstr "Adicionar..."
 
-msgid "along with this program.  If not, see <http://www.gnu.org/licenses/>.;"
-msgstr ""
-
 msgid "Alternate Non-printing Display"
 msgstr "Exibição sem impressão alternativa"
-
-msgid "(at your option) any later version."
-msgstr ""
 
 msgid "Auto Paste"
 msgstr "Auto Colar"
@@ -53,9 +47,6 @@ msgstr "Comportamento"
 msgid "<b>None</b>"
 msgstr "<b>Nenhum</b>"
 
-msgid "but WITHOUT ANY WARRANTY; without even the implied warranty of"
-msgstr ""
-
 msgid "Capture hyperlinks only"
 msgstr "Capturar somente _hyperlinks"
 
@@ -68,8 +59,8 @@ msgstr "_Limpar"
 msgid "Clear the history?"
 msgstr "Limpar o histórico?"
 
-msgid "Clipboard CLI usage examples:"
-msgstr "Exemplos de uso de área de transferência em CLI:"
+msgid "Clipboard CLI usage examples:\n\n  echo \"copied to clipboard\" | parcellite\n  parcellite \"copied to clipboard\"\n  echo \"copied to clipboard\" | parcellite -c"
+msgstr "Exemplo de uso da Área de Transferência no terminal:\n\n  echo \"copiado para a área de transferência\" | parcellite\n  parcellite \"copiado para a área de transferência\"\n  echo \"copiado para a área de transferência\" | parcellite -c"
 
 msgid "Clipboard Manager"
 msgstr "Gerenciador de Área de Transferência"
@@ -87,12 +78,12 @@ msgid "Control-click Parcellite's tray icon to use actions"
 msgstr "Control-clique no ícone da bandeja do Parcellite para usar ações"
 
 msgid ""
-"Copyright (C) 2007, 2008 Gilberto \"Xyhthyx\" MirallaCopyright (C) 2010-2013 "
+"Copyright (C) 2007, 2008 Gilberto \"Xyhthyx\" Miralla\nCopyright (C) 2010-2013 "
 "Doug Springer"
 msgstr ""
 
-msgid "Couldn't create directory: %s"
-msgstr "Impossível criar diretório: %s"
+msgid "Couldn't create directory: %s\n"
+msgstr "Impossível criar diretório: %s\n"
 
 msgid "Current entry on top"
 msgstr "Entrada atual no topo"
@@ -108,12 +99,6 @@ msgstr "Exibir info de versão"
 
 msgid "Do not use status icon (Ctrl-Alt-P for menu)"
 msgstr "Não usar ícone de status (Ctrl-Alt-P para o menu)"
-
-msgid "Dummy desc"
-msgstr ""
-
-msgid "Dummy tip"
-msgstr ""
 
 msgid "_Edit actions"
 msgstr "_Editar ações"
@@ -136,9 +121,6 @@ msgstr "Executando ação..."
 msgid ""
 "Gilberto \"Xyhthyx\" Miralla <xyhthyx@gmail.com>Doug Springer "
 "<gpib@rickyrockrat.net>"
-msgstr ""
-
-msgid "GNU General Public License for more details."
 msgstr ""
 
 msgid "History"
@@ -265,9 +247,6 @@ msgstr ""
 msgid "Items in history"
 msgstr "Itens no histórico"
 
-msgid "it under the terms of the GNU General Public License as published by"
-msgstr ""
-
 msgid "Key"
 msgstr "Tecla"
 
@@ -288,9 +267,6 @@ msgstr "Número máximo de entradas na área de transferência para manter"
 
 msgid "Menu key combination"
 msgstr "Combinação de teclas do Menu"
-
-msgid "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the"
-msgstr ""
 
 msgid "Middle"
 msgstr "Centro"
@@ -378,17 +354,9 @@ msgstr "Quantidade de caracteres dos itens"
 msgid "S_ynchronize clipboards"
 msgstr "S_incronizar áreas de transferência"
 
-msgid "the Free Software Foundation; either version 3 of the License, or"
-msgstr ""
 
-msgid "This is the Action Name. DO NOT put commands here."
-msgstr "Isto é o Nome de Ação, NÃO coloque comandos aqui."
-
-msgid "This program is distributed in the hope that it will be useful,"
-msgstr ""
-
-msgid "This program is free software; you can redistribute it and/or modify"
-msgstr ""
+msgid "This is the Action Name. \nDO NOT put commands here."
+msgstr "Isto é o Nome de Ação, \nNÃO coloque comandos aqui."
 
 msgid ""
 "This string will be inserted between each line of history for paste all."
@@ -410,10 +378,9 @@ msgstr "Usar _Cópia (Ctrl-C)"
 msgid "Use _Primary (Selection)"
 msgstr "Usar Seleção _Primária"
 
-msgid "Written by Gilberto \"Xyhthyx\" Miralla and Doug Springer."
+msgid "Written by Gilberto \"Xyhthyx\" Miralla and Doug Springer.\nReport bugs to <gpib@rickyrockrat.net>."
 msgstr ""
-"Escrito por Gilberto \"Xyhthyx\" Miralla.\n"
-"Reportar bugs para <xyhthyx@gmail.com>."
+"Escrito por Gilberto \"Xyhthyx\" Miralla e Doug Springer.\nReportar bugs para <gpib@rickyrockrat.net>."
 
 msgid "X"
 msgstr ""
@@ -421,8 +388,7 @@ msgstr ""
 msgid "Y"
 msgstr ""
 
-msgid "You should have received a copy of the GNU General Public License"
-msgstr ""
+
 
 #~ msgid ""
 #~ "Clipboard CLI usage examples:\n"

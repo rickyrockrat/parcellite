@@ -8,6 +8,7 @@ V1.1.6 Thursday, August 1 2013
    To restore the history, Quit Parcellite, then cd to $HOME/.local/share/parcellite
    mv hist.test history
  +Added script to generate parcellite.pot & check in file, and gets run before each release from rel.sh.
+ +Updated Brazilian Portuguese translation.
  
 V1.1.5 Wednesday, July 17 2013
  +Added ppa script.
