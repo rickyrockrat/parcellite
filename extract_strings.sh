@@ -33,15 +33,15 @@ echo "\"Content-Type: text/plain; charset=CHARSET\n\"" >> $PO
 echo "\"Content-Transfer-Encoding: 8bit\n\"" >> $PO
 echo "">>$PO
 # extraction from preferences.c
-sed 's!\.desc!\n.desc!;s!\.tip!\n\.tip!' src/preferences.c|grep '"' |grep "\.desc\|\.tip\|label\|dialog\|combo\|tooltip" |sed 's!.*"\(.*\)".*!\1!;s!<.*>\(.*\)<.*!\1!;s!^ *!!'|grep -v ">" > $PO.tmp
+sed 's!\.desc!\n.desc!;s!\.tip!\n\.tip!' src/preferences.c|grep '"' |grep "\.desc\|\.tip\|label\|dialog\|combo\|tooltip" |sed 's!.*"\(.*\)".*!\1!;s!^ *!!'|grep -v ">" > $PO.tmp
 
 for f in main utils; do
   grep "_(" src/$f.c|sed 's!.*_("\(.*\)".*!\1!' >> $PO.tmp
 done
 #grab license
-grep -A 10 license src/main.c|grep '  "'|sed 's! *!!;s!"!!g'>> $PO.tmp
-
-cat $PO.tmp|sed 's!\\n!!g'|sort|uniq|sed 's!^!msgid "!;s!$!"\nmsgstr ""\n!'>>$PO
+grep -A 10 license src/main.c|grep '  "'|sed 's! *!!;s!"!!g'|tr -d '\n' >> $PO.tmp
+# Leave markups s!<.>!!;s!<..>!!;
+cat $PO.tmp|sort|uniq|sed 's!^!msgid "!;s!$!"\nmsgstr ""\n!'>>$PO
 rm $PO.tmp
 
 echo "Output in $PO"
