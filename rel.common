@@ -38,13 +38,18 @@ check_local () {
   fi
 }
 # Ask user what version
+# just set vars if it was passed in.
 ask_version () {
   echo "$FUNCNAME"
   if [ -n "$tag" ]; then
     return
   fi
-  echo "Tag to operate on (copy to or build deb from)?"
-  read tag
+  if [ -z "$1" ]; then
+    echo "Tag to operate on (copy to or build deb from)?"
+    read tag
+  else
+    tag="$1"
+  fi
   turl="$BURL/tags/$tag"
   tdir="parcellite-$tag"
   CODIR="$ASVN/test.$tag"
@@ -157,7 +162,7 @@ build_deb () {
   cd "$CODIR/tar_test/$tdir"
   check_err "cd tar_test" 
   if [ -n "$1" ]; then
-    _COPT=$(-c $1)
+    _COPT="-c $1"
   fi
   ./build-debpkg.sh -p ../../$tdir.tar.gz  $_COPT
   check_err "build deb"
@@ -195,7 +200,26 @@ select_gpg_keys () {
  GNAME=$(echo "$G_FULL"|sed 's!\(.*\) <.*!\1!')
  GEMAIL=$(echo "$G_FULL"|sed 's!.* \(.*\)!\1!'|tr -d '<>')
 } 
-
+#Figure out last revision...
+# tag like 1.1.6
+last_revision () {
+	_first=$(echo "$1"|sed 's!\(.\).*!\1!')
+	_second=$(echo "$1"|sed 's!..\(.\).*!\1!')
+  _third=$(echo "$1"|sed 's!.*\.!!')
+  if [ $_third -eq 0 ]; then
+    if [ $_second -eq 0 ]; then
+      let _first=_first-1
+      let _second=9
+    else
+      let _second=_second-1
+    fi
+    let _third=9
+  else
+    let _third=_third-1
+  fi
+  last_rev="$_first.$_second.$_third"
+  echo "$1 -1 = $last_rev"
+}
 # setup the directories, build, and send to launchpad
 finish_ppa () {
 #set up the directory
@@ -215,9 +239,10 @@ finish_ppa () {
  check_err "tar for ppa"
  cp "$debdir"/deb/* t/debian
 #build changelog
+ last_revision "$tag"
  echo "parcellite (${tag}-1ppa${PPANO}) $SERIES; urgency=low" > t/debian/changelog
  cat "$debdir"/ChangeLog |while read line; do 
-  if [ $(echo "$line"|grep -c V1.0.2rc5) -gt 0 ]; 
+  if [ $(echo "$line"|grep -c V$last_rev) -gt 0 ]; 
     then break 
   else 
     echo "$line"| sed 's!^.*+!  - !;s!^V!  * V!'|grep -v Changes>> t/debian/changelog
@@ -378,8 +403,8 @@ check_translations () {
 #
 copy_files_to_sourceforge () {
  ask_version 
- for f in "amd64 amd64-appind i386 i386-appind"; do
-   flist="$flist parcellite_${tag}-1_$f.deb"
+ for f in amd64 amd64-appind i386 i386-appind; do
+   flist="$flist parcellite_${tag}-1_${f}.deb"
  done
  let i=0
  for f in $flist; do
@@ -398,6 +423,7 @@ copy_files_to_sourceforge () {
      exit 1
    fi
  fi
+ echo -n "Username for sourceforge: "
  ask_user
 # Send the command to create a shell
  echo "When you get to command line, type exit"
@@ -409,6 +435,8 @@ copy_files_to_sourceforge () {
  for f in $flist; do
    tlist="$tlist $CODIR/$f"
  done
+ cp $CDIR/ChangeLog $CODIR/README.txt
+ tlist="$tlist  $CODIR/README.txt"
  echo "Copy files $tlist"
  echo "To $NDIR"
  scp $tlist $user@shell.sourceforge.net:$NDIR
@@ -422,10 +450,10 @@ remote_i386 () {
     echo "User aborted remote build"
     exit 1
   fi
-  echo "user@machine for ssh?"
+  echo "user@machine for ssh?(note remote machine needs correct gpg key & /src/parcellite directory)."
   read userat
-  ssh $userat "cd /src/parcellite; svn co http://svn.code.sf.net/p/parcellite/code/tags/$tag $tag-i386; cd $tag-i386; ./rel.deb.sh"
+  ssh -t $userat "cd /src/parcellite; svn co http://svn.code.sf.net/p/parcellite/code/tags/$tag $tag-i386; cd $tag-i386;./rel.deb.sh $tag"
   echo "Copying deb files from remote"
-  scp ${userat}:/src/parcellite/test.$tag/*.deb $CODIR
+  scp ${userat}:/src/parcellite/test.$tag/*.deb $CDIR/Changelog $CODIR
 }
 

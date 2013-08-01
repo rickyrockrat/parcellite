@@ -21,6 +21,6 @@ set_abs_path
 cd "$CDIR"
 set_svn_local
 check_local 1
-ask_version
-rel_deb
+ask_version "$1"
+rel_deb 
 

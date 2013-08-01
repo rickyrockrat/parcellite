@@ -79,4 +79,5 @@ update_pot
 #CODIR="$ASVN/test.$tag"
 rel_deb
 remote_i386
+copy_files_to_sourceforge
 
