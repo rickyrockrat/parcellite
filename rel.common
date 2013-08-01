@@ -424,7 +424,7 @@ remote_i386 () {
   fi
   echo "user@machine for ssh?"
   read userat
-  ssh $userat "cd /src/parcellite; svn co http://svn.code.sf.net/p/parcellite/code/tags/$tag $tag-i386; cd $tag-i386; ./rel.deb"
+  ssh $userat "cd /src/parcellite; svn co http://svn.code.sf.net/p/parcellite/code/tags/$tag $tag-i386; cd $tag-i386; ./rel.deb.sh"
   echo "Copying deb files from remote"
   scp ${userat}:/src/parcellite/test.$tag/*.deb $CODIR
 }
