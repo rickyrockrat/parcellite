@@ -168,8 +168,7 @@ struct cmdline_opts *parse_options(int argc, char* argv[])
                                "  echo \"copied to clipboard\" | parcellite -c"));
   /* Set description */
   g_option_context_set_description(context,
-                                 _("Written by Gilberto \"Xyhthyx\" Miralla and Doug Springer.\n"
-                                   "Report bugs to <gpib@rickyrockrat.net>."));
+                                 _("Written by Gilberto \"Xyhthyx\" Miralla and Doug Springer.\nReport bugs to <gpib@rickyrockrat.net>."));
   /* Add entries and parse options */
   g_option_context_add_main_entries(context, main_entries, NULL);
   g_option_context_parse(context, &argc, &argv, NULL);
