@@ -1002,7 +1002,7 @@ void show_preferences(gint tab)
   gtk_container_add((GtkContainer*)page_actions, vbox_actions);
   
   /* Build the actions label */
-  label = gtk_label_new(_("Control-click Parcellite\'s tray icon to use actions"));
+  label = gtk_label_new(_("Control-click Parcellite's tray icon to use actions"));
   gtk_label_set_line_wrap((GtkLabel*)label, TRUE);
   gtk_misc_set_alignment((GtkMisc*)label, 0.0, 0.50);
   gtk_box_pack_start((GtkBox*)vbox_actions, label, FALSE, FALSE, 0);
