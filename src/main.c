@@ -975,7 +975,7 @@ static void show_about_dialog(GtkMenuItem *menu_item, gpointer user_data)
                                              "Kim Jensen <reklamepost@energimail.dk>\n"
                                              "Eckhard M. Jäger <bart@neeneenee.de>\n"
                                              "Michael Stempin <mstempin@web.de>\n"
-                                             "Benjamin 'sphax3d' Danon <sphax3d@gmail.com>\n"
+                                             "Benjamin Danon benjamin@sphax3d.org\n" 
                                              "Németh Tamás <ntomasz@vipmail.hu>\n"
                                              "Davide Truffa <davide@catoblepa.org>\n"
                                              "Jiro Kawada <jiro.kawada@gmail.com>\n"
