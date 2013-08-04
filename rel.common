@@ -239,7 +239,7 @@ finish_ppa () {
  check_err "tar for ppa"
  cp "$debdir"/deb/* t/debian
 #build changelog
- last_revision "$tag"
+ last_revision "$ntag"
  echo "parcellite (${tag}-1ppa${PPANO}) $SERIES; urgency=low" > t/debian/changelog
  cat "$debdir"/ChangeLog |while read line; do 
   if [ $(echo "$line"|grep -c V$last_rev) -gt 0 ]; 
