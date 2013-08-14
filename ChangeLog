@@ -1,5 +1,8 @@
 V1.1.7 Thursday, August 1 2013
  +Added remote i386 build and upload to sourceforge.
+ +Fixed bug 100, pot doesn't contain <b> entries
+ +Updated French translation.
+ +Fixed duplicte empty string which causes errors in translations.
 
 V1.1.6 Thursday, August 1 2013
  +Fixed Bug #99, Broken CLI functionality. Now looks at XDG_SESSION_COOKIE, XDG_SEAT, and DISPLAY, introduced by multi-user fix.
@@ -26,7 +29,7 @@ V1.1.5 Wednesday, July 17 2013
  +Fixed Bug 85, Garbage in clipboard when app is closed.
  +Fixed Bug 86, Parcellite not putting history text in clipboard.
  +Fixed Bug 87,Error converting selection from UTF8_STRING fills X log.
- +Improved documentation for Actions.
+ +Improved docudmentation for Actions.
  +Fix bug 88, Parcellite does not work with appindicator in Raring.
  +Fix bug 92, Ctrl-Shift/Right-Click followed by Clear produces SegFault/Double Free.
  +Added Keyboard Input feature.
