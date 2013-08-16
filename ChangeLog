@@ -3,6 +3,7 @@ V1.1.7 Thursday, August 1 2013
  +Fixed bug 100, pot doesn't contain <b> entries
  +Updated French translation.
  +Fixed duplicate empty string which causes errors in translations.
+ +Attempted fix x for bug 81.
 
 V1.1.6 Thursday, August 1 2013
  +Fixed Bug #99, Broken CLI functionality. Now looks at XDG_SESSION_COOKIE, XDG_SEAT, and DISPLAY, introduced by multi-user fix.

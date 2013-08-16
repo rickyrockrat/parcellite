@@ -249,7 +249,7 @@ gchar *get_username_pid( pid_t pid )
 		return NULL;
 	}
 	/*g_printf("%ld uid='%s'\n",pid,p->pw_name); */
-	return p->pw_name;
+	return g_strdup(p->pw_name);
 }
 /***************************************************************************/
 /** Gets a value give the key name from the pid envronment with null-terminated
@@ -360,11 +360,10 @@ int is_current_user (pid_t pid, int mode)
 		rtn=0;
 	}	/*else g_printf("UQ not set\n"); */
 done:
-	/**  
 	if(NULL != user)
 		g_free(user);
 	if(NULL != username)
-		g_free(username); */
+		g_free(username); 
 	return rtn;
 }
 
