@@ -604,7 +604,7 @@ static void *execute_action(void *command)
   gtk_status_icon_set_tooltip((GtkStatusIcon*)status_icon, _("Executing action..."));
   }
   if(system((gchar*)command))
-  	g_print("sytem command '%s' failed\n",(gchar *)command);
+  	g_fprintf(stderr,"sytem command '%s' failed\n",(gchar *)command);
   if (!have_appindicator &&show_icon) {
 	gtk_status_icon_set_from_icon_name((GtkStatusIcon*)status_icon, PARCELLITE_ICON);
   gtk_status_icon_set_tooltip((GtkStatusIcon*)status_icon, _("Clipboard Manager"));
@@ -677,6 +677,7 @@ static void edit_selected(GtkMenuItem *menu_item, gpointer user_data)
 	struct history_info *h=(struct history_info*)user_data;
 	GList* element=NULL;
 	struct history_item *c=NULL;
+	/*g_fprintf(stderr,"edit_selected call\n"); */
   /* This helps prevent multiple instances */
   if (!gtk_grab_get_current())  {
 	  gchar* current_clipboard_text;
@@ -705,7 +706,7 @@ static void edit_selected(GtkMenuItem *menu_item, gpointer user_data)
 			TRACE(g_print("Got '%s'\n",current_clipboard_text));
       gtk_text_buffer_set_text(clipboard_buffer, current_clipboard_text, -1);
     }	 else	 {
-			g_printf("NULL text to edit. Nothing to do.\n");
+			g_fprintf(stderr,"NULL text to edit. Nothing to do.\n");
 			return;
 		}
     	
@@ -1319,11 +1320,13 @@ static gboolean key_release_cb (GtkWidget *w,GdkEventKey *e, gpointer user)
 			TRACE(g_print("Alt-E\n"));
 			gtk_grab_remove(w);
 		  edit_selected((GtkMenuItem *)h, (gpointer)h);
+			return TRUE;
 		}
 			
 		else if(e->keyval == 'c'){
 			TRACE(g_print("Alt-C\n"));
 			clear_selected(NULL, (gpointer)h); 
+			return TRUE;
 		}	else{
 			TRACE(g_print("Ignoring Alt-%c (0x%02x) state 0x%x",e->keyval,e->keyval,e->state));
 		}
@@ -1464,7 +1467,7 @@ void set_clipboard_text(struct history_info *h, GList *element)
 			goto done;
 	/**from clipit 1.4.1 */
   cmd = g_strconcat("/bin/sh -c 'xdotool ", action, NULL);
-	g_printf("xdotool:'%s'\ntext:'%s'\n",cmd,txt);
+	g_fprintf(stderr,"xdotool:'%s'\ntext:'%s'\n",cmd,txt);
   GPid pid;
   gchar **argv;
   g_shell_parse_argv(cmd, NULL, &argv, NULL);
@@ -1748,7 +1751,7 @@ static gboolean show_history_menu(gpointer data)
       if ((clipboard_temp) && (p_strcmp(hist_text, clipboard_temp) == 0))
       {
         gchar* bold_text = g_markup_printf_escaped("<b>%s</b>", string->str);
-			  if( NULL == bold_text) g_printf("NulBMKUp:'%s'\n",string->str);
+			  if( NULL == bold_text) g_fprintf(stderr,"NulBMKUp:'%s'\n",string->str);
         gtk_label_set_markup((GtkLabel*)item_label, bold_text);
         g_free(bold_text);
         h.clip_item=menu_item;
@@ -1757,7 +1760,7 @@ static gboolean show_history_menu(gpointer data)
       else if ((primary_temp) && (p_strcmp(hist_text, primary_temp) == 0))
       {
         gchar* italic_text = g_markup_printf_escaped("<i>%s</i>", string->str);
-			  if( NULL == italic_text) g_printf("NulIMKUp:'%s'\n",string->str);
+			  if( NULL == italic_text) g_fprintf(stderr,"NulIMKUp:'%s'\n",string->str);
         gtk_label_set_markup((GtkLabel*)item_label, italic_text);
         g_free(italic_text);
         h.clip_item=menu_item;
@@ -1827,7 +1830,7 @@ next_loop:
     menu_item = gtk_image_menu_item_new_with_mnemonic(_("_Edit Clipboard"));
     menu_image = gtk_image_new_from_stock(GTK_STOCK_EDIT, GTK_ICON_SIZE_MENU);
     gtk_image_menu_item_set_image((GtkImageMenuItem*)menu_item, menu_image);
-		g_signal_connect((GObject*)menu_item, "activate", (GCallback)edit_selected, (gpointer)&h);
+		g_signal_connect((GObject*)menu_item, "activate", (GCallback)edit_selected, (gpointer)&h); 
     gtk_menu_shell_append((GtkMenuShell*)menu, menu_item);
 		menu_item = gtk_image_menu_item_new_with_mnemonic(_("_Clear"));
 		/* Clear */
@@ -1972,7 +1975,7 @@ static void status_icon_clicked(GtkStatusIcon *status_icon, gpointer user_data)
   /* Control click */
   if (state == GDK_MOD2_MASK+GDK_CONTROL_MASK || state == GDK_CONTROL_MASK)
   {
-		g_printf("Got Ctrl-click\n");
+		g_fprintf(stderr,"Got Ctrl-click\n");
     if (actions_lock == FALSE)
     {
       g_timeout_add(POPUP_DELAY, show_actions_menu, NULL);
@@ -2024,7 +2027,7 @@ static void parcellite_init()
   clipboard = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);
   
 	if(FALSE ==g_thread_supported()){
-		g_printf("g_thread not init!\n");
+		g_fprintf(stderr,"g_thread not init!\n");
 	}
 	clip_lock= g_mutex_new();
 	hist_lock= g_mutex_new();
@@ -2155,7 +2158,7 @@ int main(int argc, char *argv[])
 	/**init fifo should set up the fifo and the callback (if we are daemon mode)  */
 		if(opts->primary)	{
 			if(NULL == (fifo=init_fifo(FIFO_MODE_PRI|mode))) return 1;
-			if(fifo->dbg) g_printf("Hit PRI opt!\n");
+			if(fifo->dbg) g_fprintf(stderr,"Hit PRI opt!\n");
 			
 			if(PROG_MODE_CLIENT & mode){
 				if(NULL != opts->leftovers){
