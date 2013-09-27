@@ -112,6 +112,7 @@ struct pref_item myprefs[]={
 	{.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_HIST,.name="auto_mouse",.type=PREF_TYPE_TOGGLE|PREF_TYPE_SINGLE_LINE,.desc="Mouse",.tip="If checked, will use middle mouse to paste.",.val=1},
 	{.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_HIST,.name="key_input",.type=PREF_TYPE_TOGGLE,.desc="Keyboard Input",.tip="If checked, will emit the history entry via the keyboard entry.",.val=0},
 	{.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_HIST,.name="restore_empty",.type=PREF_TYPE_TOGGLE,.desc="Restore Empty",.tip="If checked, will restore clipboard entry on application exit.",.val=1},
+	{.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_HIST,.name="rc_edit",.type=PREF_TYPE_TOGGLE,.desc="Right Click Edit",.tip="If checked, edit the history item clicked on.",.val=0},
   
   /**Miscellaneous  */  
 	{.adj=NULL,.cval=NULL,.sig=NULL,.sfunc=NULL,.sec=PREF_SEC_MISC,.name=NULL,.type=PREF_TYPE_FRAME,.desc="<b>Miscellaneous</b>",.tip=NULL,.val=0},
