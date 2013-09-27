@@ -5,6 +5,10 @@ V1.1.7 Thursday, August 1 2013
  +Fixed duplicate empty string which causes errors in translations.
  +Final fix for bug 81.
  +Fix Duplicate Edit box when editing keyboard history entries (reported in bug 103 as sidenote).
+ +Added Right-click edit option, to directly edit any history item, without it being current selection.
+ +Fixed bug 102, low resolution icon.
+ +Fixed history containing 0 length items.
+ +Added ability to right-click edit each menu item (rather than Alt-E).
 
 V1.1.6 Thursday, August 1 2013
  +Fixed Bug #99, Broken CLI functionality. Now looks at XDG_SESSION_COOKIE, XDG_SEAT, and DISPLAY, introduced by multi-user fix.

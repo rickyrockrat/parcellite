@@ -95,8 +95,9 @@ void read_history_old ()
 			}else{
 				c->text[size] = 0;
 				c->len=validate_utf8_text(c->text,c->len);
-	      /* Prepend item and read next size */
-	      history_list = g_list_prepend(history_list, c);
+				if(0 != c->len) /* Prepend item and read next size */
+	      	history_list = g_list_prepend(history_list, c);
+				else g_free(c);
 			}
     }
     /* Close file and reverse the history to normal */
@@ -181,11 +182,11 @@ void read_history ()
     /* Read the magic*/
     guint32 size=1, end;
 		if (fread(magic,HISTORY_MAGIC_SIZE , 1, history_file) != 1){
-			g_printf("No magic! Assume no history.\n");
+			g_fprintf(stderr,"No magic! Assume no history.\n");
 			goto done;
 		}
     if(HISTORY_VERSION !=check_magic(magic)){
-			g_printf("Assuming old history style. Read and convert.\n");
+			g_fprintf(stderr,"Assuming old history style. Read and convert.\n");
 			/*g_printf("TODO! History version not matching!!Discarding history.\n"); */
 			g_free(magic);
 			fclose(history_file);
@@ -205,19 +206,20 @@ void read_history ()
 			end=size-(sizeof(struct history_item)+4);
       
       if (fread(c, sizeof(struct history_item), 1, history_file) !=1)
-      	g_printf("history_read: Invalid type!");
+      	g_fprintf(stderr,"history_read: Invalid type!");
 			if(c->len != end)
-				g_printf("len check: invalid: ex %d got %d\n",end,c->len);
+				g_fprintf(stderr,"len check: invalid: ex %d got %d\n",end,c->len);
 			/* Read item and add ending character */
 			if (fread(&c->text,end,1,history_file) != 1){
 				c->text[end] = 0;
-				g_printf("history_read: Invalid text!\n'%s'\n",c->text);
+				g_fprintf(stderr,"history_read: Invalid text!\n'%s'\n",c->text);
 			}	else {
 				c->text[end] = 0;
 				c->len=validate_utf8_text(c->text,c->len);
-				if(dbg) g_printf("len %d type %d '%s'\n",c->len,c->type,c->text); 
-	      /* Prepend item and read next size */
-	      history_list = g_list_prepend(history_list, c);	
+				if(dbg) g_fprintf(stderr,"len %d type %d '%s'\n",c->len,c->type,c->text); 
+				if(0 != c->len) /* Prepend item and read next size */
+	      	history_list = g_list_prepend(history_list, c);
+				else g_free(c);
 			}
       
     }
@@ -281,10 +283,13 @@ void save_history()
 			c=(struct history_item *)element->data;
 			/**write total len  */
 			/**write total len  */
-			len=c->len+sizeof(struct history_item)+4;
-			fwrite(&len,4,1,history_file);
-			fwrite(c,sizeof(struct history_item),1,history_file);
-			fwrite(c->text,c->len,1,history_file);
+			if(c->len >0){
+				len=c->len+sizeof(struct history_item)+4;
+				fwrite(&len,4,1,history_file);
+				fwrite(c,sizeof(struct history_item),1,history_file);
+				fwrite(c->text,c->len,1,history_file);	
+			}
+			
     }
     /* Write 0 to indicate end of file */
     gint end = 0;
