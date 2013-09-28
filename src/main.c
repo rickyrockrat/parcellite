@@ -724,7 +724,7 @@ static void edit_selected(GtkMenuItem *menu_item, gpointer user_data)
                                                     GTK_STOCK_OK,           GTK_RESPONSE_ACCEPT, NULL);
     
     gtk_window_set_default_size((GtkWindow*)dialog, 450, 300);
-    gtk_window_set_icon((GtkWindow*)dialog, gtk_widget_render_icon(dialog, GTK_STOCK_EDIT, GTK_ICON_SIZE_MENU, NULL));
+    gtk_window_set_icon((GtkWindow*)dialog, gtk_widget_render_icon(dialog, GTK_STOCK_EDIT, -1, NULL));
     
     /* Build the scrolled window with the text view */
     GtkWidget* scrolled_window = gtk_scrolled_window_new((GtkAdjustment*) gtk_adjustment_new(0, 0, 0, 0, 0, 0),
