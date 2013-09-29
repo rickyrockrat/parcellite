@@ -684,7 +684,7 @@ static void edit_selected(GtkMenuItem *menu_item, gpointer user_data)
 	/*g_fprintf(stderr,"edit_selected call\n");  */
   /* This helps prevent multiple instances */
   if (!gtk_grab_get_current() ||h->wi.tmp1&EDIT_MODE_RC_EDIT_SET)  {
-	  gchar* current_clipboard_text;
+	  gchar* current_clipboard_text=NULL;
 		/*g_fprintf(stderr,"current..."); */
     /* Create clipboard buffer and set its text */
     GtkTextBuffer* clipboard_buffer = gtk_text_buffer_new(NULL);
@@ -744,15 +744,22 @@ static void edit_selected(GtkMenuItem *menu_item, gpointer user_data)
 		
     if (gtk_dialog_run((GtkDialog*)dialog) == GTK_RESPONSE_ACCEPT) {
 			GtkTextIter start, end;
+			guint32 slen;
       gtk_text_buffer_get_start_iter(clipboard_buffer, &start);
       gtk_text_buffer_get_end_iter(clipboard_buffer, &end);
       gchar* new_clipboard_text = gtk_text_buffer_get_text(clipboard_buffer, &start, &end, TRUE);
-			
+			slen=strlen(new_clipboard_text);
 			if(h->wi.tmp1&EDIT_MODE_USE_RIGHT_CLICK){/**save changes to the history h.wi.index has the element */
-				struct history_item *n=new_clip_item(c->type, strlen(new_clipboard_text), new_clipboard_text);
-				n->flags=c->flags;
-				g_free(element->data);
-				element->data=n;
+				if(slen>0){
+					struct history_item *n=new_clip_item(c->type,slen, new_clipboard_text);
+					n->flags=c->flags;
+				  g_free(element->data);
+					element->data=n;	
+				}else { /**just delete history entry  */
+					g_free(element->data);
+		      history_list = g_list_delete_link(history_list, element);
+				}
+				
 			}	else{ /* Save changes done to the clipboard */
 				update_clipboard(clipboard, new_clipboard_text, H_MODE_NEW);
 			}
