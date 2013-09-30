@@ -706,8 +706,7 @@ static void edit_selected(GtkMenuItem *menu_item, gpointer user_data)
 		}
 		
     
-    if (current_clipboard_text != NULL)
-    {
+    if (current_clipboard_text != NULL)   {
 		/*g_fprintf(stderr,"Got '%s'\n",current_clipboard_text); */
 			TRACE(g_fprintf(stderr,"Got '%s'\n",current_clipboard_text));
       gtk_text_buffer_set_text(clipboard_buffer, current_clipboard_text, -1);
@@ -745,6 +744,7 @@ static void edit_selected(GtkMenuItem *menu_item, gpointer user_data)
     if (gtk_dialog_run((GtkDialog*)dialog) == GTK_RESPONSE_ACCEPT) {
 			GtkTextIter start, end;
 			guint32 slen;
+			gchar *ntext=NULL;
       gtk_text_buffer_get_start_iter(clipboard_buffer, &start);
       gtk_text_buffer_get_end_iter(clipboard_buffer, &end);
       gchar* new_clipboard_text = gtk_text_buffer_get_text(clipboard_buffer, &start, &end, TRUE);
@@ -754,10 +754,24 @@ static void edit_selected(GtkMenuItem *menu_item, gpointer user_data)
 					struct history_item *n=new_clip_item(c->type,slen, new_clipboard_text);
 					n->flags=c->flags;
 				  g_free(element->data);
-					element->data=n;	
-				}else { /**just delete history entry  */
+					element->data=n;
+					/**FIXME: Need to filter this through existing & valid text  */
+					/**Does this cause crash since we are in the middle of a history window? 
+					Need to kill history menu too? 
+					What about setting up an indicator that on next tic, if history is not active, we update?
+					*/
+					/*update_clipboard(clipboard, n->text, H_MODE_NEW); 															*/
+				}else { /**just delete history entry, and set next in order to clipboard  */
 					g_free(element->data);
+					if(element == history_list && NULL != element->next ){ /**set clipboard(s) to next entry  */
+						c=(struct history_item *)(element->next->data);	
+						if(NULL != c)
+							ntext=c->text;
+					}
+						
 		      history_list = g_list_delete_link(history_list, element);
+					if(NULL != ntext)/**set clipboards to next entry FIXME: Need logic here as to which clip(s) to update.  */
+		      	update_clipboards(ntext, H_MODE_LIST);
 				}
 				
 			}	else{ /* Save changes done to the clipboard */
