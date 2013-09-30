@@ -82,7 +82,7 @@ g_signal_connect(clipboard, "owner-change",  G_CALLBACK(handle_owner_change), NU
 
 GtkWidget *hmenu;
 /* Uncomment the next line to print a debug trace. */
-/*#define DEBUG    */
+/*#define DEBUG     */
 
 #ifdef DEBUG
 #  define TRACE(x) x
@@ -345,15 +345,15 @@ gchar *update_clipboard(GtkClipboard *clip,gchar *intext,  gint mode)
 	}	
 	/*g_printf("BS=0x%02X ",button_state); */
 	if( H_MODE_IGNORE == mode){	/**ignore processing and just put it on the clip.  */
-		DTRACE(g_printf("%sJustSet '%s'\n",clip==clipboard?"CLI":"PRI",intext)); 
+		DTRACE(g_fprintf(stderr,"%sJustSet '%s'\n",clip==clipboard?"CLI":"PRI",intext)); 
 		_update_clipboard(clip,intext,NULL,1);
 		/*gtk_clipboard_set_text(clip, intext, -1); */
 		return intext;
 	}
 	if(H_MODE_LIST == mode && 0 != p_strcmp(intext,*existing)){ /**just set clipboard contents. Already in list  */
-		DTRACE(g_printf("%sInList '%s' ex '%s'\n",clip==clipboard?"CLI":"PRI",intext,*existing)); 
+		DTRACE(g_fprintf(stderr,"%sInList '%s' ex '%s'\n",clip==clipboard?"CLI":"PRI",intext,*existing)); 
 		last=_update_clipboard(clip,intext,existing,1);
-		if(NULL != last){/**maintain persistence, if set  */
+		if( NULL != last){/**maintain persistence, if set  */
 			append_item(last,get_pref_int32("current_on_top")?HIST_DEL|HIST_CHECKDUP|HIST_KEEP_FLAGS:0);
 		}
 		goto done;
@@ -366,15 +366,15 @@ gchar *update_clipboard(GtkClipboard *clip,gchar *intext,  gint mode)
 	}
 	
 	if(NULL != *existing && NULL == changed && 1 == get_pref_int32("restore_empty")) {
-		DTRACE(g_printf("%sclp empty, ",clip==clipboard?"CLI":"PRI"));
+		DTRACE(g_fprintf(stderr,"%sclp empty, ",clip==clipboard?"CLI":"PRI"));
 		/* Only recover lost contents if there isn't any other type of content in the clipboard */
 		if (!content_exists(clip)) {
-			DTRACE(g_printf("set to '%s'\n",*existing));  
+			DTRACE(g_fprintf(stderr,"set to '%s'\n",*existing));  
 			_update_clipboard(clip, *existing,NULL,1);
     	/*gtk_clipboard_set_text(clip, *existing, -1); */
 			last=*existing;
 		}	else
-			DTRACE(g_printf("Left Null\n"));  
+			DTRACE(g_fprintf(stderr,"Left Null\n"));  
 		return *existing;
   }
 	if(NULL == changed)
@@ -385,12 +385,12 @@ gchar *update_clipboard(GtkClipboard *clip,gchar *intext,  gint mode)
 		g_free(changed);                    /**no change, do nothing  */
 		changed=NULL;
 	}	else {
-		DTRACE(g_printf("%sclp changed: ex '%s' is '%s' - ",clip==clipboard?"CLI":"PRI",*existing,changed)); 
+		DTRACE(g_fprintf(stderr,"%sclp changed: ex '%s' is '%s' - ",clip==clipboard?"CLI":"PRI",*existing,changed)); 
 		if(NULL != (processed=process_new_item(clip,changed)) ){ 
 			/**only check processed/changed. No need to update this clip, since the text is already there.  */
 			 if(0 == p_strcmp(processed,changed)) set=0;
 			else set=1; 
-			DTRACE(g_printf("set=%d. p='%s'\n",set,processed));
+			DTRACE(g_fprintf(stderr,"set=%d. p='%s'\n",set,processed));
 			/*set=1; */ /** Always set the text.*/
 			last=_update_clipboard(clip,processed,existing,set);
 		}else {/**restore clipboard - new item is binary/garbage/empty */
@@ -403,7 +403,7 @@ gchar *update_clipboard(GtkClipboard *clip,gchar *intext,  gint mode)
 			}else 
 				d=*existing;
 			if(NULL != d){
-				DTRACE(g_printf("\n%srestore clp '%s', ex='%s'\n",clip==clipboard?"CLI":"PRI",d,*existing)); 
+				DTRACE(g_fprintf(stderr,"\n%srestore clp '%s', ex='%s'\n",clip==clipboard?"CLI":"PRI",d,*existing)); 
 				last=_update_clipboard(clip,d,existing,1);
 			}
 				
@@ -688,19 +688,28 @@ static void edit_selected(GtkMenuItem *menu_item, gpointer user_data)
 		/*g_fprintf(stderr,"current..."); */
     /* Create clipboard buffer and set its text */
     GtkTextBuffer* clipboard_buffer = gtk_text_buffer_new(NULL);
-		if(h->wi.tmp1&EDIT_MODE_USE_RIGHT_CLICK){/**use index as pointer to text  */
+		if(h->wi.index != -1){/**use index as pointer to text  */
 			element = g_list_nth(history_list, h->wi.index);
-			if(NULL !=element){
-				c=(struct history_item *)(element->data);
-				current_clipboard_text=p_strdup(c->text);
-				/*g_printf("%s ",c->text); */
+			if(NULL == element){
+				g_fprintf(stderr,"edit_selected: element is NULL\n");
+				return;
 			}
+			c=(struct history_item *)(element->data);
+			if(NULL == c){
+				g_fprintf(stderr,"edit_selected: element->data is NULL\n");
+				return;
+			}
+			current_clipboard_text=p_strdup(c->text);
+			/*g_fprintf(stderr,"%s ",c->text);  */
+			
 		}	else{
 			h->wi.tmp1=0;
-			if( NULL != h->element_text){
+			if( NULL != h->element_text){/**this case should never happen  */
+				g_fprintf(stderr,"Oops. shouldn't be here\n");
 				current_clipboard_text=p_strdup(h->element_text);
 				
 			}else{
+				g_fprintf(stderr,"Oops. Shouldn't be here either\n");
 				current_clipboard_text = gtk_clipboard_wait_for_text(clipboard);
 			}	
 		}
@@ -749,34 +758,32 @@ static void edit_selected(GtkMenuItem *menu_item, gpointer user_data)
       gtk_text_buffer_get_end_iter(clipboard_buffer, &end);
       gchar* new_clipboard_text = gtk_text_buffer_get_text(clipboard_buffer, &start, &end, TRUE);
 			slen=strlen(new_clipboard_text);
-			if(h->wi.tmp1&EDIT_MODE_USE_RIGHT_CLICK){/**save changes to the history h.wi.index has the element */
-				if(slen>0){
-					struct history_item *n=new_clip_item(c->type,slen, new_clipboard_text);
-					n->flags=c->flags;
-				  g_free(element->data);
-					element->data=n;
-					/**FIXME: Need to filter this through existing & valid text  */
-					/**Does this cause crash since we are in the middle of a history window? 
-					Need to kill history menu too? 
-					What about setting up an indicator that on next tic, if history is not active, we update?
-					*/
-					/*update_clipboard(clipboard, n->text, H_MODE_NEW); 															*/
-				}else { /**just delete history entry, and set next in order to clipboard  */
-					g_free(element->data);
-					if(element == history_list && NULL != element->next ){ /**set clipboard(s) to next entry  */
-						c=(struct history_item *)(element->next->data);	
-						if(NULL != c)
-							ntext=c->text;
-					}
-						
-		      history_list = g_list_delete_link(history_list, element);
-					if(NULL != ntext)/**set clipboards to next entry FIXME: Need logic here as to which clip(s) to update.  */
-		      	update_clipboards(ntext, H_MODE_LIST);
+			if(0 == slen){ /**just delete history entry, and set next in order to clipboard  */
+				/*g_fprintf(stderr,"Freeing %p\n",element->data); */
+				g_free(element->data);
+				if(element == history_list && NULL != element->next ){ /**set clipboard(s) to next entry  */
+					c=(struct history_item *)(element->next->data);	
+					if(NULL != c)
+						ntext=c->text;
 				}
-				
-			}	else{ /* Save changes done to the clipboard */
-				update_clipboard(clipboard, new_clipboard_text, H_MODE_NEW);
+					
+	      history_list = g_list_delete_link(history_list, element);
+				if(NULL != ntext)/**set clipboards to next entry FIXME: Need logic here as to which clip(s) to update.  */
+	      	update_clipboards(ntext, H_MODE_LIST);
+			}else {/**Text is not blank  */
+				/**save changes to the history - deallocate current entry, and add new entry */
+				struct history_item *n=new_clip_item(c->type,slen, new_clipboard_text);
+				n->flags=c->flags;
+			  g_free(element->data);
+				element->data=n;
+				/**FIXME: Need to filter this through existing & valid text  */
+				/**Does this cause crash since we are in the middle of a history window? 
+				Need to kill history menu too? 
+				What about setting up an indicator that on next tic, if history is not active, we update?
+				*/
+			 update_clipboards(n->text, H_MODE_NEW);
 			}
+			
 			if(NULL != new_clipboard_text)
 				g_free(new_clipboard_text);	
     }
@@ -1259,7 +1266,7 @@ void postition_history(GtkMenu *menu,gint *x,gint *y,gboolean *push_in, gpointer
 				yy=1;
 			if(NULL !=x) *x=xx;
 			if(NULL !=y) *y=yy;	
-			TRACE(g_print("x=%d, y=%d\n",xx,yy));
+			TRACE(g_fprintf(stderr,"x=%d, y=%d\n",xx,yy));
 		}
 		
 	}
@@ -1346,7 +1353,7 @@ static gboolean key_release_cb (GtkWidget *w,GdkEventKey *e, gpointer user)
 	/** if(user)
 	if(e->state & (GDK_SHIFT_MASK|GDK_LOCK_MASK) != e->state){
 		g_print("rfs to use mods\n");
-		TRACE(g_print("state is %X. Refusing to use mods\n",e->state));
+		TRACE(g_fprintf(stderr,"state is %X. Refusing to use mods\n",e->state));
 		return TRUE;
 	} have to use for _ and others*/
 	/**ignore Ctrl-Alt  */
@@ -1354,18 +1361,18 @@ static gboolean key_release_cb (GtkWidget *w,GdkEventKey *e, gpointer user)
 		return FALSE;
 	if( e->state & GDK_MOD1_MASK){/**alt key pressed  */
 		if(e->keyval == 'e'){
-			TRACE(g_print("Alt-E\n"));
+			TRACE(g_fprintf(stderr,"Alt-E\n"));
 			gtk_grab_remove(w);
 		  edit_selected((GtkMenuItem *)h, (gpointer)h);
 			return TRUE;
 		}
 			
 		else if(e->keyval == 'c'){
-			TRACE(g_print("Alt-C\n"));
+			TRACE(g_fprintf(stderr,"Alt-C\n"));
 			clear_selected(NULL, (gpointer)h); 
 			return TRUE;
 		}	else{
-			TRACE(g_print("Ignoring Alt-%c (0x%02x) state 0x%x",e->keyval,e->keyval,e->state));
+			TRACE(g_fprintf(stderr,"Ignoring Alt-%c (0x%02x) state 0x%x",e->keyval,e->keyval,e->state));
 		}
 		return FALSE;
 	}	/**end alt key pressed  */
@@ -1388,15 +1395,15 @@ static gboolean key_release_cb (GtkWidget *w,GdkEventKey *e, gpointer user)
 		return TRUE;
 	}	/**end backspace  */
 	if( e->keyval == 0xffe1 || e->keyval == 0xffe2){
-		printf("Ignoring key '%c' 0x%02x\n",e->keyval,e->keyval);
-		TRACE(g_print("Ignoring key '%c' 0x%02x\n",e->keyval,e->keyval));	
+		/*fprintf(stderr,"Ignoring key '%c' 0x%02x\n",e->keyval,e->keyval); */
+		TRACE(g_fprintf(stderr,"Ignoring key '%c' 0x%02x\n",e->keyval,e->keyval));	
 		return FALSE;
 	}
   if(e->keyval >= 0xff50 && e->keyval <= 0xff57) /**arrow keys, home,end,pgup,pgdwn  */
   	return FALSE;
   	
 	if(idx>=KBUF_SIZE){
-		TRACE(g_print("keys full\n"));
+		TRACE(g_fprintf(stderr,"keys full\n"));
 		return TRUE;
 	}
 	kstr[idx++]=e->keyval;
@@ -1426,7 +1433,7 @@ static gboolean key_release_cb (GtkWidget *w,GdkEventKey *e, gpointer user)
 						}
 						
 						if(!first ){
-							TRACE(g_print("Got cmp'%s'='%s'\n",kstr,l));
+							TRACE(g_fprintf(stderr,"Got cmp'%s'='%s'\n",kstr,l));
 							item=(GtkWidget *)children->data;
 							goto foundit;
 						}
@@ -1449,15 +1456,15 @@ foundit:
 	data should be a GtkMenuItem list, whose children are labels...
 	*/	 
 	/*str=(gchar *)gtk_label_get_text((GtkLabel *)gtk_bin_get_child((GtkBin*)children->data)); */
-	TRACE(g_print("Got '%c' 0x%02x, state 0x%02X",e->keyval,e->keyval,e->state));
+	TRACE(g_fprintf(stderr,"Got '%c' 0x%02x, state 0x%02X",e->keyval,e->keyval,e->state));
 	if(NULL !=item){
-		if(first){TRACE(g_print("First:"));}
-		/*if(last)TRACE(g_print("Last:")); */
-		TRACE(g_print("At Item '%s'",gtk_label_get_text((GtkLabel *)gtk_bin_get_child((GtkBin*)item))));
+		if(first){TRACE(g_fprintf(stderr,"First:"));}
+		/*if(last)TRACE(g_fprintf(stderr,"Last:")); */
+		TRACE(g_fprintf(stderr,"At Item '%s'",gtk_label_get_text((GtkLabel *)gtk_bin_get_child((GtkBin*)item))));
 		gtk_menu_shell_select_item((GtkMenuShell *)h->menu,(GtkWidget *)item);
 	}
 		
-	TRACE(g_print("\n"));
+	TRACE(g_fprintf(stderr,"\n"));
 	return TRUE;
 }	
 
@@ -1476,7 +1483,7 @@ void set_clipboard_text(struct history_info *h, GList *element)
 	if(NULL == find_h_item(h->delete_list,NULL,element)){	/**not in our delete list  */
 		/**make a copy of txt, because it gets freed and re-allocated.  */
 		txt=p_strdup(((struct history_item *)(element->data))->text);
-		DTRACE(("set_clip_text %s\n",txt));  
+		DTRACE(g_fprintf(stderr,"set_clip_text %s\n",txt));  
 		if(get_pref_int32("use_copy") )
 			update_clipboard(clipboard, txt, H_MODE_LIST);
 		if(get_pref_int32("use_primary"))
@@ -1669,6 +1676,7 @@ static gboolean show_history_menu(gpointer data)
 	h.histno=GPOINTER_TO_INT(data);/**persistent or normal history  */
 	h.change_flag=0;
 	h.element_text=NULL;
+	h.wi.index=-1;
   /**init our keystroke function  */
 	key_release_cb(NULL,NULL,NULL);
 	GList *element, *persistent=NULL;
@@ -1794,6 +1802,7 @@ static gboolean show_history_menu(gpointer data)
         g_free(bold_text);
         h.clip_item=menu_item;
 				h.element_text=hist_text;
+			  h.wi.index=element_number;
       }
       else if ((primary_temp) && (p_strcmp(hist_text, primary_temp) == 0))
       {
@@ -1803,6 +1812,7 @@ static gboolean show_history_menu(gpointer data)
         g_free(italic_text);
         h.clip_item=menu_item;
 			  h.element_text=hist_text;
+			  h.wi.index=element_number;
       }
 			if(persistent_history && c->flags &CLIP_TYPE_PERSISTENT){
 				persistent = g_list_prepend(persistent, menu_item);
