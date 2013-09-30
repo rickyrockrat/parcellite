@@ -338,8 +338,8 @@ gint is_duplicate(gchar* item, int mode, gint *flags)
 						*flags=c->flags;
 					}
 					/*g_printf("Freeing 0x%02X '%s'\n",c->flags,c->text);  */
-					g_free(element->data);
-		      history_list = g_list_delete_link(history_list, element);
+					/** g_free(element->data);
+		      history_list = g_list_delete_link(history_list, element);*/
 				}
 				return i;
 	      break;
@@ -356,10 +356,12 @@ gint is_duplicate(gchar* item, int mode, gint *flags)
 void append_item(gchar* item, int checkdup)
 {
 	gint flags=0,node=-1;
+	GList *element=NULL;
+	struct history_item *c=NULL;
 	if(NULL == item)
 		return;
 	g_mutex_lock(hist_lock);
-/**delete if HIST_DEL flag is set.  */	
+/**delete if HIST_DEL flag is set.  */
 	if( checkdup & HIST_CHECKDUP){
 		node=is_duplicate(item, checkdup & HIST_DEL, &flags);
 		/*g_printf("isd done "); */
@@ -369,18 +371,23 @@ void append_item(gchar* item, int checkdup)
 				return;	
 		}
 	}
-	
-	struct history_item *c;
-	if(NULL == (c=new_clip_item(CLIP_TYPE_TEXT,strlen(item),item)) )
-		return;
-	if(node > -1 && (checkdup & HIST_KEEP_FLAGS) ){
-		c->flags=flags;
-		/*g_printf("Restoring 0x%02X '%s'\n",c->flags,c->text);  */
+	if (-1 != node ){/**we found a duplicate in the history, remove, then re-add existing  */
+		element=g_list_nth(history_list,node);
+		history_list=g_list_remove_link(history_list,element);
+	}else{ /**not found   */
+		if(NULL == (c=new_clip_item(CLIP_TYPE_TEXT,strlen(item),item)) )
+			return;
+		if(node > -1 && (checkdup & HIST_KEEP_FLAGS) ){
+			c->flags=flags;
+			/*g_printf("Restoring 0x%02X '%s'\n",c->flags,c->text);  */
+		}		
 	}
+	
+
 		
 	/*g_printf("Append '%s'\n",item); */
    /* Prepend new item */
-  history_list = g_list_prepend(history_list, c);
+  history_list = g_list_prepend(history_list, NULL ==element?c:element->data);
   /* Shorten history if necessary */
   truncate_history();
 	g_mutex_unlock(hist_lock);
