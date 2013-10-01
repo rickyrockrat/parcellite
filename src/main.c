@@ -709,7 +709,7 @@ static void edit_selected(GtkMenuItem *menu_item, gpointer user_data)
 				current_clipboard_text=p_strdup(h->element_text);
 				
 			}else{
-				g_fprintf(stderr,"Oops. Shouldn't be here either\n");
+				g_fprintf(stderr,"List Empty. Grab clipboard.\n");
 				current_clipboard_text = gtk_clipboard_wait_for_text(clipboard);
 			}	
 		}
@@ -758,7 +758,12 @@ static void edit_selected(GtkMenuItem *menu_item, gpointer user_data)
       gtk_text_buffer_get_end_iter(clipboard_buffer, &end);
       gchar* new_clipboard_text = gtk_text_buffer_get_text(clipboard_buffer, &start, &end, TRUE);
 			slen=strlen(new_clipboard_text);
-			if(0 == slen){ /**just delete history entry, and set next in order to clipboard  */
+			if(0 == slen ){ /**just delete history entry, and set next in order to clipboard  */
+				if(NULL == element){/**just clear clipboard? or FIXME: is there a way to determine the element?  */
+					/*gtk_clipboard_set_text(clipboard,"",0); */
+					gtk_clipboard_clear(clipboard);
+					goto finish;
+				}
 				/*g_fprintf(stderr,"Freeing %p\n",element->data); */
 				g_free(element->data);
 				if(element == history_list && NULL != element->next ){ /**set clipboard(s) to next entry  */
@@ -771,19 +776,31 @@ static void edit_selected(GtkMenuItem *menu_item, gpointer user_data)
 				if(NULL != ntext)/**set clipboards to next entry FIXME: Need logic here as to which clip(s) to update.  */
 	      	update_clipboards(ntext, H_MODE_LIST);
 			}else {/**Text is not blank  */
-				/**save changes to the history - deallocate current entry, and add new entry */
-				struct history_item *n=new_clip_item(c->type,slen, new_clipboard_text);
-				n->flags=c->flags;
-			  g_free(element->data);
-				element->data=n;
-				/**FIXME: Need to filter this through existing & valid text  */
+				/*g_fprintf(stderr,"Try to add '%s'\n",new_clipboard_text); */
+				gint16 type;
+				if( NULL != c)
+					type=c->type;
+				else 
+					type=0;
+				/**save changes to the history - deallocate current entry, and add new entry \UffffffffÊ*/
+				/**FIXME: Need to filter this through existing & valid text? */
+				struct history_item *n=new_clip_item(type,slen, new_clipboard_text);
+				
+				if(NULL != c)
+					n->flags=c->flags;
+				if(NULL != element && NULL != element->data){
+					g_free(element->data);
+					history_list=g_list_delete_link(history_list, element);
+					history_list=g_list_prepend(history_list,c);
+				}else
+				
 				/**Does this cause crash since we are in the middle of a history window? 
 				Need to kill history menu too? 
 				What about setting up an indicator that on next tic, if history is not active, we update?
 				*/
-			 update_clipboards(n->text, H_MODE_NEW);
+			   update_clipboards(n->text, H_MODE_NEW);
 			}
-			
+finish:			
 			if(NULL != new_clipboard_text)
 				g_free(new_clipboard_text);	
     }
