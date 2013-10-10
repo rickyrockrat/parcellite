@@ -2087,6 +2087,7 @@ void menu_hotkey(char *keystring, gpointer user_data)
 /* Startup calls and initializations */
 static void parcellite_init()
 {
+	int i;
 /* Create clipboard */
   primary = gtk_clipboard_get(GDK_SELECTION_PRIMARY);
   clipboard = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);
@@ -2125,10 +2126,8 @@ static void parcellite_init()
   
   /* Bind global keys */
   keybinder_init();
-	keybinder_bind(get_pref_string("phistory_key"), phistory_hotkey, NULL);
-  keybinder_bind(get_pref_string("history_key"), history_hotkey, NULL);
-  keybinder_bind(get_pref_string("actions_key"), actions_hotkey, NULL);
-  keybinder_bind(get_pref_string("menu_key"), menu_hotkey, NULL);
+	for (i=0;NULL != keylist[i].name; ++i)
+		bind_itemkey(keylist[i].name,keylist[i].keyfunc);
   
   /* Create status icon */
   if (show_icon)

@@ -28,6 +28,12 @@ G_BEGIN_DECLS
 #define FIFO_FILE_DAT         "parcellite/fifo_data"
 #define PREFERENCES_FILE      "parcellite/parcelliterc"
 
+struct keys {
+	gchar *name;
+	gchar *keyval;
+	void *keyfunc;
+};
+extern struct keys keylist[];
 /*struct pref_item* get_pref(char *name); */
 int get_first_pref(int section);
 int init_pref( void );
@@ -37,7 +43,7 @@ gint32 set_pref_int32(char *name, gint32 val);
 gint32 get_pref_int32 (char *name);
 int set_pref_string (char *name, char *string);
 gchar *get_pref_string (char *name);
-
+void bind_itemkey(char *name, void (fhk)(char *, gpointer) );
 void read_preferences();
 
 void show_preferences(gint tab);

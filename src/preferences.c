@@ -91,6 +91,16 @@ static void check_toggled(GtkToggleButton *togglebutton, gpointer user_data);
 static void search_toggled(GtkToggleButton *b, gpointer user);
 static gint dbg=0;
 
+/**hot key list, mainly for easy sanity checks.  */
+struct keys keylist[]={
+	{.name="menu_key",.keyval=DEF_MENU_KEY,.keyfunc=(void *)menu_hotkey},
+	{.name="history_key",.keyval=DEF_HISTORY_KEY,.keyfunc=(void *)history_hotkey},
+	{.name="phistory_key",.keyval=DEF_PHISTORY_KEY,.keyfunc=(void *)phistory_hotkey},
+	{.name="actions_key",.keyval=DEF_ACTIONS_KEY,.keyfunc=(void *)actions_hotkey},
+	{.name=NULL,.keyval=NULL,.keyfunc=(void *)0},
+};
+/**must be in same order as above struct array  */
+gchar *def_keyvals[]={ DEF_MENU_KEY,DEF_HISTORY_KEY,DEF_PHISTORY_KEY,DEF_ACTIONS_KEY};
 struct pref_item myprefs[]={
 /**Behaviour  */	
 	/**Clipboards  */
@@ -148,10 +158,10 @@ struct pref_item myprefs[]={
 #endif
 	
 /**Action Keys  */
+	{.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_ACT,.name="menu_key",.type=PREF_TYPE_ENTRY,.desc="Menu key combination",.tip=NULL},	
   {.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_ACT,.name="history_key",.type=PREF_TYPE_ENTRY,.desc="History key combination:",.tip=NULL},
 	{.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_ACT,.name="phistory_key",.type=PREF_TYPE_ENTRY,.desc="Persistent history key:",.tip=NULL},
   {.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_ACT,.name="actions_key",.type=PREF_TYPE_ENTRY,.desc="Actions key combination:",.tip=NULL},
-  {.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_ACT,.name="menu_key",.type=PREF_TYPE_ENTRY,.desc="Menu key combination",.tip=NULL},	
 	{.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_NONE,.name="no_icon",.val=FALSE},
 	{.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_NONE,.name=NULL,.desc=NULL},
 };
@@ -333,9 +343,58 @@ void bind_itemkey(char *name, void (fhk)(char *, gpointer) )
 		if(dbg)g_printf("pref2:null found for %s\n",name);
 		return;
 	}
-	keybinder_bind(p->cval, fhk, NULL);
+	if(NULL != p->cval && 0 != p->cval)
+		keybinder_bind(p->cval, fhk, NULL);
 }
 
+
+/***************************************************************************/
+/** .
+\n\b Arguments:
+\n\b Returns:
+****************************************************************************/
+void set_key_entry(gchar *name, gchar *val)
+{
+	int i;
+	for (i=0;NULL != keylist[i].name; ++i){
+		if(!g_strcmp0(keylist[i].name,name)){
+			keylist[i].keyval=val;
+			return;
+		}
+	}
+}
+
+/***************************************************************************/
+/** .
+\n\b Arguments:
+\n\b Returns:
+****************************************************************************/
+void set_keys_from_prefs( void )
+{
+	int i,l;
+	gchar *cval;
+	for (i=0;NULL != keylist[i].name; ++i){
+		/**NOTE: do not set up default keys here! User may WANT them null */
+		set_key_entry(keylist[i].name,get_pref_string(keylist[i].name));
+		/*g_fprintf(stderr,"key '%s' val '%s'\n",keylist[i].name, keylist[i].keyval); */
+	}	
+	/**now go through and make sure we have no duplicates */
+	for (i=0;NULL != keylist[i].name; ++i){
+		if(0 !=  keylist[i].keyval[0]){
+			/**see if it exists elsewhere  */
+			for (l=0;NULL != keylist[l].name; ++l){
+				if(l!=i && 0 != keylist[l].keyval[0]){
+					if(!g_strcmp0(keylist[i].keyval, keylist[l].keyval)) { /**conflict!, delete second  */
+						g_fprintf(stderr,"Error! Action keys have same key: '%s' and '%s'. Ignoring second entry\n",keylist[i].name,keylist[l].name);
+						set_key_entry(keylist[l].name,"");
+						set_pref_string(keylist[l].name,"");
+					}
+				}	
+			}	
+		}
+	}	
+	
+}
 /***************************************************************************/
 /** .
 \n\b Arguments:
@@ -344,6 +403,7 @@ void bind_itemkey(char *name, void (fhk)(char *, gpointer) )
 void check_sanity(void)
 {
 	gint32 x,y;
+	gchar *val;
 	postition_history(NULL,&x,&y,NULL, (gpointer)1);
   if(get_pref_int32("history_x")>x) set_pref_int32("history_x",x);
   if(get_pref_int32("history_y")>y) set_pref_int32("history_y",y);
@@ -356,14 +416,9 @@ void check_sanity(void)
 	x=get_pref_int32("ellipsize");
   if ((!x) || (x > 3) || (x < 0))
      set_pref_int32("ellipsize",DEF_ELLIPSIZE);
-	if (NULL == get_pref_string("phistory_key"))
-    set_pref_string("phistory_key",DEF_PHISTORY_KEY);
-  if (NULL == get_pref_string("history_key"))
-    set_pref_string("history_key", DEF_HISTORY_KEY);
-  if (NULL == get_pref_string("actions_key"))
-    set_pref_string("actions_key",DEF_ACTIONS_KEY);
-  if (NULL == get_pref_string("menu_key"))
-    set_pref_string("menu_key",DEF_MENU_KEY);
+	set_keys_from_prefs();
+
+	
 	if(get_pref_int32("persistent_history")){
 	 	if(get_pref_int32("persistent_separate"))
 	 		set_pref_int32("persistent_on_top",0);
@@ -384,11 +439,9 @@ static void apply_preferences()
 {
 	int i;
   /* Unbind the keys before binding new ones */
-	unbind_itemkey("phistory_key",phistory_hotkey);
+	for (i=0;NULL != keylist[i].name; ++i)
+	  unbind_itemkey(keylist[i].name,keylist[i].keyfunc);
 	
-	unbind_itemkey("history_key", history_hotkey);
-  unbind_itemkey("actions_key", actions_hotkey);
-  unbind_itemkey("menu_key", menu_hotkey);
 	
   for (i=0;NULL != myprefs[i].desc; ++i){
 		if(NULL == myprefs[i].name)
@@ -414,10 +467,8 @@ static void apply_preferences()
 	}
   check_sanity();
   /* Bind keys and apply the new history limit */
-	bind_itemkey("phistory_key", phistory_hotkey);
-  bind_itemkey("history_key", history_hotkey);
-  bind_itemkey("actions_key", actions_hotkey);
-  bind_itemkey("menu_key", menu_hotkey);
+	for (i=0;NULL != keylist[i].name; ++i)
+	  bind_itemkey(keylist[i].name,keylist[i].keyfunc);	
   truncate_history();
 }
 
@@ -523,13 +574,11 @@ void read_preferences()
     /* Check for errors and set default values if any */
     check_sanity();
   }
-  else
-  {
-    /* Init default keys on error */
-    set_pref_string("phistory_key",DEF_PHISTORY_KEY);
-    set_pref_string("history_key",DEF_HISTORY_KEY);
-    set_pref_string("actions_key",DEF_ACTIONS_KEY);
-    set_pref_string("menu_key",DEF_MENU_KEY);
+  else  { /* Init default keys on error */
+	  int i;
+		
+		for (i=0;NULL != keylist[i].name; ++i)
+			set_pref_string(keylist[i].name,def_keyvals[i]);
   }
   g_key_file_free(rc_key);
   g_free(rc_file);
