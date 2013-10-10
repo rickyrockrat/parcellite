@@ -12,6 +12,7 @@ V1.1.7 Thursday, August 1 2013
  +Fix part 1 of bug 104, Right-click edit with 0 len text results in blank entries on clip.
  +Fix part 2 of bug 104, crashing with right-click edit blank entries.
  +Changed append_item so it is not de-allocating/reallocating memory, instead just repositions entry in list.
+ +Fixed two or more action keys having the same key.
 
 V1.1.6 Thursday, August 1 2013
  +Fixed Bug #99, Broken CLI functionality. Now looks at XDG_SESSION_COOKIE, XDG_SEAT, and DISPLAY, introduced by multi-user fix.
