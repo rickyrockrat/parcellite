@@ -1,4 +1,4 @@
-V1.1.7 Thursday, August 1 2013
+V1.1.7 Tuesday, October 15, 2013
  +Added remote i386 build and upload to sourceforge.
  +Fixed bug 100, pot doesn't contain <b> entries
  +Updated French translation.
