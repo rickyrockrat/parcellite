@@ -301,7 +301,7 @@ finish_ppa () {
 #do compat
  echo 5 > t/debian/compat
 #build rules
- build_rules "t/debian/rules"
+ build_rules "$AI" "t/debian/rules"
  
  cd t
  select_gpg_keys
