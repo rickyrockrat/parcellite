@@ -44,7 +44,7 @@ cd ..
 cp deb/copyright debian
 
 sed "s/ADD_ARCH_HERE/$ARCH/g" deb/control >debian/control
-cp deb/rules debian/rules
+cp ../rules debian/rules
 #if [ -n "$OPTS" ]; then
 #  echo "DEB_CONFIGURE_EXTRA_FLAGS += $OPTS" >> debian/rules
 #fi

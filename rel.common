@@ -198,7 +198,7 @@ build_deb () {
 		  AI="y"
 	  fi
   fi
-  build_rules "$AI" "$CODIR/tar_test/$tdir/deb/rules"
+  build_rules "$AI" "$CODIR/tar_test/rules"
   log "build_deb: got '$1', copt='$_COPT'"
   "$CDIR/build-debpkg.sh" -t "$tag" -p ../../$tdir.tar.gz  $_COPT
   check_err "build deb"
