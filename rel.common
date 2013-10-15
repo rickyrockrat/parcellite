@@ -170,16 +170,22 @@ build_rules () {
  echo "# Built by rel.common" "$2"
  echo "# Uncomment this to turn on verbose mode.">> "$2"
  echo "#export DH_VERBOSE=1">> "$2"
+ 
  if [ "$1" = "y" ]; then
-   echo "DEB_CONFIGURE_EXTRA_FLAGS += --enable-appindicator=yes">> "$2"
+   CFG_FLG="--enable-appindicator=yes"
  else
-   echo "DEB_CONFIGURE_EXTRA_FLAGS += --enable-appindicator=no">> "$2"
+   CFG_FLG="--enable-appindicator=no"
  fi
- echo "export DEB_CONFIGURE_EXTRA_FLAGS" >> "$2"
+# echo "DEB_CONFIGURE_EXTRA_FLAGS += $CFG_FLG">> "$2"
+# echo "export DEB_CONFIGURE_EXTRA_FLAGS" >> "$2"
  echo " ">> "$2"
  echo "%:">> "$2"
  echo -n -e '\t'>> "$2"
  echo 'dh $@ '>> "$2"
+ echo " ">> "$2"
+ echo "override_dh_auto_configure:" >> "$2"
+  echo -n -e '\t'>> "$2"
+ echo "dh_auto_configure -- $CFG_FLG" >> "$2"
 }
 # build the deb package files
 # the arg is configure options passed to the deb build, i.e.
