@@ -376,12 +376,32 @@ setup_ppa (){
 }
 # show the links for the user to copy.
 show_links () {
-echo "Source Forge Links"
-echo "The source can be <a href=\"http://sourceforge.net/projects/parcellite/files/parcellite/parcellite-$tag/parcellite-$tag.tar.gz/download\">downloaded here</a>."
-echo "<a href=\"http://sourceforge.net/projects/parcellite/files/parcellite/parcellite-$tag/parcellite_$tag-1_i386.deb/download\">i386</a>"
-echo "<a href=\"http://sourceforge.net/projects/parcellite/files/parcellite/parcellite-$tag/parcellite_$tag-1_amd64.deb/download\">amd64</a>."
-echo "<a href=\"http://sourceforge.net/projects/parcellite/files/parcellite/parcellite-$tag/parcellite_$tag-1_amd64-appind.deb/download\">amd64-appind</a>."
-echo "<a href=\"http://sourceforge.net/projects/parcellite/files/parcellite/parcellite-$tag/parcellite_$tag-1_i386-appind.deb/download\">i386-appind</a>."
+FN=$CODIR/sourcforge.txt
+
+echo "$tag is Released" > "$FN"
+echo " ">>"$FN"
+echo "Change Log:" >> "$FN"
+echo " " >> "$FN"
+X=$(grep -n -m1 '^$' "$CDIR/ChangeLog" | sed 's#:##')
+echo "$X"
+let X=X-1
+grep -m $X '.' "$CDIR/ChangeLog" |sed 's!<!\&lt\;!g;s!>!\&gt\;!g' >> "$FN"
+echo " " >> "$FN"
+echo "Source Forge Links" >> "$FN"
+echo "The files can be found here:" >> "$FN"
+echo "The source can be <a href=\"http://sourceforge.net/projects/parcellite/files/parcellite/parcellite-$tag/parcellite-$tag.tar.gz/download\">downloaded here</a>." >> "$FN"
+echo " " >> "$FN"
+echo "Non-Unity Debs" >> "$FN"
+echo "	" >> "$FN"
+echo "<a href=\"http://sourceforge.net/projects/parcellite/files/parcellite/parcellite-$tag/parcellite_$tag-1_i386.deb/download\">i386</a>" >> "$FN"
+echo "<a href=\"http://sourceforge.net/projects/parcellite/files/parcellite/parcellite-$tag/parcellite_$tag-1_amd64.deb/download\">amd64</a>." >> "$FN"
+echo " " >> "$FN"
+echo "Unity debs" >> "$FN"
+echo " " >> "$FN"
+echo "<a href=\"http://sourceforge.net/projects/parcellite/files/parcellite/parcellite-$tag/parcellite_$tag-1_amd64-appind.deb/download\">amd64-appind</a>." >> "$FN"
+echo "<a href=\"http://sourceforge.net/projects/parcellite/files/parcellite/parcellite-$tag/parcellite_$tag-1_i386-appind.deb/download\">i386-appind</a>." >> "$FN"
+cat "$FN"
+echo "File is $FN"
 
 }
 
