@@ -401,7 +401,6 @@ test_tarball
 build_deb "--enable-appindicator=no"
 echo "output in $CODIR"
 show_links
-exit 0
 }
 #update the .pot file for translators
 update_pot () {
