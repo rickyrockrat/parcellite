@@ -375,6 +375,7 @@ void set_keys_from_prefs( void )
 	gchar *cval;
 	for (i=0;NULL != keylist[i].name; ++i){
 		/**NOTE: do not set up default keys here! User may WANT them null */
+			/** call egg_accelerator_parse_virtual to validate? */
 		set_key_entry(keylist[i].name,get_pref_string(keylist[i].name));
 		/*g_fprintf(stderr,"key '%s' val '%s'\n",keylist[i].name, keylist[i].keyval); */
 	}	
@@ -385,7 +386,7 @@ void set_keys_from_prefs( void )
 			for (l=0;NULL != keylist[l].name; ++l){
 				if(l!=i && 0 != keylist[l].keyval[0]){
 					if(!g_strcmp0(keylist[i].keyval, keylist[l].keyval)) { /**conflict!, delete second  */
-						g_fprintf(stderr,"Error! Action keys have same key: '%s' and '%s'. Ignoring second entry\n",keylist[i].name,keylist[l].name);
+						g_fprintf(stderr,"Error! Hot keys have same key '%s': '%s' and '%s'. Ignoring second entry\n",keylist[i].keyval,keylist[i].name,keylist[l].name);
 						set_key_entry(keylist[l].name,"");
 						set_pref_string(keylist[l].name,"");
 					}
