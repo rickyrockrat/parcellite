@@ -21,7 +21,7 @@ BURL="$PURL/p/parcellite/code"
 # description
 check_err () {
   if [ $? -ne 0 ]; then
-		echo "$1 Failed. Abort"
+		log "$1 Failed. Abort"
 		exit 1
 	fi
 }
@@ -36,6 +36,11 @@ check_local () {
     fi
     exit 1
   fi
+}
+#
+log () {
+echo "$1" |tee -a "$LOGF"
+#echo "$1" >> "$LOGF"
 }
 # Ask user what version
 # just set vars if it was passed in.
@@ -53,15 +58,16 @@ ask_version () {
   turl="$BURL/tags/$tag"
   tdir="parcellite-$tag"
   CODIR="$ASVN/test.$tag"
+  LOGF="$CODIR/build.log"
   debdir="parcellite_$tag"
 }
 # Ask username for sourceforge
 ask_user () {
-  echo "$FUNCNAME"
+  log "$FUNCNAME"
   if [ -n "$user" ]; then
     return
   fi
-  echo "username?"
+  log "username?"
   read user
 }
 # Copy the trunk to tag
@@ -93,11 +99,11 @@ set_svn_local (){
     echo "$CDIR does not appear to be a working local copy"
 	  exit 1
   fi
- ASVN=$(dirname "$CDIR")
- if [ -e "$ASVN/.svn" ]; then
-   echo "directory '$ASVN should NOT be under svn"
-   exit 1
- fi
+  ASVN=$(dirname "$CDIR")
+  if [ -e "$ASVN/.svn" ]; then
+    echo "directory '$ASVN should NOT be under svn"
+    exit 1
+  fi
 }
 #Fix configure.ac to reflect version and do autogen.
 # assume we are in the top directory 
@@ -117,10 +123,10 @@ test_tag_co () {
   check_err "mkdir co"
   cd "$CODIR"
   if [ -e $CODIR/$tag/.svn ] ; then
-    echo "$CODIR/$tag already exists. Not re-checking out"
+    log "$CODIR/$tag already exists. Not re-checking out"
     return
   fi
-  echo "performing svn co $turl"
+  log "performing svn co $turl"
   svn co "$turl"
   check_err "svn co"
   cp -a $tag $tdir
@@ -131,7 +137,7 @@ test_tag_co () {
 }
 # Make the tarball
 make_tarball () {
-  echo "$FUNCNAME"
+  log "$FUNCNAME"
   cd "$CODIR"
   check_err "cd $CODIR"
   tar --exclude .svn -czf $tdir.tar.gz $tdir
@@ -139,7 +145,7 @@ make_tarball () {
 }
 # test the tar ball
 test_tarball() {
-  echo "$FUNCNAME"
+  log "$FUNCNAME"
   cd "$CODIR"
   check_err "cd dir"
   mkdir tar_test
@@ -154,17 +160,47 @@ test_tarball() {
   make
   check_err "make"
 }
+# build the rules file
+# first arg is y for libappind
+# y/n fname
+build_rules () {
+ 
+ echo "#!/usr/bin/make -f" > "$2"
+ echo "# -*- makefile -*-">> "$2"
+ echo "# Built by rel.common" "$2"
+ echo "# Uncomment this to turn on verbose mode.">> "$2"
+ echo "#export DH_VERBOSE=1">> "$2"
+ if [ "$1" = "y" ]; then
+   echo "DEB_CONFIGURE_EXTRA_FLAGS += --enable-appindicator=yes">> "$2"
+ else
+   echo "DEB_CONFIGURE_EXTRA_FLAGS += --enable-appindicator=no">> "$2"
+ fi
+ echo "export DEB_CONFIGURE_EXTRA_FLAGS" >> "$2"
+ echo " ">> "$2"
+ echo "%:">> "$2"
+ echo -n -e '\t'>> "$2"
+ echo 'dh $@ '>> "$2"
+}
 # build the deb package files
 # the arg is configure options passed to the deb build, i.e.
 # --enable-appindicator=no
 build_deb () {
-  echo "$FUNCNAME"
+  log "$FUNCNAME"
   cd "$CODIR/tar_test/$tdir"
   check_err "cd tar_test" 
+  AI="n"
   if [ -n "$1" ]; then
     _COPT="-c $1"
+    AI=$(echo "$1"|grep -c "=yes")
+    if [ "$AI" = "0" ]; then
+      AI="n"
+    else 
+		  AI="y"
+	  fi
   fi
-  ./build-debpkg.sh -p ../../$tdir.tar.gz  $_COPT
+  build_rules "$AI" "$CODIR/tar_test/$tdir/deb/rules"
+  log "build_deb: got '$1', copt='$_COPT'"
+  "$CDIR/build-debpkg.sh" -t "$tag" -p ../../$tdir.tar.gz  $_COPT
   check_err "build deb"
   cd ..
   mv *.deb ..
@@ -194,7 +230,7 @@ select_gpg_keys () {
    return
  fi
  gpg --list-keys
- echo "Which key? 2048R/ABCDEF12 - just need the ABC part"
+ log "Which key? 2048R/ABCDEF12 - just need the ABC part"
  read KEYID
  G_FULL=$(gpg --fingerprint $KEYID|grep "^uid"|sed -e 's!uid\W*!!')
  GNAME=$(echo "$G_FULL"|sed 's!\(.*\) <.*!\1!')
@@ -218,7 +254,7 @@ last_revision () {
     let _third=_third-1
   fi
   last_rev="$_first.$_second.$_third"
-  echo "$1 -1 = $last_rev"
+  log "$1 -1 = $last_rev"
 }
 # setup the directories, build, and send to launchpad
 finish_ppa () {
@@ -259,17 +295,8 @@ finish_ppa () {
 #do compat
  echo 5 > t/debian/compat
 #build rules
- echo "#!/usr/bin/make -f" > t/debian/rules
- echo "# -*- makefile -*-">> t/debian/rules
- echo "# Uncomment this to turn on verbose mode.">> t/debian/rules
- echo "#export DH_VERBOSE=1">> t/debian/rules
- echo " ">> t/debian/rules
- echo "%:">> t/debian/rules
- echo -n -e '\t'>> t/debian/rules
- echo 'dh $@ '>> t/debian/rules
- if [ "$AI" = "y" ]; then
-   echo "DEB_CONFIGURE_EXTRA_FLAGS += --enable-appindicator=yes">> t/debian/rules
- fi
+ build_rules "t/debian/rules"
+ 
  cd t
  select_gpg_keys
  echo "Upload source Note: if you dont' currently erros out? (y/n)"
