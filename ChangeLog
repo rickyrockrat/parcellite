@@ -1,3 +1,6 @@
+V1.1.8 Wednsday, October 16, 2013
+ +Fixed bug 107, segfault when action key missing in parcelliterc.
+ 
 V1.1.7 Tuesday, October 15, 2013
  +Added remote i386 build and upload to sourceforge.
  +Fixed bug 100, pot doesn't contain <b> entries

@@ -358,7 +358,10 @@ void set_key_entry(gchar *name, gchar *val)
 	int i;
 	for (i=0;NULL != keylist[i].name; ++i){
 		if(!g_strcmp0(keylist[i].name,name)){
-			keylist[i].keyval=val;
+		  if(NULL == val)
+		  	keylist[i].keyval="";
+			else
+				keylist[i].keyval=val;
 			return;
 		}
 	}
