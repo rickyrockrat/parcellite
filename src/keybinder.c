@@ -275,26 +275,26 @@ keybinder_bind (const char           *keystring,
 	}
 }
 
-void
-keybinder_unbind (const char           *keystring, 
-			 BindkeyHandler  handler)
+void keybinder_unbind (const char *keystring, BindkeyHandler  handler)
 {
 	GSList *iter;
-
+  /*g_fprintf(stderr,"%s: key='%s'\n",__func__,keystring); */
+	if(NULL == keystring)		return;
 	for (iter = bindings; iter != NULL; iter = iter->next) {
 		Binding *binding = (Binding *) iter->data;
-
-		if (strcmp (keystring, binding->keystring) != 0 ||
-		    handler != binding->handler) 
-			continue;
-
-		do_ungrab_key (binding);
-
-		bindings = g_slist_remove (bindings, binding);
-
-		g_free (binding->keystring);
-		g_free (binding);
-		break;
+		if(NULL !=binding){
+			if (strcmp (keystring, binding->keystring) != 0 ||
+			    handler != binding->handler) 
+				continue;
+	
+			do_ungrab_key (binding);
+	
+			bindings = g_slist_remove (bindings, binding);
+	
+			g_free (binding->keystring);
+			g_free (binding);
+			break;	
+		}
 	}
 }
 
