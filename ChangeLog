@@ -1,5 +1,6 @@
 V1.1.8 Wednsday, October 16, 2013
  +Fixed bug 107, segfault when action key missing in parcelliterc.
+ +Fixed bug 108, red search-as-you-type with super-K key.
  +Fixed bug 109, segfault when action key missing and history key changed.
  
 V1.1.7 Tuesday, October 15, 2013

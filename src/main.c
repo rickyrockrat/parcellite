@@ -73,6 +73,11 @@ g_signal_connect(clipboard, "owner-change",  G_CALLBACK(handle_owner_change), NU
 #define	CMODE_CLI 2
 #define CMODE_ALL 3 /**needs to be or of the above  */
 
+#define GDK_MODIFIER_MASK_MINE (GDK_CONTROL_MASK|GDK_META_MASK|GDK_SUPER_MASK) /*\
+                           GDK_MOD1_MASK|GDK_MOD2_MASK |GDK_MOD3_MASK|GDK_MOD4_MASK|GDK_MOD5_MASK|   \
+                           GDK_BUTTON1_MASK|GDK_BUTTON2_MASK|GDK_BUTTON3_MASK|GDK_BUTTON4_MASK|\
+                           GDK_BUTTON5_MASK)|GDK_HYPER_MASK) */
+
 #define FIFCMD_STOP_PRI "stop_pri"
 #define FIFCMD_STOP_CLI "stop_cli"
 #define FIFCMD_STOP_ALL "stop_all"
@@ -1393,7 +1398,7 @@ static gboolean key_release_cb (GtkWidget *w,GdkEventKey *e, gpointer user)
 		}
 		return FALSE;
 	}	/**end alt key pressed  */
-	if(e->state & GDK_CONTROL_MASK)	/**ignore control keys  */
+	if(e->state & (GDK_MODIFIER_MASK_MINE))	/**ignore all modifier keys  */
 		return FALSE;
 	if(e->state &GDK_SHIFT_MASK   && get_pref_int32("case_search"))	/**ignore shift   */
 		return FALSE;
