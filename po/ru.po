@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: Parcellite\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-05-02 01:40+0400\n"
-"PO-Revision-Date: 2011-05-02 02:16+0300\n"
-"Last-Translator: Alexander Kazancev <kazancas@mandriva.ru>\n"
+"PO-Revision-Date: 2013-11-18 23:29+0300\n"
+"Last-Translator: Sergey Rodin <rodin.s@rambler.ru>\n"
 "Language-Team: \n"
 "Language: \n"
 "MIME-Version: 1.0\n"
@@ -19,190 +19,392 @@ msgstr ""
 "X-Poedit-Language: Russian\n"
 "X-Poedit-Country: RUSSIAN FEDERATION\n"
 
-#: preferences.c:428
-msgid "Preferences"
-msgstr "Настройки"
-
-#: preferences.c:447
-msgid "Behavior"
-msgstr "Поведение"
-
-#: preferences.c:455
-msgid "<b>Clipboards</b>"
-msgstr "<b>Буферы обмена</b>"
-
-#: preferences.c:462
-msgid "Use _Copy (Ctrl-C)"
-msgstr "Использовать буфер _Копировать (Ctrl-C)"
-
-#: preferences.c:465
-msgid "Use _Primary (Selection)"
-msgstr "_Использовать буфер выделения"
-
-#: preferences.c:468
-msgid "S_ynchronize clipboards"
-msgstr "Синхронизировать буферы"
-
-#: preferences.c:476
-msgid "<b>History</b>"
-msgstr "<b>История</b>"
-
-#: preferences.c:483
-msgid "_Save history"
-msgstr "_Сохранять историю"
-
-#: preferences.c:484
-msgid "Save and restore history between sessions"
-msgstr "Сохранять и восстанавливать историю между сессиями"
-
-#: preferences.c:489
-msgid "_Postion history"
-msgstr "_Позиция истории"
-
-#: preferences.c:490
-msgid "Set the location where history appears. If unchecked, appears where the mouse is."
-msgstr "Задает расположение появления истории. Если не отмечено, история появляется в месте расположения курсора."
-
-#: preferences.c:494
-msgid "<b>X</b>"
-msgstr "<b>X</b>"
-
-#: preferences.c:499
-msgid "<b>Y</b>"
-msgstr "<b>Y</b>"
-
-#: preferences.c:508
-msgid "Items in history:"
-msgstr "Элементы в истории:"
-
-#: preferences.c:519
-msgid "Max Data Size (MB)"
-msgstr "Макс. размер данных (Мб)"
-
-#: preferences.c:524
-msgid "Set Maximum amount of data to copy for each entry in MBytes. 0 is no limit."
-msgstr "Установить максимальный размер данных для копирования в каждой записи. 0 - без лимита."
-
-#: preferences.c:529
-msgid "<b>Miscellaneous</b>"
-msgstr "<b>Исключения</b>"
-
-#: preferences.c:537
-msgid "Search As You _Type"
-msgstr "Искать по мере ввода"
-
-#: preferences.c:538
-msgid "If checked, does a search-as-you-type. Turns red if not found. Goes to top (Alt-E) line when no chars are entered for search"
-msgstr "Если отмечено, поиск будет идти по мере набора. Если нет совпадений, становится красным. Переходит к верхней строке (Alt-E) если не введены буквы для поиска"
-
-#: preferences.c:542
-msgid "_Case Sensitive Search"
-msgstr "Пои_ск с учетом регистра"
-
-#: preferences.c:543
-msgid "If checked, does case sensitive search"
-msgstr "Если отмечено, поиск с учетом регистра"
-
-#: preferences.c:547
-msgid "Capture _hyperlinks only"
-msgstr "Захватывать только _гиперссылки"
-
-#: preferences.c:549
-msgid "C_onfirm before clearing history"
-msgstr "_Подтверждение перед очисткой истории"
-
-#: preferences.c:556
-msgid "Display"
-msgstr "Отображение"
-
-#: preferences.c:564
-msgid "<b>Items</b>"
-msgstr "<b>Элементы</b>"
-
-#: preferences.c:571
-msgid "Show in a _single line"
-msgstr "Показывать в одну строку"
-
-#: preferences.c:573
-msgid "Show in _reverse order"
-msgstr "Показывать в обратном порядке"
-
-#: preferences.c:577
-msgid "Character length of items:"
-msgstr "Число символов в элементе "
-
-#: preferences.c:590
-msgid "<b>Omitting</b>"
-msgstr "<b>Исключения</b>"
-
-#: preferences.c:599
-msgid "Omit items in the:"
-msgstr "Исключить элементы в:"
-
-#: preferences.c:603
-msgid "Beginning"
-msgstr "Начале"
-
-#: preferences.c:604
-msgid "Middle"
-msgstr "Середине"
-
-#: preferences.c:605
-msgid "End"
-msgstr "Конце"
-
-#: preferences.c:612
-msgid "Actions"
-msgstr "Действия"
-
-#: preferences.c:617
-msgid "Control-click Parcellite's tray icon to use actions"
-msgstr "CTRL+клик по иконке Parcellite в трее для выполнения действий"
-
-#: preferences.c:637
 msgid "Action"
 msgstr "Действие"
 
-#: preferences.c:644
-msgid "Command"
-msgstr "Команда"
+msgid "Actions"
+msgstr "Действия"
 
-#: preferences.c:659
+msgid "Actions key combination:"
+msgstr "Вызов меню Действия"
+
 msgid "Add..."
 msgstr "Добавить..."
 
-#: preferences.c:663
-msgid "Remove"
-msgstr "Удалить"
+msgid "Alternate Non-printing Display"
+msgstr "Показывать непечатающиеся символы"
 
-#: preferences.c:680
-msgid "Hotkeys"
+msgid "Auto Paste"
+msgstr "Автовставка"
+
+msgid "<b>Clipboards</b>"
+msgstr "<b>Буферы обмена</b>"
+
+msgid "Beginning"
+msgstr "Начале"
+
+msgid "Behavior"
+msgstr "Поведение"
+
+msgid "<b>History</b>"
+msgstr "<b>История</b>"
+
+msgid "<b>Hotkeys</b>"
 msgstr "Горячие клавиши"
 
-#: preferences.c:688
-msgid "<b>Hotkeys</b>"
-msgstr "<b>Горячие клавиши</b>"
+msgid "<b>Items</b>"
+msgstr "<b>Элементы</b>"
 
-#: preferences.c:697
-msgid "History key combination:"
-msgstr "Вызов Истории"
+msgid "<b>Miscellaneous</b>"
+msgstr "<b>Исключения</b>"
 
-#: preferences.c:705
-msgid "Actions key combination:"
-msgstr "Вызов Действия"
+msgid "<b>None</b>"
+msgstr "<b>Нет</b>"
 
-#: preferences.c:713
-msgid "Menu key combination:"
-msgstr "Вызов меню"
+msgid "<b>Omitting</b>"
+msgstr "<b>Исключения</b>"
 
-#: main.c:1154
-msgid "Use Alt-E to edit, Alt-C to clear"
-msgstr "Alt+E - редактировать, Alt+C - очистить"
+msgid "<b>X</b>"
+msgstr "<b>X</b>"
 
-#: main.c:313
+msgid "<b>Y</b>"
+msgstr "<b>Y</b>"
+
+msgid "Capture hyperlinks only"
+msgstr "Захватывать только гиперссылки"
+
+msgid "Case Sensitive Search"
+msgstr "Поиск с учетом регистра"
+
+msgid "Character length of items"
+msgstr "Число символов в элементе "
+
+msgid "_Clear"
+msgstr "_Очистить"
+
+msgid "Clear the history?"
+msgstr "Очистить историю?"
+
+msgid ""
+"Clipboard CLI usage examples:\n"
+"\n"
+"  echo \"copied to clipboard\" | parcellite\n"
+"  parcellite \"copied to clipboard\"\n"
+"  echo \"copied to clipboard\" | parcellite -c"
+msgstr ""
+"Примеры использования:\n"
+"\n"
+"  echo \"copied to clipboard\" | parcellite\n"
+"  parcellite \"copied to clipboard\"\n"
+"  echo \"copied to clipboard\" | parcellite -c"
+
+msgid "Clipboard Manager"
+msgstr "Менеджер буфера обмена"
+
+msgid "Command"
+msgstr "Команда"
+
+msgid "Confirm before clearing history"
+msgstr "Подтверждение перед очисткой истории"
+
+msgid "Control-click Parcellite's tray icon to use actions,"
+msgstr "CTRL+клик по иконке Parcellite в трее для выполнения действий"
+
+msgid ""
+"Copyright (C) 2007, 2008 Gilberto \"Xyhthyx\" Miralla\n"
+"Copyright (C) 2010-2013 Doug Springer"
+msgstr ""
+
+msgid "Couldn't create directory: %s\n"
+msgstr "Не удается создать каталог: %s\n"
+
+msgid "Current entry on top"
+msgstr "Текущая запись вверху"
+
+msgid "DebugUpdate"
+msgstr ""
+
+msgid "Display"
+msgstr "Отображение"
+
+msgid "Display Version info"
+msgstr "Показать версию"
+
+msgid "Do not use status icon (Ctrl-Alt-P for menu)"
+msgstr "Не показывать иконку в трее (Ctrl-Alt-P для меню)"
+
+msgid "Dummy desc"
+msgstr "Ложное описание"
+
+msgid "Dummy tip"
+msgstr "Ложная подсказка"
+
+msgid "_Edit actions"
+msgstr "_Изменить действия"
+
+msgid "_Edit Clipboard"
+msgstr "_Изменить буфер обмена"
+
 msgid "Editing Clipboard"
 msgstr "Редактирование буфера обмена"
 
-#: main.c:229 main.c:244 main.c:1404
-msgid "Clipboard Manager"
-msgstr "Менеджер буфера обмена"
+msgid "Empty"
+msgstr "Пусто"
+
+msgid "End"
+msgstr "Конце"
+
+msgid "Executing action..."
+msgstr "Выполнить действие..."
+
+msgid ""
+"Gilberto \"Xyhthyx\" Miralla <xyhthyx@gmail.com>\n"
+"Doug Springer <gpib@rickyrockrat.net>"
+msgstr ""
+
+msgid "_History"
+msgstr "_История"
+
+msgid "History key combination:"
+msgstr "Вызов истории "
+
+msgid ">>$HOME/ptest"
+msgstr ""
+
+msgid "Hotkeys"
+msgstr "Сочетания клавиш"
+
+msgid "If checked, does a search-as-you-type. Turns red if not found. Goes to top (Alt-E) line when no chars are entered for search"
+msgstr "Если отмечено, поиск будет идти по мере набора. Если нет совпадений, становится красным. Переходит к верхней строке (Alt-E) если не введены буквы для поиска"
+
+msgid "If checked, does case sensitive search"
+msgstr "Если выбрано, поиск с учетом регистра"
+
+msgid "If checked, edit the history item clicked on."
+msgstr "Если выбрано, разрешено редактирование истории"
+
+msgid "If checked, enables checking multiple concurrent user logic. Use if several different users are logged in at the same time."
+msgstr "Если выбрано, включается многопользовательский режим. Используется если одновременно запущены программы от разных пользователей"
+
+msgid "If checked, enables debug prints on clipboard update logic. This only takes effect when enabled at start up, and may be disabled at compile time."
+msgstr "Если выбрано, включает режим отладки. Отладка будет включена при перезапуске программы, но возможно она отключена при компиляции"
+
+msgid "If checked, enables the persistent history."
+msgstr "Если выбрано, включается хранение истории"
+
+msgid "If checked, places current clipboard entry at top of list. If not checked, history does not get sorted."
+msgstr "Если выбрано, текущий буфер обмена показывается вверху списка. Если не выбрано, сортировка списка истории не производится"
+
+msgid "If checked, puts the persistent history at the top of the history list."
+msgstr "Если выбрано, помещать записи истории вверху списка"
+
+msgid "If checked, puts the persistent history in a new list."
+msgstr "Если выбрано, помещать записи истории в новый список"
+
+msgid "If checked, the current entry will be on the bottom instead of the top."
+msgstr "Если выбрано, текущая запись будет внизу а не в верху."
+
+msgid "If checked, Use the clipboard, which is Ctrl-C, Ctrl-V"
+msgstr "Если выбрано, использовать буфер обмена по Ctrl-C, Ctrl-V"
+
+msgid "If checked, Use the primary clipboard (mouse highlight-copy, middle mouse button paste)"
+msgstr "Если выбрано, использовать буфер обмена консоли (выделение мышью - копировать, средняя кнопка - вставить)"
+
+msgid "If checked, use X, Y to position the history list"
+msgstr "Если выбрано, показывать список истории по координатам X и Y"
+
+msgid "If checked, will display tabs with Right arrow (utf8,\\2192), newlines with pharagrph(\\204b), and spaces with square-u(\\2423)."
+msgstr "Если выбрано, будут отображены вкладки со стрелкой вправо (utf8,\\2192), ввод строки с параграфом(\\204b), и пробелы с square-u(\\2423)."
+
+msgid "If checked, will emit the history entry via the keyboard entry."
+msgstr "Если выбрано, будет создавать запись в истории посредством ввода с клавиатуры."
+
+msgid "If checked, will ignore any clipboard additions that contain only whitespace."
+msgstr "Если выбрано, будут игнорироваться любые добавления в буфер обмена, которые содержат только пробелы."
+
+msgid "If checked, will keep both clipboards with the same content. If primary is pasted, then copy will have the same data."
+msgstr "Если выбрано, будет поддерживать в обоих буферах один контент. Если первый вставлен, тогда копия будет содержать те же данные."
+
+msgid "If checked, will replace newlines with spaces."
+msgstr "Если выбрано, ввод строки будет заменён пробелом."
+
+msgid "If checked, will restore clipboard entry on application exit."
+msgstr "Если выбрано, сохраняется состояние буфера обмена при выходе из приложения."
+
+msgid "If checked, will trim whitespace from beginning and end of entry."
+msgstr "Если выбрано, будут удалены пробелы в начале и в конце строки."
+
+msgid "Если выбрано, will use Ctrl-V paste."
+msgstr "Если выбрано, используется Ctrl-V для вставки"
+
+msgid "If checked, will use middle mouse to paste."
+msgstr "Если выбрано, используется средняя кнопка мыши для вставки"
+
+msgid "If checked, will use xdotool to paste wherever the mouse is."
+msgstr "Если выбрано будет использован xdotool для вставки в место положения мыши."
+
+msgid "Ignore Whitespace Only"
+msgstr "Игнорировать только пробелы"
+
+msgid "Items in history:"
+msgstr "Элементы в истории:"
+
+msgid "Key"
+msgstr "Клавиша"
+
+msgid "Keyboard Input"
+msgstr "Клавиатурный ввод"
+
+msgid "Lightweight GTK+ clipboard manager."
+msgstr "Менеджер буфера обмена на основе GTK+"
+
+msgid "Max Data Size(MB)"
+msgstr "Макс. размер данных(Мб)"
+
+msgid "Maximum data size of entire history list"
+msgstr "Макс. размер для каждого списка истории"
+
+msgid "Maximum number of clipboard entries to keep"
+msgstr "Макс. хранимое число записей буфера обмена"
+
+msgid "Menu key combination"
+msgstr "Вызов основного меню"
+
+msgid "Middle"
+msgstr "Середине"
+
+msgid "Mouse"
+msgstr "Мышь"
+
+msgid "Multiuser"
+msgstr "Многопользовательский режим"
+
+msgid "Omit items in the:"
+msgstr "Исключить элементы в:"
+
+msgid "Paste All Entry Delimiter"
+msgstr "Вставить разделитель всех записей"
+
+msgid "Persistent As Separate List"
+msgstr "Постоянная как отдельный список"
+
+msgid "Persistent History"
+msgstr "Постоянная история"
+
+msgid "Persistent history key:"
+msgstr "Вызов постоянной истории"
+
+msgid "Persistent On Top"
+msgstr "Постоянная вверху"
+
+msgid "Position history"
+msgstr "Позиция истории"
+
+msgid "Position in pixels from the top of the screen"
+msgstr "Позиция в пикселах от верха экрана"
+
+msgid "Preferences"
+msgstr "Настройки"
+
+msgid "Print clipboard contents"
+msgstr "Печать содержимого буфера обмена"
+
+msgid "Print primary contents"
+msgstr "Печать содержимого буфера консоли"
+
+msgid "Remove"
+msgstr "Удалить"
+
+msgid "Restore Empty"
+msgstr "Сохранять буфер при закрытии приложения"
+
+msgid "Right Click Edit"
+msgstr "Правый клик - редактировать"
+
+msgid "Run as daemon"
+msgstr "Запускать как службу"
+
+msgid "Save history"
+msgstr "Сохранять историю"
+
+msgid "Save History as a text file. Prepends xHIST_0000 to each entry. x is either P(persistent) or N (normal)"
+msgstr "Хранить историю как простой текст. Разделитель xHIST_0000 для каждой записи. Где х это типа записи P(постоянная) или N (нормальная)"
+
+msgid "Save history to a file."
+msgstr "Сохранять историю в файл."
+
+msgid "Search As You Type"
+msgstr "Искать по мере ввода"
+
+msgid "Show in a single line"
+msgstr "Показывать в одной строке."
+
+msgid "Show in reverse order"
+msgstr "Показывать в обратном порядке"
+
+msgid "> </span>"
+msgstr "> </span>"
+
+msgid "S_ynchronize clipboards"
+msgstr "Синхронизация буферов обмена"
+
+msgid ""
+"This is the Action Name. \n"
+"DO NOT put commands here."
+msgstr ""
+"Это поле названия Действия. \n"
+"НЕ ПИШИТЕ здесь текст команды. "
+
+msgid ""
+"This program is free software; you can redistribute it and/or modify\n"
+"it under the terms of the GNU General Public License as published by\n"
+"the Free Software Foundation; either version 3 of the License, or\n"
+"(at your option) any later version.\n"
+"\n"
+"This program is distributed in the hope that it will be useful,\n"
+"but WITHOUT ANY WARRANTY; without even the implied warranty of\n"
+"MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n"
+"GNU General Public License for more details.\n"
+"\n"
+"You should have received a copy of the GNU General Public License\n"
+"along with this program.  If not, see <http://www.gnu.org/licenses/>.;"
+msgstr ""
+"Это программа является свободным программным обеспечением\n"
+"вы можете распространять и/или изменять её согласно условиям\n"
+"Общей Публичной Лицензии GNU, которая опубликована Фондом \n"
+"Свободного ПО; или версией 3 лицензии, или более поздней версией\n"
+"(на ваш выбор).\n"
+"Эта программа распространяется в надежде, что будет полезной,\n"
+"но БЕЗ КАКИХ-ЛИБО ГАРАНТИЙ;  даже без подразумеваемой гарантии\n"
+"пригодности для определённой цели. См. подробности в Общей публичной\n"
+"лицензии.\n"
+"\n"
+"Вы должны получить копию Общей публичной лицензии\n"
+"с этой программой. Если нет, см. <http://www.gnu.org/licenses/>.;"
+
+msgid "This string will be inserted between each line of history for paste all."
+msgstr "Эта строка будет вставлена между каждой записью истории"
+
+msgid "Trim Newlines"
+msgstr "Удалить ввод строки"
+
+msgid "Trim Whitespace"
+msgstr "Удалить пробелы"
+
+msgid "Use Alt-E to edit, Alt-C to clear"
+msgstr "Alt-E - редактировать, Alt-C - очистить"
+
+msgid "Use _Copy (Ctrl-C)"
+msgstr "Использовать _Копировать (Ctrl-C)"
+
+msgid "Use %% if you want a literal %. See the man page for gnuC printf (man 2 printf) for more information."
+msgstr "Используйте %% для символа %. См. справку по команде printf (man 2 printf) для подробной информации"
+
+msgid "Use _Primary (Selection)"
+msgstr "_Использовать буфер выделения"
+
+msgid ""
+"Written by Gilberto \"Xyhthyx\" Miralla and Doug Springer.\n"
+"Report bugs to <gpib@rickyrockrat.net>."
+msgstr ""
+
