@@ -1400,7 +1400,7 @@ static gboolean key_release_cb (GtkWidget *w,GdkEventKey *e, gpointer user)
 	}	/**end alt key pressed  */
 	if(e->state & (GDK_MODIFIER_MASK_MINE))	/**ignore all modifier keys  */
 		return FALSE;
-	if(e->state &GDK_SHIFT_MASK   && get_pref_int32("case_search"))	/**ignore shift   */
+	if(e->state &GDK_SHIFT_MASK   && !get_pref_int32("case_search"))	/**ignore shift   */
 		return FALSE;
 	if( GDK_EXPOSE== e->type || GDK_BUTTON_RELEASE==e->type)	/**fix bug 3560995, item 1/2, red clipboard.  */
 		return FALSE;
