@@ -2,6 +2,7 @@ V1.1.8 Wednsday, October 16, 2013
  +Fixed bug 107, segfault when action key missing in parcelliterc.
  +Fixed bug 108, red search-as-you-type with super-K key.
  +Fixed bug 109, segfault when action key missing and history key changed.
+ +Updated Russian translation.
  
 V1.1.7 Tuesday, October 15, 2013
  +Added remote i386 build and upload to sourceforge.
