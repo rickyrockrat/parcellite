@@ -110,7 +110,6 @@ static AppIndicator *indicator=NULL;
 static GtkWidget *indicator_menu = NULL;
 #endif
 static GtkStatusIcon *status_icon; 
-static GMutex *clip_lock=NULL;
 GMutex *hist_lock=NULL;
 static gboolean actions_lock = FALSE;
 static int show_icon=0;
@@ -500,7 +499,6 @@ void check_clipboards(gint mode)
 	int n=0;
 	
 	/*g_printf("check_clipboards\n"); */
-	/*g_mutex_lock(clip_lock); */
 	if(fifo->clen){/**we have a command to execute  */
 			/*fifo->which should be ID_CMD: */
 		if(fifo->dbg) g_printf("Running CMD '%s'\n",fifo->cbuf);
@@ -556,7 +554,6 @@ void check_clipboards(gint mode)
 	}	
 done:	
 	return;
-	/*g_mutex_unlock(clip_lock);	 */
 }
 #ifdef HAVE_APPINDICATOR
 /***************************************************************************/
@@ -1501,7 +1498,6 @@ void set_clipboard_text(struct history_info *h, GList *element)
 	gchar *action=NULL;
 	gchar *txt=NULL;
 	gchar *cmd=NULL;
-	/*g_mutex_lock(clip_lock); */
 	if(NULL == find_h_item(h->delete_list,NULL,element)){	/**not in our delete list  */
 		/**make a copy of txt, because it gets freed and re-allocated.  */
 		txt=p_strdup(((struct history_item *)(element->data))->text);
@@ -1517,7 +1513,6 @@ void set_clipboard_text(struct history_info *h, GList *element)
 	if(0 == auto_whatever)
 		return;
 	/*g_printf("set_clip_text done\n");  */
-	/*g_mutex_unlock(clip_lock); */
 	
 	if (get_pref_int32("automatic_paste")) { /** mousedown 2 */
 		if(get_pref_int32("auto_mouse"))
@@ -2100,9 +2095,7 @@ static void parcellite_init()
 	if(FALSE ==g_thread_supported()){
 		g_fprintf(stderr,"g_thread not init!\n");
 	}
-	clip_lock= g_mutex_new();
 	hist_lock= g_mutex_new();
-	g_mutex_unlock(clip_lock);
 
   show_icon=!get_pref_int32("no_icon");
   /* Read history */
