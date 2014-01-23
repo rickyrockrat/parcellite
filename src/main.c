@@ -114,6 +114,7 @@ GMutex *hist_lock=NULL;
 static gboolean actions_lock = FALSE;
 static int show_icon=0;
 static int have_appindicator=0; /**if set, we have a running indicator-appmenu  */
+static int ignore_clipboard=0; /**if set, don't process clip entries  */
 static gchar *appindicator_process="indicator-messages-service"; /**process name  */
 
 static int cmd_mode=CMODE_ALL; /**both clipboards  */
@@ -310,6 +311,8 @@ gchar *update_clipboard(GtkClipboard *clip,gchar *intext,  gint mode)
 	gchar **existing, *changed=NULL;
 	gchar *processed;
 	GdkModifierType button_state;
+	if(1 == ignore_clipboard)
+		return NULL;
 /*	gchar *clipname; */
 	int set=1;
 	if( H_MODE_LAST == mode)
@@ -587,6 +590,8 @@ gboolean check_clipboards_tic(gpointer data)
 {
 	/** gchar *txt=gtk_clipboard_wait_for_text(clipboard);
 	g_printf("%s\n",txt);*/
+	if(2 == ignore_clipboard)
+		return TRUE;
 	check_clipboards(H_MODE_CHECK);
 #ifdef HAVE_APPINDICATOR
 	if(have_appindicator){
@@ -681,6 +686,7 @@ static void edit_selected(GtkMenuItem *menu_item, gpointer user_data)
 	struct history_info *h=(struct history_info*)user_data;
 	GList* element=NULL;
 	struct history_item *c=NULL;
+	gint rslt;
 	if(NULL ==h)
 		return;
 	/*g_fprintf(stderr,"edit_selected call\n");  */
@@ -748,11 +754,12 @@ static void edit_selected(GtkMenuItem *menu_item, gpointer user_data)
     gtk_text_view_set_left_margin((GtkTextView*)text_view, 2);
     gtk_text_view_set_right_margin((GtkTextView*)text_view, 2);
     gtk_container_add((GtkContainer*)scrolled_window, text_view);
-    
+    ignore_clipboard=1;
     /* Run the dialog */
     gtk_widget_show_all(dialog);
+		rslt=gtk_dialog_run((GtkDialog*)dialog);
 		
-    if (gtk_dialog_run((GtkDialog*)dialog) == GTK_RESPONSE_ACCEPT) {
+    if ( GTK_RESPONSE_ACCEPT == rslt) {
 			GtkTextIter start, end;
 			guint32 slen;
 			gchar *ntext=NULL;
@@ -760,6 +767,7 @@ static void edit_selected(GtkMenuItem *menu_item, gpointer user_data)
       gtk_text_buffer_get_end_iter(clipboard_buffer, &end);
       gchar* new_clipboard_text = gtk_text_buffer_get_text(clipboard_buffer, &start, &end, TRUE);
 			slen=strlen(new_clipboard_text);
+			/*g_fprintf(stderr,"New Txt='%s'\n",new_clipboard_text); */
 			if(0 == slen ){ /**just delete history entry, and set next in order to clipboard  */
 				if(NULL == element){/**just clear clipboard? or FIXME: is there a way to determine the element?  */
 					/*gtk_clipboard_set_text(clipboard,"",0); */
@@ -780,6 +788,8 @@ static void edit_selected(GtkMenuItem *menu_item, gpointer user_data)
 			}else {/**Text is not blank  */
 				/*g_fprintf(stderr,"Try to add '%s'\n",new_clipboard_text); */
 				gint16 type;
+				if(!p_strcmp(new_clipboard_text,current_clipboard_text)) /**same text, nothing to do  */
+					goto finish; 
 				if( NULL != c)
 					type=c->type;
 				else 
@@ -791,21 +801,31 @@ static void edit_selected(GtkMenuItem *menu_item, gpointer user_data)
 				if(NULL != c)
 					n->flags=c->flags;
 				if(NULL != element && NULL != element->data){
+					/*g_fprintf(stderr,"ele!null\n"); */
 					g_free(element->data);
 					history_list=g_list_delete_link(history_list, element);
 					history_list=g_list_prepend(history_list,c);
-				}else
+				}else{
+					gint flags=0;
+					/*g_fprintf(stderr,"ele IS null\n"); */
+					/**delete the edited entry - sets the flags for the entry. */
+					gint node=is_duplicate(current_clipboard_text, 1, &flags);
+					element=g_list_nth(history_list,node);
+					history_list=g_list_remove_link(history_list,element);
+					/**Does this cause crash since we are in the middle of a history window? 
+					Need to kill history menu too? 
+					What about setting up an indicator that on next tic, if history is not active, we update?
+					*/
+				}
+				ignore_clipboard=2; /**tell ticker to not fire yet, but allow the update to go through.  */
+			  update_clipboards(n->text, H_MODE_NEW);
 				
-				/**Does this cause crash since we are in the middle of a history window? 
-				Need to kill history menu too? 
-				What about setting up an indicator that on next tic, if history is not active, we update?
-				*/
-			   update_clipboards(n->text, H_MODE_NEW);
 			}
 finish:			
 			if(NULL != new_clipboard_text)
 				g_free(new_clipboard_text);	
     }
+		ignore_clipboard=0;
     gtk_widget_destroy(dialog);
     g_free(current_clipboard_text);
   }
