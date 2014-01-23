@@ -170,6 +170,7 @@ Current scheme is to have the total zize of element followed by the type, then t
 ****************************************************************************/
 void read_history ()
 {
+	size_t x;
   /* Build file path */
   gchar* history_path = g_build_filename(g_get_user_data_dir(),HISTORY_FILE0,NULL); 
 	gchar *magic=g_malloc0(2+HISTORY_MAGIC_SIZE);
@@ -210,9 +211,9 @@ void read_history ()
 			if(c->len != end)
 				g_fprintf(stderr,"len check: invalid: ex %d got %d\n",end,c->len);
 			/* Read item and add ending character */
-			if (fread(&c->text,end,1,history_file) != 1){
+			if ((x =fread(&c->text,end,1,history_file)) != 1){
 				c->text[end] = 0;
-				g_fprintf(stderr,"history_read: Invalid text!\n'%s'\n",c->text);
+				g_fprintf(stderr,"history_read: Invalid text, code %d!\n'%s'\n",x,c->text);
 			}	else {
 				c->text[end] = 0;
 				c->len=validate_utf8_text(c->text,c->len);
