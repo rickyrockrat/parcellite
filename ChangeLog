@@ -6,6 +6,7 @@ V1.1.8 Wednsday, October 16, 2013
  +Fix broken case-sensitive search.
  +Fixed bug 111, unlock a mutext not locked. 
  +Fixed history editing problem issue where history is updated while editing.
+ +Added emphatic statement about xdotool on the autopaste tooltip.
  
 V1.1.7 Tuesday, October 15, 2013
  +Added remote i386 build and upload to sourceforge.
