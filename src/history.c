@@ -266,7 +266,7 @@ void save_history()
   gchar* history_path = g_build_filename(g_get_user_data_dir(), HISTORY_FILE0, NULL); 
   /* Open the file for writing */
   FILE* history_file = fopen(history_path, "wb");
-  g_free(history_path);
+  
   /* Check that it opened and begin write */
   if (history_file)  {
     GList* element;
@@ -296,7 +296,10 @@ void save_history()
     gint end = 0;
     fwrite(&end, 4, 1, history_file);
     fclose(history_file);
-  }
+  }else{
+		g_fprintf(stderr,"Unable to open history file for save '%s'\n",history_path);
+	}
+	g_free(history_path);
 }
 
 /***************************************************************************/
