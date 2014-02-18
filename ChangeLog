@@ -7,6 +7,8 @@ V1.1.8 Wednsday, October 16, 2013
  +Fixed bug 111, unlock a mutext not locked. 
  +Fixed history editing problem issue where history is updated while editing.
  +Added emphatic statement about xdotool on the autopaste tooltip.
+ +Added pref_mapper that maps prefs to integer values so we don't have to string compares
+  in main loop. Should decrease CPU cycles considerably in the ticker.
  
 V1.1.7 Tuesday, October 15, 2013
  +Added remote i386 build and upload to sourceforge.

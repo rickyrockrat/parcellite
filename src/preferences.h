@@ -33,9 +33,18 @@ struct keys {
 	gchar *keyval;
 	void *keyfunc;
 };
+struct pref2int {
+	gchar *name;
+	int *val;
+};
+/**for our mapper  */
+#define PM_INIT 0
+#define PM_UPDATE 1
+
 extern struct keys keylist[];
 /*struct pref_item* get_pref(char *name); */
 int get_first_pref(int section);
+void pref_mapper (struct pref2int *m, int mode);
 int init_pref( void );
 int set_pref_widget (char *name, GtkWidget *w);
 GtkWidget *get_pref_widget (char *name);

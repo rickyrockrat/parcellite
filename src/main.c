@@ -63,6 +63,7 @@ g_signal_connect(clipboard, "owner-change",  G_CALLBACK(handle_owner_change), NU
 #endif
 
 #include "parcellite.h"
+#include <sys/wait.h>
 
 /**ACT are actions, and MODE is the mode of the action  */
 /** #define ACT_STOP  0
@@ -87,7 +88,7 @@ g_signal_connect(clipboard, "owner-change",  G_CALLBACK(handle_owner_change), NU
 
 GtkWidget *hmenu;
 /* Uncomment the next line to print a debug trace. */
-/*#define DEBUG     */
+#define DEBUG     
 
 #ifdef DEBUG
 #  define TRACE(x) x
@@ -115,7 +116,9 @@ static gboolean actions_lock = FALSE;
 static int show_icon=0;
 static int have_appindicator=0; /**if set, we have a running indicator-appmenu  */
 static int ignore_clipboard=0; /**if set, don't process clip entries  */
+static int tool_flag=0;
 static gchar *appindicator_process="indicator-messages-service"; /**process name  */
+#define TOOL_XDOTOOL 0x01
 
 static int cmd_mode=CMODE_ALL; /**both clipboards  */
 /** static int cmd_state=ACT_RUN; running  */
@@ -134,6 +137,21 @@ static int cmd_mode=CMODE_ALL; /**both clipboards  */
 #define EDIT_MODE_USE_RIGHT_CLICK 1 /**used in edit dialog creation to determine behaviour. 
                                     If this is set, it will edit the entry, and replace it in the history.  */
 #define EDIT_MODE_RC_EDIT_SET 2 /**used to   */                                    
+
+/**speed up pref to int lookup.  */
+int hyperlinks_only,ignore_whiteonly,trim_newline,trim_wspace_begend,use_primary,use_copy,current_on_top,restore_empty,synchronize;
+static struct pref2int pref2int_map[]={
+	{.val=&hyperlinks_only,.name="hyperlinks_only"},
+	{.val=&ignore_whiteonly,.name="ignore_whiteonly"},
+	{.val=&trim_newline,.name="trim_newline"},
+	{.val=&trim_wspace_begend,.name="trim_wspace_begend"},
+	{.val=&use_primary,.name="use_primary"},
+	{.val=&use_copy,.name="use_copy"},
+	{.val=&current_on_top,.name="current_on_top"},
+	{.val=&restore_empty,.name="restore_empty"},
+	{.val=&synchronize,.name="synchronize"},
+	{.val=NULL,.name=NULL},		
+};
 
 /**protos in this file  */
 void create_app_indicator(void);
@@ -169,12 +187,12 @@ gchar *process_new_item(GtkClipboard *clip,gchar *ntext)
 	
 /**we now check our options...  */		
 	/*printf("opt\n"); fflush(NULL); */
-	if (get_pref_int32("hyperlinks_only")){
+	if (hyperlinks_only){
 		 if(is_hyperlink(ntext))
 			 	goto process;
 	}	else {
 		/*printf("wo\n"); fflush(NULL); */
-		if(get_pref_int32("ignore_whiteonly")){
+		if(ignore_whiteonly){
 			gchar *s;
 			for (s=ntext; NULL !=s && *s; ++s){
 				if(!isspace(*s)){
@@ -196,7 +214,7 @@ gchar *process_new_item(GtkClipboard *clip,gchar *ntext)
 	if(len){
 		rtn=ntext;
 		gint i;
-		if(get_pref_int32("trim_newline")){
+		if(trim_newline){
 			gchar *c;
 			for (c=ntext;*c;){
 				if(iscntrl(*c))
@@ -205,7 +223,7 @@ gchar *process_new_item(GtkClipboard *clip,gchar *ntext)
 			}	
 		}
 			
-		if( get_pref_int32("trim_wspace_begend") )
+		if( trim_wspace_begend )
 			ntext=g_strstrip(ntext);
 	}	
 done:
@@ -338,8 +356,8 @@ gchar *update_clipboard(GtkClipboard *clip,gchar *intext,  gint mode)
 	}
 	/**check that our clipboards are valid and user wants to use them  */
 	if((clip != primary && clip != clipboard) ||
-		(clip == primary && !get_pref_int32("use_primary")) ||
-		(clip == clipboard && !get_pref_int32("use_copy")))
+		(clip == primary && !use_primary) ||
+		(clip == clipboard && !use_copy))
 			return NULL;
 	
 	if( H_MODE_CHECK==mode &&clip == primary){/*fix auto-deselect of text in applications like DevHelp and LyX*/
@@ -361,7 +379,7 @@ gchar *update_clipboard(GtkClipboard *clip,gchar *intext,  gint mode)
 		DTRACE(g_fprintf(stderr,"%sInList '%s' ex '%s'\n",clip==clipboard?"CLI":"PRI",intext,*existing)); 
 		last=_update_clipboard(clip,intext,existing,1);
 		if( NULL != last){/**maintain persistence, if set  */
-			append_item(last,get_pref_int32("current_on_top")?HIST_DEL|HIST_CHECKDUP|HIST_KEEP_FLAGS:0);
+			append_item(last,current_on_top?HIST_DEL|HIST_CHECKDUP|HIST_KEEP_FLAGS:0);
 		}
 		goto done;
 	}
@@ -372,7 +390,7 @@ gchar *update_clipboard(GtkClipboard *clip,gchar *intext,  gint mode)
 			goto done;
 	}
 	
-	if(NULL != *existing && NULL == changed && 1 == get_pref_int32("restore_empty")) {
+	if(NULL != *existing && NULL == changed && 1 == restore_empty) {
 		DTRACE(g_fprintf(stderr,"%sclp empty, ",clip==clipboard?"CLI":"PRI"));
 		/* Only recover lost contents if there isn't any other type of content in the clipboard */
 		if (!content_exists(clip)) {
@@ -416,7 +434,7 @@ gchar *update_clipboard(GtkClipboard *clip,gchar *intext,  gint mode)
 				
 		}
 		if(NULL != last)
-			append_item(last,get_pref_int32("current_on_top")?HIST_DEL|HIST_CHECKDUP|HIST_KEEP_FLAGS:0);
+			append_item(last,current_on_top?HIST_DEL|HIST_CHECKDUP|HIST_KEEP_FLAGS:0);
 		g_free(changed);
 		changed=NULL;
 	}
@@ -435,7 +453,7 @@ gchar *update_clipboard(GtkClipboard *clip,gchar *intext,  gint mode)
 			else set=1;
 			last=_update_clipboard(clip,processed,existing,set);
 			if(NULL != last)
-				append_item(last,get_pref_int32("current_on_top")?HIST_DEL|HIST_CHECKDUP|HIST_KEEP_FLAGS:0);
+				append_item(last,current_on_top?HIST_DEL|HIST_CHECKDUP|HIST_KEEP_FLAGS:0);
 		}else 
 			return NULL;	
 	}
@@ -541,7 +559,7 @@ void check_clipboards(gint mode)
 	
 	/*g_printf("pt=%s,ct=%s\n",ptext,ctext); */
   /* Synchronization */
-  if (get_pref_int32("synchronize"))  {
+  if (synchronize)  {
   
 		if(NULL==ptext && NULL ==ctext)
 			goto done;
@@ -676,6 +694,46 @@ static void edit_actions_selected(GtkButton *button, gpointer user_data)
     show_preferences(ACTIONS_TAB);
 }
 
+/* Called when execution action exits */
+static void check_for_tools_exit(GPid pid, gint status, gpointer data)
+{
+	int flag= GPOINTER_TO_INT(data);
+  g_spawn_close_pid(pid);
+	if( WIFEXITED(status) ){
+		if(0 ==WEXITSTATUS(status) )
+			tool_flag|=flag;
+		
+	}
+	g_fprintf(stderr,"Flag 0x%04x, status %d, EXIT %d STAT %d\n",flag,status,WIFEXITED(status),WEXITSTATUS(status) );
+		
+}
+/***************************************************************************/
+/** Check for installed tools and set flags accordingly.
+\n\b Arguments:
+\n\b Returns:
+****************************************************************************/
+static void check_for_tools(void )
+{
+	GPid pid;
+  gchar **argv;
+	int flags[]={
+		TOOL_XDOTOOL,
+	};
+	
+	gchar *name[]={
+		"xdotool",
+		NULL,
+	};
+	int i;
+	for (i=0; NULL != name[i]; ++i){
+		gchar cmd[100];
+		sprintf(cmd,"/bin/sh -c which %s\n",name[i]);
+		g_shell_parse_argv(cmd, NULL, &argv, NULL);
+		g_spawn_async(NULL, argv, NULL, G_SPAWN_DO_NOT_REAP_CHILD, NULL, NULL, &pid, NULL);
+		g_child_watch_add(pid, (GChildWatchFunc)check_for_tools_exit, GINT_TO_POINTER(flags[i]));
+		g_strfreev(argv);
+	}
+}
 /***************************************************************************/
 /**  Called when Edit is selected from history menu 
 \n\b Arguments:
@@ -1522,9 +1580,9 @@ void set_clipboard_text(struct history_info *h, GList *element)
 		/**make a copy of txt, because it gets freed and re-allocated.  */
 		txt=p_strdup(((struct history_item *)(element->data))->text);
 		DTRACE(g_fprintf(stderr,"set_clip_text %s\n",txt));  
-		if(get_pref_int32("use_copy") )
+		if(use_copy)
 			update_clipboard(clipboard, txt, H_MODE_LIST);
-		if(get_pref_int32("use_primary"))
+		if(use_primary)
 	  	update_clipboard(primary, txt, H_MODE_LIST);	
 		
 		auto_whatever=1;
@@ -2111,12 +2169,13 @@ static void parcellite_init()
 /* Create clipboard */
   primary = gtk_clipboard_get(GDK_SELECTION_PRIMARY);
   clipboard = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);
-  
+	/**check to see if optional helpers exist.  */
+  check_for_tools();
 	if(FALSE ==g_thread_supported()){
 		g_fprintf(stderr,"g_thread not init!\n");
 	}
 	hist_lock= g_mutex_new();
-
+  
   show_icon=!get_pref_int32("no_icon");
   /* Read history */
   if (get_pref_int32("save_history")){
@@ -2215,6 +2274,7 @@ int main(int argc, char *argv[])
   
   /* Initiate GTK+ */
   gtk_init(&argc, &argv);
+	pref_mapper(pref2int_map,PM_INIT);
    /* Read preferences */
   read_preferences();
 #ifdef	DEBUG_UPDATE
