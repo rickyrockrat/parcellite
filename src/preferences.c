@@ -168,6 +168,7 @@ struct pref_item myprefs[]={
 
 GtkListStore* actions_list;
 GtkTreeSelection* actions_selection;
+struct pref2int *pref2int_mapper=NULL;
 
 /***************************************************************************/
 /** .
@@ -184,6 +185,24 @@ struct pref_item* get_pref(char *name)
 			return &myprefs[i];
 	}	
 	return &dummy[0];
+}
+/***************************************************************************/
+/** Set an array that is updated every time the preferences are changed.
+\n\b Arguments:
+\n\b Returns:
+****************************************************************************/
+void pref_mapper (struct pref2int *m, int mode)
+{
+	int i;
+	if(PM_INIT == mode){
+		pref2int_mapper=m;
+		return;
+	}
+	for (i=0; pref2int_mapper[i].name != NULL && pref2int_mapper[i].val != NULL; ++i){
+		struct pref_item *p=get_pref(pref2int_mapper[i].name);
+		*pref2int_mapper[i].val=p->val;
+	}
+	
 }
 /***************************************************************************/
 /** .
@@ -474,6 +493,7 @@ static void apply_preferences()
 	for (i=0;NULL != keylist[i].name; ++i)
 	  bind_itemkey(keylist[i].name,keylist[i].keyfunc);	
   truncate_history();
+	pref_mapper(NULL, PM_UPDATE);
 }
 
 
@@ -584,6 +604,7 @@ void read_preferences()
 		for (i=0;NULL != keylist[i].name; ++i)
 			set_pref_string(keylist[i].name,def_keyvals[i]);
   }
+	pref_mapper(NULL, PM_UPDATE);
   g_key_file_free(rc_key);
   g_free(rc_file);
 }
