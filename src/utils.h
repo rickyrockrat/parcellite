@@ -36,7 +36,7 @@ struct cmdline_opts {
 };
 
 gchar *p_strdup( const gchar *str );
-void check_dirs();
+void check_dirs( void );
 
 gboolean is_hyperlink(gchar* link);
 
@@ -82,7 +82,7 @@ int read_fifo(struct p_fifo *f, int which);
 int write_fifo(struct p_fifo *f, int which, char *buf, int len);
 struct p_fifo* init_fifo(int mode);
 void close_fifos(struct p_fifo *p);
-
+void show_gtk_dialog(gchar *message, gchar *title);
 G_END_DECLS
 
 #endif
