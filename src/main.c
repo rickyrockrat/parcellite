@@ -63,7 +63,7 @@ g_signal_connect(clipboard, "owner-change",  G_CALLBACK(handle_owner_change), NU
 #endif
 
 #include "parcellite.h"
-#include <sys/wait.h>
+
 
 /**ACT are actions, and MODE is the mode of the action  */
 /** #define ACT_STOP  0
@@ -116,9 +116,9 @@ static gboolean actions_lock = FALSE;
 static int show_icon=0;
 static int have_appindicator=0; /**if set, we have a running indicator-appmenu  */
 static int ignore_clipboard=0; /**if set, don't process clip entries  */
-static int tool_flag=0;
+
 static gchar *appindicator_process="indicator-messages-service"; /**process name  */
-#define TOOL_XDOTOOL 0x01
+
 
 static int cmd_mode=CMODE_ALL; /**both clipboards  */
 /** static int cmd_state=ACT_RUN; running  */
@@ -379,7 +379,7 @@ gchar *update_clipboard(GtkClipboard *clip,gchar *intext,  gint mode)
 		DTRACE(g_fprintf(stderr,"%sInList '%s' ex '%s'\n",clip==clipboard?"CLI":"PRI",intext,*existing)); 
 		last=_update_clipboard(clip,intext,existing,1);
 		if( NULL != last){/**maintain persistence, if set  */
-			append_item(last,current_on_top?HIST_DEL|HIST_CHECKDUP|HIST_KEEP_FLAGS:0);
+			append_item(last,current_on_top?HIST_DEL|HIST_CHECKDUP|HIST_KEEP_FLAGS:0,0,CLIP_TYPE_TEXT);
 		}
 		goto done;
 	}
@@ -434,7 +434,7 @@ gchar *update_clipboard(GtkClipboard *clip,gchar *intext,  gint mode)
 				
 		}
 		if(NULL != last)
-			append_item(last,current_on_top?HIST_DEL|HIST_CHECKDUP|HIST_KEEP_FLAGS:0);
+			append_item(last,current_on_top?HIST_DEL|HIST_CHECKDUP|HIST_KEEP_FLAGS:0,0,CLIP_TYPE_TEXT);
 		g_free(changed);
 		changed=NULL;
 	}
@@ -453,7 +453,7 @@ gchar *update_clipboard(GtkClipboard *clip,gchar *intext,  gint mode)
 			else set=1;
 			last=_update_clipboard(clip,processed,existing,set);
 			if(NULL != last)
-				append_item(last,current_on_top?HIST_DEL|HIST_CHECKDUP|HIST_KEEP_FLAGS:0);
+				append_item(last,current_on_top?HIST_DEL|HIST_CHECKDUP|HIST_KEEP_FLAGS:0,0,CLIP_TYPE_TEXT);
 		}else 
 			return NULL;	
 	}
@@ -694,46 +694,7 @@ static void edit_actions_selected(GtkButton *button, gpointer user_data)
     show_preferences(ACTIONS_TAB);
 }
 
-/* Called when execution action exits */
-static void check_for_tools_exit(GPid pid, gint status, gpointer data)
-{
-	int flag= GPOINTER_TO_INT(data);
-  g_spawn_close_pid(pid);
-	if( WIFEXITED(status) ){
-		if(0 ==WEXITSTATUS(status) )
-			tool_flag|=flag;
-		
-	}
-	g_fprintf(stderr,"Flag 0x%04x, status %d, EXIT %d STAT %d\n",flag,status,WIFEXITED(status),WEXITSTATUS(status) );
-		
-}
-/***************************************************************************/
-/** Check for installed tools and set flags accordingly.
-\n\b Arguments:
-\n\b Returns:
-****************************************************************************/
-static void check_for_tools(void )
-{
-	GPid pid;
-  gchar **argv;
-	int flags[]={
-		TOOL_XDOTOOL,
-	};
-	
-	gchar *name[]={
-		"xdotool",
-		NULL,
-	};
-	int i;
-	for (i=0; NULL != name[i]; ++i){
-		gchar cmd[100];
-		sprintf(cmd,"/bin/sh -c which %s\n",name[i]);
-		g_shell_parse_argv(cmd, NULL, &argv, NULL);
-		g_spawn_async(NULL, argv, NULL, G_SPAWN_DO_NOT_REAP_CHILD, NULL, NULL, &pid, NULL);
-		g_child_watch_add(pid, (GChildWatchFunc)check_for_tools_exit, GINT_TO_POINTER(flags[i]));
-		g_strfreev(argv);
-	}
-}
+
 /***************************************************************************/
 /**  Called when Edit is selected from history menu 
 \n\b Arguments:
@@ -744,7 +705,7 @@ static void edit_selected(GtkMenuItem *menu_item, gpointer user_data)
 	struct history_info *h=(struct history_info*)user_data;
 	GList* element=NULL;
 	struct history_item *c=NULL;
-	gint rslt;
+	gint rslt,itype,iflags;
 	if(NULL ==h)
 		return;
 	/*g_fprintf(stderr,"edit_selected call\n");  */
@@ -753,7 +714,7 @@ static void edit_selected(GtkMenuItem *menu_item, gpointer user_data)
 	  gchar* current_clipboard_text=NULL;
 		/*g_fprintf(stderr,"current..."); */
     /* Create clipboard buffer and set its text */
-    GtkTextBuffer* clipboard_buffer = gtk_text_buffer_new(NULL);
+    GtkTextBuffer* text_buffer = gtk_text_buffer_new(NULL);
 		if(h->wi.index != -1){/**use index as pointer to text  */
 			element = g_list_nth(history_list, h->wi.index);
 			if(NULL == element){
@@ -766,7 +727,7 @@ static void edit_selected(GtkMenuItem *menu_item, gpointer user_data)
 				return;
 			}
 			current_clipboard_text=p_strdup(c->text);
-			/*g_fprintf(stderr,"%s ",c->text);  */
+			g_fprintf(stderr,"Got Text frmo wi.index ele %p '%s'",element,c->text);  
 			
 		}	else{
 			h->wi.tmp1=0;
@@ -779,12 +740,11 @@ static void edit_selected(GtkMenuItem *menu_item, gpointer user_data)
 				current_clipboard_text = gtk_clipboard_wait_for_text(clipboard);
 			}	
 		}
-		
     
     if (current_clipboard_text != NULL)   {
-		/*g_fprintf(stderr,"Got '%s'\n",current_clipboard_text); */
+		g_fprintf(stderr,"Got '%s' for edit text\n",current_clipboard_text); 
 			TRACE(g_fprintf(stderr,"Got '%s'\n",current_clipboard_text));
-      gtk_text_buffer_set_text(clipboard_buffer, current_clipboard_text, -1);
+      gtk_text_buffer_set_text(text_buffer, current_clipboard_text, -1);
     }	 else	 {
 			g_fprintf(stderr,"NULL text to edit. Nothing to do.\n");
 			return;
@@ -808,7 +768,7 @@ static void edit_selected(GtkMenuItem *menu_item, gpointer user_data)
                                    GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
     
     gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), scrolled_window, TRUE, TRUE, 2);
-    GtkWidget* text_view = gtk_text_view_new_with_buffer(clipboard_buffer);
+    GtkWidget* text_view = gtk_text_view_new_with_buffer(text_buffer);
     gtk_text_view_set_left_margin((GtkTextView*)text_view, 2);
     gtk_text_view_set_right_margin((GtkTextView*)text_view, 2);
     gtk_container_add((GtkContainer*)scrolled_window, text_view);
@@ -821,9 +781,9 @@ static void edit_selected(GtkMenuItem *menu_item, gpointer user_data)
 			GtkTextIter start, end;
 			guint32 slen;
 			gchar *ntext=NULL;
-      gtk_text_buffer_get_start_iter(clipboard_buffer, &start);
-      gtk_text_buffer_get_end_iter(clipboard_buffer, &end);
-      gchar* new_clipboard_text = gtk_text_buffer_get_text(clipboard_buffer, &start, &end, TRUE);
+      gtk_text_buffer_get_start_iter(text_buffer, &start);
+      gtk_text_buffer_get_end_iter(text_buffer, &end);
+      gchar* new_clipboard_text = gtk_text_buffer_get_text(text_buffer, &start, &end, TRUE);
 			slen=strlen(new_clipboard_text);
 			/*g_fprintf(stderr,"New Txt='%s'\n",new_clipboard_text); */
 			if(0 == slen ){ /**just delete history entry, and set next in order to clipboard  */
@@ -832,7 +792,7 @@ static void edit_selected(GtkMenuItem *menu_item, gpointer user_data)
 					gtk_clipboard_clear(clipboard);
 					goto finish;
 				}
-				/*g_fprintf(stderr,"Freeing %p\n",element->data); */
+				g_fprintf(stderr,"Freeing %p\n",element->data); 
 				g_free(element->data);
 				if(element == history_list && NULL != element->next ){ /**set clipboard(s) to next entry  */
 					c=(struct history_item *)(element->next->data);	
@@ -844,28 +804,29 @@ static void edit_selected(GtkMenuItem *menu_item, gpointer user_data)
 				if(NULL != ntext)/**set clipboards to next entry FIXME: Need logic here as to which clip(s) to update.  */
 	      	update_clipboards(ntext, H_MODE_LIST);
 			}else {/**Text is not blank  */
-				/*g_fprintf(stderr,"Try to add '%s'\n",new_clipboard_text); */
+				g_fprintf(stderr,"Try to add '%s'\n",new_clipboard_text); 
 				gint16 type;
 				if(!p_strcmp(new_clipboard_text,current_clipboard_text)) /**same text, nothing to do  */
 					goto finish; 
-				if( NULL != c)
-					type=c->type;
-				else 
-					type=0;
-				/**save changes to the history - deallocate current entry, and add new entry \UffffffffÊ*/
+				if( NULL != c){
+					itype=c->type;
+					iflags=c->flags;
+				}else {
+					itype=CLIP_TYPE_TEXT;
+					iflags=0;
+				}
+					
+				/**save changes to the history - deallocate current entry, and add new entry */
 				/**FIXME: Need to filter this through existing & valid text? */
-				struct history_item *n=new_clip_item(type,slen, new_clipboard_text);
-				
-				if(NULL != c)
-					n->flags=c->flags;
 				if(NULL != element && NULL != element->data){
-					/*g_fprintf(stderr,"ele!null\n"); */
+					struct history_item *d=(struct history_item *)(element->data);
+					g_fprintf(stderr,"ele!null. Free %p '%s'\n",element,d->text); 
 					g_free(element->data);
 					history_list=g_list_delete_link(history_list, element);
-					history_list=g_list_prepend(history_list,c);
+					append_item(new_clipboard_text,HIST_DEL|HIST_CHECKDUP|HIST_KEEP_FLAGS,iflags,itype);
 				}else{
 					gint flags=0;
-					/*g_fprintf(stderr,"ele IS null\n"); */
+					g_fprintf(stderr,"ele IS null\n"); 
 					/**delete the edited entry - sets the flags for the entry. */
 					gint node=is_duplicate(current_clipboard_text, 1, &flags);
 					element=g_list_nth(history_list,node);
@@ -875,9 +836,6 @@ static void edit_selected(GtkMenuItem *menu_item, gpointer user_data)
 					What about setting up an indicator that on next tic, if history is not active, we update?
 					*/
 				}
-				ignore_clipboard=2; /**tell ticker to not fire yet, but allow the update to go through.  */
-			  update_clipboards(n->text, H_MODE_NEW);
-				
 			}
 finish:			
 			if(NULL != new_clipboard_text)
@@ -2055,19 +2013,9 @@ GtkWidget *create_parcellite_menu(guint button, guint activate_time)
 }
 
 /* Called when status icon is right-clicked */
-static void  show_parcellite_menu(GtkStatusIcon *status_icon, guint button, guint activate_time,  gpointer data)
+static inline void  show_parcellite_menu(GtkStatusIcon *status_icon, guint button, guint activate_time,  gpointer data)
 {
 	create_parcellite_menu(button, activate_time);
-}
-
-/***************************************************************************/
-/** .
-\n\b Arguments:
-\n\b Returns:
-****************************************************************************/
-gboolean show_parcellite_menu_wrapper(gpointer data)
-{
-	create_parcellite_menu(0, gtk_get_current_event_time());
 }
 
 /***************************************************************************/
@@ -2274,10 +2222,12 @@ int main(int argc, char *argv[])
   
   /* Initiate GTK+ */
   gtk_init(&argc, &argv);
-	pref_mapper(pref2int_map,PM_INIT);
+	/**this just maps to the static struct, prefs do not need to be loaded  */
+	pref_mapper(pref2int_map,PM_INIT); 
 	check_dirs(); /**make sure we set up default RC if it doesn't exist.  */
    /* Read preferences */
   read_preferences();
+	
 #ifdef	DEBUG_UPDATE
 	if(get_pref_int32("debug_update")) debug_update=1;
 #endif
