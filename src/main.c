@@ -2275,6 +2275,7 @@ int main(int argc, char *argv[])
   /* Initiate GTK+ */
   gtk_init(&argc, &argv);
 	pref_mapper(pref2int_map,PM_INIT);
+	check_dirs(); /**make sure we set up default RC if it doesn't exist.  */
    /* Read preferences */
   read_preferences();
 #ifdef	DEBUG_UPDATE

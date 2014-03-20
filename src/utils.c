@@ -68,10 +68,11 @@ gchar *p_strdup( const gchar *str )
 }
 
 /* Creates program related directories if needed */
-void check_dirs()
+void check_dirs( void )
 {
   gchar* data_dir = g_build_path(G_DIR_SEPARATOR_S, g_get_user_data_dir(), DATA_DIR,  NULL);
   gchar* config_dir = g_build_path(G_DIR_SEPARATOR_S, g_get_user_config_dir(), CONFIG_DIR,  NULL);
+	gchar *rc_file;
 	
   /* Check if data directory exists */
   if (!g_file_test(data_dir, G_FILE_TEST_EXISTS))
@@ -87,8 +88,32 @@ void check_dirs()
     if (g_mkdir_with_parents(config_dir, 0755) != 0)
       g_warning(_("Couldn't create directory: %s\n"), config_dir);
   }
-  /* Cleanup */
-  g_free(data_dir);
+	/**now see if we need to setup any config files  */
+	rc_file = g_build_filename(g_get_user_config_dir(), PREFERENCES_FILE, NULL);
+	if(0 != access(rc_file,  R_OK)){/**doesn't exist */
+		const gchar * const *sysconfig=g_get_system_config_dirs();	/**NULL-terminated list of strings  */
+		gchar **d,*sysrc;
+		for (d=sysconfig; NULL!= *d; ++d){
+			sysrc=g_build_filename(*d, PREFERENCES_FILE, NULL);
+			g_fprintf(stderr,"Looking in '%s'\n",sysrc);
+			if(0 == access(sysrc,  F_OK)){/**exists */
+				GError *e=NULL;
+				GFile *src=g_file_new_for_path(sysrc);
+				GFile *dst=g_file_new_for_path(rc_file);
+				g_fprintf(stderr,"Using parcelliterc from '%s', place in '%s'\n",sysrc,rc_file);
+				if(FALSE ==g_file_copy(src,dst,G_FILE_COPY_NONE,NULL,NULL,NULL,&e)){
+					g_fprintf(stderr,"Failed to copy. %s\n",e->message);
+				}
+				g_free(sysrc);
+				goto done;
+			}	
+			g_free(sysrc);
+		}
+	}	
+done:
+	/* Cleanup */
+	g_free(rc_file);
+	g_free(data_dir);
   g_free(config_dir);
 }
 
