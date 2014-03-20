@@ -17,6 +17,7 @@
  */
 
 #include "parcellite.h"
+#include <sys/wait.h>
 #define MAX_HISTORY 1000
 
 #define INIT_HISTORY_KEY      NULL
@@ -76,6 +77,7 @@ struct myadj align_line_lim={5, DEF_ITEM_LENGTH_MAX, 1, 5};
 struct pref_item {
 	gchar *name;		/**name/id to find pref  */
 	gint32 val;			/**int val  */
+	float fval;
 	gchar *cval;	 /**char val  */
 	GtkWidget *w;	 /**widget in menu  */
 	gint type;		/**PREF_TYPE_  */
@@ -90,7 +92,13 @@ static struct pref_item dummy[2];
 static void check_toggled(GtkToggleButton *togglebutton, gpointer user_data);
 static void search_toggled(GtkToggleButton *b, gpointer user);
 static gint dbg=0;
-
+int tool_bitfield=0;
+struct pref2int *pref2int_mapper=NULL;
+struct tool_flag tool_flags[]={
+	{.flag=TOOL_XDOTOOL,.name="xdotool"},
+	{.flag=0,.name=NULL },
+	/*{.flag=,.name= }, */
+};
 /**hot key list, mainly for easy sanity checks.  */
 struct keys keylist[]={
 	{.name="menu_key",.keyval=DEF_MENU_KEY,.keyfunc=(void *)menu_hotkey},
@@ -116,6 +124,7 @@ struct pref_item myprefs[]={
   {.adj=&align_hist_xy,.cval=NULL,.sig=NULL,.sec=PREF_SEC_HIST,.name="history_y",.type=PREF_TYPE_SPIN|PREF_TYPE_SINGLE_LINE,.desc="<b>Y</b>",.tip="Position in pixels from the top of the screen",.val=1},
 	{.adj=&align_hist_lim,.cval=NULL,.sig=NULL,.sec=PREF_SEC_HIST,.name="history_limit",.type=PREF_TYPE_SPIN,.desc="Items in history",.tip="Maximum number of clipboard entries to keep",.val=DEF_HISTORY_LIMIT},
   {.adj=&align_data_lim,.cval=NULL,.sig=NULL,.sec=PREF_SEC_HIST,.name="data_size",.type=PREF_TYPE_SPIN,.desc="Max Data Size(MB)",.tip="Maximum data size of entire history list",.val=0},
+  {.adj=&align_hist_lim,.cval=NULL,.sig=NULL,.sec=PREF_SEC_HIST,.name="item_size",.type=PREF_TYPE_SPIN,.desc="Max Item Size(MB)",.tip="Maximum data size of one item",.val=0},
 	{.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_HIST,.name="nop",.type=PREF_TYPE_SPACER,.desc=" ",.tip=NULL},
 	{.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_HIST,.name="automatic_paste",.type=PREF_TYPE_TOGGLE|PREF_TYPE_SINGLE_LINE,.desc="Auto Paste",.tip="If checked, will use xdotool to paste wherever the mouse is.\nNOTE! Package xdotool MUST BE INSTALLED for this to work.",.val=0},
 	{.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_HIST,.name="auto_key",.type=PREF_TYPE_TOGGLE|PREF_TYPE_SINGLE_LINE,.desc="Key",.tip="If checked, will use Ctrl-V paste.",.val=0},
@@ -168,7 +177,43 @@ struct pref_item myprefs[]={
 
 GtkListStore* actions_list;
 GtkTreeSelection* actions_selection;
-struct pref2int *pref2int_mapper=NULL;
+
+/***************************************************************************/
+/** Set up which tools are available on the system.
+\n\b Arguments:
+\n\b Returns:
+****************************************************************************/
+static void check_for_tools_exit(GPid pid, gint status, gpointer data)
+{
+	int flag= GPOINTER_TO_INT(data);
+  g_spawn_close_pid(pid);
+	if( WIFEXITED(status) ){
+		if(0 ==WEXITSTATUS(status) )
+			tool_bitfield|=flag;
+		
+	}
+	/*g_fprintf(stderr,"Flag 0x%04x, status %d, EXIT %d STAT %d\n",flag,status,WIFEXITED(status),WEXITSTATUS(status) ); */
+		
+}
+/***************************************************************************/
+/** Check for installed tools and set flags accordingly.
+\n\b Arguments:
+\n\b Returns:
+****************************************************************************/
+void check_for_tools(void )
+{
+	GPid pid;
+  gchar **argv;
+	int i;
+	for (i=0; NULL != tool_flags[i].name; ++i){
+		gchar cmd[100];
+		sprintf(cmd,"/bin/sh -c 'which %s'>/dev/null\n",tool_flags[i].name);
+		g_shell_parse_argv(cmd, NULL, &argv, NULL);
+		g_spawn_async(NULL, argv, NULL, G_SPAWN_DO_NOT_REAP_CHILD, NULL, NULL, &pid, NULL);
+		g_child_watch_add(pid, (GChildWatchFunc)check_for_tools_exit, GINT_TO_POINTER(tool_flags[i].flag));
+		g_strfreev(argv);
+	}
+}
 
 /***************************************************************************/
 /** .
@@ -302,6 +347,32 @@ gint32 get_pref_int32 (char *name)
 		return -1;
 	return p->val;
 }
+/***************************************************************************/
+/** Set the float value of name.
+\n\b Arguments:
+\n\b Returns:
+****************************************************************************/
+int set_pref_float(char *name, float fval)
+{
+	struct pref_item *p=get_pref(name);
+	if(NULL == p)
+		return -1;
+	p->fval=fval;
+	return 0;
+}
+
+/***************************************************************************/
+/** get the float value of name.
+\n\b Arguments:
+\n\b Returns:
+****************************************************************************/
+float get_pref_float (char *name)
+{
+	struct pref_item *p=get_pref(name);
+	if(NULL == p)
+		return -1;
+	return p->fval;
+}
 
 /***************************************************************************/
 /** set the char *value of string.
@@ -427,6 +498,7 @@ void check_sanity(void)
 {
 	gint32 x,y;
 	gchar *val;
+	check_for_tools(); /**update the list of tools parcellite needs.  */
 	postition_history(NULL,&x,&y,NULL, (gpointer)1);
   if(get_pref_int32("history_x")>x) set_pref_int32("history_x",x);
   if(get_pref_int32("history_y")>y) set_pref_int32("history_y",y);
@@ -450,11 +522,15 @@ void check_sanity(void)
 	  set_pref_int32("persistent_on_top",0);
 	}
 	if(get_pref_int32("automatic_paste")){
-	
-		if(get_pref_int32("auto_key") && get_pref_int32("auto_mouse"))
-			set_pref_int32("auto_key",0);
-		if(!get_pref_int32("auto_key") && !get_pref_int32("auto_mouse"))
-			set_pref_int32("auto_mouse",1);
+		if(!(tool_bitfield&TOOL_XDOTOOL)){ 
+			set_pref_int32("automatic_paste",0);
+			show_gtk_dialog("xdotool is not installed\n\nthis will not function until it is.","xdotool Not Installed" ); 
+		} else{
+			if(get_pref_int32("auto_key") && get_pref_int32("auto_mouse"))
+				set_pref_int32("auto_key",0);
+			if(!get_pref_int32("auto_key") && !get_pref_int32("auto_mouse"))
+				set_pref_int32("auto_mouse",1);	
+		}
 	}
 }
 /* Apply the new preferences */
@@ -475,6 +551,7 @@ static void apply_preferences()
 				break;
 			case PREF_TYPE_SPIN:
 				myprefs[i].val=gtk_spin_button_get_value_as_int((GtkSpinButton*)myprefs[i].w);
+				myprefs[i].fval=(float)gtk_spin_button_get_value((GtkSpinButton*)myprefs[i].w);
 				break;
 			case PREF_TYPE_COMBO:
 				myprefs[i].val=gtk_combo_box_get_active((GtkComboBox*)myprefs[i].w) + 1;
