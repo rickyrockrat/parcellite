@@ -57,7 +57,7 @@ void save_history();
 struct history_item *new_clip_item(gint type, guint32 len, void *data);
 gint is_duplicate(gchar* item, int mode,int *type);
 
-void append_item(gchar* item, int checkdup);
+void append_item(gchar* item, int checkdup, gint iflags, gint itype);
 
 void truncate_history();
 

@@ -357,7 +357,7 @@ gint is_duplicate(gchar* item, int mode, gint *flags)
 \n\b Arguments:
 \n\b Returns:
 ****************************************************************************/
-void append_item(gchar* item, int checkdup)
+void append_item(gchar* item, int checkdup, gint iflags, gint itype)
 {
 	gint flags=0,node=-1;
 	GList *element=NULL;
@@ -384,7 +384,9 @@ void append_item(gchar* item, int checkdup)
 		if(node > -1 && (checkdup & HIST_KEEP_FLAGS) ){
 			c->flags=flags;
 			/*g_printf("Restoring 0x%02X '%s'\n",c->flags,c->text);  */
-		}		
+		}	else
+			c->flags=iflags;
+		c->type=itype;
 	}
 	
 
