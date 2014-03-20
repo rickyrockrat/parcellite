@@ -46,7 +46,10 @@ gchar *p_strdup( const gchar *str )
   size_t l,x;
   if(NULL == str)
     return NULL;
-	x=get_pref_int32("data_size")*1000000; 
+	x=get_pref_int32("item_size")*1000000; 
+	l=get_pref_int32("data_size")*1000000; 
+	if(l>0 && l<x) /**whichever is smaller, limit.  */
+		x=l;
   if(0 == x)
     return g_strdup(str);
 		/**use the following to test truncation  */
@@ -892,4 +895,22 @@ void close_fifos(struct p_fifo *f)
 }
 
 
+/***************************************************************************/
+/** .
+\n\b Arguments:
+\n\b Returns:
+****************************************************************************/
+void show_gtk_dialog(gchar *message, gchar *title)
+{
+GtkWidget *dialog;
+	if(NULL == message || NULL == title)
+		return;
+	dialog= gtk_message_dialog_new(NULL,GTK_DIALOG_DESTROY_WITH_PARENT,
+	            GTK_MESSAGE_WARNING,  GTK_BUTTONS_OK,
+	            message,NULL);
+	gtk_window_set_title(GTK_WINDOW(dialog), title ); 
+	gtk_widget_show_all(dialog);
+	gtk_dialog_run(GTK_DIALOG(dialog));
+	gtk_widget_destroy(dialog);	
+}
 
