@@ -10,6 +10,8 @@ V1.1.8 Wednsday, October 16, 2013
  +Added pref_mapper that maps prefs to integer values so we don't have to string compares
   in main loop. Should decrease CPU cycles considerably in the ticker.
  +Added ability to use system-wide XDG config file on first startup.
+ +Added dialog popup if auto-paste is checked and xdotool does not exist.
+ +Added item_limit (which is the same thing as data_size) which limits per-item size.
  
 V1.1.7 Tuesday, October 15, 2013
  +Added remote i386 build and upload to sourceforge.
