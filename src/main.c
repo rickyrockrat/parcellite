@@ -596,6 +596,8 @@ gboolean check_for_appindictor( gpointer data)
 			return FALSE;
 		}
 	}
+	if (1 == (int)data)/*short timer, don't call again, bug fix 118*/
+		return FALSE;
 	return TRUE;
 }
 #endif
@@ -2143,10 +2145,10 @@ static void parcellite_init()
 	}
 	
   g_timeout_add(CHECK_INTERVAL, check_clipboards_tic, NULL);  
-#ifdef HAVE_APPINDICATOR
-	check_for_appindictor(NULL);
-	if(!have_appindicator) /**maybe it slept in, check for it every 30 seconds.  */
-		g_timeout_add(CHECK_APPINDICATOR_INTERVAL, check_for_appindictor, NULL);  
+#ifdef HAVE_APPINDICATOR 
+	/* This closes bug 118, menu showing up at launch*/
+	g_timeout_add(500, check_for_appindictor, (void *)(1));
+	g_timeout_add(CHECK_APPINDICATOR_INTERVAL, check_for_appindictor, NULL);
 #endif
   
   /* Bind global keys */
