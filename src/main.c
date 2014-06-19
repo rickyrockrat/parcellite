@@ -133,6 +133,8 @@ static int cmd_mode=CMODE_ALL; /**both clipboards  */
 #define H_MODE_LAST  4 /**just return the last updated value.  */
 #define H_MODE_IGNORE 5 /**just put it on the clipboard, do not process 
                        and do not add to hist list  */
+#define H_MODE_EMPTY_MASK 0x100 /**debug, see line 399  */
+#define H_MODE_CHANGED_MASK 0x200 /**debug, see line 399  */
 
 #define EDIT_MODE_USE_RIGHT_CLICK 1 /**used in edit dialog creation to determine behaviour. 
                                     If this is set, it will edit the entry, and replace it in the history.  */
@@ -174,16 +176,17 @@ int p_strcmp (const char *str1, const char *str2)
 
 /***************************************************************************/
 /** Process the text based on our preferences.
+WARNING! This modifies ntext!
 \n\b Arguments:
 \n\b Returns: processed text, or NULL if it is invalid.
 ****************************************************************************/
-gchar *process_new_item(GtkClipboard *clip,gchar *ntext)
+gchar *process_new_item(GtkClipboard *clip,gchar *ntext, int *mod)
 {
-	glong len;
+	glong len,nlen;
 	gchar *rtn=NULL;
+	int i=0;
 	if(NULL == ntext)
 		return NULL;
-	
 	
 /**we now check our options...  */		
 	/*printf("opt\n"); fflush(NULL); */
@@ -206,26 +209,40 @@ gchar *process_new_item(GtkClipboard *clip,gchar *ntext)
 	}
 	/**set the clipboard to the last entry - effectively deleting this entry */
 	goto done;
-	
+ if(NULL != mod)
+ 	*mod=0;
  process:  /**now process the text.  */
 	/*printf("proc\n"); fflush(NULL); */
   len=strlen(ntext);/*g_utf8_strlen(ntext,-1); */
-  len= validate_utf8_text(ntext, len);
-	if(len){
+  nlen= validate_utf8_text(ntext, len);
+	if(nlen){
 		rtn=ntext;
-		gint i;
 		if(trim_newline){
 			gchar *c;
 			for (c=ntext;*c;){
-				if(iscntrl(*c))
+				if(iscntrl(*c)){
 					*c=' ';
+					++i;
+				}
 				c=g_utf8_next_char(c);
 			}	
 		}
 			
-		if( trim_wspace_begend )
+		if( trim_wspace_begend ) {
 			ntext=g_strstrip(ntext);
-	}	
+			if(NULL != mod && 0 == i && len == nlen){
+				if(strlen(ntext) != len)
+					++i;	
+			}
+		}
+		
+	}else
+		++i;
+	if(NULL != mod ){
+		if(i || nlen != len)
+			*mod=1;
+	}
+	
 done:
 	return rtn;	
 }
@@ -236,16 +253,16 @@ done:
 \n\b Arguments:
 \n\b Returns:	text that was updated or NULL if not.
 ****************************************************************************/
-gchar *_update_clipboard (GtkClipboard *clip, gchar *n, gchar **old, int set)
+gchar *_update_clipboard (GtkClipboard *clip, gchar *n, gchar **old, int set, int mode)
 {
 	
 	/*return NULL; */
 	if(NULL != n)	{
 #ifdef DEBUG_UPDATE
 	 	if(clip==primary)
-			g_printf("set PRI to %s\n",n);
+			g_printf("%03x-set PRI to '%s'\n",mode,n);
 		else
-			g_printf("set CLI to %s\n",n);
+			g_printf("%03x-set CLI to '%s'\n",mode,n);
 #endif
 		if( set)
 			gtk_clipboard_set_text(clip, n, -1);
@@ -318,7 +335,7 @@ gchar *is_clipboard_empty(GtkClipboard *clip)
 /***************************************************************************/
 /** Update one clipboard at a time.
 \n\b Arguments:
-\n\b Returns:
+\n\b Returns: text that was placed in history or NULL
 ****************************************************************************/
 gchar *update_clipboard(GtkClipboard *clip,gchar *intext,  gint mode)
 {
@@ -326,6 +343,7 @@ gchar *update_clipboard(GtkClipboard *clip,gchar *intext,  gint mode)
 	static gchar *ptext=NULL;
 	static gchar *ctext=NULL;
 	static gchar *last=NULL; /**last text change, for either clipboard  */
+	int mod;
 	gchar **existing, *changed=NULL;
 	gchar *processed;
 	GdkModifierType button_state;
@@ -350,7 +368,7 @@ gchar *update_clipboard(GtkClipboard *clip,gchar *intext,  gint mode)
 			g_free(*existing);
 		*existing=NULL;
 		if(NULL != intext)
-			_update_clipboard(clip,intext,NULL,1);
+			_update_clipboard(clip,intext,NULL,1,mode);
 /*		gtk_clipboard_set_text(clip, intext, -1); */
 		return NULL;
 	}
@@ -359,6 +377,8 @@ gchar *update_clipboard(GtkClipboard *clip,gchar *intext,  gint mode)
 		(clip == primary && !use_primary) ||
 		(clip == clipboard && !use_copy))
 			return NULL;
+	
+	
 	
 	if( H_MODE_CHECK==mode &&clip == primary){/*fix auto-deselect of text in applications like DevHelp and LyX*/
    	gdk_window_get_pointer(NULL, NULL, NULL, &button_state);
@@ -371,13 +391,13 @@ gchar *update_clipboard(GtkClipboard *clip,gchar *intext,  gint mode)
 	/*g_printf("BS=0x%02X ",button_state); */
 	if( H_MODE_IGNORE == mode){	/**ignore processing and just put it on the clip.  */
 		DTRACE(g_fprintf(stderr,"%sJustSet '%s'\n",clip==clipboard?"CLI":"PRI",intext)); 
-		_update_clipboard(clip,intext,NULL,1);
+		_update_clipboard(clip,intext,NULL,1,mode);
 		/*gtk_clipboard_set_text(clip, intext, -1); */
 		return intext;
 	}
 	if(H_MODE_LIST == mode && 0 != p_strcmp(intext,*existing)){ /**just set clipboard contents. Already in list  */
 		DTRACE(g_fprintf(stderr,"%sInList '%s' ex '%s'\n",clip==clipboard?"CLI":"PRI",intext,*existing)); 
-		last=_update_clipboard(clip,intext,existing,1);
+		last=_update_clipboard(clip,intext,existing,1,mode);
 		if( NULL != last){/**maintain persistence, if set  */
 			append_item(last,current_on_top?HIST_DEL|HIST_CHECKDUP|HIST_KEEP_FLAGS:0,0,CLIP_TYPE_TEXT);
 		}
@@ -389,21 +409,23 @@ gchar *update_clipboard(GtkClipboard *clip,gchar *intext,  gint mode)
 		if(0 == validate_utf8_text(changed,strlen(changed)))
 			goto done;
 	}
+	/**handle empty clipboard  */
+	if(NULL == changed){/**it is empty  */
+		if(NULL != *existing && 1 == restore_empty) {
+			DTRACE(g_fprintf(stderr,"%sclp empty, ",clip==clipboard?"CLI":"PRI"));
+			/* Only recover lost contents if there isn't any other type of content in the clipboard */
+			if (!content_exists(clip)) {
+				DTRACE(g_fprintf(stderr,"set to '%s'\n",*existing));  
+				_update_clipboard(clip, *existing,NULL,1,mode|H_MODE_EMPTY_MASK);
+	    	/*gtk_clipboard_set_text(clip, *existing, -1); */
+				last=*existing;
+			}	else
+				DTRACE(g_fprintf(stderr,"Left Null\n"));  
+			return *existing;
+	  }
+		return NULL; /**Nothing to do  */
+	}
 	
-	if(NULL != *existing && NULL == changed && 1 == restore_empty) {
-		DTRACE(g_fprintf(stderr,"%sclp empty, ",clip==clipboard?"CLI":"PRI"));
-		/* Only recover lost contents if there isn't any other type of content in the clipboard */
-		if (!content_exists(clip)) {
-			DTRACE(g_fprintf(stderr,"set to '%s'\n",*existing));  
-			_update_clipboard(clip, *existing,NULL,1);
-    	/*gtk_clipboard_set_text(clip, *existing, -1); */
-			last=*existing;
-		}	else
-			DTRACE(g_fprintf(stderr,"Left Null\n"));  
-		return *existing;
-  }
-	if(NULL == changed)
-		return NULL;																	
 	/**check for changed clipboard content - in all modes */
 	/*changed=gtk_clipboard_wait_for_text(clip); */
 	if(0 == p_strcmp(*existing, changed) ){
@@ -411,13 +433,17 @@ gchar *update_clipboard(GtkClipboard *clip,gchar *intext,  gint mode)
 		changed=NULL;
 	}	else {
 		DTRACE(g_fprintf(stderr,"%sclp changed: ex '%s' is '%s' - ",clip==clipboard?"CLI":"PRI",*existing,changed)); 
-		if(NULL != (processed=process_new_item(clip,changed)) ){ 
-			/**only check processed/changed. No need to update this clip, since the text is already there.  */
-			 if(0 == p_strcmp(processed,changed)) set=0;
-			else set=1; 
-			DTRACE(g_fprintf(stderr,"set=%d. p='%s'\n",set,processed));
-			/*set=1; */ /** Always set the text.*/
-			last=_update_clipboard(clip,processed,existing,set);
+		if(NULL != (processed=process_new_item(clip,changed, &mod)) ){ 
+			/**only check processed/changed. No need to update this clip, since the text is already there.  
+			   If we have identical lines except for whitespace, we also have to set the clipboard.
+			*/
+			if(0 == p_strcmp(processed,*existing) && 0 == mod) set=0;
+			else {
+				set=1; 
+				DTRACE(g_fprintf(stderr,"set=%d. p='%s'\n",set,processed));
+				/*set=1; */ /** Always set the text.*/
+			}	
+			last=_update_clipboard(clip,processed,existing,set,mode|H_MODE_CHANGED_MASK);
 		}else {/**restore clipboard - new item is binary/garbage/empty */
 			gchar *d;
 			
@@ -429,7 +455,7 @@ gchar *update_clipboard(GtkClipboard *clip,gchar *intext,  gint mode)
 				d=*existing;
 			if(NULL != d){
 				DTRACE(g_fprintf(stderr,"\n%srestore clp '%s', ex='%s'\n",clip==clipboard?"CLI":"PRI",d,*existing)); 
-				last=_update_clipboard(clip,d,existing,1);
+				last=_update_clipboard(clip,d,existing,1,mode);
 			}
 				
 		}
@@ -447,11 +473,11 @@ gchar *update_clipboard(GtkClipboard *clip,gchar *intext,  gint mode)
 	*/		
 	
 	if(H_MODE_NEW==mode){
-		if(NULL != (processed=process_new_item(clip,intext)) ){
+		if(NULL != (processed=process_new_item(clip,intext,&mod)) ){
 /*			g_printf("%sNEW '%s'\n",clipname,processed); */
 			if(0 == p_strcmp(processed,*existing))set=0;
 			else set=1;
-			last=_update_clipboard(clip,processed,existing,set);
+			last=_update_clipboard(clip,processed,existing,set,mode);
 			if(NULL != last)
 				append_item(last,current_on_top?HIST_DEL|HIST_CHECKDUP|HIST_KEEP_FLAGS:0,0,CLIP_TYPE_TEXT);
 		}else 
@@ -555,7 +581,7 @@ void check_clipboards(gint mode)
 		}
 	}
 	ptext=update_clipboard(primary, NULL, H_MODE_CHECK);
-	ctext=update_clipboard(clipboard, NULL, H_MODE_CHECK);
+	ctext=update_clipboard(clipboard, ptext, H_MODE_CHECK);
 	
 	/*g_printf("pt=%s,ct=%s\n",ptext,ctext); */
   /* Synchronization */
@@ -563,7 +589,8 @@ void check_clipboards(gint mode)
   
 		if(NULL==ptext && NULL ==ctext)
 			goto done;
-			last=update_clipboard(NULL, NULL, H_MODE_LAST);
+		last=update_clipboard(NULL, NULL, H_MODE_LAST);
+		/*g_printf("pt=%s,ct=%s, last=%s\n",ptext,ctext,last);  */
 		if( NULL != last && 0 != p_strcmp(ptext,ctext)){
 			/**last is a copy, of things that may be deallocated  */
 			last=strdup(last);
@@ -2015,7 +2042,7 @@ GtkWidget *create_parcellite_menu(guint button, guint activate_time)
 }
 
 /* Called when status icon is right-clicked */
-static inline void  show_parcellite_menu(GtkStatusIcon *status_icon, guint button, guint activate_time,  gpointer data)
+static void  show_parcellite_menu(GtkStatusIcon *status_icon, guint button, guint activate_time,  gpointer data)
 {
 	create_parcellite_menu(button, activate_time);
 }
@@ -2228,8 +2255,7 @@ int main(int argc, char *argv[])
 	pref_mapper(pref2int_map,PM_INIT); 
 	check_dirs(); /**make sure we set up default RC if it doesn't exist.  */
    /* Read preferences */
-  read_preferences();
-	
+  read_preferences();	
 #ifdef	DEBUG_UPDATE
 	if(get_pref_int32("debug_update")) debug_update=1;
 #endif
