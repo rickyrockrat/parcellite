@@ -172,7 +172,7 @@ GList *find_h_item(GList *list,GtkWidget *w, GList *e)
 void add_h_item(struct history_info *h, GtkWidget *w, GList* element, gint which)
 {
 	GList *ele;
-	GList *op;
+	GList *op=NULL;
 	switch(which){
 		case OPERATE_DELETE:
 			op=h->delete_list;
@@ -180,6 +180,10 @@ void add_h_item(struct history_info *h, GtkWidget *w, GList* element, gint which
 		case OPERATE_PERSIST:
 			op=h->persist_list;
 			break;
+	}
+	if(NULL == op){
+		g_fprintf(stderr,"Invalid list '%d'\n",which);
+		return;
 	}
 	struct s_item_info *i;
 	if(NULL == (ele=find_h_item(op,w,element) ) ){
@@ -249,6 +253,7 @@ void remove_deleted_items(struct history_info *h)
 {
 	if(NULL != h && NULL != h->delete_list){/**have a list of items to delete.  */
 		GList *i;
+		g_mutex_lock(hist_lock);
 		/*g_print("Deleting items\n"); */
 		for (i=h->delete_list; NULL != i; i=i->next){
 			struct s_item_info *it=(struct s_item_info *)i->data;
@@ -261,6 +266,7 @@ void remove_deleted_items(struct history_info *h)
 			g_free(it);
 		}
 		h->delete_list=NULL;
+		g_mutex_unlock(hist_lock);
 		if (get_pref_int32("save_history"))
 		  save_history();
 	}	
