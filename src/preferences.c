@@ -63,6 +63,9 @@
 #define PREF_SEC_ACT	5
 #define PREF_SEC_XMISC 6
 
+#define RC_VERSION_NAME "RCVersion"
+#define RC_VERSION      1
+
 struct myadj {
 	gdouble lower;
 	gdouble upper;
@@ -71,7 +74,7 @@ struct myadj {
 };
 
 struct myadj align_hist_xy={1,0,10,100};
-struct myadj align_data_lim={0,1000,1,10};
+struct myadj align_data_lim={0,1000000,1,10};
 struct myadj align_hist_lim={5, MAX_HISTORY, 1, 10};
 struct myadj align_line_lim={5, DEF_ITEM_LENGTH_MAX, 1, 5};
 struct pref_item {
@@ -123,8 +126,8 @@ struct pref_item myprefs[]={
   {.adj=&align_hist_xy,.cval=NULL,.sig=NULL,.sec=PREF_SEC_HIST,.name="history_x",.type=PREF_TYPE_SPIN|PREF_TYPE_SINGLE_LINE,.desc="<b>X</b>",.tip=NULL,.val=1},
   {.adj=&align_hist_xy,.cval=NULL,.sig=NULL,.sec=PREF_SEC_HIST,.name="history_y",.type=PREF_TYPE_SPIN|PREF_TYPE_SINGLE_LINE,.desc="<b>Y</b>",.tip="Position in pixels from the top of the screen",.val=1},
 	{.adj=&align_hist_lim,.cval=NULL,.sig=NULL,.sec=PREF_SEC_HIST,.name="history_limit",.type=PREF_TYPE_SPIN,.desc="Items in history",.tip="Maximum number of clipboard entries to keep",.val=DEF_HISTORY_LIMIT},
-  {.adj=&align_data_lim,.cval=NULL,.sig=NULL,.sec=PREF_SEC_HIST,.name="data_size",.type=PREF_TYPE_SPIN,.desc="Max Data Size(MB)",.tip="Maximum data size of entire history list",.val=0},
-  {.adj=&align_hist_lim,.cval=NULL,.sig=NULL,.sec=PREF_SEC_HIST,.name="item_size",.type=PREF_TYPE_SPIN,.desc="Max Item Size(MB)",.tip="Maximum data size of one item",.val=0},
+  {.adj=&align_data_lim,.cval=NULL,.sig=NULL,.sec=PREF_SEC_HIST,.name="data_size",.type=PREF_TYPE_SPIN,.desc="Max Data Size(KB)",.tip="Maximum data size of entire history list",.val=0},
+  {.adj=&align_hist_lim,.cval=NULL,.sig=NULL,.sec=PREF_SEC_HIST,.name="item_size",.type=PREF_TYPE_SPIN,.desc="Max Item Size(KB)",.tip="Maximum data size of one item",.val=0},
 	{.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_HIST,.name="nop",.type=PREF_TYPE_SPACER,.desc=" ",.tip=NULL},
 	{.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_HIST,.name="automatic_paste",.type=PREF_TYPE_TOGGLE|PREF_TYPE_SINGLE_LINE,.desc="Auto Paste",.tip="If checked, will use xdotool to paste wherever the mouse is.\nNOTE! Package xdotool MUST BE INSTALLED for this to work.",.val=0},
 	{.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_HIST,.name="auto_key",.type=PREF_TYPE_TOGGLE|PREF_TYPE_SINGLE_LINE,.desc="Key",.tip="If checked, will use Ctrl-V paste.",.val=0},
@@ -584,6 +587,7 @@ static void save_preferences()
 	int i;
   /* Create key */
   GKeyFile* rc_key = g_key_file_new();
+	g_key_file_set_integer(rc_key, "rc", RC_VERSION_NAME, RC_VERSION);
   if(0 == get_pref_int32("type_search"))
     set_pref_int32("case_search",0);
   /* Add values */
@@ -633,6 +637,7 @@ void read_preferences()
   GKeyFile* rc_key = g_key_file_new();
   if (g_key_file_load_from_file(rc_key, rc_file, G_KEY_FILE_NONE, NULL)) {
 		int i;
+		i=g_key_file_get_integer(rc_key, "rc", RC_VERSION_NAME,&err); /**this begins in 1.1.8  */
 		/* Load values */
 		for (i=0;NULL != myprefs[i].desc; ++i){
 			if(NULL == myprefs[i].name)
