@@ -46,8 +46,8 @@ gchar *p_strdup( const gchar *str )
   size_t l,x;
   if(NULL == str)
     return NULL;
-	x=get_pref_int32("item_size")*1000000; 
-	l=get_pref_int32("data_size")*1000000; 
+	x=get_pref_int32("item_size")*1000; 
+	l=get_pref_int32("data_size")*1000; 
 	if(l>0 && l<x) /**whichever is smaller, limit.  */
 		x=l;
   if(0 == x)
@@ -95,7 +95,8 @@ void check_dirs( void )
 	rc_file = g_build_filename(g_get_user_config_dir(), PREFERENCES_FILE, NULL);
 	if(0 != access(rc_file,  R_OK)){/**doesn't exist */
 		const gchar * const *sysconfig=g_get_system_config_dirs();	/**NULL-terminated list of strings  */
-		gchar **d,*sysrc;
+		const gchar * const *d;
+		gchar *sysrc;
 		for (d=sysconfig; NULL!= *d; ++d){
 			sysrc=g_build_filename(*d, PREFERENCES_FILE, NULL);
 			g_fprintf(stderr,"Looking in '%s'\n",sysrc);
@@ -764,8 +765,8 @@ int read_fifo(struct p_fifo *f, int which)
 ****************************************************************************/
 int write_fifo(struct p_fifo *f, int which, char *buf, int len)
 {
-	int i, l,fd;
-	l=0;
+	int x,i, l,fd;
+	x=i=l=0;
 	switch(which){
 		case FIFO_MODE_PRI:
 			if(f->dbg) g_fprintf(stderr,"Using pri fifo for write\n");
@@ -782,10 +783,10 @@ int write_fifo(struct p_fifo *f, int which, char *buf, int len)
 	if(NULL ==f || fd <3 || NULL ==buf)
 		return -1;
 	if(f->dbg) g_fprintf(stderr,"writing '%s'\n",buf);
-	while(len){																							
-		i=write(fd,buf,len);
-		if(i>0)
-			len-=i;
+	while(len-i>0){	
+		x=write(fd,&buf[i],len-i);
+		if(x>0)
+			i+=x;
 		++l;
 		if(l>0x7FFE){
 			g_fprintf(stderr,"Maxloop hit\n");
@@ -793,7 +794,7 @@ int write_fifo(struct p_fifo *f, int which, char *buf, int len)
 		}
 			
 	}
-	if( -1 == i){
+	if( -1 == x){
 		if( EAGAIN != errno){
 			perror("write_fifo");
 			return -1;
@@ -801,8 +802,6 @@ int write_fifo(struct p_fifo *f, int which, char *buf, int len)
 	}
 	return 0;
 }
-
-
 
 
 /***************************************************************************/
