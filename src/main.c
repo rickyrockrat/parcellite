@@ -968,8 +968,19 @@ gboolean history_item_right_click_on_cancel (GtkWidget *menuitem, gpointer data)
 {
 	return handle_history_item_right_click(HIST_MOVE_TO_CANCEL,data);
 }
+
 /***************************************************************************/
-/** .
+/** Fixes the right-click history being up when history is deactiviated.
+\n\b Arguments:
+\n\b Returns:
+****************************************************************************/
+void  destroy_right_click_history_cb(GtkWidget *attach_widget, GtkMenu *menu)
+{
+	g_printf("%s:\n",__func__);
+	gtk_widget_destroy	((GtkWidget *) attach_widget);
+}
+/***************************************************************************/
+/** Display the right-click menu. h->menu contains the top-level history window
 \n\b Arguments:
 \n\b Returns:
 if (event->type == GDK_BUTTON_PRESS  &&  event->button == 3)
@@ -993,9 +1004,12 @@ void  history_item_right_click (struct history_info *h, GdkEventKey *e, gint ind
 	}
 	
 	if(get_pref_int32("persistent_history")) {
-		menu = gtk_menu_new();
+		menu = gtk_menu_new(); 
+		gtk_menu_attach_to_widget((GtkMenu *)h->menu,menu,destroy_right_click_history_cb); /**fix  */
+		
 		menuitem = gtk_menu_item_new_with_label("Copy All to Clip");
 	  g_signal_connect(menuitem, "activate", (GCallback) history_item_right_click_on_copy_all, (gpointer)h);
+		
 	  gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuitem);
 		/*g_printf("CreatehistR\n"); */
 		if(NULL != c){
@@ -1008,10 +1022,11 @@ void  history_item_right_click (struct history_info *h, GdkEventKey *e, gint ind
 	
 	  g_signal_connect(menuitem, "activate",(GCallback) history_item_right_click_on_move, (gpointer)h);
 	  gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuitem);
-		
-		menuitem = gtk_menu_item_new_with_label("Edit");
-	  g_signal_connect(menuitem, "activate", (GCallback) history_item_right_click_on_edit, (gpointer)h);
-	  gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuitem);	
+		if(get_pref_int32("rc_edit") ){
+			menuitem = gtk_menu_item_new_with_label("Edit");
+		  g_signal_connect(menuitem, "activate", (GCallback) history_item_right_click_on_edit, (gpointer)h);
+		  gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuitem);	
+		}	
 		
 		menuitem = gtk_menu_item_new_with_label("Cancel");
 	  g_signal_connect(menuitem, "activate", (GCallback) history_item_right_click_on_cancel, (gpointer)h);
@@ -1029,7 +1044,6 @@ void  history_item_right_click (struct history_info *h, GdkEventKey *e, gint ind
 	}else if(get_pref_int32("rc_edit") ){ /**just edit the selected text  */
 		h->wi.tmp1|=EDIT_MODE_USE_RIGHT_CLICK|EDIT_MODE_RC_EDIT_SET;
 		edit_selected((GtkMenuItem *)NULL,(gpointer)h);
-		
 	}
 	
 }
@@ -1742,6 +1756,18 @@ GString* convert_string(GString* s)
 	}
 	return s;
 }
+
+/***************************************************************************/
+/** .
+\n\b Arguments:
+u is history.
+\n\b Returns:
+****************************************************************************/
+void destroy_history_menu(GtkMenuShell *menu, gpointer u)
+{
+	g_printf("%s:\n",__func__);
+	gtk_widget_destroy((GtkWidget *)menu);
+}
 /***************************************************************************/
 /**  Called when status icon is left-clicked or action key hit.
 \n\b Arguments:
@@ -1773,6 +1799,7 @@ static gboolean show_history_menu(gpointer data)
 	h.delete_list=NULL;
 	h.persist_list=NULL;
 	h.wi.tmp1=0; /** used to tell edit what we are to edit  */
+	/*g_printf("h.menu=%p\n",menu); */
 	/*g_print("histmen %p\n",menu); */
 	my_item_event(NULL,NULL,(gpointer)&h); /**init our function  */
 	item_selected(NULL,(gpointer)&h);	/**ditto  */
@@ -1784,6 +1811,7 @@ static gboolean show_history_menu(gpointer data)
 	/**Trap key events  */
 /*	g_signal_connect((GObject*)menu, "key-release-event", (GCallback)key_release_cb, (gpointer)&h); */
   g_signal_connect((GObject*)menu, "event", (GCallback)key_release_cb, (gpointer)&h);
+	
 	/**trap mnemonic events  */
 	/*g_signal_connect((GObject*)menu, "mnemonic-activate", (GCallback)key_release_cb, (gpointer)menu);  */
 
@@ -1971,6 +1999,7 @@ next_loop:
   }
 	g_list_free(lhist);
 	g_list_free(persistent);
+	g_signal_connect(menu,"deactivate",(GCallback)destroy_history_menu,(gpointer)&h);
   /* Popup the menu... */
   gtk_widget_show_all(menu);
   gtk_menu_popup((GtkMenu*)menu, NULL, NULL, get_pref_int32("history_pos")?postition_history:NULL, NULL, 1, gtk_get_current_event_time());

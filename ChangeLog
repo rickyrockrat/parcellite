@@ -1,4 +1,4 @@
-V1.1.8 Wednsday, October 16, 2013
+V1.1.8 Wednsday, June 18, 2014
  +Fixed bug 107, segfault when action key missing in parcelliterc.
  +Fixed bug 108, red search-as-you-type with super-K key.
  +Fixed bug 109, segfault when action key missing and history key changed.
@@ -12,6 +12,12 @@ V1.1.8 Wednsday, October 16, 2013
  +Added ability to use system-wide XDG config file on first startup.
  +Added dialog popup if auto-paste is checked and xdotool does not exist.
  +Added item_limit (which is the same thing as data_size) which limits per-item size.
+ +Fixed syncronization bug when trim whitespace was selected and proccessed entry was already in history.
+ +Fix of bug in write_fifo.
+ +Fix item and data size to correct scaling, and change to KB for better granularity.
+ +Fix bug 121, context menu stays up after history menu is deactivated.
+ +Fix new bug with memory leak by destroying history menu every time, related to bug 121.
+ +Fix minor bug where edit shows up on right-click even when user disabled it.
  
 V1.1.7 Tuesday, October 15, 2013
  +Added remote i386 build and upload to sourceforge.
@@ -29,6 +35,8 @@ V1.1.7 Tuesday, October 15, 2013
  +Changed append_item so it is not de-allocating/reallocating memory, instead just repositions entry in list.
  +Fixed two or more action keys having the same key.
  +Fix bug 105, failure to build with libappindicator.
+ +WARNING: I've changed the data size limit to be in Kb, not Mb, as it was before. Adjust accordingly (multiply by 1000).
+ +Added history mutex locking around each bit that accesses the global history menu.
 
 V1.1.6 Thursday, August 1 2013
  +Fixed Bug #99, Broken CLI functionality. Now looks at XDG_SESSION_COOKIE, XDG_SEAT, and DISPLAY, introduced by multi-user fix.
