@@ -976,7 +976,7 @@ gboolean history_item_right_click_on_cancel (GtkWidget *menuitem, gpointer data)
 ****************************************************************************/
 void  destroy_right_click_history_cb(GtkWidget *attach_widget, GtkMenu *menu)
 {
-	g_printf("%s:\n",__func__);
+	/*g_printf("%s:\n",__func__); */
 	gtk_widget_destroy	((GtkWidget *) attach_widget);
 }
 /***************************************************************************/
@@ -1287,6 +1287,7 @@ static gboolean show_actions_menu(gpointer data)
 static gboolean selection_done(GtkMenuShell *menushell, gpointer user_data) 
 {
 	struct history_info *h=(struct history_info *)user_data;
+	/*g_printf("%s: %p %p\n",__func__,h,NULL == h?0:h->delete_list); */
 	if(NULL != h && NULL != h->delete_list){/**have a list of items to delete.  */
 		remove_deleted_items(h);
 		goto done;
@@ -1666,7 +1667,7 @@ static gboolean my_item_event (GtkWidget *w,GdkEventKey *e, gpointer user)
 			gboolean rtn;
 			if(GDK_CONTROL_MASK&b->state){
 				handle_marking(h,w,GPOINTER_TO_INT(user),OPERATE_DELETE);
-			}else{
+			}else{ /**shift-right click release  */
 				 if((GDK_CONTROL_MASK|GDK_SHIFT_MASK)&b->state)
 					return FALSE;
 				/*g_print("Calling popup\n");  */
@@ -1765,7 +1766,8 @@ u is history.
 ****************************************************************************/
 void destroy_history_menu(GtkMenuShell *menu, gpointer u)
 {
-	g_printf("%s:\n",__func__);
+	/*g_printf("%s:\n",__func__); */
+	selection_done(menu,u);	/**allow deleted items to be deleted.  */
 	gtk_widget_destroy((GtkWidget *)menu);
 }
 /***************************************************************************/
