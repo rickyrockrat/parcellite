@@ -180,10 +180,9 @@ void add_h_item(struct history_info *h, GtkWidget *w, GList* element, gint which
 		case OPERATE_PERSIST:
 			op=h->persist_list;
 			break;
-	}
-	if(NULL == op){
-		g_fprintf(stderr,"Invalid list '%d'\n",which);
-		return;
+		default:
+			g_fprintf(stderr,"Invalid list '%d'\n",which);
+			return;
 	}
 	struct s_item_info *i;
 	if(NULL == (ele=find_h_item(op,w,element) ) ){
@@ -199,9 +198,9 @@ void add_h_item(struct history_info *h, GtkWidget *w, GList* element, gint which
 					break;
 			}
 			
-			/** printf("Added w %p e %p %p\n",w,element,h->delete_list);	fflush(NULL);*/
-		}	
-	}
+			/*g_printf("Added w %p e %p %p\n",w,element,h->delete_list);	fflush(NULL); */
+		}/*else g_fprintf(stderr,"%s: NULL allocating element for delete list!\n",__func__);	 */
+	}/*else g_printf("found element??\n"); */
 }
 
 /***************************************************************************/
@@ -287,6 +286,7 @@ void handle_marking(struct history_info *h, GtkWidget *w, gint index, gint which
 			rm_h_item(h,w,element,OPERATE_DELETE);
 		}
 		else {
+			/*g_printf("marking %p ",element); */
 			set_strikethrough(l,TRUE);
 			add_h_item(h,w,element,OPERATE_DELETE);
 		}

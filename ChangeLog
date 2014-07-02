@@ -18,6 +18,7 @@ V1.1.8 Wednsday, June 18, 2014
  +Fix bug 121, context menu stays up after history menu is deactivated.
  +Fix new bug with memory leak by destroying history menu every time, related to bug 121.
  +Fix minor bug where edit shows up on right-click even when user disabled it.
+ +Fix bug where right-click-ctrl/shift did not delete history entries.
  
 V1.1.7 Tuesday, October 15, 2013
  +Added remote i386 build and upload to sourceforge.
