@@ -87,22 +87,7 @@ g_signal_connect(clipboard, "owner-change",  G_CALLBACK(handle_owner_change), NU
 #define FIFCMD_RUN_ALL "run_all"
 
 GtkWidget *hmenu;
-/* Uncomment the next line to print a debug trace. */
-#define DEBUG     
-
-#ifdef DEBUG
-#  define TRACE(x) x
-#else
-#  define TRACE(x) do {} while (FALSE);
-#endif
-/**see parcellite.h for define  */
-#ifdef DEBUG_UPDATE
-static int debug_update=0; /**disable/enable DTRACE  */
-#  define DTRACE(x) if (debug_update) x
-#else
-#  define DTRACE(x) do {} while (FALSE);
-#endif
-
+/**see parcellite.h for DEBUG defines  */
 static GtkClipboard* primary;
 static GtkClipboard* clipboard;
 struct p_fifo *fifo;

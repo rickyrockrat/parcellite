@@ -31,6 +31,21 @@
 must have debug_update enabled in prefs when started. 
 */
 /*#define DEBUG_UPDATE   */
+/* Uncomment the next line to print a debug trace. */
+/*#define DEBUG      */
+
+#ifdef DEBUG
+#  define TRACE(x) x
+#else
+#  define TRACE(x) do {} while (FALSE);
+#endif
+
+#ifdef DEBUG_UPDATE
+static int debug_update=0; /**disable/enable DTRACE  */
+#  define DTRACE(x) if (debug_update) x
+#else
+#  define DTRACE(x) do {} while (FALSE);
+#endif
 #include "daemon.h"
 #include "utils.h"
 #include "preferences.h"
