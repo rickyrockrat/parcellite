@@ -73,7 +73,8 @@ struct myadj {
 	gdouble page;
 };
 
-struct myadj align_hist_xy={1,0,10,100};
+struct myadj align_hist_x={1,100,1,10};
+struct myadj align_hist_y={1,100,1,10};
 struct myadj align_data_lim={0,1000000,1,10};
 struct myadj align_hist_lim={5, MAX_HISTORY, 1, 10};
 struct myadj align_line_lim={5, DEF_ITEM_LENGTH_MAX, 1, 5};
@@ -123,8 +124,8 @@ struct pref_item myprefs[]={
   {.adj=NULL,.cval=NULL,.sig=NULL,.sfunc=NULL,.sec=PREF_SEC_HIST,.name=NULL,.type=PREF_TYPE_FRAME,.desc="<b>History</b>",.tip=NULL,.val=0},
   {.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_HIST,.name="save_history",.type=PREF_TYPE_TOGGLE,.desc="Save history",.tip="Save history to a file.",.val=DEF_SAVE_HISTORY},
   {.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_HIST,.name="history_pos",.type=PREF_TYPE_TOGGLE|PREF_TYPE_SINGLE_LINE,.desc="Position history",.tip="If checked, use X, Y to position the history list",.val=0},
-  {.adj=&align_hist_xy,.cval=NULL,.sig=NULL,.sec=PREF_SEC_HIST,.name="history_x",.type=PREF_TYPE_SPIN|PREF_TYPE_SINGLE_LINE,.desc="<b>X</b>",.tip=NULL,.val=1},
-  {.adj=&align_hist_xy,.cval=NULL,.sig=NULL,.sec=PREF_SEC_HIST,.name="history_y",.type=PREF_TYPE_SPIN|PREF_TYPE_SINGLE_LINE,.desc="<b>Y</b>",.tip="Position in pixels from the top of the screen",.val=1},
+  {.adj=&align_hist_x,.cval=NULL,.sig=NULL,.sec=PREF_SEC_HIST,.name="history_x",.type=PREF_TYPE_SPIN|PREF_TYPE_SINGLE_LINE,.desc="<b>X</b>",.tip=NULL,.val=1},
+  {.adj=&align_hist_y,.cval=NULL,.sig=NULL,.sec=PREF_SEC_HIST,.name="history_y",.type=PREF_TYPE_SPIN|PREF_TYPE_SINGLE_LINE,.desc="<b>Y</b>",.tip="Position in pixels from the top of the screen",.val=1},
 	{.adj=&align_hist_lim,.cval=NULL,.sig=NULL,.sec=PREF_SEC_HIST,.name="history_limit",.type=PREF_TYPE_SPIN,.desc="Items in history",.tip="Maximum number of clipboard entries to keep",.val=DEF_HISTORY_LIMIT},
   {.adj=&align_data_lim,.cval=NULL,.sig=NULL,.sec=PREF_SEC_HIST,.name="data_size",.type=PREF_TYPE_SPIN,.desc="Max Data Size(KB)",.tip="Maximum data size of entire history list",.val=0},
   {.adj=&align_hist_lim,.cval=NULL,.sig=NULL,.sec=PREF_SEC_HIST,.name="item_size",.type=PREF_TYPE_SPIN,.desc="Max Item Size(KB)",.tip="Maximum data size of one item",.val=0},
@@ -293,12 +294,19 @@ int get_first_pref(int section)
 ****************************************************************************/
 int init_pref( void )
 {
+	GdkScreen *s;
+	gint sx,sy;
+	s=gdk_screen_get_default();
+	sx= gdk_screen_get_width(s);
+	sy= gdk_screen_get_height(s);
 	dummy[0].cval="dummy String";
 	dummy[0].w=NULL;
 	dummy[0].desc="Dummy desc";
 	dummy[0].tip="Dummy tip";
 	dummy[1].name=NULL;
 	dummy[1].sec=PREF_SEC_NONE;
+	align_hist_y.upper=sy-100;
+	align_hist_x.upper=sx-100;
 }
 /***************************************************************************/
 /** set the wideget of item.
@@ -502,9 +510,11 @@ void check_sanity(void)
 	gint32 x,y;
 	gchar *val;
 	check_for_tools(); /**update the list of tools parcellite needs.  */
-	postition_history(NULL,&x,&y,NULL, (gpointer)1);
-  if(get_pref_int32("history_x")>x) set_pref_int32("history_x",x);
-  if(get_pref_int32("history_y")>y) set_pref_int32("history_y",y);
+	x=get_pref_int32("history_x");
+	y=get_pref_int32("history_y");
+	postition_history(NULL,&x,&y,NULL, 0); /**have function limit x,y according to screen limits */
+  set_pref_int32("history_x",x);
+  set_pref_int32("history_y",y);
  	x=get_pref_int32("history_limit");
   if ((!x) || (x > MAX_HISTORY) || (x < 0))
     set_pref_int32("history_limit",DEF_HISTORY_LIMIT);
