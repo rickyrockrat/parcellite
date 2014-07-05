@@ -1324,7 +1324,12 @@ void set_widget_bg(gchar *color, GtkWidget *w)
 #endif
 }
 
-/**postition the history dialog  - should only be called if get_pref_int32("history_pos") is set */
+/***************************************************************************/
+/**postition the history dialog  - should only be called if get_pref_int32("history_pos") is set.
+\n\b Arguments:
+if user_data is 1, just set x&y to max.
+\n\b Returns:
+****************************************************************************/
 void postition_history(GtkMenu *menu,gint *x,gint *y,gboolean *push_in, gpointer user_data)
 {
 	GdkScreen *s;
@@ -1340,14 +1345,17 @@ void postition_history(GtkMenu *menu,gint *x,gint *y,gboolean *push_in, gpointer
 	}else{
 		if(get_pref_int32("history_pos")){
 			int xx,yy;
-			if(get_pref_int32("history_x") > get_pref_int32("item_length") )
-				xx=get_pref_int32("history_x")-get_pref_int32("item_length");
-			else
+			xx=get_pref_int32("history_x");
+			if(xx > sx )
+				xx=sx;
+			else if(xx <1 )
 				xx=1;
-			if(get_pref_int32("history_y") > get_pref_int32("history_limit") )
-				yy=get_pref_int32("history_y")-get_pref_int32("history_limit");
-			else
+			yy=get_pref_int32("history_y");
+			if(yy > sx )
+				yy=sx;
+			else if(yy <1 )
 				yy=1;
+			
 			if(NULL !=x) *x=xx;
 			if(NULL !=y) *y=yy;	
 			TRACE(g_fprintf(stderr,"x=%d, y=%d\n",xx,yy));
