@@ -1,5 +1,6 @@
 V1.1.9 Saturday, July 5, 2014
  +Fixed bug 120, position_history broken. We limit x & y with screen limit -100.
+ +Fixed bug 124, Enter does not select entry.
  
 V1.1.8 Thursday, July 3, 2014
  +Fixed bug 107, segfault when action key missing in parcelliterc.

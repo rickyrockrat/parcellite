@@ -1994,7 +1994,8 @@ next_loop:
   }
 	g_list_free(lhist);
 	g_list_free(persistent);
-	g_signal_connect(menu,"deactivate",(GCallback)destroy_history_menu,(gpointer)&h);
+/*	g_signal_connect(menu,"deactivate",(GCallback)destroy_history_menu,(gpointer)&h); */
+	g_signal_connect(menu,"selection-done",(GCallback)destroy_history_menu,(gpointer)&h);
   /* Popup the menu... */
   gtk_widget_show_all(menu);
   gtk_menu_popup((GtkMenu*)menu, NULL, NULL, get_pref_int32("history_pos")?postition_history:NULL, NULL, 1, gtk_get_current_event_time());
