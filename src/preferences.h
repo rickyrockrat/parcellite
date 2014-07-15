@@ -47,7 +47,6 @@ struct tool_flag {
 #define PM_UPDATE 1
 
 #define TOOL_XDOTOOL 0x01
-extern int tool_bitfield;
 extern struct tool_flag tool_flags[];
 extern struct keys keylist[];
 /*struct pref_item* get_pref(char *name); */
