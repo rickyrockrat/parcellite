@@ -96,7 +96,8 @@ static struct pref_item dummy[2];
 static void check_toggled(GtkToggleButton *togglebutton, gpointer user_data);
 static void search_toggled(GtkToggleButton *b, gpointer user);
 static gint dbg=0;
-int tool_bitfield=0;
+static int tool_bitfield=0;
+static int tool_bitfield_check=0;
 struct pref2int *pref2int_mapper=NULL;
 struct tool_flag tool_flags[]={
 	{.flag=TOOL_XDOTOOL,.name="xdotool"},
@@ -196,7 +197,8 @@ static void check_for_tools_exit(GPid pid, gint status, gpointer data)
 			tool_bitfield|=flag;
 		
 	}
-	/*g_fprintf(stderr,"Flag 0x%04x, status %d, EXIT %d STAT %d\n",flag,status,WIFEXITED(status),WEXITSTATUS(status) ); */
+	tool_bitfield_check &= ~(flag);
+	g_fprintf(stderr,"Flag 0x%04x, status %d, EXIT %d STAT %d\n",flag,status,WIFEXITED(status),WEXITSTATUS(status) ); 
 		
 }
 /***************************************************************************/
@@ -211,6 +213,7 @@ void check_for_tools(void )
 	int i;
 	for (i=0; NULL != tool_flags[i].name; ++i){
 		gchar cmd[100];
+		tool_bitfield_check|=tool_flags[i].flag;
 		sprintf(cmd,"/bin/sh -c 'which %s'>/dev/null\n",tool_flags[i].name);
 		g_shell_parse_argv(cmd, NULL, &argv, NULL);
 		g_spawn_async(NULL, argv, NULL, G_SPAWN_DO_NOT_REAP_CHILD, NULL, NULL, &pid, NULL);
@@ -510,6 +513,11 @@ void check_sanity(void)
 	gint32 x,y;
 	gchar *val;
 	check_for_tools(); /**update the list of tools parcellite needs.  */
+	while(tool_bitfield_check){
+		g_main_context_iteration(NULL, TRUE);
+		usleep(100000);
+	}
+		
 	x=get_pref_int32("history_x");
 	y=get_pref_int32("history_y");
 	postition_history(NULL,&x,&y,NULL, 0); /**have function limit x,y according to screen limits */
@@ -536,8 +544,9 @@ void check_sanity(void)
 	}
 	if(get_pref_int32("automatic_paste")){
 		if(!(tool_bitfield&TOOL_XDOTOOL)){ 
+			g_fprintf(stderr,"tool_bitfield=0x%x\n",tool_bitfield);
 			set_pref_int32("automatic_paste",0);
-			show_gtk_dialog("xdotool is not installed\n\nthis will not function until it is.","xdotool Not Installed" ); 
+			show_gtk_dialog("xdotool is not installed\nParcellite's auto-paste will not function without xdotool.","xdotool Not Installed" ); 
 		} else{
 			if(get_pref_int32("auto_key") && get_pref_int32("auto_mouse"))
 				set_pref_int32("auto_key",0);
