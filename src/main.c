@@ -95,7 +95,7 @@ struct p_fifo *fifo;
 static AppIndicator *indicator=NULL;
 static GtkWidget *indicator_menu = NULL;
 #endif
-static GtkStatusIcon *status_icon; 
+static GtkStatusIcon *status_icon=NULL; 
 GMutex *hist_lock=NULL;
 static gboolean actions_lock = FALSE;
 static int show_icon=0;
@@ -647,7 +647,7 @@ static void *execute_action(void *command)
   if(system((gchar*)command))
   	g_fprintf(stderr,"sytem command '%s' failed\n",(gchar *)command);
   if (!have_appindicator &&show_icon) {
-	gtk_status_icon_set_from_icon_name((GtkStatusIcon*)status_icon, PARCELLITE_ICON);
+	gtk_status_icon_set_from_icon_name((GtkStatusIcon*)status_icon, get_pref_string("icon_name"));
   gtk_status_icon_set_tooltip((GtkStatusIcon*)status_icon, _("Clipboard Manager"));
   }
   actions_lock = FALSE;
@@ -661,7 +661,7 @@ static void action_exit(GPid pid, gint status, gpointer data)
 {
   g_spawn_close_pid(pid);
   if (!have_appindicator && show_icon) {
-		gtk_status_icon_set_from_icon_name((GtkStatusIcon*)status_icon, PARCELLITE_ICON);
+		gtk_status_icon_set_from_icon_name((GtkStatusIcon*)status_icon, get_pref_string("icon_name"));
     gtk_status_icon_set_tooltip((GtkStatusIcon*)status_icon, _("Clipboard Manager"));
   }
   actions_lock = FALSE;
@@ -2164,6 +2164,24 @@ void menu_hotkey(char *keystring, gpointer user_data)
 #endif
 }
 
+/***************************************************************************/
+/** .
+\n\b Arguments:
+\n\b Returns:
+****************************************************************************/
+void setup_icon( void )
+{
+	if(NULL == status_icon){
+		status_icon = gtk_status_icon_new_from_icon_name(get_pref_string("icon_name")); 
+		gtk_status_icon_set_tooltip((GtkStatusIcon*)status_icon, _("Clipboard Manager"));
+		g_signal_connect((GObject*)status_icon, "activate", (GCallback)status_icon_clicked, NULL);
+		g_signal_connect((GObject*)status_icon, "popup-menu", (GCallback)show_parcellite_menu, NULL);	
+	}	else {
+		gtk_status_icon_set_from_icon_name(status_icon,get_pref_string("icon_name")); 
+	}
+		
+	
+}
 /* Startup calls and initializations */
 static void parcellite_init()
 {
@@ -2216,10 +2234,7 @@ static void parcellite_init()
 		create_app_indicator();
 #endif
 		if(!have_appindicator){
-			status_icon = gtk_status_icon_new_from_icon_name(PARCELLITE_ICON); 
-	    gtk_status_icon_set_tooltip((GtkStatusIcon*)status_icon, _("Clipboard Manager"));
-	    g_signal_connect((GObject*)status_icon, "activate", (GCallback)status_icon_clicked, NULL);
-	    g_signal_connect((GObject*)status_icon, "popup-menu", (GCallback)show_parcellite_menu, NULL);
+			setup_icon();
 		}
 	  
   }
