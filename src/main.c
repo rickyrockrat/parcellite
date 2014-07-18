@@ -2295,7 +2295,7 @@ int main(int argc, char *argv[])
 	pref_mapper(pref2int_map,PM_INIT); 
 	check_dirs(); /**make sure we set up default RC if it doesn't exist.  */
    /* Read preferences */
-  read_preferences();	
+  read_preferences(0);	
 #ifdef	DEBUG_UPDATE
 	if(get_pref_int32("debug_update")) debug_update=1;
 #endif

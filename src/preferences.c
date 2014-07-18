@@ -507,9 +507,10 @@ void set_keys_from_prefs( void )
 /***************************************************************************/
 /** .
 \n\b Arguments:
+mode - if 0, do not display helper missing dialog.
 \n\b Returns:
 ****************************************************************************/
-void check_sanity(void)
+void check_sanity(int mode)
 {
 	gint32 x,y;
 	gchar *val;
@@ -551,7 +552,8 @@ void check_sanity(void)
 		if(!(tool_bitfield&TOOL_XDOTOOL)){ 
 			g_fprintf(stderr,"tool_bitfield=0x%x\n",tool_bitfield);
 			set_pref_int32("automatic_paste",0);
-			show_gtk_dialog("xdotool is not installed\nParcellite's auto-paste will not function without xdotool.","xdotool Not Installed" ); 
+			if( mode )
+				show_gtk_dialog("xdotool is not installed\nParcellite's auto-paste will not function without xdotool.","xdotool Not Installed" ); 
 		} else{
 			if(get_pref_int32("auto_key") && get_pref_int32("auto_mouse"))
 				set_pref_int32("auto_key",0);
@@ -592,7 +594,7 @@ static void apply_preferences()
 				break;
 		}
 	}
-  check_sanity();
+  check_sanity(1);
   /* Bind keys and apply the new history limit */
 	for (i=0;NULL != keylist[i].name; ++i)
 	  bind_itemkey(keylist[i].name,keylist[i].keyfunc);	
@@ -648,9 +650,10 @@ static void save_preferences()
 /***************************************************************************/
 /** Read the parcelliterc file.
 \n\b Arguments:
+mode - 0 to not display missing helper warnings 
 \n\b Returns:
 ****************************************************************************/
-void read_preferences()
+void read_preferences(int mode)
 {
 	gchar *c,*rc_file = g_build_filename(g_get_user_config_dir(), PREFERENCES_FILE, NULL);
   gint32 z;
@@ -702,7 +705,7 @@ void read_preferences()
 		}
       
     /* Check for errors and set default values if any */
-    check_sanity();
+    check_sanity(mode);
   }
   else  { /* Init default keys on error */
 	  int i;
