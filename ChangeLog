@@ -7,6 +7,7 @@ V1.1.9 Saturday, July 5, 2014
  +Updated Chinese translation by wenjie.
  +Fixed Bug 123, right-click edit broken.
  +Fixed unsolicited error message on startup (related to bug 125).
+ +Cleaned up many warnings. Note to self: use env CFLAGS=-Wall ./configure --prefix=/usr/local
  
 V1.1.8 Thursday, July 3, 2014
  +Fixed bug 107, segfault when action key missing in parcelliterc.

@@ -18,12 +18,14 @@
 #ifndef _PARCELLITE_H_
 #define _PARCELLITE_H_ 1
 #include <glib.h>
+#include <glib/gprintf.h>
 #include <gtk/gtk.h>
 #include <string.h>
 #include <unistd.h>
 #ifdef HAVE_APPINDICATOR
 #include <libappindicator/app-indicator.h>
 #endif
+#include <stdlib.h>
 #define PARCELLITE_PROG_NAME "parcellite"
 #define PARCELLITE_ICON PARCELLITE_PROG_NAME
 /*uncomment the next line to debug the clipboard updates

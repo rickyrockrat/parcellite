@@ -18,6 +18,9 @@
 
 #include "parcellite.h"
 #include <sys/wait.h>
+
+void setup_icon( void ); /**in main.c  */
+
 #define MAX_HISTORY 1000
 
 #define INIT_HISTORY_KEY      NULL
@@ -311,6 +314,7 @@ int init_pref( void )
 	dummy[1].sec=PREF_SEC_NONE;
 	align_hist_y.upper=sy-100;
 	align_hist_x.upper=sx-100;
+	return 0;
 }
 /***************************************************************************/
 /** set the wideget of item.
@@ -323,6 +327,7 @@ int set_pref_widget (char *name, GtkWidget *w)
 	if(NULL == p)
 		return -1;
 	p->w=w;
+	return 0;
 }
 /***************************************************************************/
 /** get the char * value of string.
@@ -402,6 +407,7 @@ int set_pref_string (char *name, char *string)
 	if(p->cval != NULL)
 		g_free(p->cval);
 	p->cval=g_strdup(string);
+	return 0;
 }
 
 /***************************************************************************/
@@ -480,7 +486,6 @@ void set_key_entry(gchar *name, gchar *val)
 void set_keys_from_prefs( void )
 {
 	int i,l;
-	gchar *cval;
 	for (i=0;NULL != keylist[i].name; ++i){
 		/**NOTE: do not set up default keys here! User may WANT them null */
 			/** call egg_accelerator_parse_virtual to validate? */
@@ -988,7 +993,7 @@ int add_section(int sec, GtkWidget *parent)
 {
 	int i,rtn=0;
 	int single_st, single_is;
-	gint x,y,connect;
+	gint connect;
 	GtkWidget *hbox, *label, *child, *vbox, *alignment;
 	GtkWidget* packit;
 	vbox=parent;
@@ -1103,8 +1108,6 @@ void show_preferences(gint tab)
   /* Declare some variables */
   GtkWidget *frame,*label,*alignment,*hbox, *vbox;
 	struct pref_item *p;
-  GtkObject *adjustment;
-  gint x,y;
   GtkTreeViewColumn *tree_column;
 	init_pref();
   

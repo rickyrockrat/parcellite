@@ -42,7 +42,6 @@ try to allocate using other methods.
 gchar *p_strdup( const gchar *str )
 {
   gchar *n=NULL;
-  gint u8;
   size_t l,x;
   if(NULL == str)
     return NULL;
@@ -306,15 +305,15 @@ int get_value_from_env(pid_t pid, gchar *key, char **value)
 		g_fprintf(stderr,"Unable to allocate for environ file name.\n");
 		return rtn;
 	}
-	g_sprintf(envf,"/proc/%ld/environ",pid);
+	g_sprintf(envf,"/proc/%ld/environ",(long int)pid);
 	if(0 != access(envf,  R_OK)){/**doesn't exist, or not our process  */
-		g_fprintf(stderr,"Unable to open '%s' for PID %ld\n",envf,pid);
+		g_fprintf(stderr,"Unable to open '%s' for PID %ld\n",envf,(long int)pid);
 		goto error;
 	}
 	fp=g_file_new_for_path(envf);
 	/**this dumps a zero at end of file.  */
 	if(FALSE == g_file_load_contents(fp,NULL,&env,&elen,NULL,NULL)	){
-		g_fprintf(stderr,"Error finding '%s' for PID %ld\n",envf,pid);
+		g_fprintf(stderr,"Error finding '%s' for PID %ld\n",envf,(long int)pid);
 		goto error;
 	}
 	if(NULL == env){
@@ -329,7 +328,6 @@ int get_value_from_env(pid_t pid, gchar *key, char **value)
 		
 		if(NULL != f){
 			if(i==0 || f[-1] == 0){/**beginning terminators  */
-				gsize k;
 				i+=f-&env[i]; /**beginning of string  */
 				while(i<elen && 0!=env[i] && '=' !=env[i]) ++i;
 				if('=' == env[i] ){/**found, return key  */
@@ -455,7 +453,7 @@ done:
 ****************************************************************************/
 int is_current_xsession (pid_t pid)
 {
-	int i,x,rtn=1;
+	int i,x;
 	gchar *names[]={"XDG_SESSION_COOKIE","XDG_SEAT","DISPLAY",NULL};
 		
 	for (i=0;NULL != names[i]; ++i){

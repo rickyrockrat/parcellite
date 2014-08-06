@@ -62,6 +62,7 @@ void append_item(gchar* item, int checkdup, gint iflags, gint itype);
 void truncate_history();
 
 gpointer get_last_item();
+void clear_history( void );
 
 void delete_duplicate(gchar* item);
 
