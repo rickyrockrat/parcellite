@@ -64,6 +64,8 @@ g_signal_connect(clipboard, "owner-change",  G_CALLBACK(handle_owner_change), NU
 
 #include "parcellite.h"
 
+#include <ctype.h>
+#include <pthread.h>
 
 /**ACT are actions, and MODE is the mode of the action  */
 /** #define ACT_STOP  0
@@ -101,9 +103,9 @@ static gboolean actions_lock = FALSE;
 static int show_icon=0;
 static int have_appindicator=0; /**if set, we have a running indicator-appmenu  */
 static int ignore_clipboard=0; /**if set, don't process clip entries  */
-
+#ifdef HAVE_APPINDICATOR
 static gchar *appindicator_process="indicator-messages-service"; /**process name  */
-
+#endif
 
 static int cmd_mode=CMODE_ALL; /**both clipboards  */
 /** static int cmd_state=ACT_RUN; running  */
@@ -634,7 +636,7 @@ gboolean check_clipboards_tic(gpointer data)
 #endif
 	return TRUE;
 }
-
+#if 0
 /* Thread function called for each action performed */
 static void *execute_action(void *command)
 {
@@ -654,8 +656,9 @@ static void *execute_action(void *command)
   g_free((gchar*)command);
   /* Exit this thread */
   pthread_exit(NULL);
+	return NULL;
 }
-
+#endif
 /* Called when execution action exits */
 static void action_exit(GPid pid, gint status, gpointer data)
 {
@@ -819,7 +822,6 @@ static void edit_selected(GtkMenuItem *menu_item, gpointer user_data)
 	      	update_clipboards(ntext, H_MODE_LIST);
 			}else {/**Text is not blank  */
 				g_fprintf(stderr,"Try to add '%s'\n",new_clipboard_text); 
-				gint16 type;
 				if(!p_strcmp(new_clipboard_text,current_clipboard_text)) /**same text, nothing to do  */
 					goto finish; 
 				if( NULL != c){
@@ -873,6 +875,7 @@ gboolean history_item_right_click_on_edit(GtkWidget *menuitem, gpointer data)
 	struct history_info *h=(struct history_info*)data;
 	h->wi.tmp1|=EDIT_MODE_USE_RIGHT_CLICK;
 	edit_selected((GtkMenuItem *)menuitem, data);
+	return TRUE;
 }
 
 /***************************************************************************/
@@ -1298,8 +1301,8 @@ done:
 void set_widget_bg(gchar *color, GtkWidget *w)
 {
   GdkColor c, *cp;
-  GtkRcStyle *st;
-  /** c.red = 65535;
+  /**GtkRcStyle *st;
+   c.red = 65535;
   c.green = 0;
   c.blue = 0;*/
   /*g_print("set_widget_bg\n"); */
@@ -1648,7 +1651,7 @@ static gboolean my_item_event (GtkWidget *w,GdkEventKey *e, gpointer user)
 			handle_marking(h,w,GPOINTER_TO_INT(user),OPERATE_DELETE);
 	}
 	if(GDK_KEY_PRESS == e->type){
-		GdkEventKey *k=	(GdkEventKey *)e;
+		/*GdkEventKey *k=	(GdkEventKey *)e; */
 		printf("key press %d (0x%x)\n",e->keyval,e->keyval); 
 		fflush(NULL);
 	}
@@ -1657,7 +1660,6 @@ static gboolean my_item_event (GtkWidget *w,GdkEventKey *e, gpointer user)
 		GList* element = g_list_nth(history_list, GPOINTER_TO_INT(user));
 		/*printf("type %x State 0x%x val %x %p '%s'\n",e->type, b->state,b->button,w,(gchar *)((struct history_item *(element->data))->text));  */
 		if(3 == b->button){ /**right-click  */
-			gboolean rtn;
 			if(GDK_CONTROL_MASK&b->state){
 				handle_marking(h,w,GPOINTER_TO_INT(user),OPERATE_DELETE);
 			}else{ /**shift-right click release  */
@@ -1732,7 +1734,6 @@ GString* convert_string(GString* s)
 	gchar pharagraph[4]={0xe2,0x81,0x8b,0x00}; /**utf-8 pharagraph symbol \2192 */
 	gchar square_u[4]={0xe2,0x90,0xA3,0};	 /**square-u \\2423  */
 	gchar *p, *r;
-	gint idx;
 	
 	for (p=s->str; p!= NULL; p=g_utf8_find_next_char(p,s->str+s->len)){
 		switch(*p){
@@ -1775,7 +1776,6 @@ static gboolean show_history_menu(gpointer data)
   GtkWidget *menu,       *menu_item,
             *menu_image, *item_label;
   static struct history_info h;
-	gint nok,pok;
 	h.histno=GPOINTER_TO_INT(data);/**persistent or normal history  */
 	h.change_flag=0;
 	h.element_text=NULL;
@@ -2008,6 +2008,24 @@ next_loop:
   return FALSE;
 }
 
+/***************************************************************************/
+/** .
+\n\b Arguments:
+\n\b Returns:
+****************************************************************************/
+gint figure_histories(void)
+{
+	gint i;
+	if(get_pref_int32("persistent_history")){ 
+		if(get_pref_int32("persistent_separate"))
+			i=HIST_DISPLAY_NORMAL;
+		else
+			i=HIST_DISPLAY_PERSISTENT|HIST_DISPLAY_NORMAL;
+	}else 
+		i=HIST_DISPLAY_NORMAL;
+	/*g_printf("Using history 0x%X\n",i); */
+	return i;
+}
 
 /***************************************************************************/
 /** .
@@ -2072,24 +2090,7 @@ static void  show_parcellite_menu(GtkStatusIcon *status_icon, guint button, guin
 	create_parcellite_menu(button, activate_time);
 }
 
-/***************************************************************************/
-/** .
-\n\b Arguments:
-\n\b Returns:
-****************************************************************************/
-gint figure_histories(void)
-{
-	gint i;
-	if(get_pref_int32("persistent_history")){ 
-		if(get_pref_int32("persistent_separate"))
-			i=HIST_DISPLAY_NORMAL;
-		else
-			i=HIST_DISPLAY_PERSISTENT|HIST_DISPLAY_NORMAL;
-	}else 
-		i=HIST_DISPLAY_NORMAL;
-	/*g_printf("Using history 0x%X\n",i); */
-	return i;
-}
+
 /* Called when status icon is left-clicked */
 static void status_icon_clicked(GtkStatusIcon *status_icon, gpointer user_data)
 {

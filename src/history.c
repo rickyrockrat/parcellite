@@ -213,7 +213,7 @@ void read_history ()
 			/* Read item and add ending character */
 			if ((x =fread(&c->text,end,1,history_file)) != 1){
 				c->text[end] = 0;
-				g_fprintf(stderr,"history_read: Invalid text, code %d!\n'%s'\n",x,c->text);
+				g_fprintf(stderr,"history_read: Invalid text, code %ld!\n'%s'\n",(unsigned long)x,c->text);
 			}	else {
 				c->text[end] = 0;
 				c->len=validate_utf8_text(c->text,c->len);
@@ -531,6 +531,7 @@ int save_history_as_text(gchar *path)
   }
 	
 	g_printf("histpath='%s'\n",path);
+	return 0;
 }
 /***************************************************************************/
 /** Dialog to save the history file.
