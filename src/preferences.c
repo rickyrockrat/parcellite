@@ -662,7 +662,7 @@ void read_preferences(int mode)
 {
 	gchar *c,*rc_file = g_build_filename(g_get_user_config_dir(), PREFERENCES_FILE, NULL);
   gint32 z;
-  GError *err;
+  GError *err=NULL;
 	struct pref_item *p;
 	init_pref();
   /* Create key */
