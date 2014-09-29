@@ -172,6 +172,8 @@ gchar *process_new_item(GtkClipboard *clip,gchar *ntext, int *mod)
 	glong len,nlen;
 	gchar *rtn=NULL;
 	int i=0;
+	if(NULL != mod)
+ 		*mod=0;
 	if(NULL == ntext)
 		return NULL;
 	
@@ -196,8 +198,7 @@ gchar *process_new_item(GtkClipboard *clip,gchar *ntext, int *mod)
 	}
 	/**set the clipboard to the last entry - effectively deleting this entry */
 	goto done;
- if(NULL != mod)
- 	*mod=0;
+
  process:  /**now process the text.  */
 	/*printf("proc\n"); fflush(NULL); */
   len=strlen(ntext);/*g_utf8_strlen(ntext,-1); */
@@ -247,9 +248,9 @@ gchar *_update_clipboard (GtkClipboard *clip, gchar *n, gchar **old, int set, in
 	if(NULL != n)	{
 #ifdef DEBUG_UPDATE
 	 	if(clip==primary)
-			g_printf("%03x-set PRI to '%s'\n",mode,n);
+			g_printf("%03x-set%d PRI to '%s'\n",mode,set,n);
 		else
-			g_printf("%03x-set CLI to '%s'\n",mode,n);
+			g_printf("%03x-set%d CLI to '%s'\n",mode,set,n);
 #endif
 		if( set)
 			gtk_clipboard_set_text(clip, n, -1);
@@ -424,10 +425,10 @@ gchar *update_clipboard(GtkClipboard *clip,gchar *intext,  gint mode)
 			/**only check processed/changed. No need to update this clip, since the text is already there.  
 			   If we have identical lines except for whitespace, we also have to set the clipboard.
 			*/
-			if(0 == p_strcmp(processed,*existing) && 0 == mod) set=0;
+			if(0 == p_strcmp(processed,changed) && 0 == mod) set=0;
 			else {
 				set=1; 
-				DTRACE(g_fprintf(stderr,"set=%d. p='%s'\n",set,processed));
+				DTRACE(g_fprintf(stderr,"set=%d. c='%s' p='%s'\n",set,changed,processed));
 				/*set=1; */ /** Always set the text.*/
 			}	
 			last=_update_clipboard(clip,processed,existing,set,mode|H_MODE_CHANGED_MASK);
@@ -460,10 +461,16 @@ gchar *update_clipboard(GtkClipboard *clip,gchar *intext,  gint mode)
 	*/		
 	
 	if(H_MODE_NEW==mode){
+		gchar *unproc_clip;
+		if( NULL != intext)
+			unproc_clip=g_strdup(intext);
+		else unproc_clip=g_strdup("_NoClip_xyzpdq_");
 		if(NULL != (processed=process_new_item(clip,intext,&mod)) ){
-/*			g_printf("%sNEW '%s'\n",clipname,processed); */
-			if(0 == p_strcmp(processed,*existing))set=0;
+			DTRACE(g_printf("%sNEW '%s' was '%s'\n",clip==clipboard?"CLI":"PRI",processed,*existing)); 
+			/**clipboard already has selection, no need to update if we did not change it via processing  */
+			if(0 == p_strcmp(processed,unproc_clip))set=0;
 			else set=1;
+			g_free(unproc_clip);
 			last=_update_clipboard(clip,processed,existing,set,mode);
 			if(NULL != last)
 				append_item(last,current_on_top?HIST_DEL|HIST_CHECKDUP|HIST_KEEP_FLAGS:0,0,CLIP_TYPE_TEXT);
