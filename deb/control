@@ -1,7 +1,7 @@
 Source: parcellite
 Section: misc
 Priority: optional
-Maintainer: Doug Springer <gpib@rickyrockrat.net>, Andrew Starr-Bochicchio <a.starr.b@gmail.com>
+Maintainer: Doug Springer <gpib@rickyrockrat.net>
 Build-Depends: debhelper (>= 5.0.51~), autotools-dev, intltool, libgtk2.0-dev, pkg-config, dh-make
 Standards-Version: 3.8.4
 Homepage: http://parcellite.sourceforge.net/
