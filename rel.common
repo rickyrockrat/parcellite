@@ -341,12 +341,13 @@ setup_ppa (){
  
  echo "Build with libappindicator? (y/n)"
  read AI
- echo "What series does this apply to? (i.e. raring/quantal/precise/oneiric/lucid/hardy,etc)"
+ SUPPORTEDSERIES="utopic trusty precise lucid"
+ echo "What series does this apply to? (i.e. $SUPPORTEDSERIES etc)"
  echo " For multiple series, put spaces between series (enter just uses all)"
  read MSERIES
  if [ -z "$MSERIES" ]; then
    echo "Selecting all.."
-   MSERIES="raring quantal precise oneiric lucid"
+   MSERIES="$SUPPORTEDSERIES"
  fi
  echo "What ppa number should we use? (1 for the first, etc.)"
  read PPANO
