@@ -2415,10 +2415,6 @@ int main(int argc, char *argv[])
     	 g_free(clip_text);
 	    
 		}	
-			  /* Run as daemon option */
-  if (opts->daemon && (PROG_MODE_DAEMON & mode))  {
-    init_daemon_mode();
-  } 
 	if(PROG_MODE_CLIENT & mode){
 		close_fifos(fifo);
 		return 0;

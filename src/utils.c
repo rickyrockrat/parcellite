@@ -151,13 +151,6 @@ struct cmdline_opts *parse_options(int argc, char* argv[])
   GOptionEntry main_entries[] = 
   {
     {
-      "daemon", 'd',
-      0,
-      G_OPTION_ARG_NONE,
-      &opts->daemon, _("Run as daemon"),
-      NULL
-    },
-    {
       "no-icon", 'n',
       0,
       G_OPTION_ARG_NONE,
