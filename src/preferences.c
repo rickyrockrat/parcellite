@@ -1013,7 +1013,7 @@ int add_section(int sec, GtkWidget *parent)
 					myprefs[i].w= gtk_frame_new(NULL);
 				  gtk_frame_set_shadow_type((GtkFrame*)	myprefs[i].w, GTK_SHADOW_NONE);
 				  label = gtk_label_new(NULL);							/**<b>myprefs[i].desc  */
-				  gtk_label_set_markup((GtkLabel*)label, myprefs[i].desc);
+				  gtk_label_set_markup((GtkLabel*)label, _(myprefs[i].desc));
 				  gtk_frame_set_label_widget((GtkFrame*)	myprefs[i].w, label);
 				  alignment = gtk_alignment_new(0.50, 0.50, 1.0, 1.0);
 				  gtk_alignment_set_padding((GtkAlignment*)alignment, 12, 0, 12, 0);

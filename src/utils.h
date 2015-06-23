@@ -26,7 +26,6 @@ G_BEGIN_DECLS
 
 struct cmdline_opts {
 	gboolean icon;    
-	gboolean daemon;
 	gboolean clipboard;
 	gboolean primary;
 	gboolean exit;
