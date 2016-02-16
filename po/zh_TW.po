@@ -1,0 +1,336 @@
+# Traditional Chinese translation of parcellite.
+# Copyright (C) 2008 Xyhthyx <xyhthyx@gmail.com>
+# Copyright (C) 2010-2013 Doug Springer <gpib@rickyrockrat.net>
+# This file is distributed under the same license as the parcellite package.
+# Vincent Coiffier <vcoiffier@yahoo.com>, 2009.
+# Benjamin Danon <benjamin@sphax3d.org>, 2009-2013.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: 1.1.7\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-12-29 15:00-0000\n"
+"Last-Translator: Wenjie Huang <wenjieh@gmail.com>\n"
+"Language-Team: CHINESE\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "<b>Clipboards</b>"
+msgstr "<b>剪貼簿</b>"
+
+msgid "<b>History</b>"
+msgstr "<b>歷史紀錄</b>"
+
+msgid "<b>Hotkeys</b>"
+msgstr "<b>熱鍵</b>"
+
+msgid "<b>Items</b>"
+msgstr "<b>項目</b>"
+
+msgid "<b>Miscellaneous</b>"
+msgstr "<b>其他</b>"
+
+msgid "<b>None</b>"
+msgstr "<b>無</b>"
+
+msgid "<b>Omitting</b>"
+msgstr "<b>略去</b>"
+
+msgid "Action"
+msgstr "動作"
+
+msgid "Actions"
+msgstr "動作"
+
+msgid "Actions key combination:"
+msgstr "動作按鍵組合:"
+
+msgid "Add..."
+msgstr "增加…"
+
+msgid "Alternate Non-printing Display"
+msgstr "顯示不可列印字元"
+
+msgid "Auto Paste"
+msgstr "自動貼上"
+
+msgid "Beginning"
+msgstr "起始"
+
+msgid "Behavior"
+msgstr "行為"
+
+msgid "Capture hyperlinks only"
+msgstr "僅抓取超連結"
+
+msgid "Case Sensitive Search"
+msgstr "大小寫符合之搜尋"
+
+msgid "Character length of items:"
+msgstr "項目顯示字數"
+
+msgid "Clear the history?"
+msgstr "清除歷史紀錄？"
+
+msgid "Clipboard Manager"
+msgstr "剪貼簿管理器"
+
+msgid "Command"
+msgstr "命令"
+
+msgid "Confirm before clearing history"
+msgstr "清空歷史紀錄時確認"
+
+msgid "Control-click Parcellite's tray icon to use actions"
+msgstr "按住 Ctrl 並點擊 Parcellite 的任務列圖示以使用動作"
+
+msgid "Could not create thread for executed action\n"
+msgstr "無法為此動作建立線程\n"
+
+msgid "Couldn't create directory: %s\n"
+msgstr "無法建立目錄: %s\n"
+
+msgid "Current entry on top"
+msgstr "當前項目置頂"
+
+msgid "Display"
+msgstr "顯示"
+
+msgid "Display Version info"
+msgstr "顯示版本資訊"
+
+msgid "Do not use status icon (Ctrl-Alt-P for menu)"
+msgstr "不使用狀態列圖示（Ctrl-Alt-P 呼叫選單）"
+
+msgid "Dummy desc"
+msgstr ""
+
+msgid "Dummy tip"
+msgstr ""
+
+msgid "_Edit actions"
+msgstr "編輯動作"
+
+msgid "_Edit Clipboard"
+msgstr "編輯剪貼簿"
+
+msgid "Editing Clipboard"
+msgstr "編輯剪貼簿"
+
+msgid "Empty"
+msgstr "空"
+
+msgid "End"
+msgstr "結尾"
+
+msgid "Executing action..."
+msgstr "執行動作…"
+
+msgid "_History"
+msgstr "歷史紀錄"
+
+msgid "History key combination:"
+msgstr "歷史紀錄按鍵組合:"
+
+msgid "Hotkeys"
+msgstr "熱鍵"
+
+msgid "If checked, does a search-as-you-type. Turns red if not found. Goes to top (Alt-E) line when no chars are entered for search"
+msgstr ""
+
+msgid "If checked, does case sensitive search"
+msgstr ""
+
+msgid "If checked, edit the history item clicked on."
+msgstr ""
+
+msgid "If checked, enables checking multiple concurrent user logic. Use if several different users are logged in at the same time."
+msgstr ""
+
+msgid "If checked, enables debug prints on clipboard update logic. This only takes effect when enabled at start up, and may be disabled at compile time."
+msgstr ""
+
+msgid "If checked, enables the persistent history."
+msgstr ""
+
+msgid "If checked, places current clipboard entry at top of list. If not checked, history does not get sorted."
+msgstr ""
+
+msgid "If checked, puts the persistent history at the top of the history list."
+msgstr ""
+
+msgid "If checked, puts the persistent history in a new list."
+msgstr ""
+
+msgid "If checked, the current entry will be on the bottom instead of the top."
+msgstr ""
+
+msgid "If checked, Use the clipboard, which is Ctrl-C, Ctrl-V"
+msgstr ""
+
+msgid "If checked, Use the primary clipboard (mouse highlight-copy, middle mouse button paste)"
+msgstr ""
+
+msgid "If checked, use X, Y to position the history list"
+msgstr ""
+
+msgid "If checked, will display tabs with Right arrow (utf8,\\2192), newlines with pharagrph(\\204b), and spaces with square-u(\\2423)."
+msgstr ""
+
+msgid "If checked, will emit the history entry via the keyboard entry."
+msgstr ""
+
+msgid "If checked, will ignore any clipboard additions that contain only whitespace."
+msgstr ""
+
+msgid "If checked, will keep both clipboards with the same content. If primary is pasted, then copy will have the same data."
+msgstr ""
+
+msgid "If checked, will replace newlines with spaces."
+msgstr ""
+
+msgid "If checked, will restore clipboard entry on application exit."
+msgstr ""
+
+msgid "If checked, will trim whitespace from beginning and end of entry."
+msgstr ""
+
+msgid "If checked, will use Ctrl-V paste."
+msgstr ""
+
+msgid "If checked, will use middle mouse to paste."
+msgstr ""
+
+msgid "If checked, will use xdotool to paste wherever the mouse is."
+msgstr ""
+
+msgid "Ignore Whitespace Only"
+msgstr "忽略空白"
+
+msgid "Items in history"
+msgstr "歷史紀錄數目"
+
+msgid "Key"
+msgstr "鍵盤"
+
+msgid "Keyboard Input"
+msgstr "鍵盤輸入"
+
+msgid "Lightweight GTK+ clipboard manager."
+msgstr "輕量級 GTK+ 剪貼簿管理器。"
+
+msgid "Max Data Size(MB)"
+msgstr "使用空間上限(MB)"
+
+msgid "Maximum data size of entire history list"
+msgstr "全部歷史紀錄的使用空間上限"
+
+msgid "Maximum number of clipboard entries to keep"
+msgstr "剪貼簿項目允許的最大數量"
+
+msgid "Menu key combination"
+msgstr "選單按鍵組合:"
+
+msgid "Middle"
+msgstr "中間"
+
+msgid "Mouse"
+msgstr "滑鼠"
+
+msgid "Multiuser"
+msgstr "多使用者"
+
+msgid "Omit items in the:"
+msgstr "顯示項目時略去:"
+
+msgid "Paste All Entry Delimiter"
+msgstr "貼上所有項目時的分隔符號"
+
+msgid "Persistent As Separate List"
+msgstr "固定為獨立列表"
+
+msgid "Persistent History"
+msgstr "固定歷史紀錄"
+
+msgid "Persistent On Top"
+msgstr "固定置頂"
+
+msgid "Persistent history key:"
+msgstr "固定歷史紀錄:"
+
+msgid "Position history"
+msgstr "歷史紀錄位置"
+
+msgid "Position in pixels from the top of the screen"
+msgstr ""
+
+msgid "Preferences"
+msgstr "設定"
+
+msgid "Print clipboard contents"
+msgstr "列印剪貼簿内容"
+
+msgid "Print primary contents"
+msgstr "列印 primary 内容"
+
+msgid "Remove"
+msgstr "删除"
+
+msgid "Restore Empty"
+msgstr "回復為空"
+
+msgid "Run as daemon"
+msgstr "以 daemon 執行"
+
+msgid "S_ynchronize clipboards"
+msgstr "將兩種剪貼簿同步(_Y)"
+
+msgid "Save history"
+msgstr "儲存歷史紀錄"
+
+msgid "Save History as a text file. Prepends xHIST_0000 to each entry. x is either P(persistent) or N (normal)"
+msgstr ""
+
+msgid "Save history to a file."
+msgstr "將歷史紀錄儲存為一個檔案"
+
+msgid "Search As You Type"
+msgstr "輸入時立即搜尋"
+
+msgid "Show in a single line"
+msgstr "顯示於一行"
+
+msgid "Show in reverse order"
+msgstr "降冪顯示"
+
+msgid "This is the Action Name. \nDO NOT put commands here."
+msgstr ""
+
+msgid "This program is free software; you can redistribute it and/or modify\nit under the terms of the GNU General Public License as published by\nthe Free Software Foundation; either version 3 of the License, or\n(at your option) any later version.\n\nThis program is distributed in the hope that it will be useful,\nbut WITHOUT ANY WARRANTY; without even the implied warranty of\nMERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\nGNU General Public License for more details.\n\nYou should have received a copy of the GNU General Public License\nalong with this program.  If not, see <http://www.gnu.org/licenses/>.;"
+msgstr ""
+
+msgid "This string will be inserted between each line of history for paste all."
+msgstr ""
+
+msgid "Trim Newlines"
+msgstr "刪除最後空白行"
+
+msgid "Trim Whitespace"
+msgstr "刪除空白"
+
+msgid "Use Alt-E to edit, Alt-C to clear"
+msgstr "使用 Alt-E 編輯、 Alt-C 清除"
+
+msgid "Use _Copy (Ctrl-C)"
+msgstr "使用 _Copy (Ctrl-C)"
+
+msgid "Use %% if you want a literal %. See the man page for gnuC printf (man 2 printf) for more information."
+msgstr ""
+
+msgid "Use _Primary (Selection)"
+msgstr "使用 _Primary (Selection)"
+
+msgid "Written by Gilberto \"Xyhthyx\" Miralla and Doug Springer.\nReport bugs to <gpib@rickyrockrat.net>."
+msgstr "由 Gilberto \"Xyhthyx\" Miralla 開發\n回報問題給 <xyhthyx@gmail.com>"
+
