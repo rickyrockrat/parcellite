@@ -272,7 +272,10 @@ void save_history()
   if (history_file)  {
     GList* element;
 		gchar *magic=g_malloc0(2+HISTORY_MAGIC_SIZE);
-	  if( NULL == magic) return;
+	  if( NULL == magic) {
+			fclose(history_file);
+			return;
+		}	
 		memcpy(magic,history_magics[HISTORY_VERSION-1],strlen(history_magics[HISTORY_VERSION-1]));	
 		fwrite(magic,HISTORY_MAGIC_SIZE,1,history_file);
 		g_mutex_lock(hist_lock);
