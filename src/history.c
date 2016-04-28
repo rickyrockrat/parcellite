@@ -491,10 +491,11 @@ void clear_history( void )
 		g_list_free(history_list);
 		history_list = NULL;
 	}	else{ /**save any persistent items  */
-		GList* element;
-		for (element = history_list; element != NULL; element = element->next) {
+		GList *element, *successor;
+		for (element = history_list; element != NULL; element = successor) {
 		  struct history_item *c;
 			c=(struct history_item *)element->data;
+			successor=element->next;
 			if(!(c->flags & CLIP_TYPE_PERSISTENT))
 				history_list=g_list_remove(history_list,c);
 		}		
