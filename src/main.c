@@ -710,9 +710,11 @@ static void action_selected(GtkButton *button, gpointer user_data)
   /* Insert clipboard into command (user_data), and prepare it for execution */
   gchar* clipboard_text = gtk_clipboard_wait_for_text(clipboard);
 	g_fprintf(stderr,"Got cmd '%s', text '%s'->",(gchar *)user_data,clipboard_text);fflush(NULL);  
-	gchar* command=g_strdup_printf((gchar *)user_data,clipboard_text);
+	gchar* quoted_clipboard_text = g_shell_quote(clipboard_text);
+	gchar* command=g_strdup_printf((gchar *)user_data,quoted_clipboard_text);
 	g_fprintf(stderr," '%s'\n",command);fflush(NULL);  
   g_free(clipboard_text);
+  g_free(quoted_clipboard_text);
   g_free(user_data);
   gchar* shell_command = g_shell_quote(command);
   g_free(command);
