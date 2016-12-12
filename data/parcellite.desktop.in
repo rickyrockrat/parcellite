@@ -1,6 +1,7 @@
 [Desktop Entry]
 _Name=Parcellite
-_Comment=Clipboard Manager
+_GenericName=Clipboard Manager
+_Comment=Lightweight GTK+ clipboard manager
 Icon=parcellite
 Exec=parcellite
 Terminal=false
