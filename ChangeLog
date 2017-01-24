@@ -1,9 +1,11 @@
 V1.2.0 
  +Removed -d option.
  +Fixed bug 151, history clear not working.
+ +Fixed bug 150, Command line examples not working. Note: parcellite must be running already.
  +Fixed bug 147, resource leak on history file.
  +Fixed bug 144, Clipboard text quoted for action commands.
  +Fixed bug 143, Parcellite fails to start as daemon. Also fixes Debian bug 785472.
+ +Added TW_zh .po file.
 
 V1.1.9 Wednesday, Oct 01, 2014
  +Fixed bug 120, position_history broken. We limit x & y with screen limit -100.
