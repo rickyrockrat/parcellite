@@ -109,6 +109,7 @@ scm_cp_to_tag () {
   		git tag -a -m"$desc" $tag 
 		check_err "scm local tag"
 		git push origin
+		git push origin --tags
 		check_err "git push origin";;
   	*) echo "Never get here"
   		exit 1;;
