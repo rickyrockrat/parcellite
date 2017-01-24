@@ -106,7 +106,10 @@ scm_cp_to_tag () {
   	svn) echo "Contacting $PURL for svn cp"
   		svn cp --username "$user" -m"$desc" $BURL/trunk $turl;;
   	git) echo "Tagging '$tag'"
-  		git tag -a -m"$desc" $tag ;;
+  		git tag -a -m"$desc" $tag 
+		check_err "scm local tag"
+		git push origin
+		check_err "git push origin";;
   	*) echo "Never get here"
   		exit 1;;
   esac
