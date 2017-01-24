@@ -1,4 +1,4 @@
-V1.2.0 
+V1.2.0 Monday, Jan 23, 2017
  +Removed -d option.
  +Fixed bug 151, history clear not working.
  +Fixed bug 150, Command line examples not working. Note: parcellite must be running already.
