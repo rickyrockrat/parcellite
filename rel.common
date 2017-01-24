@@ -29,7 +29,10 @@ check_local () {
   echo "$FUNCNAME"
   case $SCM_NAME in
 	  svn) M=$(svn st|grep -c "^M");;
-	  git) M=$(git status |grep -c 'modified: ');;
+	  git) M=$(git status |grep -c 'modified: ')
+		if [ "$M" = "0" ]; then 
+			M=$(git status |grep -c 'by [0-9]* commit')
+		fi;;
 	  *) echo "Unknown SCM name '$SCM_NAME'"
 	  	exit 1;;
 	esac
