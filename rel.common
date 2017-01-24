@@ -560,7 +560,7 @@ remote_i386 () {
   read userat
   case $SCM_NAME in
   	svn) scm_cmd="svn co http://svn.code.sf.net/p/parcellite/code/tags/$tag $tag-i386";;
-  	git) scm_cmd="git clone --depth=1 -b $tag $BURL $tag-i385";;
+  	git) scm_cmd="git clone --depth=1 -b $tag $BURL $tag-i386";;
   	*) echo "Unknown SCM name '$SCM_NAME'"
   	exit 1;;
   esac
