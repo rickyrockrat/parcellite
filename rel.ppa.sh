@@ -19,7 +19,7 @@
 set_abs_path
 
 cd "$CDIR"
-set_svn_local
+set_scm_local
 check_local 1
 ask_version
 test_tag_co

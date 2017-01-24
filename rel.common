@@ -15,8 +15,6 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-PURL="https://svn.code.sf.net"
-BURL="$PURL/p/parcellite/code"
 
 # description
 check_err () {
@@ -25,10 +23,17 @@ check_err () {
 		exit 1
 	fi
 }
+scm_st () {
+
 # Make sure we are checked in.
 check_local () {
   echo "$FUNCNAME"
-  M=$(svn st|grep -c "^M")
+  case $SCM_NAME in
+	  svn) M=$(svn st|grep -c "^M");;
+	  git) M=$(git status |grep -c 'modified: ');;
+	  *) echo "Unknown SCM name '$SCM_NAME'"
+	  	exit 1;;
+	esac
   if [ "$M" != "0" ]; then
     echo "local is not up to date"
     if [ "$1" = "1" ]; then
@@ -50,7 +55,7 @@ ask_version () {
     return
   fi
   if [ -z "$1" ]; then
-    echo "Tag to operate on (copy to or build deb from)?"
+    echo "Tag to operate on (create or build deb from)?"
     read tag
   else
     tag="$1"
@@ -71,12 +76,19 @@ ask_user () {
   read user
 }
 # Copy the trunk to tag
-svn_cp_to_tag () {
+scm_cp_to_tag () {
   echo "$FUNCNAME"
   ask_version
-  E=$(svn ls $turl --depth empty 2>&1|grep -c "non-exist")
+  case $SCM_NAME in
+  	svn)  E=$(svn ls $turl --depth empty 2>&1|grep -c "non-exist");;
+  	git)  E=$(git tag -l $tag|grep -c $tag)
+  		if [ "1" = "$E" ]; then E="0"; else E="1"; fi;;
+  	*) echo "Unknown version control '$SCM_NAME'"
+  		exit 1;;
+  esac
+  	
   if [ "$E" = "0" ]; then
-    echo "$turl exists."
+    echo "$tag exists."
     exit 1
   fi
   if [ -e "$CODIR" ]; then
@@ -86,22 +98,44 @@ svn_cp_to_tag () {
   echo "Description for tag?"
   read desc
   ask_user
-  echo "Contacting $PURL for svn cp"
-  svn cp --username "$user" -m"$desc" $BURL/trunk $turl
-  check_err "svn copy"
+  case $SCM_NAME in
+  	svn) echo "Contacting $PURL for svn cp"
+  		svn cp --username "$user" -m"$desc" $BURL/trunk $turl
+  	git) echo "Tagging '$tag'"
+  		git tag -m"$desc" -a 
+  	*) echo "Never get here"
+  		exit 1;;
+  esac
+  check_err "scm tag"
 }
+scm_tag () {
+	echo "$FUNCNAME"
+	ask_version
+}
+# Set us up so we are either GIT or SVN.
 #Check to be sure we have the correct directory orientation
-set_svn_local (){
+set_scm_local (){
   echo "$FUNCNAME"
-  STERM=$(echo "$BURL"|sed 's!.*://!!')
-  S=$(grep -c "$STERM" "$CDIR/.svn/entries")
-  if [ "$S" = "0" ]; then	
-    echo "$CDIR does not appear to be a working local copy"
-	  exit 1
+  if [ -e "$CDIR/.git" ]; then # see if we are GIT
+    SCM_NAME="git"
+  	SCM_DIR=".git"
+  	BURL=$(grep -A2 '\[remote' "$CDIR/.git/config" |grep -A2 '"origin"'|grep url|sed 's!.*=[ ]*!!')
+  elif [ -e "$CDIR/.svn" ]; then # see if we are SVN
+  	SCM_DIR=".svn"
+  	SCM_NAME="svn"
+  	PURL="https://svn.code.sf.net"
+		BURL="$PURL/p/parcellite/code"
+  	STERM=$(echo "$BURL"|sed 's!.*://!!')
+  	S=$(grep -c "$STERM" "$CDIR/.svn/entries")
+  	if [ "$S" = "0" ]; then	
+  		echo "$CDIR is not svn, and we did not find git. "
+    	echo "$CDIR does not appear to be a working local copy"
+	  	exit 1
+	  fi
   fi
   ASVN=$(dirname "$CDIR")
-  if [ -e "$ASVN/.svn" ]; then
-    echo "directory '$ASVN should NOT be under svn"
+  if [ -e "$ASVN/$SCM_DIR" ]; then
+    echo "directory '$ASVN should NOT be under $SCM_NAME"
     exit 1
   fi
 }
@@ -122,15 +156,21 @@ test_tag_co () {
   mkdir -p "$CODIR"
   check_err "mkdir co"
   cd "$CODIR"
-  if [ -e $CODIR/$tag/.svn ] ; then
+  if [ -e $CODIR/$tag/$SCM_DIR] ; then
     log "$CODIR/$tag already exists. Not re-checking out"
     return
   fi
-  log "performing svn co $turl"
-  svn co "$turl"
-  check_err "svn co"
+  case $SCM_NAME in
+  	svn) log "performing svn co $turl"
+  		svn co "$turl"
+  	git) log "performing git clone $BURL"
+  		git clone -b $tag --depth 1 $BURL $tag;;
+  	*) echo "unknown SCM type '$SCM_NAME'"
+  	exit 1;;
+  esac
+ 	check_err "scm co"
   cp -a $tag $tdir
-  check_err "mv svn co dir"
+  check_err "mv $tag $tdir"
   cd $tdir
   check_err "cd $tdir"
   fix_configure_ac "$tag"
@@ -140,7 +180,7 @@ make_tarball () {
   log "$FUNCNAME"
   cd "$CODIR"
   check_err "cd $CODIR"
-  tar --exclude .svn -czf $tdir.tar.gz $tdir
+  tar --exclude $SCM_DIR -czf $tdir.tar.gz $tdir
   check_err "tar -c"
 }
 # test the tar ball
@@ -277,7 +317,7 @@ finish_ppa () {
  cd "$debdir"
  fix_configure_ac "$AVER"
  cd ..
- tar --exclude .svn -czf "$debdir.orig.tar.gz" "$debdir"
+ tar --exclude $SCM_DIR -czf "$debdir.orig.tar.gz" "$debdir"
  check_err "tar for ppa"
  cp "$debdir"/deb/* t/debian
 #build changelog
@@ -430,7 +470,12 @@ cp $CDIR/po/$_PO $CDIR/_$_PO
 $CDIR/extract_strings.sh "$tag"
 _DIFF=$(diff -q $CDIR/_$_PO $CDIR/po/$_PO|grep -c differ)
 if [ "0" != "$_DIFF" ]; then
-  svn ci -m"Updated $_PO"
+	case $SCM_NAME in
+		svn) svn ci -m"Updated $_PO";;
+		git) git commit -m"Updated $_PO" po ;;
+		*) echo "Unknown SCM name '$SCM_NAME'"
+			exit 1;;
+	esac
 fi
 rm $CDIR/_$_PO
 }
@@ -505,7 +550,14 @@ remote_i386 () {
   fi
   echo "user@machine for ssh?(note remote machine needs correct gpg key & /src/parcellite directory)."
   read userat
-  ssh -t $userat "cd /src/parcellite; svn co http://svn.code.sf.net/p/parcellite/code/tags/$tag $tag-i386; cd $tag-i386;./rel.deb.sh $tag"
+  case $SCM_NAME in
+  	svn) scm_cmd="svn co http://svn.code.sf.net/p/parcellite/code/tags/$tag $tag-i386";;
+  	git) scm_cmd="git clone --depth=1 -b $tag $BURL $tag-i385";;
+  	*) echo "Unknown SCM name '$SCM_NAME'"
+  	exit 1;;
+  esac
+  	
+  ssh -t $userat "cd /src/parcellite; $scm_cmd; cd $tag-i386;./rel.deb.sh $tag"
   echo "Copying deb files from remote"
   scp ${userat}:/src/parcellite/test.$tag/*.deb $CDIR/Changelog $CODIR
 }
