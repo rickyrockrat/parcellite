@@ -18,12 +18,11 @@
 
 # description
 check_err () {
-  if [ $? -ne 0 ]; then
+	if [ $? -ne 0 ]; then
 		log "$1 Failed. Abort"
 		exit 1
 	fi
 }
-scm_st () {
 
 # Make sure we are checked in.
 check_local () {
@@ -100,9 +99,9 @@ scm_cp_to_tag () {
   ask_user
   case $SCM_NAME in
   	svn) echo "Contacting $PURL for svn cp"
-  		svn cp --username "$user" -m"$desc" $BURL/trunk $turl
+  		svn cp --username "$user" -m"$desc" $BURL/trunk $turl;;
   	git) echo "Tagging '$tag'"
-  		git tag -m"$desc" -a 
+  		git tag -m"$desc" -a ;;
   	*) echo "Never get here"
   		exit 1;;
   esac
@@ -162,7 +161,7 @@ test_tag_co () {
   fi
   case $SCM_NAME in
   	svn) log "performing svn co $turl"
-  		svn co "$turl"
+  		svn co "$turl";;
   	git) log "performing git clone $BURL"
   		git clone -b $tag --depth 1 $BURL $tag;;
   	*) echo "unknown SCM type '$SCM_NAME'"
