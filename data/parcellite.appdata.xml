@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright (C) 2011-2014 by rickyrockrat <gpib at rickyrockrat dot net> -->
+<application>
+ <id type="desktop">parcellite.desktop</id>
+ <metadata_license>CC0-1.0</metadata_license>
+ <project_license>GPL-3.0+</project_license>
+ <name>Parcellit</name>
+ <summary>Clipboard History Manager</summary>
+ <description>
+  <p>
+   Parcellite is an application that runs in the background and monitors the 
+   clipboard(s), storing each copy in a list that can be chosen as the current entry later.
+  </p>
+  <p>
+  This uses a hot key to pop up a history list. Clicking on an entry in the list will set that
+  entry as the current clipboard selection. When the list is filled, it will start deleting the oldest
+  entries. There is a persistent list that never goes away in addition to the normal history.
+  Right-clicking on any of the entries in either list will allow you to move it to the other list. There are many settings
+  on how to process text placed in the history (deleting whitespace, newlines, tabs, etc.). The entire history can be 
+  saved to a file. 
+  </p>
+ </description>
+ <screenshots>
+  <screenshot type="default" width="396" height="633">http://parcellite.sourceforge.net/wp-content/uploads/preferences.png</screenshot>
+  <screenshot width="396" height="633">http://parcellite.sourceforge.net/wp-content/uploads/preferences-display1.png</screenshot>
+ </screenshots>
+ <url type="homepage">http://parcellite.sourceforge.net</url>
+ <updatecontact>gpib at rickyrockrat dot net</updatecontact>
+ <project_group>Parcellite</project_group>
+</application>
+

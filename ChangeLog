@@ -2,7 +2,9 @@ V1.2.0 Monday, Jan 23, 2017
  +Removed -d option.
  +Fixed bug 151, history clear not working.
  +Fixed bug 150, Command line examples not working. Note: parcellite must be running already.
+ +Implemented patch from Christopher Oliver that fixes a memory access bug on history clear.
  +Fixed bug 147, resource leak on history file.
+ +Fixed minor missing fclose bug in save_history credits dcb.
  +Fixed bug 144, Clipboard text quoted for action commands.
  +Fixed bug 143, Parcellite fails to start as daemon. Also fixes Debian bug 785472.
  +Added TW_zh .po file.

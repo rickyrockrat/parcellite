@@ -272,7 +272,10 @@ void save_history()
   if (history_file)  {
     GList* element;
 		gchar *magic=g_malloc0(2+HISTORY_MAGIC_SIZE);
-	  if( NULL == magic) return;
+	  if( NULL == magic) {
+			fclose(history_file);
+			return;
+		}	
 		memcpy(magic,history_magics[HISTORY_VERSION-1],strlen(history_magics[HISTORY_VERSION-1]));	
 		fwrite(magic,HISTORY_MAGIC_SIZE,1,history_file);
 		g_mutex_lock(hist_lock);
@@ -491,10 +494,11 @@ void clear_history( void )
 		g_list_free(history_list);
 		history_list = NULL;
 	}	else{ /**save any persistent items  */
-		GList* element;
-		for (element = history_list; element != NULL; element = element->next) {
+		GList *element, *successor;
+		for (element = history_list; element != NULL; element = successor) {
 		  struct history_item *c;
 			c=(struct history_item *)element->data;
+			successor=element->next;
 			if(!(c->flags & CLIP_TYPE_PERSISTENT))
 				history_list=g_list_remove(history_list,c);
 		}		
