@@ -389,7 +389,7 @@ setup_ppa (){
  
  echo "Build with libappindicator? (y/n)"
  read AI
- SUPPORTEDSERIES="zesty yakkety xenial trusty quantal precise lucid"
+ SUPPORTEDSERIES="zesty yakkety xenial trusty precise"
  echo "What series does this apply to? (i.e. $SUPPORTEDSERIES etc)"
  echo " For multiple series, put spaces between series (enter just uses all)"
  read MSERIES
