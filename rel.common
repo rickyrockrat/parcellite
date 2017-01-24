@@ -172,7 +172,7 @@ test_tag_co () {
   	svn) log "performing svn co $turl"
   		svn co "$turl";;
   	git) log "performing git clone $BURL"
-  		git clone -b $tag --depth 1 $BURL $tag;;
+  		git clone --single-branch --branch $tag --depth 1 $BURL $tag;;
   	*) echo "unknown SCM type '$SCM_NAME'"
   	exit 1;;
   esac
