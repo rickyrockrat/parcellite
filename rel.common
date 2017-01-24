@@ -32,12 +32,14 @@ check_local () {
 	  git) M=$(git status |grep -c 'modified: ')
 		if [ "$M" = "0" ]; then 
 			M=$(git status |grep -c 'by [0-9]* commit')
+		else
+			echo "Locally modified files"
 		fi;;
 	  *) echo "Unknown SCM name '$SCM_NAME'"
 	  	exit 1;;
 	esac
   if [ "$M" != "0" ]; then
-    echo "local is not up to date"
+    echo "local is not up to date with remote"
     if [ "$1" = "1" ]; then
       return
     fi
