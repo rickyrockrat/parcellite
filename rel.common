@@ -163,7 +163,7 @@ test_tag_co () {
   mkdir -p "$CODIR"
   check_err "mkdir co"
   cd "$CODIR"
-  if [ -e $CODIR/$tag/$SCM_DIR] ; then
+  if [ -e $CODIR/$tag/$SCM_DIR ] ; then
     log "$CODIR/$tag already exists. Not re-checking out"
     return
   fi
