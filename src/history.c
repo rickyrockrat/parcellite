@@ -224,12 +224,12 @@ void read_history ()
 			}
       
     }
+		g_mutex_unlock(hist_lock);
 done:
 		g_free(magic);
     /* Close file and reverse the history to normal */
     fclose(history_file);
     history_list = g_list_reverse(history_list);
-		g_mutex_unlock(hist_lock);
   }
 	if(dbg) g_printf("History read done\n");
 }
