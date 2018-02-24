@@ -20,7 +20,10 @@ How to compile and install parcellite
 -------------------------------------------------------------------------------
 
 Requirements:
+	* automake >= 1.9
 	* gtk+ >= 2.10.0 
+	* intltool
+	* libglib
 
 Download the parcellite source code, then:
 	$ tar zxvf parcellite-x.y.z.tar.gz
