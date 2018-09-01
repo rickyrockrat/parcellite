@@ -522,7 +522,7 @@ void update_clipboards(gchar *intext, gint mode)
 ****************************************************************************/
 void do_command(gchar *buf, gint len)
 {
-  g_printf("Got '%s' cmd\n",buf);
+  g_fprintf(stderr,"Got '%s' cmd\n",buf);
 	if(!p_strcmp(buf,FIFCMD_RUN_ALL)) {
 		cmd_mode|=CMODE_ALL;
 		return;
@@ -563,9 +563,9 @@ void check_clipboards(gint mode)
 	/*g_printf("check_clipboards\n"); */
 	if(fifo->clen){/**we have a command to execute  */
 			/*fifo->which should be ID_CMD: */
-		if(fifo->dbg) g_printf("Running CMD '%s'\n",fifo->cbuf);
+		if(fifo->dbg) g_fprintf(stderr,"Running CMD '%s'\n",fifo->cbuf);
 		do_command(fifo->cbuf, fifo->clen);
-		if(fifo->dbg) g_printf("mode is 0x%X\n",cmd_mode);
+		if(fifo->dbg) g_fprintf(stderr,"mode is 0x%X\n",cmd_mode);
 		fifo->clen=0;
 		return;
 	}	
@@ -575,14 +575,14 @@ void check_clipboards(gint mode)
 		switch(fifo->which){
 			case ID_PRIMARY:
 				fifo->rlen=validate_utf8_text(fifo->buf, fifo->rlen);
-				if(fifo->dbg) g_printf("Setting PRI '%s'\n",fifo->buf);
+				if(fifo->dbg) g_fprintf(stderr,"Setting PRI '%s'\n",fifo->buf);
 				update_clipboard(primary, fifo->buf, H_MODE_NEW);
 				fifo->rlen=0;
 				n=1;
 				break;
 			case ID_CLIPBOARD:
 				fifo->rlen=validate_utf8_text(fifo->buf, fifo->rlen);
-				if(fifo->dbg) g_printf("Setting CLI '%s'\n",fifo->buf);
+				if(fifo->dbg) g_fprintf(stderr,"Setting CLI '%s'\n",fifo->buf);
 				update_clipboard(clipboard, fifo->buf, H_MODE_NEW);
 				n=2;
 				fifo->rlen=0;
@@ -590,7 +590,7 @@ void check_clipboards(gint mode)
 			
 			default:
 				fifo->rlen=validate_utf8_text(fifo->buf, fifo->rlen);
-				g_printf("CLIP not set, discarding '%s'\n",fifo->buf);
+				g_fprintf(stderr,"CLIP not set, discarding '%s'\n",fifo->buf);
 				fifo->rlen=0;
 				break;
 		}
@@ -1230,7 +1230,7 @@ static gboolean show_actions_menu(gpointer data)
   gtk_menu_shell_append((GtkMenuShell*)menu, gtk_separator_menu_item_new());
   /* Actions */
   gchar* path = g_build_filename(g_get_user_data_dir(), ACTIONS_FILE, NULL);
-	printf("got path '%s'\n",path); fflush(NULL);
+	g_fprintf(stderr,"got path '%s'\n",path); fflush(NULL);
   FILE* actions_file = fopen(path, "rb");
   g_free(path);
   /* Check that it opened and begin read */
@@ -1238,7 +1238,7 @@ static gboolean show_actions_menu(gpointer data)
   {
     gint size;
     if(0==fread(&size, 4, 1, actions_file))
-    	g_print("1:got 0 items from fread\n");
+    	g_fprintf(stderr,"1:got 0 items from fread\n");
     /* Check if actions file is empty */
     if (!size)
     {
@@ -1253,20 +1253,20 @@ static gboolean show_actions_menu(gpointer data)
       /* Read name */
       gchar* name = (gchar*)g_malloc(size + 1);
       if( 0 ==fread(name, size, 1, actions_file))
-      	g_print("2:got 0 items from fread\n");
+      	g_fprintf(stderr,"2:got 0 items from fread\n");
       name[size] = '\0';
       menu_item = gtk_menu_item_new_with_label(name);
       
       if(0 ==fread(&size, 4, 1, actions_file))
-      	g_print("3:got 0 items from fread\n");
+      	g_fprintf(stderr,"3:got 0 items from fread\n");
       /* Read command */
       gchar* command = (gchar*)g_malloc(size + 1);
       if(0 ==fread(command, size, 1, actions_file))
-      	g_print("4:got 0 items from fread\n");
+      	g_fprintf(stderr,"4:got 0 items from fread\n");
       command[size] = '\0';
 		  g_print("name='%s' cmd='%s'\n",name,command);
       if(0 ==fread(&size, 4, 1, actions_file))
-      	g_print("5:got 0 items from fread\n");
+      	g_fprintf(stderr,"5:got 0 items from fread\n");
       /* Append the action */
       gtk_menu_shell_append((GtkMenuShell*)menu, menu_item);
       g_signal_connect((GObject*)menu_item,        "activate",
@@ -1420,15 +1420,15 @@ static gboolean key_release_cb (GtkWidget *w,GdkEventKey *e, gpointer user)
 	if(0&& NULL != e ){
 		if(GDK_MOTION_NOTIFY==e->type)
 			return FALSE;
-    printf("krc (%x) S%x T%x C%x,SE%x, G%x, W%p, wdg%p",
+    g_fprintf(stderr,"krc (%x) S%x T%x C%x,SE%x, G%x, W%p, wdg%p",
 		e->keyval,e->state,e->type,
 		e->hardware_keycode,e->send_event,e->group,e->window,w);
 		if(GDK_DRAG_ENTER == e->type || GDK_DRAG_LEAVE==e->type){
-			printf(" Drag %s\n",GDK_DRAG_ENTER == e->type?"ENTER":"LEAVE");
+			g_fprintf(stderr," Drag %s\n",GDK_DRAG_ENTER == e->type?"ENTER":"LEAVE");
 		}
 		if(GDK_BUTTON_RELEASE==e->type || GDK_BUTTON_PRESS==e->type  ){
 			GdkEventButton *b=(GdkEventButton *)e;
-			printf(" button %d State 0x%x\n",b->button, b->state);
+			g_fprintf(stderr," button %d State 0x%x\n",b->button, b->state);
 			if(GDK_BUTTON_RELEASE==e->type && 3 == b->button){
 				/*toggle-size-request", */
 				/*allow item_selected to get called  */
@@ -1436,7 +1436,7 @@ static gboolean key_release_cb (GtkWidget *w,GdkEventKey *e, gpointer user)
 			}
 			/*return TRUE; */
 		}
-		printf("\n");
+		g_fprintf(stderr,"\n");
 		fflush(NULL);
   }
 	
@@ -1448,11 +1448,11 @@ static gboolean key_release_cb (GtkWidget *w,GdkEventKey *e, gpointer user)
 		idx=0;
 		return FALSE;
 	}else if(NULL == kstr){
-		g_print("kstr null. Not init\n");
+		g_fprintf(stderr,"kstr null. Not init\n");
 		return FALSE;
 	}
   if(NULL == e){
-    g_print("No Event!\n");
+    g_fprintf(stderr,"No Event!\n");
     return FALSE;
   }
 		
@@ -1682,7 +1682,7 @@ static gboolean my_item_event (GtkWidget *w,GdkEventKey *e, gpointer user)
 	}
 	if(GDK_KEY_PRESS == e->type){
 		/*GdkEventKey *k=	(GdkEventKey *)e; */
-		printf("key press %d (0x%x)\n",e->keyval,e->keyval); 
+		g_fprintf(stderr,"key press %d (0x%x)\n",e->keyval,e->keyval); 
 		fflush(NULL);
 	}
 	if(GDK_BUTTON_RELEASE==e->type){
@@ -2355,7 +2355,7 @@ int main(int argc, char *argv[])
 		mode=PROG_MODE_CLIENT; /**already running, just access fifos & exit.  */
 	
 	/**get options/cmd line not parsed.  */
-	if( NULL != opts->leftovers)g_print("%s\n",opts->leftovers);
+	if( NULL != opts->leftovers)g_fprintf(stderr,"%s\n",opts->leftovers);
 	/**init fifo should set up the fifo and the callback (if we are daemon mode)  */
 		if(opts->primary)	{
 			if(NULL == (fifo=init_fifo(FIFO_MODE_PRI|mode))) return 1;
