@@ -522,32 +522,37 @@ void update_clipboards(gchar *intext, gint mode)
 ****************************************************************************/
 void do_command(gchar *buf, gint len)
 {
-  g_fprintf(stderr,"Got '%s' cmd\n",buf);
-	if(!p_strcmp(buf,FIFCMD_RUN_ALL)) {
-		cmd_mode|=CMODE_ALL;
-		return;
-	}	
-	if(!p_strcmp(buf,FIFCMD_RUN_CLI)) {
-		cmd_mode|=CMODE_CLI;
-		return;
-	}	
-	if(!p_strcmp(buf,FIFCMD_RUN_PRI)) {
-		cmd_mode|=CMODE_PRI;
-		return;
-	}	
-	if(!p_strcmp(buf,FIFCMD_STOP_ALL)) {
-		cmd_mode&=~(CMODE_ALL);
-		return;
-	}
-		if(!p_strcmp(buf,FIFCMD_STOP_CLI)) {
-		cmd_mode&=~(CMODE_CLI);
-		return;
-	}
-		if(!p_strcmp(buf,FIFCMD_STOP_PRI)) {
-		cmd_mode&=~(CMODE_PRI);
-		return;
-	}
+	/**clean whitepsace  */
+	gchar *p, *news=strdup(buf); 
+	p=g_strchomp(news);
+  g_fprintf(stderr,"Got '%s' cmd\n",p);
 	
+	if(!p_strcmp(p,FIFCMD_RUN_ALL)) {
+		cmd_mode|=CMODE_ALL;
+		goto end;
+	}	
+	if(!p_strcmp(p,FIFCMD_RUN_CLI)) {
+		cmd_mode|=CMODE_CLI;
+		goto end;
+	}	
+	if(!p_strcmp(p,FIFCMD_RUN_PRI)) {
+		cmd_mode|=CMODE_PRI;
+		goto end;
+	}	
+	if(!p_strcmp(p,FIFCMD_STOP_ALL)) {
+		cmd_mode&=~(CMODE_ALL);
+		goto end;
+	}
+		if(!p_strcmp(p,FIFCMD_STOP_CLI)) {
+		cmd_mode&=~(CMODE_CLI);
+		goto end;
+	}
+		if(!p_strcmp(p,FIFCMD_STOP_PRI)) {
+		cmd_mode&=~(CMODE_PRI);
+		goto end;
+	}
+end:
+	free(news);
 }
 
 /***************************************************************************/
