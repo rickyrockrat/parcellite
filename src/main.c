@@ -87,6 +87,7 @@ g_signal_connect(clipboard, "owner-change",  G_CALLBACK(handle_owner_change), NU
 #define FIFCMD_RUN_PRI "run_pri"
 #define FIFCMD_RUN_CLI "run_cli"
 #define FIFCMD_RUN_ALL "run_all"
+#define FIFCMD_CLEAR_ALL "clear_all"
 
 GtkWidget *hmenu;
 /**see parcellite.h for DEBUG defines  */
@@ -515,6 +516,7 @@ void update_clipboards(gchar *intext, gint mode)
 	update_clipboard(clipboard, intext, mode);
 }
 
+static void clear_all ( gpointer user_data);
 /***************************************************************************/
 /** Run a command. For now, just start and stop
 \n\b Arguments:
@@ -543,12 +545,16 @@ void do_command(gchar *buf, gint len)
 		cmd_mode&=~(CMODE_ALL);
 		goto end;
 	}
-		if(!p_strcmp(p,FIFCMD_STOP_CLI)) {
+	if(!p_strcmp(p,FIFCMD_STOP_CLI)) {
 		cmd_mode&=~(CMODE_CLI);
 		goto end;
 	}
-		if(!p_strcmp(p,FIFCMD_STOP_PRI)) {
+	if(!p_strcmp(p,FIFCMD_STOP_PRI)) {
 		cmd_mode&=~(CMODE_PRI);
+		goto end;
+	}
+	if(!p_strcmp(p,FIFCMD_CLEAR_ALL)) {
+		clear_all((gpointer) NULL);
 		goto end;
 	}
 end:
@@ -1071,6 +1077,24 @@ void  history_item_right_click (struct history_info *h, GdkEventKey *e, gint ind
 	
 }
 
+/***************************************************************************/
+/** Clear history, without confirmation.
+\n\b Arguments:
+\n\b Returns:
+****************************************************************************/
+static void clear_all ( gpointer user_data)
+{
+	if( NULL != user_data ){ 
+		struct history_info *h=(struct history_info *)user_data;
+		/* Clear history and free history-related variables */
+		remove_deleted_items(h); /**fix bug 92, Shift/ctrl right-click followed by clear segfaults/double free.  */	
+	}	
+	clear_history();
+	/*g_printf("Clear hist done, h=%p, h->delete_list=%p\n",h, h->delete_list); */
+	update_clipboard(primary, "", H_MODE_INIT);
+  update_clipboard(clipboard, "", H_MODE_INIT);	
+}
+
 /* Called when Clear is selected from history menu */
 static void clear_selected(GtkMenuItem *menu_item, gpointer user_data)
 {
@@ -1089,13 +1113,7 @@ static void clear_selected(GtkMenuItem *menu_item, gpointer user_data)
 		gtk_widget_destroy(confirm_dialog);
 	}	
 	if(clear){
-		struct history_info *h=(struct history_info *)user_data;
-		/* Clear history and free history-related variables */
-		remove_deleted_items(h); /**fix bug 92, Shift/ctrl right-click followed by clear segfaults/double free.  */	
-		clear_history();
-		/*g_printf("Clear hist done, h=%p, h->delete_list=%p\n",h, h->delete_list); */
-		update_clipboard(primary, "", H_MODE_INIT);
-    update_clipboard(clipboard, "", H_MODE_INIT);
+		clear_all(user_data);
 	}
       
 }
