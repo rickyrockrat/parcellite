@@ -75,7 +75,7 @@ void read_history_old ()
   if (history_file)   {
     /* Read the size of the first item */
     gint size=1;
-    g_mutex_lock(hist_lock);
+    g_mutex_lock(&hist_lock);
     /* Continue reading until size is 0 */
     while (size)   {
 			struct history_item *c;
@@ -102,7 +102,7 @@ void read_history_old ()
     /* Close file and reverse the history to normal */
     fclose(history_file);
     history_list = g_list_reverse(history_list);
-		g_mutex_unlock(hist_lock);
+		g_mutex_unlock(&hist_lock);
   }
 }
 
@@ -195,7 +195,7 @@ void read_history ()
 		}
 		if(dbg) g_printf("History Magic OK. Reading\n");
     /* Continue reading until size is 0 */
-		g_mutex_lock(hist_lock);
+		g_mutex_lock(&hist_lock);
     while (size)   {
 			struct history_item *c;
 			if (fread(&size, 4, 1, history_file) != 1)
@@ -229,7 +229,7 @@ done:
     /* Close file and reverse the history to normal */
     fclose(history_file);
     history_list = g_list_reverse(history_list);
-		g_mutex_unlock(hist_lock);
+		g_mutex_unlock(&hist_lock);
   }
 	if(dbg) g_printf("History read done\n");
 }
@@ -278,7 +278,7 @@ void save_history()
 		}	
 		memcpy(magic,history_magics[HISTORY_VERSION-1],strlen(history_magics[HISTORY_VERSION-1]));	
 		fwrite(magic,HISTORY_MAGIC_SIZE,1,history_file);
-		g_mutex_lock(hist_lock);
+		g_mutex_lock(&hist_lock);
     /* Write each element to a binary file */
     for (element = history_list; element != NULL; element = element->next) {
 		  struct history_item *c;
@@ -297,7 +297,7 @@ void save_history()
 			}
 			
     }
-		g_mutex_unlock(hist_lock);
+		g_mutex_unlock(&hist_lock);
     /* Write 0 to indicate end of file */
     gint end = 0;
     fwrite(&end, 4, 1, history_file);
@@ -370,7 +370,7 @@ void append_item(gchar* item, int checkdup, gint iflags, gint itype)
 	struct history_item *c=NULL;
 	if(NULL == item)
 		return;
-	g_mutex_lock(hist_lock);
+	g_mutex_lock(&hist_lock);
 /**delete if HIST_DEL flag is set.  */
 	if( checkdup & HIST_CHECKDUP){
 		node=is_duplicate(item, checkdup & HIST_DEL, &flags);
@@ -400,7 +400,7 @@ void append_item(gchar* item, int checkdup, gint iflags, gint itype)
 	/*g_printf("Append '%s'\n",item); */
    /* Prepend new item */
   history_list = g_list_prepend(history_list, NULL ==element?c:element->data);
-	g_mutex_unlock(hist_lock);
+	g_mutex_unlock(&hist_lock);
   /* Shorten history if necessary */
   truncate_history();
 }
@@ -415,7 +415,7 @@ void delete_duplicate(gchar* item)
   GList* element;
 	int p=get_pref_int32("persistent_history");
   /* Go through each element compare each */
-	g_mutex_lock(hist_lock);
+	g_mutex_lock(&hist_lock);
   for (element = history_list; element != NULL; element = element->next) {
 	  struct history_item *c;
 		c=(struct history_item *)element->data;
@@ -428,7 +428,7 @@ void delete_duplicate(gchar* item)
 	    }
 		}
   }
-	g_mutex_unlock(hist_lock);
+	g_mutex_unlock(&hist_lock);
 }
 
 /***************************************************************************/
@@ -442,7 +442,7 @@ void truncate_history()
 {
   int p=get_pref_int32("persistent_history");
   if (history_list)  {
-		g_mutex_lock(hist_lock);
+		g_mutex_lock(&hist_lock);
 		guint ll=g_list_length(history_list);
 		guint lim=get_pref_int32("history_limit");
 		if(ll > lim){ /* Shorten history if necessary */
@@ -456,7 +456,7 @@ void truncate_history()
 				}
 	    }	
 		}
-		g_mutex_unlock(hist_lock);
+		g_mutex_unlock(&hist_lock);
     /* Save changes */
     if (get_pref_int32("save_history"))
       save_history();
@@ -489,7 +489,7 @@ gpointer get_last_item()
 ****************************************************************************/
 void clear_history( void )
 {
-	g_mutex_lock(hist_lock);
+	g_mutex_lock(&hist_lock);
 	if( !get_pref_int32("persistent_history")){
 		g_list_free(history_list);
 		history_list = NULL;
@@ -503,7 +503,7 @@ void clear_history( void )
 				history_list=g_list_remove(history_list,c);
 		}		
 	}
-	g_mutex_unlock(hist_lock);
+	g_mutex_unlock(&hist_lock);
   if (get_pref_int32("save_history"))
   	save_history();
 }
@@ -519,7 +519,7 @@ int save_history_as_text(gchar *path)
   if (fp)  {
 		gint i;
     GList* element;
-		g_mutex_lock(hist_lock);
+		g_mutex_lock(&hist_lock);
     /* Write each element to  file */
     for (i=0,element = history_list; element != NULL; element = element->next) {
 		  struct history_item *c;
@@ -530,7 +530,7 @@ int save_history_as_text(gchar *path)
 				fprintf(fp,"NHIST_%04d %s\n",i,c->text);
 			++i;
     }
-		g_mutex_unlock(hist_lock);
+		g_mutex_unlock(&hist_lock);
     fclose(fp);
   }
 	

@@ -252,7 +252,7 @@ void remove_deleted_items(struct history_info *h)
 {
 	if(NULL != h && NULL != h->delete_list){/**have a list of items to delete.  */
 		GList *i;
-		g_mutex_lock(hist_lock);
+		g_mutex_lock(&hist_lock);
 		/*g_print("Deleting items\n"); */
 		for (i=h->delete_list; NULL != i; i=i->next){
 			struct s_item_info *it=(struct s_item_info *)i->data;
@@ -265,7 +265,7 @@ void remove_deleted_items(struct history_info *h)
 			g_free(it);
 		}
 		h->delete_list=NULL;
-		g_mutex_unlock(hist_lock);
+		g_mutex_unlock(&hist_lock);
 		if (get_pref_int32("save_history"))
 		  save_history();
 	}	

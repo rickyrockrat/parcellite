@@ -99,7 +99,7 @@ static AppIndicator *indicator=NULL;
 static GtkWidget *indicator_menu = NULL;
 #endif
 static GtkStatusIcon *status_icon=NULL; 
-GMutex *hist_lock=NULL;
+GMutex hist_lock;
 static gboolean actions_lock = FALSE;
 static int show_icon=0;
 static int have_appindicator=0; /**if set, we have a running indicator-appmenu  */
@@ -2257,7 +2257,7 @@ static void parcellite_init()
 	if(FALSE ==g_thread_supported()){
 		g_fprintf(stderr,"g_thread not init!\n");
 	}
-	hist_lock= g_mutex_new();
+	g_mutex_init(&hist_lock);
   
   show_icon=!get_pref_int32("no_icon");
   /* Read history */
