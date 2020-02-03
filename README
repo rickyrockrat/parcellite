@@ -20,7 +20,7 @@ How to compile and install parcellite
 -------------------------------------------------------------------------------
 
 Requirements:
-	* gtk+ >= 2.10.0 
+	* gtk+ >= 3.10.0 
 
 Download the parcellite source code, then:
 	$ tar zxvf parcellite-x.y.z.tar.gz
@@ -48,9 +48,9 @@ GNU make is usually available on BSD systems by installing the "gmake" package.
 
 the configure script needs to be invoked as follows on OpenBSD:
 
-   LIBS="`pkg-config --libs gtk+-2.0`" ./configure
+   LIBS="`pkg-config --libs gtk+-3.0`" ./configure
 
-If not, configure will report that the gtk >= 2.10.0 requirement is not met on OpenBSD.
+If not, configure will report that the gtk >= 3.10.0 requirement is not met on OpenBSD.
 
 Release instructions:
 1) run rel.sh - it copies the trunk to the tag the script asks the developer for.
