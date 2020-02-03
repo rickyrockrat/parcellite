@@ -2143,14 +2143,23 @@ GtkWidget *create_parcellite_menu(guint button, guint activate_time)
   gtk_menu_shell_append((GtkMenuShell*)menu, menu_item);
   /* Popup the menu... */
   gtk_widget_show_all(menu);
-  gtk_menu_popup((GtkMenu*)menu, NULL, NULL, NULL, NULL, button, activate_time);	
+	if(activate_time == 0)
+	{
+		/* If it's called over shortcut we must give it position */
+		gtk_menu_popup((GtkMenu*)menu, NULL, NULL, postition_history, NULL, 3, gtk_get_current_event_time());
+	}
+	else
+	{
+		gtk_menu_popup((GtkMenu*)menu, NULL, NULL, NULL, NULL, button, activate_time);	
+	}
 	return menu;
 }
 
 /* Called when status icon is right-clicked */
-static void  show_parcellite_menu(GtkStatusIcon *status_icon, guint button, guint activate_time,  gpointer data)
+static gboolean show_parcellite_menu(GtkStatusIcon *status_icon, guint button, guint activate_time,  gpointer data)
 {
 	create_parcellite_menu(button, activate_time);
+	return FALSE;
 }
 
 
@@ -2250,7 +2259,8 @@ void menu_hotkey(char *keystring, gpointer user_data)
 	/** GtkWidget * w=create_parcellite_menu(0, gtk_get_current_event_time());
 	app_indicator_set_menu (indicator, GTK_MENU (w));*/
 #else
-  show_parcellite_menu(status_icon, 0, 0, NULL);
+  /* show_parcellite_menu(status_icon, 0, 0, NULL); */
+  g_timeout_add(POPUP_DELAY, show_parcellite_menu, NULL);
 #endif
 }
 
