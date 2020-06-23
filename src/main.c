@@ -1754,7 +1754,7 @@ static void item_selected(GtkMenuItem *menu_item, gpointer user_data)
 	GdkEventKey *k=(GdkEventKey *)gtk_get_current_event();
 	GList* element = g_list_nth(history_list, GPOINTER_TO_INT(user_data));
 	/*g_print ("item_selected '%s' type %x val %x\n",(gchar *)((struct history_item *(element->data))->text),k->type, k->keyval);  */
-	if(0xFF0d == k->keyval && GDK_KEY_PRESS == k->type){
+	if((0xFF0d == k->keyval || 0xFF8d == k->keyval ) && GDK_KEY_PRESS == k->type){
 		set_clipboard_text(h,element);
 	}
 }	
