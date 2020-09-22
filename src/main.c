@@ -1099,6 +1099,8 @@ static void clear_all ( gpointer user_data)
 static void clear_selected(GtkMenuItem *menu_item, gpointer user_data)
 {
 	int clear=1;
+	if(get_pref_int32("disable_clear"))
+		return;
   /* Check for confirm clear option */
   if (get_pref_int32("confirm_clear"))  {
     GtkWidget* confirm_dialog = gtk_message_dialog_new(NULL,

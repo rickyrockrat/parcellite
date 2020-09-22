@@ -34,6 +34,7 @@ void setup_icon( void ); /**in main.c  */
 #define DEF_HISTORY_LIMIT     25
 #define DEF_HYPERLINKS_ONLY   FALSE
 #define DEF_CONFIRM_CLEAR     TRUE
+#define DEF_DISABLE_CLEAR			FALSE
 #define DEF_SINGLE_LINE       TRUE
 #define DEF_REVERSE_HISTORY   FALSE
 #define DEF_ITEM_LENGTH       50
@@ -150,6 +151,7 @@ struct pref_item myprefs[]={
 	{.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_MISC,.name="trim_newline",.type=PREF_TYPE_TOGGLE,.desc="Trim Newlines",.tip="If checked, will replace newlines with spaces."},
 	{.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_MISC,.name="hyperlinks_only",.type=PREF_TYPE_TOGGLE,.desc="Capture hyperlinks only",.tip=NULL,.val=DEF_HYPERLINKS_ONLY},
 	{.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_MISC,.name="confirm_clear",.type=PREF_TYPE_TOGGLE,.desc="Confirm before clearing history",.tip=NULL,.val=DEF_CONFIRM_CLEAR},
+	{.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_MISC,.name="disable_clear",.type=PREF_TYPE_TOGGLE,.desc="disable clearing history",.tip=NULL,.val=DEF_DISABLE_CLEAR},
 	
 /**Display  add icon here...*/
 	{.adj=NULL,.cval=NULL,.sig=NULL,.sfunc=NULL,.sec=PREF_SEC_DISP,.name=NULL,.type=PREF_TYPE_FRAME,.desc="<b>Items</b>",.tip=NULL,.val=0},
