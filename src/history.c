@@ -170,6 +170,7 @@ Current scheme is to have the total zize of element followed by the type, then t
 void read_history ()
 {
 	size_t x;
+	int is_locked=0;
   /* Build file path */
   gchar* history_path = g_build_filename(g_get_user_data_dir(),HISTORY_FILE0,NULL); 
 	gchar *magic=g_malloc0(2+HISTORY_MAGIC_SIZE);
@@ -196,6 +197,7 @@ void read_history ()
 		if(dbg) g_printf("History Magic OK. Reading\n");
     /* Continue reading until size is 0 */
 		g_mutex_lock(&hist_lock);
+		is_locked=1;
     while (size)   {
 			struct history_item *c;
 			if (fread(&size, 4, 1, history_file) != 1)
@@ -229,7 +231,8 @@ done:
     /* Close file and reverse the history to normal */
     fclose(history_file);
     history_list = g_list_reverse(history_list);
-		g_mutex_unlock(&hist_lock);
+		if(is_locked)
+			g_mutex_unlock(&hist_lock);
   }
 	if(dbg) g_printf("History read done\n");
 }
