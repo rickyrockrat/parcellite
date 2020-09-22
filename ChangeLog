@@ -1,3 +1,6 @@
+V1.2.2 TBD
+ +Fixed bug with zero length history file.
+
 V1.2.1 Monday, Jan 23, 2017
  +Implemented patch from Christopher Oliver that fixes a memory access bug on history clear.
  +Fixed minor missing fclose bug in save_history credits dcb.
