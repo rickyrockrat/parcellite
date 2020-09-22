@@ -45,6 +45,7 @@ void setup_icon( void ); /**in main.c  */
 #define DEF_ACTIONS_KEY       "<Ctrl><Alt>A"
 #define DEF_MENU_KEY          "<Ctrl><Alt>P"
 #define DEF_NO_ICON           FALSE
+#define DEF_UNITY_ON          FALSE
 
 /**allow lower nibble to become the number of items of this type  */
 #define PREF_TYPE_TOGGLE 0x10
@@ -151,7 +152,7 @@ struct pref_item myprefs[]={
 	{.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_MISC,.name="trim_newline",.type=PREF_TYPE_TOGGLE,.desc="Trim Newlines",.tip="If checked, will replace newlines with spaces."},
 	{.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_MISC,.name="hyperlinks_only",.type=PREF_TYPE_TOGGLE,.desc="Capture hyperlinks only",.tip=NULL,.val=DEF_HYPERLINKS_ONLY},
 	{.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_MISC,.name="confirm_clear",.type=PREF_TYPE_TOGGLE,.desc="Confirm before clearing history",.tip=NULL,.val=DEF_CONFIRM_CLEAR},
-	{.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_MISC,.name="disable_clear",.type=PREF_TYPE_TOGGLE,.desc="disable clearing history",.tip=NULL,.val=DEF_DISABLE_CLEAR},
+	{.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_MISC,.name="disable_clear",.type=PREF_TYPE_TOGGLE,.desc="disable clearing history",.tip="If checked, disables Alt-C history clear",.val=DEF_DISABLE_CLEAR},
 	
 /**Display  add icon here...*/
 	{.adj=NULL,.cval=NULL,.sig=NULL,.sfunc=NULL,.sec=PREF_SEC_DISP,.name=NULL,.type=PREF_TYPE_FRAME,.desc="<b>Items</b>",.tip=NULL,.val=0},
@@ -172,6 +173,7 @@ struct pref_item myprefs[]={
 /**miscellaneous that doesn't fit elswhew  */	
   {.adj=NULL,.cval=NULL,.sig=NULL,.sfunc=NULL,.sec=PREF_SEC_XMISC,.name=NULL,.type=PREF_TYPE_FRAME,.desc="<b>Miscellaneous</b>",.tip=NULL,.val=0},
 	{.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_XMISC,.name="multi_user",.type=PREF_TYPE_TOGGLE,.desc="Multiuser",.tip="If checked, enables checking multiple concurrent user logic. Use if several different users are logged in at the same time.",.val=TRUE},
+	{.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_XMISC,.name="on_unity",.type=PREF_TYPE_TOGGLE,.desc="Running Unity",.tip="If checked, Assumes you are running Unity. Use if your systray icon does not show up.",.val=DEF_UNITY_ON},
 	{.adj=NULL,.cval=PARCELLITE_ICON,.sig=NULL,.sec=PREF_SEC_XMISC,.name="icon_name",.type=PREF_TYPE_ENTRY,.desc="Parcellite Icon Name",.tip="Name of Parcellite icon. If this is mis-typed, icon will not appear.",.val=TRUE},
 #ifdef	DEBUG_UPDATE
 	{.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_XMISC,.name="debug_update",.type=PREF_TYPE_TOGGLE,.desc="DebugUpdate",.tip="If checked, enables debug prints on clipboard update logic. This only takes effect when enabled at start up, and may be disabled at compile time.",.val=FALSE},

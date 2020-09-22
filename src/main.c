@@ -642,7 +642,8 @@ gboolean check_for_appindictor( gpointer data)
 		/*g_printf("Looking for '%s'\n",appindicator_process); */
 		if(get_pref_int32("multi_user"))
 			mode|=PROC_MODE_USER_QUALIFY;
-		if(proc_find(appindicator_process,mode,NULL) >0){
+		
+		if(get_pref_int32("on_unity") || proc_find(appindicator_process,mode,NULL) >0 ){
 			have_appindicator=1;
 			if(NULL == indicator && show_icon)
 				create_app_indicator();	
