@@ -66,6 +66,8 @@ g_signal_connect(clipboard, "owner-change",  G_CALLBACK(handle_owner_change), NU
 
 #include <ctype.h>
 #include <pthread.h>
+#include <libgen.h>
+
 
 /**ACT are actions, and MODE is the mode of the action  */
 /** #define ACT_STOP  0
@@ -527,8 +529,22 @@ void do_command(gchar *buf, gint len)
 	/**clean whitepsace  */
 	gchar *p, *news=strdup(buf); 
 	p=g_strchomp(news);
+	int saveme=0;
   g_fprintf(stderr,"Got '%s' cmd\n",p);
-	
+	if(0 == strncmp(p,"save_historyN ", 14)) 
+		saveme=14;
+	else if(0 == strncmp(p,"save_history ", 13))
+		saveme=13;
+	if(saveme){
+		gchar *tmp=strdup(&p[saveme]);
+		gchar *dir=dirname(tmp);
+		if(0 == access(dir,W_OK)){
+			save_history_as_text(&p[saveme],13==saveme?0:1);
+		}
+		g_free(tmp);
+		goto end;
+	}
+		
 	if(!p_strcmp(p,FIFCMD_RUN_ALL)) {
 		cmd_mode|=CMODE_ALL;
 		goto end;
