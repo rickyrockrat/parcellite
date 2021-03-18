@@ -35,6 +35,7 @@ void setup_icon( void ); /**in main.c  */
 #define DEF_HYPERLINKS_ONLY   FALSE
 #define DEF_CONFIRM_CLEAR     TRUE
 #define DEF_DISABLE_CLEAR			FALSE
+#define DEF_HISTORY_SAVE_FORMAT TRUE
 #define DEF_SINGLE_LINE       TRUE
 #define DEF_REVERSE_HISTORY   FALSE
 #define DEF_ITEM_LENGTH       50
@@ -153,6 +154,7 @@ struct pref_item myprefs[]={
 	{.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_MISC,.name="hyperlinks_only",.type=PREF_TYPE_TOGGLE,.desc="Capture hyperlinks only",.tip=NULL,.val=DEF_HYPERLINKS_ONLY},
 	{.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_MISC,.name="confirm_clear",.type=PREF_TYPE_TOGGLE,.desc="Confirm before clearing history",.tip=NULL,.val=DEF_CONFIRM_CLEAR},
 	{.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_MISC,.name="disable_clear",.type=PREF_TYPE_TOGGLE,.desc="disable clearing history",.tip="If checked, disables Alt-C history clear",.val=DEF_DISABLE_CLEAR},
+	{.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_MISC,.name="save_history_Lineno",.type=PREF_TYPE_TOGGLE,.desc="Use Line Number prefix when saving history",.tip="If checked, prefixes each line number with NHIST_0000/PHIST_0000",.val=DEF_HISTORY_SAVE_FORMAT},	
 	
 /**Display  add icon here...*/
 	{.adj=NULL,.cval=NULL,.sig=NULL,.sfunc=NULL,.sec=PREF_SEC_DISP,.name=NULL,.type=PREF_TYPE_FRAME,.desc="<b>Items</b>",.tip=NULL,.val=0},
