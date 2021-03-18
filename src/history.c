@@ -513,24 +513,31 @@ void clear_history( void )
 /***************************************************************************/
 /** .
 \n\b Arguments:
+\n\b path - path to file to save
+\n\b mode - 1 to print line numbers.
 \n\b Returns:
 ****************************************************************************/
-int save_history_as_text(gchar *path)
+int save_history_as_text(gchar *path, int mode)
 {
 	FILE* fp = fopen(path, "w");
   /* Check that it opened and begin write */
   if (fp)  {
 		gint i;
     GList* element;
+		gchar *fstring="%s\n";
 		g_mutex_lock(&hist_lock);
     /* Write each element to  file */
     for (i=0,element = history_list; element != NULL; element = element->next) {
 		  struct history_item *c;
 			c=(struct history_item *)element->data;
-			if(c->flags & CLIP_TYPE_PERSISTENT)
-				fprintf(fp,"PHIST_%04d %s\n",i,c->text);
-			else
-				fprintf(fp,"NHIST_%04d %s\n",i,c->text);
+			if(mode){
+				if(c->flags & CLIP_TYPE_PERSISTENT)
+					fstring="PHIST_%04d %s\n";
+				else
+					fstring="NHIST_%04d %s\n";	
+				fprintf(fp,fstring,i,c->text);
+			}else
+				fprintf(fp,fstring,c->text);
 			++i;
     }
 		g_mutex_unlock(&hist_lock);
@@ -565,7 +572,7 @@ void history_save_as(GtkMenuItem *menu_item, gpointer user_data)
 	if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_ACCEPT) {
 	    gchar *filename;
 	    filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (dialog));
-	    save_history_as_text (filename);
+	    save_history_as_text (filename, get_pref_int32("save_history_Lineno"));
 	    g_free (filename);
 	  }
 	gtk_widget_destroy (dialog);
