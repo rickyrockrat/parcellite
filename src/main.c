@@ -1646,6 +1646,7 @@ void set_clipboard_text(struct history_info *h, GList *element)
 	gchar *action=NULL;
 	gchar *txt=NULL;
 	gchar *cmd=NULL;
+	
 	if(NULL == find_h_item(h->delete_list,NULL,element)){	/**not in our delete list  */
 		/**make a copy of txt, because it gets freed and re-allocated.  */
 		txt=p_strdup(((struct history_item *)(element->data))->text);
@@ -1669,8 +1670,26 @@ void set_clipboard_text(struct history_info *h, GList *element)
 			action=g_strdup("key ctrl+v'");
 	}
 	
-	if( get_pref_int32("key_input")) 
-		action=g_strconcat("type \"",txt,"\"'",NULL);
+	if( get_pref_int32("key_input")) {
+		gchar *xtxt;
+		int i, e, sl=strlen(txt);
+		for (i=e=0; i<sl; ++i){
+			if( 0x27 == txt[i] || 0x22 == txt[i])
+				++e;
+		}
+			
+		if(NULL == (xtxt=malloc(sl+e+2)))
+			goto done; /**system is likely about to die...  */
+		for (i=e=0; i<sl; ++i){
+			if(0x27 == txt[i] || 0x22 == txt[i])
+				xtxt[e++]='\\';
+		  xtxt[e++]=txt[i];
+		}
+		xtxt[e]=0;
+		action=g_strconcat("type \"",xtxt,"\"'",NULL);
+		free(xtxt);
+	}
+		
 		
 	if(NULL == action)
 			goto done;
