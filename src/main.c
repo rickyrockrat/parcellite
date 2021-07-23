@@ -154,12 +154,8 @@ int p_strcmp (const char *str1, const char *str2)
 #if (GTK_MAJOR_VERSION > 2 || ( GTK_MAJOR_VERSION == 2 && GTK_MAJOR_VERSION >= 16))
   return g_strcmp0(str1,str2);
 #else
-  if(NULL ==str1 || NULL == str2)
-    return 0;
-  if(NULL ==str1 && str2)
-    return -1;
-  if(NULL ==str2 && str1)
-    return 1;
+  if (!str1) return -(str1 != str2);
+  if (!str2) return str1 != str2;
   return strcmp(str1,str2);
 #endif
 }
