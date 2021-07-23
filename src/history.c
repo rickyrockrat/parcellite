@@ -173,7 +173,7 @@ void read_history ()
 	int is_locked=0;
   /* Build file path */
   gchar* history_path = g_build_filename(g_get_user_data_dir(),HISTORY_FILE0,NULL); 
-	gchar *magic=g_malloc0(2+HISTORY_MAGIC_SIZE);
+	gchar *magic = NULL;
   /*g_printf("History file '%s'",history_path); */
   /* Open the file for reading */
   FILE* history_file = fopen(history_path, "rb");
@@ -182,6 +182,7 @@ void read_history ()
   if (history_file)  {
     /* Read the magic*/
     guint32 size=1, end;
+        magic = g_malloc0(2+HISTORY_MAGIC_SIZE);
 		if (fread(magic,HISTORY_MAGIC_SIZE , 1, history_file) != 1){
 			g_fprintf(stderr,"No magic! Assume no history.\n");
 			goto done;
@@ -281,6 +282,7 @@ void save_history()
 		}	
 		memcpy(magic,history_magics[HISTORY_VERSION-1],strlen(history_magics[HISTORY_VERSION-1]));	
 		fwrite(magic,HISTORY_MAGIC_SIZE,1,history_file);
+        g_free(magic);
 		g_mutex_lock(&hist_lock);
     /* Write each element to a binary file */
     for (element = history_list; element != NULL; element = element->next) {

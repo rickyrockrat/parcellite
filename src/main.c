@@ -154,7 +154,7 @@ int p_strcmp (const char *str1, const char *str2)
 #if (GTK_MAJOR_VERSION > 2 || ( GTK_MAJOR_VERSION == 2 && GTK_MAJOR_VERSION >= 16))
   return g_strcmp0(str1,str2);
 #else
-  if(NULL ==str1 && NULL == str2)
+  if(NULL ==str1 || NULL == str2)
     return 0;
   if(NULL ==str1 && str2)
     return -1;
@@ -986,12 +986,13 @@ gboolean  handle_history_item_right_click (int i, gpointer data)
   /* we passed the view as userdata when we connected the signal */
 	struct history_info *h=(struct history_info*)data;
 	struct history_item *c=NULL;
-	if(NULL !=h ){
-		GList* element = g_list_nth(history_list, h->wi.index);
-		if(NULL !=element){
-			c=(struct history_item *)(element->data);
-			/*g_printf("%s ",c->text); */
-		}
+	if(NULL ==h ){
+		return FALSE;
+	}
+	GList* element = g_list_nth(history_list, h->wi.index);
+	if(NULL !=element){
+		c=(struct history_item *)(element->data);
+		/*g_printf("%s ",c->text); */
 	}
 	switch(i){
 		case HIST_MOVE_TO_CANCEL:
