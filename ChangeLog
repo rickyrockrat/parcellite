@@ -1,4 +1,5 @@
 V1.2.2 TBD...2021?
+ +Fixed issue with systemd logging output.
  +Fixed bug with zero length history file.
  +Added Disable clear history.
  +Added manual Unity setting.

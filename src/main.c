@@ -617,7 +617,7 @@ void check_clipboards(gint mode)
 			
 			default:
 				fifo->rlen=validate_utf8_text(fifo->buf, fifo->rlen);
-				g_fprintf(stderr,"CLIP not set, discarding '%s'\n",fifo->buf);
+				/*g_fprintf(stderr,"CLIP not set, discarding '%s'\n",fifo->buf); */
 				fifo->rlen=0;
 				break;
 		}
@@ -692,29 +692,6 @@ gboolean check_clipboards_tic(gpointer data)
 #endif
 	return TRUE;
 }
-#if 0
-/* Thread function called for each action performed */
-static void *execute_action(void *command)
-{
-  /* Execute action */
-  actions_lock = TRUE;
-  if (!have_appindicator && show_icon) {
-  gtk_status_icon_set_from_stock((GtkStatusIcon*)status_icon, GTK_STOCK_EXECUTE);
-  gtk_status_icon_set_tooltip((GtkStatusIcon*)status_icon, _("Executing action..."));
-  }
-  if(system((gchar*)command))
-  	g_fprintf(stderr,"sytem command '%s' failed\n",(gchar *)command);
-  if (!have_appindicator &&show_icon) {
-	gtk_status_icon_set_from_icon_name((GtkStatusIcon*)status_icon, get_pref_string("icon_name"));
-  gtk_status_icon_set_tooltip((GtkStatusIcon*)status_icon, _("Clipboard Manager"));
-  }
-  actions_lock = FALSE;
-  g_free((gchar*)command);
-  /* Exit this thread */
-  pthread_exit(NULL);
-	return NULL;
-}
-#endif
 /* Called when execution action exits */
 static void action_exit(GPid pid, gint status, gpointer data)
 {
@@ -737,7 +714,7 @@ static void action_selected(GtkButton *button, gpointer user_data)
   }
   /* Insert clipboard into command (user_data), and prepare it for execution */
   gchar* clipboard_text = gtk_clipboard_wait_for_text(clipboard);
-	g_fprintf(stderr,"Got cmd '%s', text '%s'->",(gchar *)user_data,clipboard_text);fflush(NULL);  
+	/*g_fprintf(stderr,"Got cmd '%s', text '%s'->",(gchar *)user_data,clipboard_text);fflush(NULL);   */
 	gchar* quoted_clipboard_text = g_shell_quote(clipboard_text);
 	gchar* command=g_strdup_printf((gchar *)user_data,quoted_clipboard_text);
 	g_fprintf(stderr," '%s'\n",command);fflush(NULL);  
@@ -753,7 +730,7 @@ static void action_selected(GtkButton *button, gpointer user_data)
   GPid pid;
   gchar **argv;
   g_shell_parse_argv(cmd, NULL, &argv, NULL);
-	g_fprintf(stderr,"cmd '%s' argv '%s' '%s' '%s'\n",cmd,argv[1],argv[2],argv[3]);  
+	/*g_fprintf(stderr,"cmd '%s' argv '%s' '%s' '%s'\n",cmd,argv[1],argv[2],argv[3]);   */
   g_free(cmd);
   g_spawn_async(NULL, argv, NULL, G_SPAWN_DO_NOT_REAP_CHILD, NULL, NULL, &pid, NULL);
   g_child_watch_add(pid, (GChildWatchFunc)action_exit, NULL);
@@ -802,7 +779,7 @@ static void edit_selected(GtkMenuItem *menu_item, gpointer user_data)
 				return;
 			}
 			current_clipboard_text=p_strdup(c->text);
-			g_fprintf(stderr,"Got Text frmo wi.index ele %p '%s'",element,c->text);  
+			/*g_fprintf(stderr,"Got Text frmo wi.index ele %p '%s'",element,c->text);   */
 			
 		}	else{
 			h->wi.tmp1=0;
@@ -817,7 +794,7 @@ static void edit_selected(GtkMenuItem *menu_item, gpointer user_data)
 		}
     
     if (current_clipboard_text != NULL)   {
-		g_fprintf(stderr,"Got '%s' for edit text\n",current_clipboard_text); 
+		/*g_fprintf(stderr,"Got '%s' for edit text\n",current_clipboard_text);  */
 			TRACE(g_fprintf(stderr,"Got '%s'\n",current_clipboard_text));
       gtk_text_buffer_set_text(text_buffer, current_clipboard_text, -1);
     }	 else	 {
@@ -1695,7 +1672,7 @@ void set_clipboard_text(struct history_info *h, GList *element)
 			goto done;
 	/**from clipit 1.4.1 */
   cmd = g_strconcat("/bin/sh -c 'xdotool ", action, NULL);
-	g_fprintf(stderr,"xdotool:'%s'\ntext:'%s'\n",cmd,txt);
+	/*g_fprintf(stderr,"xdotool:'%s'\ntext:'%s'\n",cmd,txt); */
   GPid pid;
   gchar **argv;
   g_shell_parse_argv(cmd, NULL, &argv, NULL);
@@ -1993,7 +1970,7 @@ static gboolean show_history_menu(gpointer data)
       if ((clipboard_temp) && (p_strcmp(hist_text, clipboard_temp) == 0))
       {
         gchar* bold_text = g_markup_printf_escaped("<b>%s</b>", string->str);
-			  if( NULL == bold_text) g_fprintf(stderr,"NulBMKUp:'%s'\n",string->str);
+			  /*if( NULL == bold_text) g_fprintf(stderr,"NulBMKUp:'%s'\n",string->str); */
         gtk_label_set_markup((GtkLabel*)item_label, bold_text);
         g_free(bold_text);
         h.clip_item=menu_item;
@@ -2003,7 +1980,7 @@ static gboolean show_history_menu(gpointer data)
       else if ((primary_temp) && (p_strcmp(hist_text, primary_temp) == 0))
       {
         gchar* italic_text = g_markup_printf_escaped("<i>%s</i>", string->str);
-			  if( NULL == italic_text) g_fprintf(stderr,"NulIMKUp:'%s'\n",string->str);
+			  /*if( NULL == italic_text) g_fprintf(stderr,"NulIMKUp:'%s'\n",string->str); */
         gtk_label_set_markup((GtkLabel*)item_label, italic_text);
         g_free(italic_text);
         h.clip_item=menu_item;
