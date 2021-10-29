@@ -1645,28 +1645,28 @@ void set_clipboard_text(struct history_info *h, GList *element)
 			action=g_strdup("mousedown 2 && xdotool mouseup 2'");
 		else if(get_pref_int32("auto_key"))
 			action=g_strdup("key ctrl+v'");
-	}
 	
-	if( get_pref_int32("key_input")) {
-		gchar *xtxt;
-		int i, e, sl=strlen(txt);
-		for (i=e=0; i<sl; ++i){
-			if( 0x27 == txt[i] || 0x22 == txt[i])
-				++e;
+	
+		if( get_pref_int32("key_input")) {
+			gchar *xtxt;
+			int i, e, sl=strlen(txt);
+			for (i=e=0; i<sl; ++i){
+				if( 0x27 == txt[i] || 0x22 == txt[i])
+					++e;
+			}
+				
+			if(NULL == (xtxt=malloc(sl+e+2)))
+				goto done; /**system is likely about to die...  */
+			for (i=e=0; i<sl; ++i){
+				if(0x27 == txt[i] || 0x22 == txt[i])
+					xtxt[e++]='\\';
+			  xtxt[e++]=txt[i];
+			}
+			xtxt[e]=0;
+			action=g_strconcat("type \"",xtxt,"\"'",NULL);
+			free(xtxt);
 		}
-			
-		if(NULL == (xtxt=malloc(sl+e+2)))
-			goto done; /**system is likely about to die...  */
-		for (i=e=0; i<sl; ++i){
-			if(0x27 == txt[i] || 0x22 == txt[i])
-				xtxt[e++]='\\';
-		  xtxt[e++]=txt[i];
-		}
-		xtxt[e]=0;
-		action=g_strconcat("type \"",xtxt,"\"'",NULL);
-		free(xtxt);
-	}
-		
+	}	
 		
 	if(NULL == action)
 			goto done;
