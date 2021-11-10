@@ -2043,7 +2043,10 @@ next_loop:
 	
 	if(get_pref_int32("type_search")){
     /* Edit clipboard */
-		h.title_item = gtk_image_menu_item_new_with_label( _("Use Alt-E to edit, Alt-C to clear") );
+		if( get_pref_int32("disable_clear"))
+			h.title_item = gtk_image_menu_item_new_with_label( _("Use Alt-E to edit") );
+		else
+				h.title_item = gtk_image_menu_item_new_with_label( _("Use Alt-E to edit, Alt-C to clear") );
     menu_image = gtk_image_new_from_stock(GTK_STOCK_EDIT, GTK_ICON_SIZE_MENU);
     gtk_image_menu_item_set_image((GtkImageMenuItem*)h.title_item, menu_image);
     gtk_menu_shell_append((GtkMenuShell*)menu, h.title_item);    
