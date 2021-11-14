@@ -40,7 +40,7 @@ If that fails, just run
 	$ sudo make -f Makefile.simple install DESTDIR=/
 
 or from the subversion checkout:
-	$ svn co http//:svn.code.sf.net/p/parcellite/code/trunk parcellite
+	$ svn co http://svn.code.sf.net/p/parcellite/code/trunk parcellite
 	$ cd parcellite
 	$ ./autogen.sh
 	$ ./configure
