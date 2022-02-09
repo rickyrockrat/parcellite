@@ -1,0 +1,60 @@
+# Copyright (C) 2010-2022 Doug Springer <gpib@rickyrockrat.net>
+#
+# This file is part of Parcellite.
+#
+# Parcellite is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 3 of the License, or
+# (at your option) any later version.
+#
+# Parcellite is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+prefix?=/usr
+DESTDIR?=
+sysconfdir = $(DESTDIR)/etc
+INSTDIR:=$(DESTDIR)$(prefix)
+
+
+GETTEXT_PACKAGE:=parcellite
+
+DIRS:= data po src doc
+
+all: src/$(GETTEXT_PACKAGE)
+
+GIT_PVERSION:=$(shell git log -n1 --pretty=format:%h)
+VERSION?=git-$(GIT_PVERSION)
+
+
+
+
+makeopts=-f Makefile.simple GETTEXT_PACKAGE=$(GETTEXT_PACKAGE)
+
+config.h:
+	@echo "#define ENABLE_NLS 1" > $@
+	@echo '#define GETTEXT_PACKAGE "parcellite"' >> $@
+	@echo '#define VERSION "$(VERSION)"' >> $@
+	
+
+build.po build.data: config.h
+	$(MAKE) -C $$(echo $@|sed 's!build.!!') $(makeopts)
+
+src/$(GETTEXT_PACKAGE): build.po build.data 
+	$(MAKE) -C src $(makeopts)
+	
+install: src/$(GETTEXT_PACKAGE) build.po build.data
+	for d in $(DIRS); do \
+	$(MAKE) -C $$d $(makeopts) sysconfdir=$(sysconfdir) INSTDIR=$(INSTDIR) $@; \
+	done
+
+clean: 
+	-for d in $(DIRS); do \
+	$(MAKE) -C $$d $(makeopts)  $@ ; \
+	done
+	-rm config.h build.po build.data
+

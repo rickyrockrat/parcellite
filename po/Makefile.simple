@@ -17,7 +17,6 @@
 
 localedir = $(INSTDIR)/share/locale
 
-GETTEXT_PACKAGE:=parcellite
 srcdir:=.
 
 # po dir

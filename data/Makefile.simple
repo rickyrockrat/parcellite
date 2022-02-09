@@ -22,7 +22,6 @@ pixmapdir = $(DATADIR)/pixmaps
 autostartdir = $(sysconfdir)/xdg/autostart
 top_srcdir = ..
 
-GETTEXT_PACKAGE:=parcellite
 srcdir:=.
 
 # po dir
