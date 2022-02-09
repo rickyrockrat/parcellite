@@ -1,3 +1,20 @@
+# Copyright (C) 2007-2022 Doug Springer <gpib@rickyrockrat.net>
+#
+# This file is part of Parcellite.
+#
+# Parcellite is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 3 of the License, or
+# (at your option) any later version.
+#
+# Parcellite is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 CFILES=attr_list.c daemon.c eggaccelerators.c  history.c keybinder.c main.c preferences.c utils.c
 
 OBJS=$(patsubst %.c,%.o,$(CFILES))
@@ -5,7 +22,7 @@ GTKC=$(shell pkg-config --cflags gtk+-2.0)
 FONTC=$(shell pkg-config --cflags fontconfig)
 FREEC=$(shell pkg-config --cflags freetype2)
 
-CFLAGS=$(GTKC) $(FONTC) $(FREEC)  -DGETTEXT_PACKAGE='"parcellite"' -DENABLE_NLS=1 -I . -DPARCELLITELOCALEDIR=\""/usr/local/share/locale"\"
+CFLAGS=$(GTKC) $(FONTC) $(FREEC)  -DGETTEXT_PACKAGE='"parcellite"' -DENABLE_NLS=1 -I . -DPARCELLITELOCALEDIR=\""/usr/share/locale"\"
 GTKL=$(shell pkg-config --libs gtk+-2.0)
 XL=$(shell pkg-config --libs x11)
 FONTL=$(shell pkg-config --libs fontconfig)
@@ -13,7 +30,7 @@ FREEL=$(shell pkg-config --libs freetype2)
 LIBS=$(GTKL) $(XL) $(FONTL) $(FREEL)
 
 
-parcellite: check_dep $(OBJS)
+$(GETTEXT_PACKAGE): check_dep $(OBJS)
 	gcc -Wall $(OBJS) -o $@ $(LIBS)
 
 .PHONY: check_dep
@@ -34,9 +51,9 @@ check_dep:
 %.:%.c
 	gcc -Wall $CFLAGS $< -o $@
 
-install: parcellite
-	mkdir -p $(DESTDIR)/usr/bin
-	cp parcellite $(DESTDIR)/usr/bin
+install: $(GETTEXT_PACKAGE)
+	mkdir -p $(INSTDIR)/bin	
+	cp $(GETTEXT_PACKAGE) $(INSTDIR)/bin
 
 clean:
-	rm $(OBJS) parcellite
+	rm $(OBJS) $(GETTEXT_PACKAGE)

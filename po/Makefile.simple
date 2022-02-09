@@ -1,8 +1,21 @@
-prefix?=/usr
-DESTDIR?=
-DATADIR:=$(DESTDIR)share
-INSTDIR:=$(DESTDIR)$(prefix)
-localedir = $(prefix)/share/locale
+# Copyright (C) 2010-2022 Doug Springer <gpib@rickyrockrat.net>
+#
+# This file is part of Parcellite.
+#
+# Parcellite is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 3 of the License, or
+# (at your option) any later version.
+#
+# Parcellite is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+localedir = $(INSTDIR)/share/locale
 
 GETTEXT_PACKAGE:=parcellite
 srcdir:=.
@@ -59,7 +72,7 @@ $(GETTEXT_PACKAGE).pot: $(POTFILES)
 install: all
 	@echo "langs $(USE_LINGUAS)"
 	for lang in $(USE_LINGUAS); do \
-	  dir=$(DESTDIR)$(localedir)/$$lang/LC_MESSAGES; \
+	  dir=$(localedir)/$$lang/LC_MESSAGES; \
 	  mkdir -p $$dir; \
 	  if test -r $$lang.gmo; then \
 	    $(INSTALL_DATA) $$lang.gmo $$dir/$(GETTEXT_PACKAGE).mo; \
