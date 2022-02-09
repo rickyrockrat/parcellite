@@ -1,0 +1,49 @@
+prefix?=/usr
+DESTDIR?=
+INSTDIR:=$(DESTDIR)$(prefix)
+sysconfdir = $(DESTDIR)/etc
+DATADIR:=$(INSTDIR)/share
+
+desktopdir = $(DATADIR)/applications
+pixmapdir = $(DATADIR)/pixmaps
+autostartdir = $(sysconfdir)/xdg/autostart
+top_srcdir = ..
+
+GETTEXT_PACKAGE:=parcellite
+srcdir:=.
+
+# po dir
+INSTALL = /usr/bin/install -c
+INSTALL_DATA = ${INSTALL} -m 644
+GMSGFMT = /usr/bin/msgfmt
+MSGFMT = /usr/bin/msgfmt
+XGETTEXT = /usr/bin/xgettext
+INTLTOOL_UPDATE = /usr/bin/intltool-update
+INTLTOOL_EXTRACT = /usr/bin/intltool-extract
+MSGMERGE = INTLTOOL_EXTRACT="$(INTLTOOL_EXTRACT)" XGETTEXT="$(XGETTEXT)" srcdir=$(srcdir) $(INTLTOOL_UPDATE) --gettext-package $(GETTEXT_PACKAGE) --dist
+GENPOT   = INTLTOOL_EXTRACT="$(INTLTOOL_EXTRACT)" XGETTEXT="$(XGETTEXT)" srcdir=$(srcdir) $(INTLTOOL_UPDATE) --gettext-package $(GETTEXT_PACKAGE) --pot
+INTLTOOL_MERGE = /usr/bin/intltool-merge
+
+
+# installable items
+ICONS:=	$(GETTEXT_PACKAGE).png $(GETTEXT_PACKAGE).svg $(GETTEXT_PACKAGE).xpm
+DESK:= $(GETTEXT_PACKAGE).desktop $(GETTEXT_PACKAGE)-startup.desktop
+
+all: $(GETTEXT_PACKAGE).desktop $(GETTEXT_PACKAGE).png
+
+
+%.desktop: %.desktop.in $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po)
+	LC_ALL=C $(INTLTOOL_MERGE) $(INTLTOOL_V_MERGE_OPTIONS) -d -u -c $(top_builddir)/po/.intltool-merge-cache $(top_srcdir)/po $< $@
+
+	
+install: $(ICONS) $(DESK)
+	mkdir -p $(autostartdir) $(desktopdir)
+	@echo "Installing $(GETTEXT_PACKAGE).desktop to $(desktopdir)"
+	$(INSTALL_DATA) $(GETTEXT_PACKAGE).desktop $(desktopdir)
+	@echo "Installing $(GETTEXT_PACKAGE)-startup.desktop to $(autostartdir)"
+	$(INSTALL_DATA) $(GETTEXT_PACKAGE)-startup.desktop $(autostartdir)
+	mkdir -p $(pixmapdir)
+	for i in $(ICONS); do echo "Installing $$i to $(pixmapdir)"; \
+		$(INSTALL_DATA) $$i $(pixmapdir); \
+	done
+
