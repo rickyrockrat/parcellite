@@ -22,7 +22,7 @@ GTKC=$(shell pkg-config --cflags gtk+-2.0)
 FONTC=$(shell pkg-config --cflags fontconfig)
 FREEC=$(shell pkg-config --cflags freetype2)
 
-CFLAGS=$(GTKC) $(FONTC) $(FREEC)  -DGETTEXT_PACKAGE='"parcellite"' -DENABLE_NLS=1 -I . -DPARCELLITELOCALEDIR=\""/usr/share/locale"\"
+CFLAGS=$(GTKC) $(FONTC) $(FREEC) -DHAVE_CONFIG_H  -DGETTEXT_PACKAGE='"parcellite"' -DENABLE_NLS=1 -I. -I.. -DPARCELLITELOCALEDIR=\""/usr/share/locale"\"
 GTKL=$(shell pkg-config --libs gtk+-2.0)
 XL=$(shell pkg-config --libs x11)
 FONTL=$(shell pkg-config --libs fontconfig)

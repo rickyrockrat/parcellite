@@ -60,3 +60,5 @@ install: $(ICONS) $(DESK)
 		$(INSTALL_DATA) $$i $(pixmapdir); \
 	done
 
+clean:
+	-rm *.desktop

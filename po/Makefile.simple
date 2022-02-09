@@ -92,4 +92,7 @@ install: all
 	    fi; \
 	  fi; \
 	done
+
+clean:
+	-rm *.pox *.gmo *.msg *.mo *.cat
 	

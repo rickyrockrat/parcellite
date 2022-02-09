@@ -1,4 +1,5 @@
 V1.2.2 TBD...2021?
+ +Added Makefile.simple as a fix before changing autodiscover build system.
  +Fixed issue with systemd logging output.
  +Fixed bug with zero length history file.
  +Added Disable clear history.
