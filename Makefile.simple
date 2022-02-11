@@ -27,6 +27,8 @@ DIRS:= data po src doc
 
 all: src/$(GETTEXT_PACKAGE)
 
+include simple.common
+
 GIT_PVERSION:=$(shell git log -n1 --pretty=format:%h)
 VERSION?=git-$(GIT_PVERSION)
 
@@ -44,7 +46,7 @@ config.h:
 build.po build.data: config.h
 	$(MAKE) -C $$(echo $@|sed 's!build.!!') $(makeopts)
 
-src/$(GETTEXT_PACKAGE): build.po build.data 
+src/$(GETTEXT_PACKAGE): check_dep build.po build.data 
 	$(MAKE) -C src $(makeopts)
 	
 install: src/$(GETTEXT_PACKAGE) build.po build.data

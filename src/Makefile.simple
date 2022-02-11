@@ -14,6 +14,7 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
+include ../simple.common
 
 CFILES=attr_list.c daemon.c eggaccelerators.c  history.c keybinder.c main.c preferences.c utils.c
 
@@ -23,30 +24,9 @@ FONTC=$(shell pkg-config --cflags fontconfig)
 FREEC=$(shell pkg-config --cflags freetype2)
 
 CFLAGS=$(GTKC) $(FONTC) $(FREEC) -DHAVE_CONFIG_H  -DGETTEXT_PACKAGE='"parcellite"' -DENABLE_NLS=1 -I. -I.. -DPARCELLITELOCALEDIR=\""/usr/share/locale"\"
-GTKL=$(shell pkg-config --libs gtk+-2.0)
-XL=$(shell pkg-config --libs x11)
-FONTL=$(shell pkg-config --libs fontconfig)
-FREEL=$(shell pkg-config --libs freetype2)
-LIBS=$(GTKL) $(XL) $(FONTL) $(FREEL)
-
-
+	
 $(GETTEXT_PACKAGE): check_dep $(OBJS)
 	gcc -Wall $(OBJS) -o $@ $(LIBS)
-
-.PHONY: check_dep
-check_dep:
-	@echo "Need pkg-config, gtk+-2.0 x11 fontconfig and freetype2"
-	@echo "Checking for pkg-config"
-	which pkg-config
-	@echo "Checking for gtk"
-	@if [ -z "$(GTKL)" ]; then echo "No gtk+-2.0 libs"; exit 1; fi
-	@echo "Checking for X11"
-	@if [ -z "$(XL)" ]; then echo "No x11 libs"; exit 1; fi
-	@echo "Checking for fontconfig"
-	@if [ -z "$(FONTL)" ]; then echo "No fontconfig libs"; exit 1; fi
-	@echo "Checking for freetype"
-	@if [ -z "$(FREEL)" ]; then echo "No freetype2 libs"; exit 1; fi
-	
 
 %.:%.c
 	gcc -Wall $CFLAGS $< -o $@

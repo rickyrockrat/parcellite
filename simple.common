@@ -1,0 +1,23 @@
+GTKL=$(shell pkg-config --libs gtk+-2.0)
+XL=$(shell pkg-config --libs x11)
+FONTL=$(shell pkg-config --libs fontconfig)
+FREEL=$(shell pkg-config --libs freetype2)
+LIBS=$(GTKL) $(XL) $(FONTL) $(FREEL)
+
+TOOLS=intltool-update intltool-extract intltool-merge pkg-config
+
+.PHONY: check_dep
+check_dep:
+	@echo "Checking for $(TOOLS)"
+	for t in $(TOOLS); do	echo "Checking for $$t"; which $$t; \
+	if [ $$? -ne 0 ]; then echo "Missing $$t"; exit 1; fi; \
+	done
+	@echo "Need gtk+-2.0 x11 fontconfig and freetype2"
+	@echo "Checking for gtk"
+	@if [ -z "$(GTKL)" ]; then echo "No gtk+-2.0 libs"; exit 1; fi
+	@echo "Checking for X11"
+	@if [ -z "$(XL)" ]; then echo "No x11 libs"; exit 1; fi
+	@echo "Checking for fontconfig"
+	@if [ -z "$(FONTL)" ]; then echo "No fontconfig libs"; exit 1; fi
+	@echo "Checking for freetype"
+	@if [ -z "$(FREEL)" ]; then echo "No freetype2 libs"; exit 1; fi
