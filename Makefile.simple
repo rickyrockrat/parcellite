@@ -47,7 +47,7 @@ build.po build.data: config.h
 	$(MAKE) -C $$(echo $@|sed 's!build.!!') $(makeopts)
 
 src/$(GETTEXT_PACKAGE): check_dep build.po build.data 
-	$(MAKE) -C src $(makeopts)
+	$(MAKE) -C src $(makeopts) $(GETTEXT_PACKAGE)
 	
 install: src/$(GETTEXT_PACKAGE) build.po build.data
 	for d in $(DIRS); do \
