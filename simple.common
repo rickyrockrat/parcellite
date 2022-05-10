@@ -3,7 +3,7 @@ XL=$(shell pkg-config --libs x11)
 FONTL=$(shell pkg-config --libs fontconfig)
 FREEL=$(shell pkg-config --libs freetype2)
 LIBS=$(GTKL) $(XL) $(FONTL) $(FREEL) $(APPI)
-APPI=$(shell ./appsuck.sh lib)
+APPI=$(shell $(PRFX)/appsuck.sh lib)
 
 
 TOOLS=intltool-update intltool-extract intltool-merge pkg-config
@@ -12,7 +12,7 @@ TOOLS=intltool-update intltool-extract intltool-merge pkg-config
 
 .PHONY: check_dep
 check_dep:
-	@./appsuck.sh config
+	@if [ -n "$(BUILDCONFIG)" ]; then $(PRFX)/appsuck.sh config; fi
 	@echo "Checking for $(TOOLS)"
 	@for t in $(TOOLS); do	echo -n "Checking for $$t.. "; t=$$(which $$t); \
 	if [ $$? -ne 0 ]; then echo "Missing $$t"; exit 1; else v=$$($$t --version); \

@@ -4,8 +4,8 @@ if [ -z "$1" ]; then
 	exit 1
 fi
 
-APPI=$(pkg-config --libs appindicator)
-AY_APPI=$(pkg-config --libs ayatana-appindicator)
+APPI=$(pkg-config --libs appindicator 2>/dev/null)
+AY_APPI=$(pkg-config --libs ayatana-appindicator 2>/dev/null)
 
 TYPE=""
 if [ -n "$APPI" ]; then 
@@ -18,7 +18,9 @@ if [ -n "$AY_APPI" ]; then
 	inc="libayatana-appindicator/app-indicator.h"
 	AP="$AY_APPI"
 fi
-cflags=$(pkg-config --cflags $AP)
+if [ -n "$AP" ]; then
+	cflags=$(pkg-config --cflags $AP)
+fi
 case $1 in 
 	type) echo "$TYPE";;
 	cflags) echo "$cflags";;
@@ -26,6 +28,8 @@ case $1 in
 	config) config=1;;
 	*) exit 1
 esac
+d=$(basename "$(pwd)")
+if [ "$d" = "src" ]; then exit 0; fi
 x="src/config.simple.h"
 if [ ! -e "$x" ]; then
 	echo "#ifndef _CONFIG_SIMPLE_H_" > $x
