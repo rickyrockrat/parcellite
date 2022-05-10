@@ -35,6 +35,10 @@ of parcellite  */
 #  define DMTRACE(x) do {} while (FALSE);
 #endif
 
+#ifndef PATH_MAX
+#define PATH_MAX 4096
+#endif
+
 /** Wrapper to replace g_strdup to limit size of text copied from clipboard. 
 g_strndup will dup to the size of the limit, which will waste resources, so
 try to allocate using other methods.
