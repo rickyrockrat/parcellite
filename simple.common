@@ -2,9 +2,14 @@ GTKL=$(shell pkg-config --libs gtk+-2.0)
 XL=$(shell pkg-config --libs x11)
 FONTL=$(shell pkg-config --libs fontconfig)
 FREEL=$(shell pkg-config --libs freetype2)
-LIBS=$(GTKL) $(XL) $(FONTL) $(FREEL)
+LIBS=$(GTKL) $(XL) $(FONTL) $(FREEL) $(APPI) $(AY_APPI)
+APPI=$(shell pkg-config --libs appindicator)
+AY_APPI=$(shell pkg-config --libs ayatana-appindicator)
+
 
 TOOLS=intltool-update intltool-extract intltool-merge pkg-config
+
+
 
 .PHONY: check_dep
 check_dep:
@@ -23,3 +28,6 @@ check_dep:
 	@if [ -z "$(FONTL)" ]; then echo "No fontconfig libs"; exit 1; else echo OK; fi
 	@echo -n "Checking for freetype.. "
 	@if [ -z "$(FREEL)" ]; then echo "No freetype2 libs"; exit 1; else echo OK; fi
+	@echo -n "Checking for a appindicator.. "
+	@if [ -z "$(APPI)" ]; then echo "  appindictor not found"; fi
+	@if [ -z "$(AY_APPI)" ]; then echo "  ayatanay-appindicator not found"; fi;
