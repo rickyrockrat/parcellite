@@ -22,9 +22,11 @@ OBJS=$(patsubst %.c,%.o,$(CFILES))
 GTKC=$(shell pkg-config --cflags gtk+-2.0)
 FONTC=$(shell pkg-config --cflags fontconfig)
 FREEC=$(shell pkg-config --cflags freetype2)
+LIBAPP=$(shell ../appsuck.sh cflags)
+
 
 CFLAGS=$(GTKC) $(FONTC) $(FREEC) -DHAVE_CONFIG_H  -DGETTEXT_PACKAGE='"parcellite"' -DENABLE_NLS=1 -I. -I.. -DPARCELLITELOCALEDIR=\""/usr/share/locale"\"
-	
+
 $(GETTEXT_PACKAGE): check_dep $(OBJS)
 	gcc -Wall $(OBJS) -o $@ $(LIBS)
 
