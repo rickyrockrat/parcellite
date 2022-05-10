@@ -20,7 +20,6 @@ How to compile and install parcellite
 -------------------------------------------------------------------------------
 
 Requirements:
-	* automake >= 1.9
 	* gtk+ >= 2.10.0 
 	* intltool
 	* libglib
@@ -28,20 +27,19 @@ Requirements:
 Download the parcellite source code, then:
 	$ tar zxvf parcellite-x.y.z.tar.gz
 	$ cd parcellite-x.y.z
+
+No Autotools (just make and install it):
+	$ make -f Makefile.simple
+	$ sudo make -f Makefile.simple install prefix=/usr/local
+	$ OR make -f Makefile.simple install DESTDIR=/tmp/myinstall prefix=/usr/local
+
+if you want autotools:
 	$ ./autogen.sh
 # See note below on OpenBSD
 	$ ./configure
 	$ make
 	$ sudo make install
 
-
-If that fails, just run
-	$ cd src
-	$ make -f Makefile.simple
-	$ sudo make -f Makefile.simple install prefix=/usr/local
-	$ OR make -f Makefile.simple install DESTDIR=/tmp/myinstall prefix=/usr/local
-
-	
 OpenBSD notes:
 
 Thanks to Lawrence Teo for this tidbit on BSD.
