@@ -51,7 +51,7 @@ src/$(GETTEXT_PACKAGE): check_dep build.po build.data
 	
 install: src/$(GETTEXT_PACKAGE) build.po build.data
 	for d in $(DIRS); do \
-	$(MAKE) -C $$d $(makeopts) sysconfdir=$(sysconfdir) INSTDIR=$(INSTDIR) $@; \
+	$(MAKE) -C $$d $(makeopts) sysconfdir=$(sysconfdir) INSTDIR=$(INSTDIR) GETTEXT_PACKAGE=$(GETTEXT_PACKAGE) $@; \
 	done
 
 clean: 
