@@ -6,5 +6,6 @@ Icon=parcellite
 Exec=parcellite
 Terminal=false
 Type=Application
+Keywords=clipboard;manager;copy;paste;
 Categories=GTK;GNOME;Application;Utility;
 OnlyShowIn=GNOME;KDE;LXDE;MATE;Razor;ROX;TDE;Unity;XFCE;Old;LXQt;

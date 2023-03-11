@@ -2,12 +2,17 @@ GTKL=$(shell pkg-config --libs gtk+-2.0)
 XL=$(shell pkg-config --libs x11)
 FONTL=$(shell pkg-config --libs fontconfig)
 FREEL=$(shell pkg-config --libs freetype2)
-LIBS=$(GTKL) $(XL) $(FONTL) $(FREEL)
+LIBS=$(GTKL) $(XL) $(FONTL) $(FREEL) $(APPI)
+APPI=$(shell $(PRFX)/appsuck.sh lib)
+
 
 TOOLS=intltool-update intltool-extract intltool-merge pkg-config
 
+
+
 .PHONY: check_dep
 check_dep:
+	@if [ -n "$(BUILDCONFIG)" ]; then $(PRFX)/appsuck.sh config; fi
 	@echo "Checking for $(TOOLS)"
 	@for t in $(TOOLS); do	echo -n "Checking for $$t.. "; t=$$(which $$t); \
 	if [ $$? -ne 0 ]; then echo "Missing $$t"; exit 1; else v=$$($$t --version); \
@@ -23,3 +28,5 @@ check_dep:
 	@if [ -z "$(FONTL)" ]; then echo "No fontconfig libs"; exit 1; else echo OK; fi
 	@echo -n "Checking for freetype.. "
 	@if [ -z "$(FREEL)" ]; then echo "No freetype2 libs"; exit 1; else echo OK; fi
+	@echo -n "Checking for a appindicator.. "
+	@if [ -z "$(APPI)" ]; then echo "  appindictor not found"; fi
