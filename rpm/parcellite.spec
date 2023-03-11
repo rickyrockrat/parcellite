@@ -26,17 +26,14 @@ system tray or notification area if you want to use this package.
 
 %prep
 %setup -q
-%patch0 -p0 -b .orig
-
 
 %build
-%configure
-make %{?_smp_mflags}
+make -f Makefile.simple %{?_smp_mflags}
 
 
 %install
 rm -rf %{buildroot}
-make install DESTDIR=%{buildroot} INSTALL='install -p'
+make -f Makefile.simple install DESTDIR=%{buildroot} INSTALL='install -p'
 %find_lang %{name}
 
 desktop-file-install --vendor="fedora"                     \
