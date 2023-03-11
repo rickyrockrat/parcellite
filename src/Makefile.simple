@@ -28,7 +28,7 @@ FREEC=$(shell pkg-config --cflags freetype2)
 LIBAPP=$(shell $(PRFX)/appsuck.sh cflags)
 
 
-CFLAGS=$(GTKC) $(FONTC) $(FREEC) -DHAVE_CONFIG_H  -DGETTEXT_PACKAGE='"parcellite"' -DENABLE_NLS=1 -I. -I.. -DPARCELLITELOCALEDIR=\""/usr/share/locale"\"
+CFLAGS=$(GTKC) $(FONTC) $(FREEC) -DHAVE_CONFIG_H  -DGETTEXT_PACKAGE='"parcellite"' -DENABLE_NLS=1 -I. -I.. -DPARCELLITELOCALEDIR=\""/usr/share/locale"\" -Wno-deprecated -Wno-deprecated-declarations
 
 $(GETTEXT_PACKAGE): check_dep $(OBJS)
 	gcc -Wall $(OBJS) -o $@ $(LIBS)
