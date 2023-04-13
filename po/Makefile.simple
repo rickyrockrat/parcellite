@@ -1,0 +1,97 @@
+# Copyright (C) 2010-2022 Doug Springer <gpib@rickyrockrat.net>
+#
+# This file is part of Parcellite.
+#
+# Parcellite is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 3 of the License, or
+# (at your option) any later version.
+#
+# Parcellite is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+localedir = $(INSTDIR)/share/locale
+
+srcdir:=.
+
+# po dir
+INSTALL = /usr/bin/install -c
+INSTALL_DATA = ${INSTALL} -m 644
+GMSGFMT = /usr/bin/msgfmt
+MSGFMT = /usr/bin/msgfmt
+XGETTEXT = /usr/bin/xgettext
+INTLTOOL_UPDATE = /usr/bin/intltool-update
+INTLTOOL_EXTRACT = /usr/bin/intltool-extract
+MSGMERGE = INTLTOOL_EXTRACT="$(INTLTOOL_EXTRACT)" XGETTEXT="$(XGETTEXT)" srcdir=$(srcdir) $(INTLTOOL_UPDATE) --gettext-package $(GETTEXT_PACKAGE) --dist
+GENPOT   = INTLTOOL_EXTRACT="$(INTLTOOL_EXTRACT)" XGETTEXT="$(XGETTEXT)" srcdir=$(srcdir) $(INTLTOOL_UPDATE) --gettext-package $(GETTEXT_PACKAGE) --pot
+
+POFILES=$(shell ls *.po)
+USE_LINGUAS:=$(shell ls *.po|sed 's!.po!!g'|tr '\n' ' ')
+CATALOGS:=$(shell ls *.po|sed 's!.po!.gmo!g')
+
+DISTFILES = $(POFILES)
+EXTRA_DISTFILES = ChangeLog POTFILES.skip Makevars 
+
+.SUFFIXES: .po .pox .gmo .mo .msg .cat
+
+POTFILES = \
+	../src/main.c \
+	../src/utils.c \
+	../src/preferences.c \
+	../data/parcellite.desktop.in \
+	../data/parcellite-startup.desktop.in
+	
+#CATALOGS:=$(shell LINGUAS="$(USE_LINGUAS)"; for lang in $$LINGUAS; do printf "$$lang.gmo "; done)
+
+all: $(CATALOGS)
+
+.po.pox:
+	$(MAKE) $(GETTEXT_PACKAGE).pot
+	$(MSGMERGE) $< $(GETTEXT_PACKAGE).pot -o $*.pox
+
+.po.mo:
+	$(MSGFMT) -o $@ $<
+
+.po.gmo:
+	file=`echo $* | sed 's,.*/,,'`.gmo \
+	  && rm -f $$file && $(GMSGFMT) -o $$file $<
+
+.po.cat:
+	sed -f ..:wq/intl/po2msg.sed < $< > $*.msg \
+	  && rm -f $@ && gencat $@ $*.msg
+
+$(GETTEXT_PACKAGE).pot: $(POTFILES)
+	$(GENPOT)
+	
+install: all
+	@echo "langs $(USE_LINGUAS)"
+	for lang in $(USE_LINGUAS); do \
+	  dir=$(localedir)/$$lang/LC_MESSAGES; \
+	  mkdir -p $$dir; \
+	  if test -r $$lang.gmo; then \
+	    $(INSTALL_DATA) $$lang.gmo $$dir/$(GETTEXT_PACKAGE).mo; \
+	    echo "installing $$lang.gmo as $$dir/$(GETTEXT_PACKAGE).mo"; \
+	  else \
+	    $(INSTALL_DATA) $(srcdir)/$$lang.gmo $$dir/$(GETTEXT_PACKAGE).mo; \
+	    echo "installing $(srcdir)/$$lang.gmo as $$dir/$(GETTEXT_PACKAGE).mo"; \
+	  fi; \
+	  if test -r $$lang.gmo.m; then \
+	    $(INSTALL_DATA) $$lang.gmo.m $$dir/$(GETTEXT_PACKAGE).mo.m; \
+	    echo "installing $$lang.gmo.m as $$dir/$(GETTEXT_PACKAGE).mo.m"; \
+	  else \
+	    if test -r $(srcdir)/$$lang.gmo.m ; then \
+	      $(INSTALL_DATA) $(srcdir)/$$lang.gmo.m \
+		$$dir/$(GETTEXT_PACKAGE).mo.m; \
+	      echo "installing $(srcdir)/$$lang.gmo.m as $$dir/$(GETTEXT_PACKAGE).mo.m"; \
+	    fi; \
+	  fi; \
+	done
+
+clean:
+	-rm *.pox *.gmo *.msg *.mo *.cat
+	

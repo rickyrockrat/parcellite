@@ -3,15 +3,17 @@
 # Copyright (C) 2008 Gilberto "Xyhthyx" Miralla <xyhthyx@gmail.com>
 # This file is distributed under the same license as the parcellite package.
 #
-#
+# Translators:
 # Phantom X <megaphantomx at bol.com.br>, 2008, 2009, 2013.
+# marcelocripe <marcelocripe@gmail.com>, 2022.
+
 msgid ""
 msgstr ""
 "Project-Id-Version: pt_BR\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-07-31 09:56-0600\n"
-"PO-Revision-Date: 2013-07-31 19:29-0300\n"
-"Last-Translator: Phantom X <megaphantomx at bol dot com dot br>\n"
+"PO-Revision-Date: 2022-01-13 19:29-0300\n"
+"Last-Translator: marcelocripe <marcelocripe@gmail.com>\n"
 "Language-Team: Brazilian Portuguese <>\n"
 "Language: pt_BR\n"
 "MIME-Version: 1.0\n"
@@ -27,16 +29,16 @@ msgid "Actions"
 msgstr "Ações"
 
 msgid "Actions key combination:"
-msgstr "Combinação de teclas de Ações:"
+msgstr "Combinação de teclas de ações:"
 
 msgid "Add..."
 msgstr "Adicionar..."
 
 msgid "Alternate Non-printing Display"
-msgstr "Exibição sem impressão alternativa"
+msgstr "Exibição Alternativa Sem Impressão"
 
 msgid "Auto Paste"
-msgstr "Auto Colar"
+msgstr "Colar Automaticamente"
 
 msgid "Beginning"
 msgstr "Início"
@@ -48,10 +50,10 @@ msgid "<b>None</b>"
 msgstr "<b>Nenhum</b>"
 
 msgid "Capture hyperlinks only"
-msgstr "Capturar somente _hyperlinks"
+msgstr "Capturar somente os _hyperlinks"
 
 msgid "Case Sensitive Search"
-msgstr "Busca com Caso Sensitivo"
+msgstr "Busca com Distinção entre Maiúsculas e Minúsculas"
 
 msgid "_Clear"
 msgstr "_Limpar"
@@ -60,13 +62,13 @@ msgid "Clear the history?"
 msgstr "Limpar o histórico?"
 
 msgid "Clipboard CLI usage examples:\n\n  echo \"copied to clipboard\" | parcellite\n  parcellite \"copied to clipboard\"\n  echo \"copied to clipboard\" | parcellite -c"
-msgstr "Exemplo de uso da Área de Transferência no terminal:\n\n  echo \"copiado para a área de transferência\" | parcellite\n  parcellite \"copiado para a área de transferência\"\n  echo \"copiado para a área de transferência\" | parcellite -c"
+msgstr "Exemplos de uso da Área de Transferência na interface de texto do terminal:\n\n  echo \"copiado para a área de transferência\" | parcellite\n  parcellite \"copiado para a área de transferência\"\n  echo \"copiado para a área de transferência\" | parcellite -c"
 
 msgid "Clipboard Manager"
-msgstr "Gerenciador de Área de Transferência"
+msgstr "Gerenciador da Área de Transferência"
 
 msgid "Clipboards"
-msgstr "Áreas de Transferência "
+msgstr "Áreas de Transferência"
 
 msgid "Command"
 msgstr "Comando"
@@ -75,36 +77,38 @@ msgid "Confirm before clearing history"
 msgstr "Confirmar antes de limpar o histórico"
 
 msgid "Control-click Parcellite's tray icon to use actions"
-msgstr "Control-clique no ícone da bandeja do Parcellite para usar ações"
+msgstr "Control+clique no ícone da bandeja do Parcellite para utilizar as ações"
 
 msgid ""
 "Copyright (C) 2007, 2008 Gilberto \"Xyhthyx\" Miralla\nCopyright (C) 2010-2013 "
 "Doug Springer"
 msgstr ""
+"Direitos de Autor (C) 2007, 2008 Gilberto \"Xyhthyx\" Miralla\nDireitos de Autor"
+"(C) 2010-2013 Doug Springer"
 
 msgid "Couldn't create directory: %s\n"
-msgstr "Impossível criar diretório: %s\n"
+msgstr "Não foi possível criar o diretório: %s\n"
 
 msgid "Current entry on top"
 msgstr "Entrada atual no topo"
 
 msgid "DebugUpdate"
-msgstr ""
+msgstr "Atualização de Depuração"
 
 msgid "Display"
 msgstr "Exibir"
 
 msgid "Display Version info"
-msgstr "Exibir info de versão"
+msgstr "Exibir as Informações da Versão"
 
 msgid "Do not use status icon (Ctrl-Alt-P for menu)"
-msgstr "Não usar ícone de status (Ctrl-Alt-P para o menu)"
+msgstr "Não utilizar o ícone de estado (Ctrl+Alt+P para o menu)"
 
 msgid "_Edit actions"
-msgstr "_Editar ações"
+msgstr "_Editar as ações"
 
 msgid "_Edit Clipboard"
-msgstr "_Editar Área de Transferência"
+msgstr "_Editar a Área de Transferência"
 
 msgid "Editing Clipboard"
 msgstr "Editando a Área de Transferência"
@@ -116,12 +120,14 @@ msgid "End"
 msgstr "Fim"
 
 msgid "Executing action..."
-msgstr "Executando ação..."
+msgstr "Executando a ação..."
 
 msgid ""
 "Gilberto \"Xyhthyx\" Miralla <xyhthyx@gmail.com>Doug Springer "
 "<gpib@rickyrockrat.net>"
 msgstr ""
+"Gilberto \"Xyhthyx\" Miralla <xyhthyx@gmail.com>Doug Springer "
+"<gpib@rickyrockrat.net>"
 
 msgid "History"
 msgstr "Histórico"
@@ -130,7 +136,7 @@ msgid "_History"
 msgstr "_Histórico"
 
 msgid "History key combination:"
-msgstr "Combinação de teclas do Histórico:"
+msgstr "Combinação de teclas do histórico:"
 
 msgid "Hotkeys"
 msgstr "Atalhos"
@@ -139,110 +145,121 @@ msgid ""
 "If checked, does a search-as-you-type. Turns red if not found. Goes to top "
 "(Alt-E) line when no chars are entered for search"
 msgstr ""
-"Se ativo, faz busca-ao-digitar. Fica vermelho se não encontrado. Vai a linha "
-"do topo (Alt-E) se nada for inserido para buscar."
+"Se esta opção estiver selecionada, fará uma busca ou pesquisa enquanto você "
+"digita. Ficará vermelho se algo não for encontrado. Se nenhum texto for "
+"inserido, vai para a linha superior (Alt+E) para buscar ou pesquisar."
 
 msgid "If checked, does case sensitive search"
-msgstr "Se ativo, faz busca com caso sensitivo"
+msgstr "Se esta opção estiver selecionada, fará a busca ou a pesquisa com "
+"distinção entre as letras maiúsculas e minúsculas."
 
 msgid ""
 "If checked, enables checking multiple concurrent user logic. Use if several "
 "different users are logged in at the same time."
 msgstr ""
-"Se ativo, habilita verificação de múltiplos usuários simultâneos. Use se "
-"vários "
-"usuários diferentes estão autenticados ao mesmo tempo."
+"Se esta opção estiver selecionada, ativará a verificação de vários usuários "
+"simultâneos. Utilize esta opção se vários usuários diferentes estiverem "
+"autenticados ao mesmo tempo no computador."
 
 msgid ""
 "If checked, enables debug prints on clipboard update logic. This only takes "
 "effect when enabled at start up, and may be disabled at compile time."
 msgstr ""
-"Se ativo, habilita exibições de debug na lógica de área de transferência. "
-"Somente "
-"tem efeito quando ativado no início e pode ser desativado em tempo de "
-"compilação."
+"Se esta opção estiver selecionada, ativará a exibição de depuração na lógica de "
+"atualização da área de transferência. Esta opção só produz efeito quando é "
+"ativada na inicialização e pode ser desativada em tempo de compilação."
 
 msgid "If checked, enables the persistent history."
-msgstr "Se ativo, habilita o histórico persistente."
+msgstr "Se esta opção estiver selecionada, ativará o histórico persistente."
 
 msgid ""
 "If checked, places current clipboard entry at top of list. If not checked, "
 "history does not get sorted."
 msgstr ""
-"Se ativo, coloca a entrada de área de transferência atual no topo da lista. "
-"Se não, "
-"histórico não é organizado."
+"Se esta opção estiver selecionada, adicionará a entrada atual na área de "
+"transferência no topo da lista. Se esta opção não estiver selecionada, o "
+"histórico não será organizado."
 
 msgid "If checked, puts the persistent history at the top of the history list."
 msgstr ""
-"Se ativo, coloca o histórico persistente no topo da lista de histórico."
+"Se esta opção estiver selecionada, posicionará o histórico persistente no topo "
+"da lista de histórico."
 
 msgid "If checked, puts the persistent history in a new list."
-msgstr "Se ativo, coloca o histórico permanente em um nova lista."
+msgstr "Se esta opção estiver selecionada, adicionará o histórico persistente em uma "
+"nova lista."
 
 msgid "If checked, the current entry will be on the bottom instead of the top."
-msgstr "Se ativo, a entrada atual ficará no fundo em vez do topo."
+msgstr "Se esta opção estiver selecionada, a entrada atual ficará na parte inferior em "
+"vez de ficar na parte superior."
 
 msgid "If checked, Use the clipboard, which is Ctrl-C, Ctrl-V"
-msgstr "Se ativo, usa a área de transferência, com Ctrl-C, Ctrl-V"
+msgstr "Se esta opção estiver selecionada, utilizará a área de transferência com os "
+"comandos da combinação de teclas Ctrl+C e Ctrl+V"
 
 msgid ""
 "If checked, Use the primary clipboard (mouse highlight-copy, middle mouse "
 "button paste)"
 msgstr ""
-"Se ativo, usa a área de transferência primária (realce com mouse-cópia, botão "
-"do meio cola)"
+"Se esta opção estiver selecionada, utilizará a área de transferência primária ("
+"copia o texto selecionado em destaque e cola com botão do meio"
 
 msgid "If checked, use X, Y to position the history list"
-msgstr "Se ativo, usa X, Y para posicionar a lista de histórico"
+msgstr "Se esta opção estiver selecionada, utilizará as coordenadas X e Y para "
+"posicionar a lista do histórico"
 
 msgid ""
 "If checked, will display tabs with Right arrow (utf8,\\2192), newlines with "
 "pharagrph(\\204b), and spaces with square-u(\\2423)."
 msgstr ""
-"Se ativo, exibirá abas com a seta direita (utf8,\\2192), novas linhas com "
-"parágrafo(\\204b), e espaços com square-u(\\2423)."
+"Se esta opção estiver selecionada, exibirá abas ou guias com a seta para a "
+"direita (utf8,\\2192), as novas linhas com o parágrafo (\\204b) e os espaços "
+"com o quadrado (\\2423)."
 
 msgid "If checked, will emit the history entry via the keyboard entry."
-msgstr "Se ativo, emitirá a entrada do histórico via entrada de teclado."
+msgstr "Se esta opção estiver selecionada, emitirá a entrada do histórico por meio "
+"da entrada do teclado."
 
 msgid ""
 "If checked, will ignore any clipboard additions that contain only whitespace."
 msgstr ""
-"Se ativo, ignorará qualquer adição à área de transferência que contiver "
-"somente espaço em branco."
+"Se esta opção estiver selecionada, ignorará qualquer adição à área de "
+"transferência que contenha somente espaços em branco."
 
 msgid ""
 "If checked, will keep both clipboards with the same content. If primary is "
 "pasted, then copy will have the same data."
 msgstr ""
-"Se ativo, manterá ambas áreas de transferência como o mesmo conteúdo. Se a "
-"primária for colada, então a cópia terá os mesmos dados."
+"Se esta opção estiver selecionada, manterá ambas as áreas de transferência com "
+"o mesmo conteúdo. Se a primária for colada, então a cópia terá os mesmos dados."
 
 msgid "If checked, will replace newlines with spaces."
-msgstr "Se ativo, substituirá novas linhas por espaços."
+msgstr "Se esta opção estiver selecionada, substituirá as novas linhas por espaços."
 
 msgid "If checked, will restore clipboard entry on application exit."
-msgstr ""
-"Se ativo, recuperará a entrada da área de transferência na saída da aplicação."
+msgstr "Se esta opção estiver selecionada, restaurará a entrada da área de "
+"transferência na saída do aplicativo/aplicação."
 
 msgid "If checked, will trim whitespace from beginning and end of entry."
-msgstr "Se ativo, eliminará espaços em branco no início e fim da entrada."
+msgstr "Se esta opção estiver selecionada, eliminará os espaços em branco no início e "
+"no fim da entrada."
 
 msgid "If checked, will use Ctrl-V paste."
-msgstr "Se ativo, usará Ctrl-v para colar."
+msgstr "Se esta opção estiver selecionada, utilizará o comando Ctrl+V para colar."
 
 msgid "If checked, will use middle mouse to paste."
-msgstr "Se ativo, usará botão do meio do mouse para colar."
+msgstr "Se esta opção estiver selecionada, utilizará o botão do meio do rato/mouse para "
+"colar."
 
 msgid "If checked, will use xdotool to paste wherever the mouse is."
-msgstr "Se ativo, usará xdotool para colar onde o mouse estiver."
+msgstr "Se esta opção estiver selecionada, utilizará a ferramenta de automação de linha "
+"de comando xdotool para colar onde quer que o rato/mouse esteja."
 
 msgid "Ignore Whitespace Only"
-msgstr "Ignora somente espaços em branco"
+msgstr "Ignorar Somente os Espaços em Branco"
 
 msgid "Items"
-msgstr ""
+msgstr "Itens"
 
 msgid "Items in history"
 msgstr "Itens no histórico"
@@ -251,19 +268,19 @@ msgid "Key"
 msgstr "Tecla"
 
 msgid "Keyboard Input"
-msgstr "Entrada de teclado"
+msgstr "Entrada de Teclado"
 
 msgid "Lightweight GTK+ clipboard manager."
-msgstr "Gerenciador de Área de Transferência em GTK+ leve."
+msgstr "Gerenciador da área de transferência em GTK+ leve e rápido."
 
 msgid "Max Data Size(MB)"
-msgstr "Tamanho máximo de dados (MB)"
+msgstr "Tamanho Máximo de Dados (MB)"
 
 msgid "Maximum data size of entire history list"
-msgstr "Tamanho máximo de dados da lista inteira de histórico"
+msgstr "Tamanho máximo de dados de toda a lista do histórico"
 
 msgid "Maximun number of cliboard entries to keep"
-msgstr "Número máximo de entradas na área de transferência para manter"
+msgstr "Número máximo de entradas na área de transferência para serem mantidas"
 
 msgid "Menu key combination"
 msgstr "Combinação de teclas do Menu"
@@ -275,7 +292,7 @@ msgid "Miscellaneous"
 msgstr "Vários"
 
 msgid "Mouse"
-msgstr ""
+msgstr "Rato/Mouse"
 
 msgid "Multiuser"
 msgstr "Multiusuário"
@@ -287,104 +304,103 @@ msgid "Omitting"
 msgstr "Omitindo"
 
 msgid "Paste All Entry Delimiter"
-msgstr "Delimitador de entrada de colagem total"
+msgstr "Delimitador da Entrada de Colagem Total"
 
 msgid "Persistent As Separate List"
-msgstr "Persistente como lista separada"
+msgstr "Como uma Lista Persistente Separada"
 
 msgid "Persistent History"
-msgstr "Histórico persistente"
+msgstr "Histórico Persistente"
 
 msgid "Persistent history key:"
 msgstr "Tecla de histórico persistente:"
 
 msgid "Persistent On Top"
-msgstr "Persistente no topo"
+msgstr "Persistente no Topo"
 
 msgid "Position history"
-msgstr "Posição do no histórico"
+msgstr "Posição no histórico"
 
 msgid "Position in pixels from the top of the screen"
-msgstr "Posição em pixels a partir do topo da tela"
+msgstr "Posição em pixels a partir da parte superior da tela"
 
 msgid "Preferences"
 msgstr "Preferências"
 
 msgid "Print clipboard contents"
-msgstr "Imprimir conteúdo da área de transferência"
+msgstr "Imprimir o conteúdo da área de transferência"
 
 msgid "Print primary contents"
-msgstr "Imprimir conteúdo primário"
+msgstr "Imprimir o conteúdo primário"
 
 msgid "Remove"
 msgstr "Remover"
 
 msgid "Restore Empty"
-msgstr "Recuperar vazio"
+msgstr "Recuperar o Vazio"
 
 msgid "Run as daemon"
-msgstr "Executar como daemon"
+msgstr "Executar como serviço de daemon"
 
 msgid "Save history"
-msgstr "Salvar histórico"
+msgstr "Salvar o histórico"
 
 msgid ""
 "Save History as a text file. Prepends xHIST_0000 to each entry. x is either "
 "P(persistent) or N (normal)"
 msgstr ""
-"Salvar histórico como um arquivo de texto. Precede xHIST_0000 em cada "
-"entrada. x pode "
-"ser P (persistente ou N (normal)"
+"Salvar o histórico como um arquivo de texto. Preceda xHIST_0000 para cada "
+"entrada x, podendo ser P (persistente) ou N (normal)"
 
 msgid "Save history to a file."
-msgstr "Salvar histórico em um arquivo."
+msgstr "Salvar o histórico em um arquivo."
 
 msgid "Search As You Type"
-msgstr "Buscar ao digitar"
+msgstr "Buscar ao Digitar"
 
 msgid "Show in a single line"
 msgstr "Exibir em uma única linha"
 
 msgid "Show in reverse order"
-msgstr "Exibir em ordem reversa"
+msgstr "Exibir em ordem inversa"
 
 msgid "Character length of items"
 msgstr "Quantidade de caracteres dos itens"
 
 msgid "S_ynchronize clipboards"
-msgstr "S_incronizar áreas de transferência"
+msgstr "S_incronizar as áreas de transferência"
 
 
 msgid "This is the Action Name. \nDO NOT put commands here."
-msgstr "Isto é o Nome de Ação, \nNÃO coloque comandos aqui."
+msgstr "Este é o Nome da Ação. \nNÃO insira os comandos aqui."
 
 msgid ""
 "This string will be inserted between each line of history for paste all."
 msgstr ""
-"Esta expressão será inserida entre cada linha do histórico para colagem total."
+"Esta expressão será inserida entre cada linha do histórico para a colagem total."
 
 msgid "Trim Newlines"
-msgstr "_Eliminar novas linhas"
+msgstr "Eliminar as Novas Linhas"
 
 msgid "Trim Whitespace"
-msgstr "_Eliminar espaço em branco"
+msgstr "Eliminar o Espaço em Branco"
 
 msgid "Use Alt-E to edit, Alt-C to clear"
-msgstr "Alt-E para editar, Alt-C para limpar"
+msgstr "Utilizar o comando Alt+E para editar e Alt+C para limpar"
 
 msgid "Use _Copy (Ctrl-C)"
-msgstr "Usar _Cópia (Ctrl-C)"
+msgstr "Utilizar o comando _Copiar (Ctrl+C)"
 
 msgid "Use _Primary (Selection)"
-msgstr "Usar Seleção _Primária"
+msgstr "Utilizar a Seleção _Primária"
 
 msgid "Written by Gilberto \"Xyhthyx\" Miralla and Doug Springer.\nReport bugs to <gpib@rickyrockrat.net>."
 msgstr ""
-"Escrito por Gilberto \"Xyhthyx\" Miralla e Doug Springer.\nReportar bugs para <gpib@rickyrockrat.net>."
+"Escrito por Gilberto \"Xyhthyx\" Miralla e Doug Springer.\nReportar os erros ou "
+"as falhas para <gpib@rickyrockrat.net>."
 
 msgid "X"
-msgstr ""
+msgstr "X"
 
 msgid "Y"
-msgstr ""
-
+msgstr "Y"

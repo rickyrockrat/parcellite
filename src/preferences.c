@@ -34,6 +34,8 @@ void setup_icon( void ); /**in main.c  */
 #define DEF_HISTORY_LIMIT     25
 #define DEF_HYPERLINKS_ONLY   FALSE
 #define DEF_CONFIRM_CLEAR     TRUE
+#define DEF_DISABLE_CLEAR			FALSE
+#define DEF_HISTORY_SAVE_FORMAT TRUE
 #define DEF_SINGLE_LINE       TRUE
 #define DEF_REVERSE_HISTORY   FALSE
 #define DEF_ITEM_LENGTH       50
@@ -44,6 +46,7 @@ void setup_icon( void ); /**in main.c  */
 #define DEF_ACTIONS_KEY       "<Ctrl><Alt>A"
 #define DEF_MENU_KEY          "<Ctrl><Alt>P"
 #define DEF_NO_ICON           FALSE
+#define DEF_UNITY_ON          FALSE
 
 /**allow lower nibble to become the number of items of this type  */
 #define PREF_TYPE_TOGGLE 0x10
@@ -137,7 +140,7 @@ struct pref_item myprefs[]={
 	{.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_HIST,.name="automatic_paste",.type=PREF_TYPE_TOGGLE|PREF_TYPE_SINGLE_LINE,.desc="Auto Paste",.tip="If checked, will use xdotool to paste wherever the mouse is.\nNOTE! Package xdotool MUST BE INSTALLED for this to work.",.val=0},
 	{.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_HIST,.name="auto_key",.type=PREF_TYPE_TOGGLE|PREF_TYPE_SINGLE_LINE,.desc="Key",.tip="If checked, will use Ctrl-V paste.",.val=0},
 	{.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_HIST,.name="auto_mouse",.type=PREF_TYPE_TOGGLE|PREF_TYPE_SINGLE_LINE,.desc="Mouse",.tip="If checked, will use middle mouse to paste.",.val=1},
-	{.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_HIST,.name="key_input",.type=PREF_TYPE_TOGGLE,.desc="Keyboard Input",.tip="If checked, will emit the history entry via the keyboard entry.",.val=0},
+	{.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_HIST,.name="key_input",.type=PREF_TYPE_TOGGLE|PREF_TYPE_SINGLE_LINE,.desc="Keyboard Input",.tip="If checked, will emit the history entry via the keyboard entry.",.val=0},
 	{.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_HIST,.name="restore_empty",.type=PREF_TYPE_TOGGLE,.desc="Restore Empty",.tip="If checked, will restore clipboard entry on application exit.",.val=1},
 	{.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_HIST,.name="rc_edit",.type=PREF_TYPE_TOGGLE,.desc="Right Click Edit",.tip="If checked, edit the history item clicked on.",.val=0},
   
@@ -150,6 +153,8 @@ struct pref_item myprefs[]={
 	{.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_MISC,.name="trim_newline",.type=PREF_TYPE_TOGGLE,.desc="Trim Newlines",.tip="If checked, will replace newlines with spaces."},
 	{.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_MISC,.name="hyperlinks_only",.type=PREF_TYPE_TOGGLE,.desc="Capture hyperlinks only",.tip=NULL,.val=DEF_HYPERLINKS_ONLY},
 	{.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_MISC,.name="confirm_clear",.type=PREF_TYPE_TOGGLE,.desc="Confirm before clearing history",.tip=NULL,.val=DEF_CONFIRM_CLEAR},
+	{.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_MISC,.name="disable_clear",.type=PREF_TYPE_TOGGLE,.desc="Disable clearing history",.tip="If checked, disables Alt-C history clear",.val=DEF_DISABLE_CLEAR},
+	{.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_MISC,.name="save_history_Lineno",.type=PREF_TYPE_TOGGLE,.desc="Use Line Number prefix when saving history",.tip="If checked, prefixes each line number with NHIST_0000/PHIST_0000",.val=DEF_HISTORY_SAVE_FORMAT},	
 	
 /**Display  add icon here...*/
 	{.adj=NULL,.cval=NULL,.sig=NULL,.sfunc=NULL,.sec=PREF_SEC_DISP,.name=NULL,.type=PREF_TYPE_FRAME,.desc="<b>Items</b>",.tip=NULL,.val=0},
@@ -170,6 +175,7 @@ struct pref_item myprefs[]={
 /**miscellaneous that doesn't fit elswhew  */	
   {.adj=NULL,.cval=NULL,.sig=NULL,.sfunc=NULL,.sec=PREF_SEC_XMISC,.name=NULL,.type=PREF_TYPE_FRAME,.desc="<b>Miscellaneous</b>",.tip=NULL,.val=0},
 	{.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_XMISC,.name="multi_user",.type=PREF_TYPE_TOGGLE,.desc="Multiuser",.tip="If checked, enables checking multiple concurrent user logic. Use if several different users are logged in at the same time.",.val=TRUE},
+	{.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_XMISC,.name="on_unity",.type=PREF_TYPE_TOGGLE,.desc="Running Unity",.tip="If checked, Assumes you are running Unity. Use if your systray icon does not show up.",.val=DEF_UNITY_ON},
 	{.adj=NULL,.cval=PARCELLITE_ICON,.sig=NULL,.sec=PREF_SEC_XMISC,.name="icon_name",.type=PREF_TYPE_ENTRY,.desc="Parcellite Icon Name",.tip="Name of Parcellite icon. If this is mis-typed, icon will not appear.",.val=TRUE},
 #ifdef	DEBUG_UPDATE
 	{.adj=NULL,.cval=NULL,.sig=NULL,.sec=PREF_SEC_XMISC,.name="debug_update",.type=PREF_TYPE_TOGGLE,.desc="DebugUpdate",.tip="If checked, enables debug prints on clipboard update logic. This only takes effect when enabled at start up, and may be disabled at compile time.",.val=FALSE},

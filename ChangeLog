@@ -1,3 +1,13 @@
+V1.2.2 TBD...2021?
+ +Added Makefile.simple as a fix before changing autodiscover build system.
+ +Fixed issue with systemd logging output.
+ +Fixed bug with zero length history file.
+ +Added Disable clear history.
+ +Added manual Unity setting.
+ +Added save_history_Lineno preference for save as option
+ +Added fifo command to save history. echo "save_history /path/to/file" >/home/user/.local/share/parcellite/fifo_cmd
+ +Fixed bug where single and double quotes are lost when using xdotool and keyboard input.
+
 V1.2.1 Monday, Jan 23, 2017
  +Implemented patch from Christopher Oliver that fixes a memory access bug on history clear.
  +Fixed minor missing fclose bug in save_history credits dcb.

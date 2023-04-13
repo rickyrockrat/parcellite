@@ -66,6 +66,8 @@ g_signal_connect(clipboard, "owner-change",  G_CALLBACK(handle_owner_change), NU
 
 #include <ctype.h>
 #include <pthread.h>
+#include <libgen.h>
+
 
 /**ACT are actions, and MODE is the mode of the action  */
 /** #define ACT_STOP  0
@@ -99,7 +101,7 @@ static AppIndicator *indicator=NULL;
 static GtkWidget *indicator_menu = NULL;
 #endif
 static GtkStatusIcon *status_icon=NULL; 
-GMutex *hist_lock=NULL;
+GMutex hist_lock;
 static gboolean actions_lock = FALSE;
 static int show_icon=0;
 static int have_appindicator=0; /**if set, we have a running indicator-appmenu  */
@@ -527,8 +529,22 @@ void do_command(gchar *buf, gint len)
 	/**clean whitepsace  */
 	gchar *p, *news=strdup(buf); 
 	p=g_strchomp(news);
+	int saveme=0;
   g_fprintf(stderr,"Got '%s' cmd\n",p);
-	
+	if(0 == strncmp(p,"save_historyN ", 14)) 
+		saveme=14;
+	else if(0 == strncmp(p,"save_history ", 13))
+		saveme=13;
+	if(saveme){
+		gchar *tmp=strdup(&p[saveme]);
+		gchar *dir=dirname(tmp);
+		if(0 == access(dir,W_OK)){
+			save_history_as_text(&p[saveme],13==saveme?0:1);
+		}
+		g_free(tmp);
+		goto end;
+	}
+		
 	if(!p_strcmp(p,FIFCMD_RUN_ALL)) {
 		cmd_mode|=CMODE_ALL;
 		goto end;
@@ -601,7 +617,7 @@ void check_clipboards(gint mode)
 			
 			default:
 				fifo->rlen=validate_utf8_text(fifo->buf, fifo->rlen);
-				g_fprintf(stderr,"CLIP not set, discarding '%s'\n",fifo->buf);
+				/*g_fprintf(stderr,"CLIP not set, discarding '%s'\n",fifo->buf); */
 				fifo->rlen=0;
 				break;
 		}
@@ -642,7 +658,8 @@ gboolean check_for_appindictor( gpointer data)
 		/*g_printf("Looking for '%s'\n",appindicator_process); */
 		if(get_pref_int32("multi_user"))
 			mode|=PROC_MODE_USER_QUALIFY;
-		if(proc_find(appindicator_process,mode,NULL) >0){
+		
+		if(get_pref_int32("on_unity") || proc_find(appindicator_process,mode,NULL) >0 ){
 			have_appindicator=1;
 			if(NULL == indicator && show_icon)
 				create_app_indicator();	
@@ -675,29 +692,6 @@ gboolean check_clipboards_tic(gpointer data)
 #endif
 	return TRUE;
 }
-#if 0
-/* Thread function called for each action performed */
-static void *execute_action(void *command)
-{
-  /* Execute action */
-  actions_lock = TRUE;
-  if (!have_appindicator && show_icon) {
-  gtk_status_icon_set_from_stock((GtkStatusIcon*)status_icon, GTK_STOCK_EXECUTE);
-  gtk_status_icon_set_tooltip((GtkStatusIcon*)status_icon, _("Executing action..."));
-  }
-  if(system((gchar*)command))
-  	g_fprintf(stderr,"sytem command '%s' failed\n",(gchar *)command);
-  if (!have_appindicator &&show_icon) {
-	gtk_status_icon_set_from_icon_name((GtkStatusIcon*)status_icon, get_pref_string("icon_name"));
-  gtk_status_icon_set_tooltip((GtkStatusIcon*)status_icon, _("Clipboard Manager"));
-  }
-  actions_lock = FALSE;
-  g_free((gchar*)command);
-  /* Exit this thread */
-  pthread_exit(NULL);
-	return NULL;
-}
-#endif
 /* Called when execution action exits */
 static void action_exit(GPid pid, gint status, gpointer data)
 {
@@ -720,7 +714,7 @@ static void action_selected(GtkButton *button, gpointer user_data)
   }
   /* Insert clipboard into command (user_data), and prepare it for execution */
   gchar* clipboard_text = gtk_clipboard_wait_for_text(clipboard);
-	g_fprintf(stderr,"Got cmd '%s', text '%s'->",(gchar *)user_data,clipboard_text);fflush(NULL);  
+	/*g_fprintf(stderr,"Got cmd '%s', text '%s'->",(gchar *)user_data,clipboard_text);fflush(NULL);   */
 	gchar* quoted_clipboard_text = g_shell_quote(clipboard_text);
 	gchar* command=g_strdup_printf((gchar *)user_data,quoted_clipboard_text);
 	g_fprintf(stderr," '%s'\n",command);fflush(NULL);  
@@ -736,7 +730,7 @@ static void action_selected(GtkButton *button, gpointer user_data)
   GPid pid;
   gchar **argv;
   g_shell_parse_argv(cmd, NULL, &argv, NULL);
-	g_fprintf(stderr,"cmd '%s' argv '%s' '%s' '%s'\n",cmd,argv[1],argv[2],argv[3]);  
+	/*g_fprintf(stderr,"cmd '%s' argv '%s' '%s' '%s'\n",cmd,argv[1],argv[2],argv[3]);   */
   g_free(cmd);
   g_spawn_async(NULL, argv, NULL, G_SPAWN_DO_NOT_REAP_CHILD, NULL, NULL, &pid, NULL);
   g_child_watch_add(pid, (GChildWatchFunc)action_exit, NULL);
@@ -785,7 +779,7 @@ static void edit_selected(GtkMenuItem *menu_item, gpointer user_data)
 				return;
 			}
 			current_clipboard_text=p_strdup(c->text);
-			g_fprintf(stderr,"Got Text frmo wi.index ele %p '%s'",element,c->text);  
+			/*g_fprintf(stderr,"Got Text frmo wi.index ele %p '%s'",element,c->text);   */
 			
 		}	else{
 			h->wi.tmp1=0;
@@ -800,7 +794,7 @@ static void edit_selected(GtkMenuItem *menu_item, gpointer user_data)
 		}
     
     if (current_clipboard_text != NULL)   {
-		g_fprintf(stderr,"Got '%s' for edit text\n",current_clipboard_text); 
+		/*g_fprintf(stderr,"Got '%s' for edit text\n",current_clipboard_text);  */
 			TRACE(g_fprintf(stderr,"Got '%s'\n",current_clipboard_text));
       gtk_text_buffer_set_text(text_buffer, current_clipboard_text, -1);
     }	 else	 {
@@ -1099,6 +1093,8 @@ static void clear_all ( gpointer user_data)
 static void clear_selected(GtkMenuItem *menu_item, gpointer user_data)
 {
 	int clear=1;
+	if(get_pref_int32("disable_clear"))
+		return;
   /* Check for confirm clear option */
   if (get_pref_int32("confirm_clear"))  {
     GtkWidget* confirm_dialog = gtk_message_dialog_new(NULL,
@@ -1627,6 +1623,7 @@ void set_clipboard_text(struct history_info *h, GList *element)
 	gchar *action=NULL;
 	gchar *txt=NULL;
 	gchar *cmd=NULL;
+	
 	if(NULL == find_h_item(h->delete_list,NULL,element)){	/**not in our delete list  */
 		/**make a copy of txt, because it gets freed and re-allocated.  */
 		txt=p_strdup(((struct history_item *)(element->data))->text);
@@ -1648,16 +1645,34 @@ void set_clipboard_text(struct history_info *h, GList *element)
 			action=g_strdup("mousedown 2 && xdotool mouseup 2'");
 		else if(get_pref_int32("auto_key"))
 			action=g_strdup("key ctrl+v'");
-	}
 	
-	if( get_pref_int32("key_input")) 
-		action=g_strconcat("type \"",txt,"\"'",NULL);
+	
+		if( get_pref_int32("key_input")) {
+			gchar *xtxt;
+			int i, e, sl=strlen(txt);
+			for (i=e=0; i<sl; ++i){
+				if( 0x27 == txt[i] || 0x22 == txt[i])
+					++e;
+			}
+				
+			if(NULL == (xtxt=malloc(sl+e+2)))
+				goto done; /**system is likely about to die...  */
+			for (i=e=0; i<sl; ++i){
+				if(0x27 == txt[i] || 0x22 == txt[i])
+					xtxt[e++]='\\';
+			  xtxt[e++]=txt[i];
+			}
+			xtxt[e]=0;
+			action=g_strconcat("type \"",xtxt,"\"'",NULL);
+			free(xtxt);
+		}
+	}	
 		
 	if(NULL == action)
 			goto done;
 	/**from clipit 1.4.1 */
   cmd = g_strconcat("/bin/sh -c 'xdotool ", action, NULL);
-	g_fprintf(stderr,"xdotool:'%s'\ntext:'%s'\n",cmd,txt);
+	/*g_fprintf(stderr,"xdotool:'%s'\ntext:'%s'\n",cmd,txt); */
   GPid pid;
   gchar **argv;
   g_shell_parse_argv(cmd, NULL, &argv, NULL);
@@ -1754,7 +1769,7 @@ static void item_selected(GtkMenuItem *menu_item, gpointer user_data)
 	GdkEventKey *k=(GdkEventKey *)gtk_get_current_event();
 	GList* element = g_list_nth(history_list, GPOINTER_TO_INT(user_data));
 	/*g_print ("item_selected '%s' type %x val %x\n",(gchar *)((struct history_item *(element->data))->text),k->type, k->keyval);  */
-	if(0xFF0d == k->keyval && GDK_KEY_PRESS == k->type){
+	if((0xFF0d == k->keyval || 0xFF8d == k->keyval ) && GDK_KEY_PRESS == k->type){
 		set_clipboard_text(h,element);
 	}
 }	
@@ -1955,7 +1970,7 @@ static gboolean show_history_menu(gpointer data)
       if ((clipboard_temp) && (p_strcmp(hist_text, clipboard_temp) == 0))
       {
         gchar* bold_text = g_markup_printf_escaped("<b>%s</b>", string->str);
-			  if( NULL == bold_text) g_fprintf(stderr,"NulBMKUp:'%s'\n",string->str);
+			  /*if( NULL == bold_text) g_fprintf(stderr,"NulBMKUp:'%s'\n",string->str); */
         gtk_label_set_markup((GtkLabel*)item_label, bold_text);
         g_free(bold_text);
         h.clip_item=menu_item;
@@ -1965,7 +1980,7 @@ static gboolean show_history_menu(gpointer data)
       else if ((primary_temp) && (p_strcmp(hist_text, primary_temp) == 0))
       {
         gchar* italic_text = g_markup_printf_escaped("<i>%s</i>", string->str);
-			  if( NULL == italic_text) g_fprintf(stderr,"NulIMKUp:'%s'\n",string->str);
+			  /*if( NULL == italic_text) g_fprintf(stderr,"NulIMKUp:'%s'\n",string->str); */
         gtk_label_set_markup((GtkLabel*)item_label, italic_text);
         g_free(italic_text);
         h.clip_item=menu_item;
@@ -2028,7 +2043,10 @@ next_loop:
 	
 	if(get_pref_int32("type_search")){
     /* Edit clipboard */
-		h.title_item = gtk_image_menu_item_new_with_label( _("Use Alt-E to edit, Alt-C to clear") );
+		if( get_pref_int32("disable_clear"))
+			h.title_item = gtk_image_menu_item_new_with_label( _("Use Alt-E to edit") );
+		else
+				h.title_item = gtk_image_menu_item_new_with_label( _("Use Alt-E to edit, Alt-C to clear") );
     menu_image = gtk_image_new_from_stock(GTK_STOCK_EDIT, GTK_ICON_SIZE_MENU);
     gtk_image_menu_item_set_image((GtkImageMenuItem*)h.title_item, menu_image);
     gtk_menu_shell_append((GtkMenuShell*)menu, h.title_item);    
@@ -2257,7 +2275,7 @@ static void parcellite_init()
 	if(FALSE ==g_thread_supported()){
 		g_fprintf(stderr,"g_thread not init!\n");
 	}
-	hist_lock= g_mutex_new();
+	g_mutex_init(&hist_lock);
   
   show_icon=!get_pref_int32("no_icon");
   /* Read history */

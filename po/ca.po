@@ -4,7 +4,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-05-29 10:16+0200\n"
 "PO-Revision-Date: 2011-05-29 11:11+0100\n"
-"Last-Translator: Benjamí Fuertes <benjamifuertes@gmail.com>\n"
+"Last-Translator: Benjamí Fuertes <benjamifuertes@gmail.com>, David Medina <rbndavid@gmail.com<\n"
 "Language-Team: Catalan\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
@@ -14,7 +14,7 @@ msgstr ""
 #: ../src/main.c:242
 #: ../src/main.c:277
 msgid "Executing action..."
-msgstr "Executant acció..."
+msgstr "Executant l'acció..."
 
 #: ../src/main.c:249
 #: ../src/main.c:264
@@ -31,7 +31,7 @@ msgstr "Editant el porta-retalls"
 
 #: ../src/main.c:384
 msgid "Clear the history?"
-msgstr "¿Esborrar l'historial?"
+msgstr "Voleu esborrar l'historial?"
 
 #: ../src/main.c:451
 msgid "Lightweight GTK+ clipboard manager."
@@ -66,7 +66,7 @@ msgstr "_Edita el porta-retalls"
 
 #: ../src/main.c:1301
 msgid "_Clear"
-msgstr "Es_borrar"
+msgstr "Bui_da"
 
 #: ../src/utils.c:75
 #: ../src/utils.c:82
@@ -76,11 +76,11 @@ msgstr "No s'ha pogut crear el directori: %s\n"
 
 #: ../src/utils.c:119
 msgid "Run as daemon"
-msgstr "Executar com a procés dimoni"
+msgstr "Executa com a procés dimoni"
 
 #: ../src/utils.c:126
 msgid "Do not use status icon (Ctrl-Alt-P for menu)"
-msgstr "No utilitzar l'icona d'estat (Ctrl-Alt-P per el menú)"
+msgstr "No usis la icona d'estat (Ctrl-Alt-P per el menú)"
 
 #: ../src/utils.c:133
 msgid "Print clipboard contents"
@@ -98,7 +98,7 @@ msgid ""
 "  parcellite \"copied to clipboard\"\n"
 "  echo \"copied to clipboard\" | parcellite -c"
 msgstr ""
-"Exemples del porta-retalls per la consola:\n"
+"Exemples d'ús del porta-retalls per a la consola:\n"
 "\n"
 "  echo \"copiat al porta-retalls\" | parcellite\n"
 "  parcellite \"copiat al porta-retalls\"\n"
@@ -110,7 +110,7 @@ msgid ""
 "Report bugs to <gpib@rickyrockrat.com>."
 msgstr ""
 "Escrit per Gilberto \"Xyhthyx\" Miralla.\n"
-"Informar d'errors a <gpib@rickyrockrat.com>."
+"Informeu d'errors a <gpib@rickyrockrat.com>."
 
 #. Create the dialog
 #: ../src/preferences.c:439
@@ -127,15 +127,15 @@ msgstr "<b>Porta-retalls</b>"
 
 #: ../src/preferences.c:473
 msgid "Use _Copy (Ctrl-C)"
-msgstr "Utilitza c_opiar (Ctrl-C)"
+msgstr "Usa l'acció de c_opiar (Ctrl-C)"
 
 #: ../src/preferences.c:476
 msgid "Use _Primary (Selection)"
-msgstr "Utilitza la se_lecció primària"
+msgstr "Usa la se_lecció primària"
 
 #: ../src/preferences.c:479
 msgid "S_ynchronize clipboards"
-msgstr "_Sincronitza els porta-retalls"
+msgstr "S_incronitza els porta-retalls"
 
 #: ../src/preferences.c:487
 msgid "<b>History</b>"
@@ -143,7 +143,7 @@ msgstr "<b>Historial</b>"
 
 #: ../src/preferences.c:494
 msgid "_Save history"
-msgstr "Desa l'_historial"
+msgstr "De_sa l'historial"
 
 #: ../src/preferences.c:495
 msgid "Save and restore history between sessions"
@@ -155,7 +155,7 @@ msgstr "_Posició de l'historial"
 
 #: ../src/preferences.c:501
 msgid "Set the location where history appears. If unchecked, appears where the mouse is."
-msgstr "Posició on mostrar l'historial. Desactivar per mostrar l'historial  on sigui ratolí."
+msgstr "Estableix la ubicació on es mostra l'historial. Si es desactiva, es mostra on sigui ratolí."
 
 #: ../src/preferences.c:505
 msgid "<b>X</b>"
@@ -171,11 +171,11 @@ msgstr "Elements a l'historial:"
 
 #: ../src/preferences.c:530
 msgid "Max Data Size (MB)"
-msgstr "Tamany màxim de dades en MiB"
+msgstr "Mida màxima de les dades (MB)"
 
 #: ../src/preferences.c:535
 msgid "Set Maximum amount of data to copy for each entry in MBytes. 0 is no limit."
-msgstr "Estableix el tamany màxim de dades  per cada entrada en mebibytes. 0 per il·limitat."
+msgstr "Estableix la mida màxima de les dades a copiar per a cada entrada en MBytes. 0 és sense límit."
 
 #: ../src/preferences.c:540
 msgid "<b>Miscellaneous</b>"
@@ -188,16 +188,16 @@ msgstr "Cerca _mentre es tecleja"
 
 #: ../src/preferences.c:549
 msgid "If checked, does a search-as-you-type. Turns red if not found. Goes to top (Alt-E) line when no chars are entered for search"
-msgstr "Si està activat, cerca mentre es tecleja. Canvia a vermell si no hi ha coincidències. Va a la primera línia (Alt-E) si no hi han caràcters per cercar."
+msgstr "Si s'activa, cerca mentre es tecleja. Canvia a vermell si no hi ha coincidències. Va a la primera línia (Alt-E) si no hi ha caràcters per cercar."
 
 #. *case checkbox
 #: ../src/preferences.c:553
 msgid "_Case Sensitive Search"
-msgstr "Di_ferència entre majúscules i minúscules al cercar"
+msgstr "Di_ferencia entre majúscules i minúscules en cercar"
 
 #: ../src/preferences.c:554
 msgid "If checked, does case sensitive search"
-msgstr "Si està activat, diferència entre majúscules i minúscules al cercar"
+msgstr "Si s'activa, es diferencia entre majúscules i minúscules en cercar"
 
 #. * ignore_whiteonly checkbox
 #: ../src/preferences.c:558
@@ -206,25 +206,25 @@ msgstr "_Ignora el text en blanc"
 
 #: ../src/preferences.c:559
 msgid "If checked, will ignore any clipboard additions that contain only whitespace."
-msgstr "Si està activat, s'ignoraran les entrades només continguin espais en blanc."
+msgstr "Si s'activa, s'ignoraran les entrades que només continguin espais en blanc."
 
 #. * trim_wspace_begend checkbox
 #: ../src/preferences.c:562
 msgid "_Trim Whitespace"
-msgstr "_Elimina espais en blanc"
+msgstr "Su_primeix els espais en blanc"
 
 #: ../src/preferences.c:563
 msgid "If checked, will trim whitespace from beginning and end of entry."
-msgstr "Si està activat, elimina els espais en blanc al principi i al final de l'entrada."
+msgstr "Si s'activa, se suprimiran els espais en blanc al principi i al final de l'entrada."
 
 #. * trim_newline checkbox
 #: ../src/preferences.c:566
 msgid "_Trim Newlines"
-msgstr "_Elimina salts de línia"
+msgstr "Su_primeix els salts de línia"
 
 #: ../src/preferences.c:567
 msgid "If checked, will replace newlines with spaces."
-msgstr "Si està activat, es substitueixen els salts de línia per espais en blanc."
+msgstr "Si s'activa, se substituiran els salts de línia per espais en blanc."
 
 #: ../src/preferences.c:570
 msgid "Capture _hyperlinks only"
@@ -232,7 +232,7 @@ msgstr "C_aptura només els enllaços"
 
 #: ../src/preferences.c:572
 msgid "C_onfirm before clearing history"
-msgstr "Co_nfirma abans d'esborrar l'historial"
+msgstr "Demana c_onfirmació abans d'esborrar l'historial"
 
 #: ../src/preferences.c:579
 msgid "Display"
@@ -244,15 +244,15 @@ msgstr "<b>Elements</b>"
 
 #: ../src/preferences.c:594
 msgid "Show in a _single line"
-msgstr "Mo_stra els elements en una sola línea"
+msgstr "Mo_stra els elements en una sola línia"
 
 #: ../src/preferences.c:596
 msgid "Show in _reverse order"
-msgstr "Mostra els elements en _ordre invers"
+msgstr "Mostra els elements en o_rdre invers"
 
 #: ../src/preferences.c:600
 msgid "Character length of items:"
-msgstr "Longitud d'elements en caràcters:"
+msgstr "Longitud en caràcters dels elements:"
 
 #: ../src/preferences.c:613
 msgid "<b>Omitting</b>"
@@ -260,19 +260,19 @@ msgstr "<b>Ometre</b>"
 
 #: ../src/preferences.c:622
 msgid "Omit items in the:"
-msgstr "Omitir elements al:"
+msgstr "Omet els elements del..."
 
 #: ../src/preferences.c:626
 msgid "Beginning"
-msgstr "Principi"
+msgstr "principi"
 
 #: ../src/preferences.c:627
 msgid "Middle"
-msgstr "Mitg"
+msgstr "mig"
 
 #: ../src/preferences.c:628
 msgid "End"
-msgstr "Final"
+msgstr "final"
 
 #: ../src/preferences.c:635
 msgid "Actions"
@@ -281,7 +281,7 @@ msgstr "Accions"
 #. Build the actions label
 #: ../src/preferences.c:640
 msgid "Control-click Parcellite's tray icon to use actions"
-msgstr "Control-clic a l'icona de Parcellite per utilitzar accions"
+msgstr "Feu control-clic a la icona de Parcellite per usar les accions"
 
 #: ../src/preferences.c:660
 msgid "Action"
@@ -293,31 +293,31 @@ msgstr "Ordre"
 
 #: ../src/preferences.c:682
 msgid "Add..."
-msgstr "Afegir..."
+msgstr "Afegeix..."
 
 #: ../src/preferences.c:686
 msgid "Remove"
-msgstr "Elimina"
+msgstr "Suprimeix"
 
 #: ../src/preferences.c:703
 msgid "Hotkeys"
-msgstr "Tecles ràpides"
+msgstr "Dreceres del teclat"
 
 #: ../src/preferences.c:711
 msgid "<b>Hotkeys</b>"
-msgstr "<b>Tecles ràpides</b>"
+msgstr "<b>Dreceres del teclat</b>"
 
 #: ../src/preferences.c:720
 msgid "History key combination:"
-msgstr "Combinació per l'historial:"
+msgstr "Combinació de tecles per a l'historial:"
 
 #: ../src/preferences.c:728
 msgid "Actions key combination:"
-msgstr "Combinació per les accions:"
+msgstr "Combinació de tecles per a les accions:"
 
 #: ../src/preferences.c:736
 msgid "Menu key combination:"
-msgstr "Combinació per el menú:"
+msgstr "Combinació de tecles per al menú:"
 
 #: ../data/parcellite.desktop.in.h:2
 #: ../data/parcellite-startup.desktop.in.h:2
@@ -325,5 +325,5 @@ msgid "Parcellite"
 msgstr "Parcellite"
 
 #~ msgid "Could not create thread for executed action\n"
-#~ msgstr "No s'ha pogut crear el fil per l'acció executada\n"
+#~ msgstr "No s'ha pogut crear el fil per a l'acció executada\n"
 

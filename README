@@ -2,7 +2,7 @@ Parcellite - Lightweight GTK+ Clipboard Manager
 -------------------------------------------------------------------------------
 
 Copyright (C) 2007-2008 Gilberto "Xyhthyx" Miralla <xyhthyx@gmail.com>
-Copyright (C) 2009-2016 Doug Springer <gpib@rickyrockrat.net>
+Copyright (C) 2009-2022 Doug Springer <gpib@rickyrockrat.net>
 
 
 Introduction
@@ -21,24 +21,25 @@ How to compile and install parcellite
 
 Requirements:
 	* gtk+ >= 2.10.0 
+	* intltool
+	* libglib
 
 Download the parcellite source code, then:
 	$ tar zxvf parcellite-x.y.z.tar.gz
 	$ cd parcellite-x.y.z
+
+No Autotools (just make and install it):
+	$ make -f Makefile.simple
+	$ sudo make -f Makefile.simple install prefix=/usr/local
+	$ OR make -f Makefile.simple install DESTDIR=/tmp/myinstall prefix=/usr/local
+
+if you want autotools:
 	$ ./autogen.sh
 # See note below on OpenBSD
 	$ ./configure
 	$ make
 	$ sudo make install
 
-or from the subversion checkout:
-	$ svn co http//:svn.code.sf.net/p/parcellite/code/trunk parcellite
-	$ cd parcellite
-	$ ./autogen.sh
-	$ ./configure
-	$ make
-	$ sudo make install
-	
 OpenBSD notes:
 
 Thanks to Lawrence Teo for this tidbit on BSD.
@@ -58,7 +59,6 @@ Release instructions:
 3) run rel.ppa.sh to build & dput code to the ppa.
 
 All scripts are run from a checked-out svn trunk directory (i.e. same directory as this file).
-
 
 To update the pot file, run extract_strings.sh in the trunk directory.
 

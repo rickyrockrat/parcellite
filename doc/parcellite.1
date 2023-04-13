@@ -27,6 +27,7 @@ Do not use status icon
 .TP
 .B \-c\fR, \fB\-\-clipboard
 Print clipboard contents
+.TP
 .B \-p\fR, \fB\-\-primary
 Print primary contents
 .SH ACTIONS
@@ -66,6 +67,15 @@ generally checking all these boxes is appropriate.
  'Trim Whitespace' - If checked, will trim whitespace from beginning and end of entry.
 
  'Trim Newlines' - If checked, will replace newlines with spaces.
+ 
+ 'Capture hyperlinks only' - If checked will only save http, ftp://, etc.
+ 
+ 'Confirm before clearing history' - If checked, will pop up a confirmation box when clearing history.
+ 
+ 'Disable clearing history' - prevents history from accidentally being cleared.
+ 
+ 'Use Line Number prefix when saving history' - If checked adds a N0000 or P0000 for normal/persistent history, where 0000 is the line number.
+ 
 
 .SH Display Tab
 .TP 
@@ -87,6 +97,8 @@ generally checking all these boxes is appropriate.
  'Omit items' refers to omitting characters that don't fit in the history window width. This is for display only.
 .TP
  'Multiuser' If checked, enables checking for multiple users.
+.TP
+ 'Running Unity' - Check this box if you are running Unity. 
 .TP
  'Parcellite Icon Name' Sets the name of the Parcellite icon. This name is used by gnome, which usually looks in /usr/share/pixmaps. See the Open Desktop Spec for more details.
 
