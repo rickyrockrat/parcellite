@@ -1833,6 +1833,24 @@ void destroy_history_menu(GtkMenuShell *menu, gpointer u)
 	selection_done(menu,u);	/**allow deleted items to be deleted.  */
 	gtk_widget_destroy((GtkWidget *)menu);
 }
+
+/***************************************************************************/
+/** 
+****************************************************************************/
+void set_menu_xy(GtkMenu *menu, gint *x, gint *y, gboolean *push, gpointer user_data)
+{
+  GdkDisplay *dis;
+  if (NULL != (dis=gdk_display_get_default())) {
+    gdk_display_get_pointer(dis, NULL,x,y,NULL);
+    if( NULL == user_data)
+    	*y=1; // history
+    else
+	*y-=120; //icon menu
+    *x-=50;
+  }
+
+}
+
 /***************************************************************************/
 /**  Called when status icon is left-clicked or action key hit.
 \n\b Arguments:
@@ -2070,7 +2088,7 @@ next_loop:
 	g_signal_connect(menu,"selection-done",(GCallback)destroy_history_menu,(gpointer)&h);
   /* Popup the menu... */
   gtk_widget_show_all(menu);
-  gtk_menu_popup((GtkMenu*)menu, NULL, NULL, get_pref_int32("history_pos")?postition_history:NULL, NULL, 1, gtk_get_current_event_time());
+  gtk_menu_popup((GtkMenu*)menu, NULL, NULL, get_pref_int32("history_pos")?postition_history:set_menu_xy, NULL, 1, gtk_get_current_event_time());
 	/**set last entry at first -fixes bug 2974614 */
 	if(get_pref_int32("reverse_history") && NULL != h.clip_item)
 		gtk_menu_shell_select_item((GtkMenuShell*)menu,h.clip_item);
@@ -2108,6 +2126,7 @@ void _show_history_menu (GtkMenuItem *m, gpointer data)
 {
 	g_timeout_add(POPUP_DELAY, show_history_menu, GINT_TO_POINTER(figure_histories()));
 }
+
 /***************************************************************************/
 /** .
 \n\b Arguments:
@@ -2117,6 +2136,7 @@ GtkWidget *create_parcellite_menu(guint button, guint activate_time)
 {
   /* Declare some variables */
   GtkWidget *menu, *menu_item;
+  gint x,y;
   
   /* Create the menu */
   menu = gtk_menu_new();
@@ -2152,8 +2172,8 @@ GtkWidget *create_parcellite_menu(guint button, guint activate_time)
   gtk_menu_shell_append((GtkMenuShell*)menu, menu_item);
   /* Popup the menu... */
   gtk_widget_show_all(menu);
-  gtk_menu_popup((GtkMenu*)menu, NULL, NULL, NULL, NULL, button, activate_time);	
-	return menu;
+  gtk_menu_popup((GtkMenu*)menu, NULL, NULL, set_menu_xy, (gpointer)1, button, activate_time);
+  return menu;
 }
 
 /* Called when status icon is right-clicked */
