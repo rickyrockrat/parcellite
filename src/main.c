@@ -717,15 +717,16 @@ static void action_selected(GtkButton *button, gpointer user_data)
 	/*g_fprintf(stderr,"Got cmd '%s', text '%s'->",(gchar *)user_data,clipboard_text);fflush(NULL);   */
 	gchar* quoted_clipboard_text = g_shell_quote(clipboard_text);
 	gchar* command=g_strdup_printf((gchar *)user_data,quoted_clipboard_text);
-	g_fprintf(stderr," '%s'\n",command);fflush(NULL);  
+	//g_fprintf(stderr," '%s'->",command);
   g_free(clipboard_text);
   g_free(quoted_clipboard_text);
   g_free(user_data);
   gchar* shell_command = g_shell_quote(command);
   g_free(command);
+	
   gchar* cmd = g_strconcat("/bin/sh -c ", shell_command, NULL);
   g_free(shell_command);
-  
+  //g_fprintf(stderr," '%s'\n",cmd);fflush(NULL);  
   /* Execute action */
   GPid pid;
   gchar **argv;
@@ -1631,7 +1632,7 @@ void set_clipboard_text(struct history_info *h, GList *element)
 		if(use_copy)
 			update_clipboard(clipboard, txt, H_MODE_LIST);
 		if(use_primary)
-	  	update_clipboard(primary, txt, H_MODE_LIST);	
+	  	    update_clipboard(primary, txt, H_MODE_LIST);	
 		
 		auto_whatever=1;
 	}
