@@ -1,4 +1,4 @@
-# Copyright (C) 2010-2022 Doug Springer <gpib@rickyrockrat.net>
+# Copyright (C) 2010-2024 Doug Springer <gpib@rickyrockrat.net>
 #
 # This file is part of Parcellite.
 #
@@ -19,6 +19,7 @@ prefix?=/usr
 DESTDIR?=
 sysconfdir = $(DESTDIR)/etc
 INSTDIR:=$(DESTDIR)$(prefix)
+# Attempt to help intltool on some systems (not needed on Alpine).
 top_builddir:=$(CURDIR)
 export top_builddir
 

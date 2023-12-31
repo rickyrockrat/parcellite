@@ -1,4 +1,4 @@
-/* Copyright (C) 2007-2008 by Xyhthyx <xyhthyx@gmail.com>
+/* Copyright (C) 2007-2024 by RickyRockRat 
  *
  * This file is part of Parcellite.
  *
