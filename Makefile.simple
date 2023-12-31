@@ -19,6 +19,8 @@ prefix?=/usr
 DESTDIR?=
 sysconfdir = $(DESTDIR)/etc
 INSTDIR:=$(DESTDIR)$(prefix)
+top_builddir:=$(CURDIR)
+export top_builddir
 
 
 GETTEXT_PACKAGE:=parcellite
