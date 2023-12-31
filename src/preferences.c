@@ -1067,7 +1067,7 @@ int add_section(int sec, GtkWidget *parent)
 				packit=myprefs[i].w=gtk_menu_item_new_with_label("");
 				child=gtk_bin_get_child((GtkBin *)packit);
 				gtk_misc_set_padding((GtkMisc *)child,0,0);
-				gtk_label_set_markup ((GtkLabel *)child, "<span size=\"0\"> </span>");
+				gtk_label_set_markup ((GtkLabel *)child, "<span size=\"1\"> </span>");
 				break;
 			
 			default: 
