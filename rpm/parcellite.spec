@@ -1,5 +1,5 @@
 Name:           parcellite
-Version:        1.1.4
+Version:        1.2.3
 Release:        1%{?prerelease:.%{?prerelease}}%{?dist}
 Summary:        A lightweight GTK+ clipboard manager
 
@@ -9,7 +9,6 @@ URL:            http://parcellite.sourceforge.net/
 Source0:        http://downloads.sourceforge.net/%{name}/%{name}-%{version}.tar.gz
 # Submitted upstream via
 # https://sourceforge.net/p/parcellite/patches/29/
-Patch0:         parcellite-1.1.4-de.po.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:  gtk2-devel >= 2.10.0 
@@ -64,6 +63,10 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Sat Dec 28 2023 Doug Springer <gpib@rickyrockrat.net> - 1.2.3-1
+- Update to 1.2.3
+- Remove de-po.patch, should be included.
+
 * Sun Jan 27 2013 Christoph Wickert <cwickert@fedoraproject.org> - 1.1.4-1
 - Update to 1.1.4
 - Update de-po.patch
