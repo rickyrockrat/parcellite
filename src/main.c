@@ -1612,6 +1612,26 @@ foundit:
 	TRACE(g_fprintf(stderr,"\n"));
 	return TRUE;
 }	
+extern char **environ;
+/***************************************************************************/
+/** Get environment vars
+\n\b Arguments:
+\n\b Returns:
+****************************************************************************/
+static gchar **get_environment( char *txt )
+{
+	gint i,l;
+	char **env;
+	for (l=0; NULL != environ[l]; ++l);
+	l+=2;/* allow for NULL and our env */
+	if(NULL == (env=malloc(l*sizeof(gchar *))))
+		return NULL;
+	for (i=0; i<l-2; ++i)
+		env[i]=environ[i];
+	env[i++]=txt;
+	env[i]=NULL;
+	return env;
+}
 
 /***************************************************************************/
 /** Set clipboard from history list.
@@ -1664,25 +1684,34 @@ void set_clipboard_text(struct history_info *h, GList *element)
 			  xtxt[e++]=txt[i];
 			}
 			xtxt[e]=0;
-			action=g_strconcat("type \"",xtxt,"\"'",NULL);
+			/*action=g_strconcat("type \"",xtxt,"\"'",NULL); */
+			action=g_strconcat("txt=",xtxt,NULL);
 			free(xtxt);
 		}
 	}	
 		
 	if(NULL == action)
 			goto done;
-	/**from clipit 1.4.1 */
-  cmd = g_strconcat("/bin/sh -c 'xdotool ", action, NULL);
-	/*g_fprintf(stderr,"xdotool:'%s'\ntext:'%s'\n",cmd,txt); */
+	if(NULL == environ)
+		goto done;
+	gchar **env=get_environment(action);
+	if(NULL == env)
+		goto done;
+/*  cmd = g_strconcat("/bin/sh -c 'xdotool ", action, NULL); */
+	cmd = g_strconcat("/bin/sh -c 'xdotool type \"$txt\"'", NULL);
+/*	g_fprintf(stderr,"xdotool:#%s#\ntext:#%s#\n",cmd,txt);  */
   GPid pid;
   gchar **argv;
-  g_shell_parse_argv(cmd, NULL, &argv, NULL);
+	
+	g_shell_parse_argv(cmd, NULL, &argv, NULL);
   g_free(cmd);
-  g_spawn_async(NULL, argv, NULL, G_SPAWN_DO_NOT_REAP_CHILD, NULL, NULL, &pid, NULL);
+  g_spawn_async(NULL, argv, env, G_SPAWN_DO_NOT_REAP_CHILD, NULL, NULL, &pid, NULL);
   g_child_watch_add(pid, (GChildWatchFunc)action_exit, NULL);
   g_strfreev(argv);
   /**end from clipit 1.4.1 */
 done:
+	if(NULL != env)
+		g_free(env);
 	if(NULL != txt)
 		g_free(txt);
 	if(NULL != action)
