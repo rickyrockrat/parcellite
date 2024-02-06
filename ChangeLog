@@ -1,6 +1,7 @@
 V1.2.4 TBD
  +Fixed span parse error for preferenced dialog.
  +Move icon menu up 150 so it is not over systray, and history to top if not set in pref.
+ +Attempt to fix xdotool segfaulting when passed mis-matched quotes. This may break xdotool deps.
  +Added install-bin, install-doc, and install-lang to support Alpine's sparse packages.
 
 V1.2.3 Saturday, Dec 29, 2023
