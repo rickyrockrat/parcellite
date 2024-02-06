@@ -1874,8 +1874,12 @@ void set_menu_xy(GtkMenu *menu, gint *x, gint *y, gboolean *push, gpointer user_
     if( NULL == user_data)
     	*y=1; // history
     else
-	*y-=120; //icon menu
+      *y-=120; //icon menu
     *x-=50;
+    if(*x<=0)
+    	*x=1;
+		if(*y<=0)
+			*y=1;
   }
 
 }
