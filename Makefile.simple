@@ -53,6 +53,18 @@ build.po build.data: config.h
 
 src/$(GETTEXT_PACKAGE): check_dep build.po build.data 
 	$(MAKE) -C src $(makeopts) $(GETTEXT_PACKAGE)
+
+install-bin: src/$(GETTEXT_PACKAGE) build.data
+	$(MAKE) -C data $(makeopts) sysconfdir=$(sysconfdir) INSTDIR=$(INSTDIR) GETTEXT_PACKAGE=$(GETTEXT_PACKAGE) install
+	$(MAKE) -C src $(makeopts) sysconfdir=$(sysconfdir) INSTDIR=$(INSTDIR) GETTEXT_PACKAGE=$(GETTEXT_PACKAGE) install
+
+install-lang: build.po
+	$(MAKE) -C po $(makeopts) sysconfdir=$(sysconfdir) INSTDIR=$(INSTDIR) GETTEXT_PACKAGE=$(GETTEXT_PACKAGE) install
+
+install-doc:	
+	$(MAKE) -C doc $(makeopts) sysconfdir=$(sysconfdir) INSTDIR=$(INSTDIR) GETTEXT_PACKAGE=$(GETTEXT_PACKAGE) install
+	mkdir -p $(INSTDIR)/$(GETTEXT_PACKAGE)
+	install -c -m 644 COPYING ChangeLog README $(INSTDIR)/$(GETTEXT_PACKAGE)
 	
 install: src/$(GETTEXT_PACKAGE) build.po build.data
 	for d in $(DIRS); do \
