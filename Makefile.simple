@@ -63,8 +63,8 @@ install-lang: build.po
 
 install-doc:	
 	$(MAKE) -C doc $(makeopts) sysconfdir=$(sysconfdir) INSTDIR=$(INSTDIR) GETTEXT_PACKAGE=$(GETTEXT_PACKAGE) install
-	mkdir -p $(INSTDIR)/$(GETTEXT_PACKAGE)
-	install -c -m 644 COPYING ChangeLog README $(INSTDIR)/$(GETTEXT_PACKAGE)
+	mkdir -p $(INSTDIR)/share/doc/$(GETTEXT_PACKAGE)
+	install -c -m 644 COPYING ChangeLog README $(INSTDIR)/share/doc/$(GETTEXT_PACKAGE)
 	
 install: src/$(GETTEXT_PACKAGE) build.po build.data
 	for d in $(DIRS); do \
