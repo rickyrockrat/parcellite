@@ -2,7 +2,7 @@ Parcellite - Lightweight GTK+ Clipboard Manager
 -------------------------------------------------------------------------------
 
 Copyright (C) 2007-2008 Gilberto "Xyhthyx" Miralla <xyhthyx@gmail.com>
-Copyright (C) 2009-2022 Doug Springer <gpib@rickyrockrat.net>
+Copyright (C) 2009-2024 Doug Springer <gpib@rickyrockrat.net>
 
 
 Introduction
@@ -13,7 +13,9 @@ basic-features-only clipboard manager with a small memory footprint for those
 who like simplicity. 
 
 Project website: http://parcellite.sourceforge.net/
+or https://github.com/rickyrockrat/parcellite
 
+Release 1.2.4.0 for addition to Alpine Linux. See the Changelog.
 
 
 How to compile and install parcellite
