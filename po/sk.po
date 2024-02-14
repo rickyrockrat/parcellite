@@ -1,0 +1,496 @@
+# Slovak translation of parcellite.
+# Copyright (C) 2008 Xyhthyx <xyhthyx@gmail.com>
+# This file is distributed under the same license as the parcellite package.
+# Jose Riha <jose1711@gmail.com>, 2021.
+
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2021-04-19 16:51+0200\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 2.4.1\n"
+"Last-Translator: Jose Riha <jose1711@gmail.com>\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n>=2 && n<=4 ? 1 : 2);\n"
+"Language: sk_SK\n"
+
+msgid "Action"
+msgstr "Akcia"
+
+msgid "Actions"
+msgstr "Akcie"
+
+msgid "Actions key combination:"
+msgstr "Klávesové skratky akcií:"
+
+msgid "Add..."
+msgstr "Pridať..."
+
+msgid "Alternate Non-printing Display"
+msgstr "Použiť alternatívu pre neviditeľné znaky"
+
+msgid "Auto Paste"
+msgstr "Automaticky prilepiť"
+
+msgid "<b>Clipboards</b>"
+msgstr "<b>Schránky</b>"
+
+msgid "Beginning"
+msgstr "začiatku"
+
+msgid "Behavior"
+msgstr "Správanie"
+
+msgid "<b>History</b>"
+msgstr "<b>História</b>"
+
+msgid "<b>Hotkeys</b>"
+msgstr "<b>Klávesové skratky</b>"
+
+msgid "<b>Items</b>"
+msgstr "<b>Položky</b>"
+
+msgid "<b>Miscellaneous</b>"
+msgstr "<b>Rôzne</b>"
+
+msgid "<b>None</b>"
+msgstr "<b>Žiadne</b>"
+
+msgid "<b>Omitting</b>"
+msgstr "<b>Vynechanie</b>"
+
+msgid "<b>X</b>"
+msgstr "<b>X</b>"
+
+msgid "<b>Y</b>"
+msgstr "<b>Y</b>"
+
+msgid "Capture hyperlinks only"
+msgstr "Zachytávať iba hypertextové odkazy"
+
+msgid "Case Sensitive Search"
+msgstr "Vyhľadávanie rozlišuje veľkosť písmen"
+
+msgid "Character length of items"
+msgstr "Dĺžka znakov položiek"
+
+msgid "_Clear"
+msgstr "_Vyčistiť"
+
+msgid "Clear the history?"
+msgstr "Vyčistiť históriu?"
+
+msgid ""
+"Clipboard CLI usage examples:\n"
+"\n"
+"  echo \"copied to clipboard\" | parcellite\n"
+"  parcellite \"copied to clipboard\"\n"
+"  echo \"copied to clipboard\" | parcellite -c"
+msgstr ""
+"Schránka CLI - príklady:\n"
+"\n"
+"  echo \"kópia do schránky\" | parcellite\n"
+"  parcellite \"kópia do schránky\"\n"
+"  echo \"kópia do schránky\" | parcellite -c"
+
+msgid "Clipboard Manager"
+msgstr "Správca schránky"
+
+msgid "Command"
+msgstr "Príkaz"
+
+msgid "Confirm before clearing history"
+msgstr "Potvrdiť pred vymazaním histórie"
+
+msgid "Control-click Parcellite's tray icon to use actions,"
+msgstr ""
+"Pre použitie akcií stlačte Ctrl a kliknite na ikonu Parcellite v lište,"
+
+msgid ""
+"Copyright (C) 2007, 2008 Gilberto \"Xyhthyx\" Miralla\n"
+"Copyright (C) 2010-2013 Doug Springer"
+msgstr ""
+"Autorské práva (C) 2007, 2008 Gilberto \"Xyhthyx\" Miralla\n"
+"Autorské práva (C) 2010-2013 Doug Springer"
+
+msgid "Couldn't create directory: %s\n"
+msgstr "Nepodarilo sa vytvoriť adresár: %s\n"
+
+msgid "Current entry on top"
+msgstr "Aktuálna položka navrchu"
+
+msgid "DebugUpdate"
+msgstr "DebugUpdate"
+
+msgid "Display"
+msgstr "Zobrazenie"
+
+msgid "Display Version info"
+msgstr "Zobraziť informácie o verzii"
+
+msgid "Do not use status icon (Ctrl-Alt-P for menu)"
+msgstr "Nepoužívať stavovú ikonu (pre ponuku použite Ctrl-Alt-P)"
+
+msgid "Dummy desc"
+msgstr "Bez popisu"
+
+msgid "Dummy tip"
+msgstr "Bez bubliny"
+
+msgid "_Edit actions"
+msgstr "_Upraviť akcie"
+
+msgid "_Edit Clipboard"
+msgstr "U_praviť schránku"
+
+msgid "Editing Clipboard"
+msgstr "Úprava schránky"
+
+msgid "Empty"
+msgstr "Prázdna"
+
+msgid "End"
+msgstr "konci"
+
+msgid "Executing action..."
+msgstr "Spúšťam akciu..."
+
+msgid ""
+"Gilberto \"Xyhthyx\" Miralla <xyhthyx@gmail.com>\n"
+"Doug Springer <gpib@rickyrockrat.net>"
+msgstr ""
+"Gilberto \"Xyhthyx\" Miralla <xyhthyx@gmail.com>\n"
+"Doug Springer <gpib@rickyrockrat.net>"
+
+msgid "_History"
+msgstr "_História"
+
+msgid "History key combination:"
+msgstr "Klávesové skratky histórie:"
+
+msgid ">>$HOME/ptest"
+msgstr ">>$HOME/ptest"
+
+msgid "Hotkeys"
+msgstr "Klávesové skratky"
+
+msgid ""
+"If checked, does a search-as-you-type. Turns red if not found. Goes to top "
+"(Alt-E) line when no chars are entered for search"
+msgstr ""
+"Zapnutím voľby aktivujete vyhľadávanie počas písania. Pri nenájdení reťazca "
+"sa farba zmení na červenú. V prípade, že nezadáte žiaden text na "
+"vyhľadávanie sa presunie sa prvý riadok (Alt-E)"
+
+msgid "If checked, does case sensitive search"
+msgstr ""
+"Zapnutím voľby sa aktivuje rozlišovanie veľkosti písmen pri vyhľadávaní"
+
+msgid "If checked, edit the history item clicked on."
+msgstr "Zapnutím voľby aktivujete úpravu položky histórie pri kliknutí na ňu."
+
+msgid ""
+"If checked, enables checking multiple concurrent user logic. Use if several "
+"different users are logged in at the same time."
+msgstr ""
+"Zapnutím voľby aktivujete možnosť používania viacerými používateľmi naraz. "
+"Použite, ak je v rovnakom čase prihlásených viacero používateľov."
+
+msgid ""
+"If checked, enables debug prints on clipboard update logic. This only takes "
+"effect when enabled at start up, and may be disabled at compile time."
+msgstr ""
+"Zapnutím voľby aktivujete zobrazovanie ladiacich informácií pri zmene "
+"schránky. Táto možnosť sa použije len ak je aktivovaná pri spustení a môže "
+"byť vypnutá pri kompilácii."
+
+msgid "If checked, enables the persistent history."
+msgstr "Zapnutím voľby povolíte trvalú históriu."
+
+msgid ""
+"If checked, places current clipboard entry at top of list. If not checked, "
+"history does not get sorted."
+msgstr ""
+"Pri zapnutí voľby bude aktuálna položka schránky zobrazená ako prvá položka "
+"v zozname. Ak je voľba vypnutá, história nie je zoradená."
+
+msgid ""
+"If checked, puts the persistent history at the top of the history list. If "
+"the option above is checked, this option has no effect."
+msgstr ""
+"Pri zapnutí voľby bude trvalá história schránky zobrazená ako prvá položka v "
+"zozname histórie. Ak je zapnutá voľba vyššie, je toto nastavenie ignorované."
+
+msgid ""
+"If checked, puts the persistent history in a new list and enables the "
+"Persistent History HotKey. You will need to use the persistent history "
+"hotkey to see the history."
+msgstr ""
+"Zapnutie tejto voľby presunie trvalú históriu do nového zoznamu a aktivuje "
+"klávesovú skratku trvalej histórie. Pre zobrazenie trvalej histórie budete "
+"musieť použiť klávesovú skratku."
+
+msgid "If checked, the current entry will be on the bottom instead of the top."
+msgstr ""
+"Pri zapnutí voľby bude aktuálna položka schránky zobrazená ako posledná "
+"položka."
+
+msgid "If checked, Use the clipboard, which is Ctrl-C, Ctrl-V"
+msgstr ""
+"Zapnutím tejto voľby sa použije systémová schránka, teda Ctrl-C, Ctrl-V"
+
+msgid ""
+"If checked, Use the primary clipboard (mouse highlight-copy, middle mouse "
+"button paste)"
+msgstr ""
+"Zapnutím tejto voľby aktivujete použitie primárneho výberu (označenie myšou "
+"- kopírovanie, kliknutie stredným tlačidlom - prilepenie)"
+
+msgid "If checked, use X, Y to position the history list"
+msgstr ""
+"Zapnutím tejto voľby môžte nastaviť súradnice X, Y umiestnenia zoznamu s "
+"históriou"
+
+msgid ""
+"If checked, will display tabs with Right arrow (utf8,\\2192), newlines with "
+"pharagrph(\\204b), and spaces with square-u(\\2423)."
+msgstr ""
+"Pri zapnutí tejto voľby budú tabulátory zobrazené ako šípky (utf8,\\2192), "
+"konce riadkov ako odstavec (\\204b) a medzery ako podčiarkovník s okrajmi "
+"(\\2423)."
+
+msgid "If checked, will emit the history entry via the keyboard entry."
+msgstr ""
+"Pri zapnutí tejto voľby je možné vyvolať položku histórie pomocou klávesnice."
+
+msgid ""
+"If checked, will ignore any clipboard additions that contain only whitespace."
+msgstr ""
+"Zapnutím tejto voľby bude schránka, ktorá obsahuje iba prázdny text "
+"ignorovaná."
+
+msgid ""
+"If checked, will keep both clipboards with the same content. If primary is "
+"pasted, then copy will have the same data."
+msgstr ""
+"Pri zapnutí tejto voľby bude obsah oboch schránok synchronizovaný. Ak "
+"prilepíte obsah primárneho výberu, systémová schránka bude obsahovať rovnaké "
+"údaje."
+
+msgid "If checked, will replace newlines with spaces."
+msgstr "Pri zapnutí tejto voľby budú nové riadky nahradené medzerami."
+
+msgid "If checked, will restore clipboard entry on application exit."
+msgstr ""
+"Pri zapnutí tejto voľby sa pri ukončení programu obsah schránky obnoví."
+
+msgid "If checked, will trim whitespace from beginning and end of entry."
+msgstr ""
+"Zapnutím tejto voľby budú prázdne znaky na začiatku a na konci odstránené."
+
+msgid "If checked, will use Ctrl-V paste."
+msgstr "Zapnutím tejto voľby zapnete používanie Ctrl-V pre prilepovanie."
+
+msgid "If checked, will use middle mouse to paste."
+msgstr ""
+"Zapnutím tejto voľby zapnete používanie stredného tlačidla pre prilepovanie."
+
+msgid ""
+"If checked, will use xdotool to paste wherever the mouse is.\n"
+"NOTE! Package xdotool MUST BE INSTALLED for this to work."
+msgstr ""
+"Pri zapnutí tejto voľby zapnete prilepenie pomocou xdotool na miesto, kde sa "
+"aktuálne nachádza kurzor.\n"
+"POZOR! Aby toto fungovalo, MUSÍ BYŤ Balíček xdotool NAINŠTALOVANÝ."
+
+msgid "Ignore Whitespace Only"
+msgstr "Ignorovať prázdny text"
+
+msgid "Items in history"
+msgstr "Položiek histórie"
+
+msgid "Key"
+msgstr "Kláves"
+
+msgid "Keyboard Input"
+msgstr "Vstup z klávesnice"
+
+msgid "Lightweight GTK+ clipboard manager."
+msgstr "Odľahčený GTK+ správca schránky."
+
+msgid "Max Data Size(KB)"
+msgstr "Max. veľkosť dát (KB)"
+
+msgid "Maximum data size of entire history list"
+msgstr "Maximálna veľkosť dát celkového zoznamu histórie"
+
+msgid "Maximum data size of one item"
+msgstr "Maximálna veľkosť dát jednej položky"
+
+msgid "Maximum number of clipboard entries to keep"
+msgstr "Maximálny počet položiek histórie, ktoré majú byť ukladané"
+
+msgid "Max Item Size(KB)"
+msgstr "Max. veľkosť položky (KB)"
+
+msgid "Menu key combination"
+msgstr "Klávesové skratky ponuky"
+
+msgid "Middle"
+msgstr "strede"
+
+msgid "Mouse"
+msgstr "Myš"
+
+msgid "Multiuser"
+msgstr "Viac používateľov"
+
+msgid "Name of Parcellite icon. If this is mis-typed, icon will not appear."
+msgstr "Názov ikony Parcellite. Ak sa v názve pomýlite, ikona sa nezobrazí."
+
+msgid "Omit items in the:"
+msgstr "Vynechať položky v/na:"
+
+msgid "Parcellite Icon Name"
+msgstr "Názov ikony Parcellite"
+
+msgid "Paste All Entry Delimiter"
+msgstr "Oddeľovač záznamov pre Prilepiť všetko"
+
+msgid "Persistent As Separate List"
+msgstr "Trvalá história ako samostatný zoznam"
+
+msgid "Persistent History"
+msgstr "Trvalá história"
+
+msgid "Persistent history key:"
+msgstr "Kláves trvalej histórie:"
+
+msgid "Persistent On Top"
+msgstr "Trvalá história navrchu"
+
+msgid "Position history"
+msgstr "Umiestnenie histórie"
+
+msgid "Position in pixels from the top of the screen"
+msgstr "Umiestnenie v pixeloch od ľavého horného rohu obrazovky"
+
+msgid "Preferences"
+msgstr "Predvoľby"
+
+msgid "Print clipboard contents"
+msgstr "Vytlačiť obsah systémovej schránky"
+
+msgid "Print primary contents"
+msgstr "Vytlačiť obsah primárneho výberu"
+
+msgid "Remove"
+msgstr "Odstrániť"
+
+msgid "Restore Empty"
+msgstr "Obnoviť prázdnu"
+
+msgid "Right Click Edit"
+msgstr "Úprava pravým tlačidlom"
+
+msgid "Save history"
+msgstr "Ukladať históriu"
+
+msgid ""
+"Save History as a text file. Prepends xHIST_0000 to each entry. x is either "
+"P(persistent) or N (normal)"
+msgstr ""
+"Uložiť históriu do textového súboru. Pred každú položku je pridaný reťazec "
+"xHIST_0000. x je buď P (persistent - trvalý) alebo N (normálny)"
+
+msgid "Save history to a file."
+msgstr "Ukladať históriu do súboru."
+
+msgid "Search As You Type"
+msgstr "Vyhľadavánie počas písania"
+
+msgid "Show in a single line"
+msgstr "Zobraziť na jednom riadku"
+
+msgid "Show in reverse order"
+msgstr "Zobraziť v opačnom poradí"
+
+msgid "> </span>"
+msgstr "> </span>"
+
+msgid "S_ynchronize clipboards"
+msgstr "_Synchronizovať schránky"
+
+msgid ""
+"This is the Action Name. \n"
+"DO NOT put commands here."
+msgstr ""
+"Toto je názov akcie.\n"
+"NEVKLADAJTE sem príkazy."
+
+msgid ""
+"This program is free software; you can redistribute it and/or modify\n"
+"it under the terms of the GNU General Public License as published by\n"
+"the Free Software Foundation; either version 3 of the License, or\n"
+"(at your option) any later version.\n"
+"\n"
+"This program is distributed in the hope that it will be useful,\n"
+"but WITHOUT ANY WARRANTY; without even the implied warranty of\n"
+"MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n"
+"GNU General Public License for more details.\n"
+"\n"
+"You should have received a copy of the GNU General Public License\n"
+"along with this program.  If not, see <http://www.gnu.org/licenses/>.;"
+msgstr ""
+"Tento program je slobodný softvér; môžete ho redistribuovať a/alebo meniť\n"
+"za podmienok GNU General Public License (GNU GPL), ktorú publikovala\n"
+"Free Software Foundation; buď verzie 2 alebo (podľa vašej voľby)\n"
+"ktorejkoľvek novšej verzie.\n"
+"\n"
+"Tento program je šírený v nádeji, že bude užitočný, avšak BEZ AKEJKOĽVEK\n"
+"ZÁRUKY; neposkytujú sa ani implicitné záruky PREDAJNOSTI alebo VHODNOSTI\n"
+"NA URČITÝ ÚČEL. Ďalšie podrobnosti hľadajte v GNU General Public License.\n"
+"\n"
+"Spolu s týmto programom by ste mali obdržať kópiu Všeobecnej verejnej\n"
+"licencie GNU. Ak sa tak nestalo, navštívte <http://www.gnu.org/licenses/>.;"
+
+msgid ""
+"This string will be inserted between each line of history for paste all."
+msgstr ""
+"Tento reťazec bude vložený medzi každú položku histórie pri použití Prilepiť "
+"všetko."
+
+msgid "Trim Newlines"
+msgstr "Odstrániť znaky nových riadkov"
+
+msgid "Trim Whitespace"
+msgstr "Odstrániť prázdne znaky"
+
+msgid "Use Alt-E to edit, Alt-C to clear"
+msgstr "Použite Alt-E pre úpravu, Alt-C pre vyčistenie"
+
+msgid "Use _Copy (Ctrl-C)"
+msgstr "Použiť _systémovú schránku (Ctrl-C)"
+
+msgid ""
+"Use %% if you want a literal %. See the man page for gnuC printf (man 2 "
+"printf) for more information."
+msgstr ""
+"Pre znak vloženie znaku % použite %%. Ďalšie informácie nájdete na "
+"manuálových stránkach gnuC printf (man 2 printf)."
+
+msgid "Use _Primary (Selection)"
+msgstr "Použiť _primárny výber"
+
+msgid ""
+"Written by Gilberto \"Xyhthyx\" Miralla and Doug Springer.\n"
+"Report bugs to <gpib@rickyrockrat.net>."
+msgstr ""
+"Napísal Gilberto \"Xyhthyx\" Miralla a Doug Springer.\n"
+"Chyby hláste na <gpib@rickyrockrat.net>."
+
+msgid "xdotool Not Installed"
+msgstr "xdotool nie je nainštalovaný"
