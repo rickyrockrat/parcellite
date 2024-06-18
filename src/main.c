@@ -1644,6 +1644,7 @@ void set_clipboard_text(struct history_info *h, GList *element)
 	gchar *action=NULL;
 	gchar *txt=NULL;
 	gchar *cmd=NULL;
+	gchar **env=NULL;
 	
 	if(NULL == find_h_item(h->delete_list,NULL,element)){	/**not in our delete list  */
 		/**make a copy of txt, because it gets freed and re-allocated.  */
@@ -1694,7 +1695,7 @@ void set_clipboard_text(struct history_info *h, GList *element)
 			goto done;
 	if(NULL == environ)
 		goto done;
-	gchar **env=get_environment(action);
+	env=get_environment(action);
 	if(NULL == env)
 		goto done;
 /*  cmd = g_strconcat("/bin/sh -c 'xdotool ", action, NULL); */
