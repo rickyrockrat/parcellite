@@ -1,3 +1,7 @@
+V1.2.5 Wednsday, July 10, 2024
+ +Updated man page for fifo operation. 
+ +Removed autotools. Just use make - see the README.
+ Since 1.2.4.0 is seen as newer than 1.2.4, this will be the new release fixing the segfault.
 V1.2.4 Tuesday, June 18, 2024
  +Fixed Segfault on Rocky 9, and potential on any OS.
 V1.2.4.0 

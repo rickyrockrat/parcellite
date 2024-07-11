@@ -1,12 +1,13 @@
 Name:           parcellite
-Version:        1.2.3
+Version:        1.2.5
 Release:        1%{?prerelease:.%{?prerelease}}%{?dist}
 Summary:        A lightweight GTK+ clipboard manager
 
 Group:          User Interface/Desktops
 License:        GPLv3+
 URL:            http://parcellite.sourceforge.net/
-Source0:        http://downloads.sourceforge.net/%{name}/%{name}-%{version}.tar.gz
+Source0:        https://github.com/rickyrockrat/%{name}/archive/refs/tags/%{version}.tar.gz
+#Source0:        http://downloads.sourceforge.net/%{name}/%{name}-%{version}.tar.gz
 # Submitted upstream via
 # https://sourceforge.net/p/parcellite/patches/29/
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -27,12 +28,12 @@ system tray or notification area if you want to use this package.
 %setup -q
 
 %build
-make -f Makefile.simple %{?_smp_mflags}
+make %{?_smp_mflags}
 
 
 %install
 rm -rf %{buildroot}
-make -f Makefile.simple install DESTDIR=%{buildroot} INSTALL='install -p'
+make install DESTDIR=%{buildroot} INSTALL='install -p'
 %find_lang %{name}
 
 desktop-file-install --vendor="fedora"                     \

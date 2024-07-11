@@ -15,7 +15,7 @@ who like simplicity.
 Project website: http://parcellite.sourceforge.net/
 or https://github.com/rickyrockrat/parcellite
 
-Release 1.2.4.0 for addition to Alpine Linux. See the Changelog.
+Release 1.2.5 for addition to Alpine Linux. See the Changelog.
 
 
 How to compile and install parcellite
@@ -31,14 +31,11 @@ Download the parcellite source code, then:
 	$ cd parcellite-x.y.z
 
 No Autotools (just make and install it): Assuming you are on tag 1.2.3:
-	$ make -f Makefile.simple VERSION=1.2.3
-	$ sudo make -f Makefile.simple install prefix=/usr/local
-	$ OR make -f Makefile.simple install DESTDIR=/tmp/myinstall prefix=/usr/local
+	$ make VERSION=1.2.3
+	$ sudo make install prefix=/usr/local
+	$ OR make install DESTDIR=/tmp/myinstall prefix=/usr/local
 
-if you want autotools:
-	$ ./autogen.sh
 # See note below on OpenBSD
-	$ ./configure
 	$ make
 	$ sudo make install
 

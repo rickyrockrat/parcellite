@@ -40,7 +40,7 @@ VERSION?=git-$(GIT_PVERSION)
 
 
 
-makeopts=-f Makefile.simple GETTEXT_PACKAGE=$(GETTEXT_PACKAGE) BUILDCONFIG=''
+makeopts=-f Makefile GETTEXT_PACKAGE=$(GETTEXT_PACKAGE) BUILDCONFIG=''
 
 config.h:
 	@echo "#define ENABLE_NLS 1" > $@
