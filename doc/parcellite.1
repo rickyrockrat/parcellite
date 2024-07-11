@@ -111,6 +111,34 @@ If you hold Ctrl, then it toggles the delete on a single item.
 If you hold Shift while holding down right-click (this is like a right-drag), then it toggles each item as it enters the item.
 .TP
 To complete the delete, hit enter.
+.SH Command FIFO
+There are some experimental commands to control the clipboard via the fifo in:
+ $USER/.local/share/parcellite/fifo_cmd
+.SH Commands for the FIFO
+.B stop_pri
+ Stop capturing the 'Primary' Clipboard
+ 
+.B stop_cli
+ Stop capturing the 'Clipboard' Clipboard
+ 
+.B stop_all
+ Stop capturing both clipboards
+ 
+.B run_pri
+ Start capturing the 'Primary' Clipboard
+ 
+.B run_cli
+ Start capturing the 'Clipboard' Clipboard
+ 
+.B run_all
+ Start capturing both clipboards
+ 
+.B clear_all
+ Clear all items in your normal history.
+ 
+.B Example:
+ echo 'clear_all' > ~/.local/share/parcellite/fifo_cmd
+ 
 .SH SEE ALSO
 .PP
 Website: http://parcellite.sourceforge.net
