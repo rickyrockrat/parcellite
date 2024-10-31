@@ -6,9 +6,7 @@ LIBS=$(GTKL) $(XL) $(FONTL) $(FREEL) $(APPI)
 APPI=$(shell $(PRFX)/appsuck.sh lib)
 
 
-TOOLS=intltool-update intltool-extract intltool-merge pkg-config
-
-
+TOOLS=intltool-update intltool-extract intltool-merge pkg-config msgfmt xgettext 
 
 .PHONY: check_dep
 check_dep:
