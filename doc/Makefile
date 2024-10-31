@@ -22,11 +22,12 @@ top_srcdir = ..
 srcdir:=.
 
 # po dir
-INSTALL = /usr/bin/install -c
+WINST=$(shell which install)
+INSTALL = $(WINST) -c
 INSTALL_DATA = ${INSTALL} -m 644
-GMSGFMT = /usr/bin/msgfmt
-MSGFMT = /usr/bin/msgfmt
-XGETTEXT = /usr/bin/xgettext
+GMSGFMT = $(shell which msgfmt)
+MSGFMT = $(GMSGFMT)
+XGETTEXT = $(shell which xgettext)
 
 all: 
 
