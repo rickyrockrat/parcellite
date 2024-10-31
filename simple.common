@@ -14,7 +14,7 @@ check_dep:
 	@echo "Checking for $(TOOLS)"
 	@for t in $(TOOLS); do	echo -n "Checking for $$t.. "; t=$$(which $$t); \
 	if [ $$? -ne 0 ]; then echo "Missing $$t"; exit 1; else v=$$($$t --version); \
-	i=$$(echo "$$v"|grep intlt|sed 's!.* !!'); if [ -n "$$i" ]; then v="$$i"; fi; \
+	i=$$(echo "$$v"|grep $$t|sed 's!.* !!'); if [ -n "$$i" ]; then v="$$i"; fi; \
 	echo "$$t 'V=$$v' OK"; fi; \
 	done
 	@echo "    Need gtk+-2.0 x11 fontconfig and freetype2"
