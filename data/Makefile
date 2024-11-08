@@ -25,16 +25,17 @@ top_srcdir = ..
 srcdir:=.
 
 # po dir
-INSTALL = /usr/bin/install -c
+WINST = $(shell which install)
+INSTALL = $(WINST) -c
 INSTALL_DATA = ${INSTALL} -m 644
-GMSGFMT = /usr/bin/msgfmt
-MSGFMT = /usr/bin/msgfmt
-XGETTEXT = /usr/bin/xgettext
-INTLTOOL_UPDATE = /usr/bin/intltool-update
-INTLTOOL_EXTRACT = /usr/bin/intltool-extract
+GMSGFMT = $(shell which msgfmt)
+MSGFMT = $(GMSGFMT)
+XGETTEXT = $(shell which xgettext)
+INTLTOOL_UPDATE = $(shell which intltool-update)
+INTLTOOL_EXTRACT = $(shell which intltool-extract)
 MSGMERGE = INTLTOOL_EXTRACT="$(INTLTOOL_EXTRACT)" XGETTEXT="$(XGETTEXT)" srcdir=$(srcdir) $(INTLTOOL_UPDATE) --gettext-package $(GETTEXT_PACKAGE) --dist
 GENPOT   = INTLTOOL_EXTRACT="$(INTLTOOL_EXTRACT)" XGETTEXT="$(XGETTEXT)" srcdir=$(srcdir) $(INTLTOOL_UPDATE) --gettext-package $(GETTEXT_PACKAGE) --pot
-INTLTOOL_MERGE = /usr/bin/intltool-merge
+INTLTOOL_MERGE = $(shell which intltool-merge)
 
 
 # installable items

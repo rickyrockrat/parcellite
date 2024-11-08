@@ -6,18 +6,16 @@ LIBS=$(GTKL) $(XL) $(FONTL) $(FREEL) $(APPI)
 APPI=$(shell $(PRFX)/appsuck.sh lib)
 
 
-TOOLS=intltool-update intltool-extract intltool-merge pkg-config
-
-
+TOOLS=intltool-update intltool-extract intltool-merge pkg-config msgfmt xgettext 
 
 .PHONY: check_dep
 check_dep:
 	@if [ -n "$(BUILDCONFIG)" ]; then $(PRFX)/appsuck.sh config; fi
 	@echo "Checking for $(TOOLS)"
-	@for t in $(TOOLS); do	echo -n "Checking for $$t.. "; t=$$(which $$t); \
-	if [ $$? -ne 0 ]; then echo "Missing $$t"; exit 1; else v=$$($$t --version); \
-	i=$$(echo "$$v"|grep intlt|sed 's!.* !!'); if [ -n "$$i" ]; then v="$$i"; fi; \
-	echo "$$t 'V=$$v' OK"; fi; \
+	@for t in $(TOOLS); do	echo -n "Checking for $$t.. "; ft=$$(which $$t); \
+	if [ $$? -ne 0 ]; then echo "Missing $$t"; exit 1; else v=$$($$ft --version); \
+	i=$$(echo "$$v"|grep "$$t"|sed 's!.* !!'); if [ -n "$$i" ]; then v="$$i"; fi; \
+	echo "$$ft 'V=$$v' OK"; fi; \
 	done
 	@echo "    Need gtk+-2.0 x11 fontconfig and freetype2"
 	@echo -n "Checking for gtk.. "
@@ -29,4 +27,4 @@ check_dep:
 	@echo -n "Checking for freetype.. "
 	@if [ -z "$(FREEL)" ]; then echo "No freetype2 libs"; exit 1; else echo OK; fi
 	@echo -n "Checking for a appindicator.. "
-	@if [ -z "$(APPI)" ]; then echo "  appindictor not found"; fi
+	@if [ -z "$(APPI)" ]; then echo "  appindictor not found..thankfully."; fi
