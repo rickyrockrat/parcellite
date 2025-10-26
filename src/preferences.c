@@ -1119,7 +1119,7 @@ void show_preferences(gint tab)
   
   /* Create the dialog */
   GtkWidget* dialog = gtk_dialog_new_with_buttons(_("Preferences"),     NULL,
-                                                   (GTK_DIALOG_MODAL  + GTK_DIALOG_NO_SEPARATOR),
+                                                   (GTK_DIALOG_MODAL),
                                                     GTK_STOCK_CANCEL,   GTK_RESPONSE_REJECT,
                                                     GTK_STOCK_OK,       GTK_RESPONSE_ACCEPT, NULL);
   
@@ -1177,10 +1177,10 @@ void show_preferences(gint tab)
   label = gtk_label_new(_(p->desc));
   gtk_misc_set_alignment((GtkMisc*)label, 0.0, 0.50);
   gtk_box_pack_start((GtkBox*)hbox, label, FALSE, FALSE, 0);
-  p->w = gtk_combo_box_new_text();
-  gtk_combo_box_append_text((GtkComboBox*)p->w, _("Beginning"));
-  gtk_combo_box_append_text((GtkComboBox*)p->w, _("Middle"));
-  gtk_combo_box_append_text((GtkComboBox*)p->w, _("End"));
+  p->w = gtk_combo_box_text_new();
+  gtk_combo_box_text_append_text((GtkComboBoxText*)p->w, _("Beginning"));
+  gtk_combo_box_text_append_text((GtkComboBoxText*)p->w, _("Middle"));
+  gtk_combo_box_text_append_text((GtkComboBoxText*)p->w, _("End"));
   gtk_box_pack_start((GtkBox*)hbox, p->w, FALSE, FALSE, 0);
   gtk_box_pack_start((GtkBox*)vbox_display, frame, FALSE, FALSE, 0);
 	
