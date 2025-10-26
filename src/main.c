@@ -1312,7 +1312,7 @@ static gboolean show_actions_menu(gpointer data)
   gtk_menu_shell_append((GtkMenuShell*)menu, menu_item);
   /* Popup the menu... */
   gtk_widget_show_all(menu);
-  gtk_menu_popup((GtkMenu*)menu, NULL, NULL, NULL, NULL, 1, gtk_get_current_event_time());
+  gtk_menu_popup((GtkMenu*)menu, NULL, NULL, status_icon ? gtk_status_icon_position_menu : NULL, status_icon, 1, gtk_get_current_event_time());
   /* Return false so the g_timeout_add() function is called only once */
   return FALSE;
 }
@@ -2122,7 +2122,7 @@ next_loop:
 	g_signal_connect(menu,"selection-done",(GCallback)destroy_history_menu,(gpointer)&h);
   /* Popup the menu... */
   gtk_widget_show_all(menu);
-  gtk_menu_popup((GtkMenu*)menu, NULL, NULL, get_pref_int32("history_pos")?postition_history:set_menu_xy, NULL, 1, gtk_get_current_event_time());
+  gtk_menu_popup((GtkMenu*)menu, NULL, NULL, get_pref_int32("history_pos")?postition_history:status_icon ? gtk_status_icon_position_menu : set_menu_xy, status_icon, 1, gtk_get_current_event_time());
 	/**set last entry at first -fixes bug 2974614 */
 	if(get_pref_int32("reverse_history") && NULL != h.clip_item)
 		gtk_menu_shell_select_item((GtkMenuShell*)menu,h.clip_item);
@@ -2206,7 +2206,7 @@ GtkWidget *create_parcellite_menu(guint button, guint activate_time)
   gtk_menu_shell_append((GtkMenuShell*)menu, menu_item);
   /* Popup the menu... */
   gtk_widget_show_all(menu);
-  gtk_menu_popup((GtkMenu*)menu, NULL, NULL, set_menu_xy, (gpointer)1, button, activate_time);
+  gtk_menu_popup((GtkMenu*)menu, NULL, NULL, status_icon ? gtk_status_icon_position_menu : set_menu_xy, status_icon, button, activate_time);
   return menu;
 }
 
