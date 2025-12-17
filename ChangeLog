@@ -1,5 +1,6 @@
 V1.2.6 TBD
  +Changed hardcoded tool paths to discoverable ones with 'which'.
+ +Fixed build bug in main.c where parcellite_init() is being called with an arg.
 
 V1.2.5 Wednsday, July 10, 2024
  +Updated man page for fifo operation. 
