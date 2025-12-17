@@ -2519,7 +2519,7 @@ int main(int argc, char *argv[])
 	}	
   
   /* Init Parcellite */
-  parcellite_init(mode);
+  parcellite_init();
   /*g_printf("Start main loop\n"); */
   /* Run GTK+ loop */
   gtk_main();
