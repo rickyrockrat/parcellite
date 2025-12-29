@@ -21,7 +21,6 @@
 
 #include <string.h>
 #include <gdk/gdkx.h>
-#include <gdk/gdkkeysyms.h>
 
 enum
 {
@@ -537,20 +536,20 @@ static void reload_modmap (GdkKeymap *keymap, EggModmap *modmap)
       j = 0;
       while (j < n_entries)
         {          
-          if (keyvals[j] == GDK_Num_Lock)
+          if (keyvals[j] == GDK_KEY_Num_Lock)
             mask |= EGG_VIRTUAL_NUM_LOCK_MASK;
-          else if (keyvals[j] == GDK_Scroll_Lock)
+          else if (keyvals[j] == GDK_KEY_Scroll_Lock)
             mask |= EGG_VIRTUAL_SCROLL_LOCK_MASK;
-          else if (keyvals[j] == GDK_Meta_L ||
-                   keyvals[j] == GDK_Meta_R)
+          else if (keyvals[j] == GDK_KEY_Meta_L ||
+                   keyvals[j] == GDK_KEY_Meta_R)
             mask |= EGG_VIRTUAL_META_MASK;
-          else if (keyvals[j] == GDK_Hyper_L ||
-                   keyvals[j] == GDK_Hyper_R)
+          else if (keyvals[j] == GDK_KEY_Hyper_L ||
+                   keyvals[j] == GDK_KEY_Hyper_R)
             mask |= EGG_VIRTUAL_HYPER_MASK;
-          else if (keyvals[j] == GDK_Super_L ||
-                   keyvals[j] == GDK_Super_R)
+          else if (keyvals[j] == GDK_KEY_Super_L ||
+                   keyvals[j] == GDK_KEY_Super_R)
             mask |= EGG_VIRTUAL_SUPER_MASK;
-          else if (keyvals[j] == GDK_Mode_switch)
+          else if (keyvals[j] == GDK_KEY_Mode_switch)
             mask |= EGG_VIRTUAL_MODE_SWITCH_MASK;
           
           ++j;

@@ -22,7 +22,7 @@ include ../simple.common
 CFILES=attr_list.c daemon.c eggaccelerators.c  history.c keybinder.c main.c preferences.c utils.c
 
 OBJS=$(patsubst %.c,%.o,$(CFILES))
-GTKC=$(shell pkg-config --cflags gtk+-2.0)
+GTKC=$(shell pkg-config --cflags gtk+-3.0)
 FONTC=$(shell pkg-config --cflags fontconfig)
 FREEC=$(shell pkg-config --cflags freetype2)
 LIBAPP=$(shell $(PRFX)/appsuck.sh cflags)
