@@ -2229,13 +2229,13 @@ static void status_icon_clicked(GtkStatusIcon *status_icon, gpointer user_data)
 		g_fprintf(stderr,"Got Ctrl-click\n");
     if (actions_lock == FALSE)
     {
-      g_timeout_add(POPUP_DELAY, show_actions_menu, NULL);
+      show_actions_menu(NULL);
     }
   }
   /* Normal click */
   else
   {
-    g_timeout_add(POPUP_DELAY, show_history_menu, GINT_TO_POINTER(figure_histories()));
+    show_history_menu(GINT_TO_POINTER(figure_histories()));
   }
 }
 /***************************************************************************/
