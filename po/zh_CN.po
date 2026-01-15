@@ -2,6 +2,7 @@
 # Copyright (C) 2008 Xyhthyx <xyhthyx@gmail.com>
 # This file is distributed under the same license as the parcellite package.
 # Lyman Li <lymanrb@gmail.com>, 2008.
+# Zixuan Tan <tanzixuan.me@gmail.com>, 2025.
 #
 #
 msgid ""
@@ -9,8 +10,8 @@ msgstr ""
 "Project-Id-Version: Parcellite\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2009-03-18 12:09-0400\n"
-"PO-Revision-Date: 2008-11-10 11:46+0900\n"
-"Last-Translator: Lyman Li <lymanrb@gmail.com>\n"
+"PO-Revision-Date: 2025-11-02 23:37+0800\n"
+"Last-Translator: Zixuan Tan <tanzixuan.me@gmail.com>\n"
 "Language-Team: CHINESE\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -133,7 +134,7 @@ msgstr "使用 _Primary (Selection)"
 
 #: ../src/preferences.c:409
 msgid "S_ynchronize clipboards"
-msgstr ""
+msgstr "同步剪切板(_S)"
 
 #: ../src/preferences.c:417
 msgid "<b>History</b>"
@@ -231,7 +232,7 @@ msgstr "删除"
 #: ../src/preferences.c:582
 #, fuzzy
 msgid "Hotkeys"
-msgstr "<b>热键</b>"
+msgstr "热键"
 
 #: ../src/preferences.c:590
 msgid "<b>Hotkeys</b>"
@@ -249,31 +250,227 @@ msgstr "动作按键组合:"
 msgid "Menu key combination:"
 msgstr "菜单按键组合:"
 
-#: ../data/parcellite.desktop.in.h:2 ../data/parcellite-startup.desktop.in.h:2
-msgid "Parcellite"
-msgstr "Parcellite"
+msgid "Alternate Non-printing Display"
+msgstr "替代显示不可打印字符"
 
-#~ msgid "<b>Clipboard</b>"
-#~ msgstr "<b>剪切板</b>"
+msgid "Auto Paste"
+msgstr "自动粘贴"
 
-#~ msgid "Save changes"
-#~ msgstr "保存更改"
+msgid "Capture hyperlinks only"
+msgstr "仅捕获超链接"
 
-#~ msgid "Discard changes"
-#~ msgstr "放弃更改"
+msgid "Case Sensitive Search"
+msgstr "搜索时区分大小写"
 
-#~ msgid "Extras"
-#~ msgstr "其他"
+msgid "Character length of items"
+msgstr "条目显示的文字长度"
 
-#~ msgid ""
-#~ "Add a new action\n"
-#~ "\"%s\" in a command is replaced with the clipboard contents"
-#~ msgstr ""
-#~ "添加新动作\n"
-#~ "命令中的 \"%s\" 将由剪切板内容代替"
+msgid "_Clear"
+msgstr "清除(_C)"
 
-#~ msgid "Move selected action up"
-#~ msgstr "上移选中的动作"
+msgid "Confirm before clearing history"
+msgstr "清除历史纪录时确认"
 
-#~ msgid "Move selected action down"
-#~ msgstr "下移选中的动作"
+msgid "Control-click Parcellite's tray icon to use actions,"
+msgstr "按住 Ctrl 并点击 Parcellite 的任务栏图标使用动作"
+
+msgid "Copyright (C) 2007, 2008 Gilberto \"Xyhthyx\" Miralla\nCopyright (C) 2010-2013 Doug Springer"
+msgstr "版权所有 (C) 2007, 2008 Gilberto \"Xyhthyx\" Miralla\n版权所有 (C) 2010-2013 Doug Springer"
+
+msgid "Current entry on top"
+msgstr "当前条目展示在顶部"
+
+msgid "DebugUpdate"
+msgstr "调试更新"
+
+msgid "Display Version info"
+msgstr "显示版本信息"
+
+msgid "Dummy desc"
+msgstr "占位描述"
+
+msgid "Dummy tip"
+msgstr "占位提示"
+
+msgid "_History"
+msgstr "历史(_H)"
+
+msgid "If checked, does a search-as-you-type. Turns red if not found. Goes to top (Alt-E) line when no chars are entered for search"
+msgstr "选中时，输入即搜索（实时搜索）。找不到时变红；当没有输入搜索字符时，使用 Alt-E 跳到顶部行。"
+
+msgid "If checked, does case sensitive search"
+msgstr "选中时，进行区分大小写的搜索"
+
+msgid "If checked, edit the history item clicked on."
+msgstr "选中时，编辑被点击的历史条目。"
+
+msgid "If checked, enables checking multiple concurrent user logic. Use if several different users are logged in at the same time."
+msgstr "选中时，启用多用户并发检查逻辑。当多个不同用户同时登录时使用。"
+
+msgid "If checked, enables debug prints on clipboard update logic. This only takes effect when enabled at start up, and may be disabled at compile time."
+msgstr "选中时，启用剪切板更新逻辑的调试打印。仅在启动时启用时生效，且可能在编译时被禁用。"
+
+msgid "If checked, enables the persistent history."
+msgstr "选中时，启用永久历史记录。"
+
+msgid "If checked, places current clipboard entry at top of list. If not checked, history does not get sorted."
+msgstr "选中时，将当前剪切板条目放到列表顶部；未选中时，历史记录不排序。"
+
+msgid "If checked, puts the persistent history at the top of the history list. If the option above is checked, this option has no effect."
+msgstr "选中时，将永久历史置于历史列表顶部。如果上面的选项被选中，则此选项无效。"
+
+msgid "If checked, puts the persistent history in a new list and enables the Persistent History HotKey. You will need to use the persistent history hotkey to see the history."
+msgstr "选中时，将永久历史放入新列表并启用永久历史热键。需要使用该热键才能查看永久历史。"
+
+msgid "If checked, the current entry will be on the bottom instead of the top."
+msgstr "选中时，当前条目将位于底部而非顶部。"
+
+msgid "If checked, Use the clipboard, which is Ctrl-C, Ctrl-V"
+msgstr "选中时，使用剪切板（Ctrl-C/Ctrl-V）。"
+
+msgid "If checked, Use the primary clipboard (mouse highlight-copy, middle mouse button paste)"
+msgstr "选中时，使用主选择剪贴板（鼠标选中复制，中键粘贴）。"
+
+msgid "If checked, use X, Y to position the history list"
+msgstr "选中时，使用 X、Y 定位历史列表。"
+
+msgid "If checked, will display tabs with Right arrow (utf8,\\2192), newlines with pharagrph(\\204b), and spaces with square-u(\\2423)."
+msgstr "选中时，制表符显示为右箭头 (→)，换行显示为段落符 (¶)，空格显示为空心方块 (␣)。"
+
+msgid "If checked, will emit the history entry via the keyboard entry."
+msgstr "选中时，将通过键盘输入发送历史条目。"
+
+msgid "If checked, will ignore any clipboard additions that contain only whitespace."
+msgstr "选中时，忽略仅包含空白的剪切板条目。"
+
+msgid "If checked, will keep both clipboards with the same content. If primary is pasted, then copy will have the same data."
+msgstr "选中时，保持两个剪贴板内容相同。如果粘贴主选择，则复制剪贴板也会拥有相同数据。"
+
+msgid "If checked, will replace newlines with spaces."
+msgstr "选中时，将换行替换为空格。"
+
+msgid "If checked, will restore clipboard entry on application exit."
+msgstr "选中时，应用退出时恢复剪切板条目。"
+
+msgid "If checked, will trim whitespace from beginning and end of entry."
+msgstr "选中时，修剪条目的首尾空白。"
+
+msgid "If checked, will use Ctrl-V paste."
+msgstr "选中时，使用 Ctrl-V 粘贴。"
+
+msgid "If checked, will use middle mouse to paste."
+msgstr "选中时，使用中键粘贴。"
+
+msgid "If checked, will use xdotool to paste wherever the mouse is.\nNOTE! Package xdotool MUST BE INSTALLED for this to work."
+msgstr "选中时，将使用 xdotool 在鼠标位置粘贴。注意！必须安装 xdotool 包才能工作。"
+
+msgid "Ignore Whitespace Only"
+msgstr "忽略仅空白条目"
+
+msgid "Items in history"
+msgstr "历史记录条目数"
+
+msgid "Key"
+msgstr "按键"
+
+msgid "Keyboard Input"
+msgstr "键盘输入"
+
+msgid "Max Data Size(KB)"
+msgstr "最大数据大小 (KB)"
+
+msgid "Maximum data size of entire history list"
+msgstr "整个历史列表的最大数据大小"
+
+msgid "Maximum data size of one item"
+msgstr "单条目的最大数据大小"
+
+msgid "Maximum number of clipboard entries to keep"
+msgstr "保留的最大剪贴板条目数"
+
+msgid "Max Item Size(KB)"
+msgstr "单条最大大小 (KB)"
+
+msgid "Menu key combination"
+msgstr "菜单按键组合"
+
+msgid "Mouse"
+msgstr "鼠标"
+
+msgid "Multiuser"
+msgstr "多用户"
+
+msgid "Name of Parcellite icon. If this is mis-typed, icon will not appear."
+msgstr "Parcellite 图标名称。如果拼写错误，图标将不会出现。"
+
+msgid "Parcellite Icon Name"
+msgstr "Parcellite 图标名称"
+
+msgid "Paste All Entry Delimiter"
+msgstr "粘贴全部条目时的分隔符"
+
+msgid "Persistent As Separate List"
+msgstr "永久历史作为单独列表"
+
+msgid "Persistent History"
+msgstr "永久历史"
+
+msgid "Persistent history key:"
+msgstr "永久历史按键组合:"
+
+msgid "Persistent On Top"
+msgstr "将永久历史展示在顶部"
+
+msgid "Position history"
+msgstr "历史记录窗口弹出位置"
+
+msgid "Position in pixels from the top of the screen"
+msgstr "距离屏幕顶部的像素位置"
+
+msgid "Restore Empty"
+msgstr "尝试恢复空剪贴板"
+
+msgid "Right Click Edit"
+msgstr "右键点击条目进行编辑"
+
+msgid "Save history"
+msgstr "保存历史记录"
+
+msgid "Save History as a text file. Prepends xHIST_0000 to each entry. x is either P(persistent) or N (normal)"
+msgstr "将历史记录保存为文本文件。为每条条目前缀 xHIST_0000，其中 x 为 P(永久) 或 N(普通)"
+
+msgid "Save history to a file."
+msgstr "将历史记录保存到文件。"
+
+msgid "Search As You Type"
+msgstr "输入时自动搜索"
+
+msgid "Show in a single line"
+msgstr "显示为单行"
+
+msgid "Show in reverse order"
+msgstr "逆序显示"
+
+msgid "This is the Action Name. \nDO NOT put commands here."
+msgstr "这是动作名称。\n不要在此处输入命令。"
+
+msgid "This string will be inserted between each line of history for paste all."
+msgstr "在“全部粘贴”操作中，该字符串将插入到历史的每一行之间。"
+
+msgid "Trim Newlines"
+msgstr "修剪首尾的换行符"
+
+msgid "Trim Whitespace"
+msgstr "修剪首尾的空白字符"
+
+msgid "Use Alt-E to edit, Alt-C to clear"
+msgstr "使用 Alt-E 编辑，Alt-C 清除"
+
+msgid "Use %% if you want a literal %. See the man page for gnuC printf (man 2 printf) for more information."
+msgstr "如果需要输出 %，请使用 %%。更多信息请参见 gnuC printf 手册 (man 2 printf)。"
+
+msgid "Written by Gilberto \"Xyhthyx\" Miralla and Doug Springer.\nReport bugs to <gpib@rickyrockrat.net>."
+msgstr "由 Gilberto \"Xyhthyx\" Miralla 与 Doug Springer 编写。\n问题反馈: <gpib@rickyrockrat.net>。"
+
+msgid "xdotool Not Installed"
+msgstr "未安装 xdotool"
