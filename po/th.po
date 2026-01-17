@@ -1,0 +1,380 @@
+# Thai translation of parcellite
+# Copyright (C) 2008 Xyhthyx <xyhthyx@gmail.com>
+# This file is distributed under the same license as the parcellite package.
+# Warut Bunprasert <warut.b@disroot.org>, 2026.
+#
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Parcellite\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2009-03-18 12:08-0400\n"
+"PO-Revision-Date: 2026-01-16 19:08+0700\n"
+"Last-Translator: Warut Bunprasert <warut.b@disroot.org>\n"
+"Language-Team: Thai\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: Thai\n"
+"X-Poedit-Country: Thailand\n"
+
+msgid "Action"
+msgstr "การกระทำ"
+
+msgid "Actions"
+msgstr "การดำเนินการ"
+
+msgid "Actions key combination:"
+msgstr "คีย์ผสมการดำเนินการ:"
+
+msgid "Add..."
+msgstr "เพิ่ม..."
+
+msgid "Alternate Non-printing Display"
+msgstr "จอแสดงผลสำรองแบบไม่พิมพ์"
+
+msgid "Auto Paste"
+msgstr "รถอีสเตอร์"
+
+msgid "<b>Clipboards</b>"
+msgstr "<b>คลิปบอร์ด</b>"
+
+msgid "Beginning"
+msgstr "จุดเริ่มต้น"
+
+msgid "Behavior"
+msgstr "พฤติกรรม"
+
+msgid "<b>History</b>"
+msgstr "<b>ประวัติ</b>"
+
+msgid "<b>Hotkeys</b>"
+msgstr "<b>ปุ่มลัด</b>"
+
+msgid "<b>Items</b>"
+msgstr "<b>รายการ</b>"
+
+msgid "<b>Miscellaneous</b>"
+msgstr "<b>เบ็ดเตล็ด</b>"
+
+msgid "<b>None</b>"
+msgstr "<b>ไม่มี</b>"
+
+msgid "<b>Omitting</b>"
+msgstr "<b>ละเว้น</b>"
+
+msgid "<b>X</b>"
+msgstr "<b>ไม่</b>"
+
+msgid "<b>Y</b>"
+msgstr "<b>ใช่</b>"
+
+msgid "Capture hyperlinks only"
+msgstr "บันทึกไฮเปอร์ลิงก์เท่านั้น"
+
+msgid "Case Sensitive Search"
+msgstr "การค้นหาแบบคำนึงถึงตัวพิมพ์เล็กและตัวพิมพ์ใหญ่"
+
+msgid "Character length of items"
+msgstr "ความยาวอักขระของรายการ"
+
+msgid "_Clear"
+msgstr "_ล้าง"
+
+msgid "Clear the history?"
+msgstr "ล้างประวัติ?"
+
+msgid "Clipboard CLI usage examples:\n\n  echo \"copied to clipboard\" | parcellite\n  parcellite \"copied to clipboard\"\n  echo \"copied to clipboard\" | parcellite -c"
+msgstr "ตัวอย่างการใช้งาน CLI ของคลิปบอร์ด:\n\n echo \"คัดลอกไปยังคลิปบอร์ด\" | "
+
+msgid "Clipboard Manager"
+msgstr "ผู้จัดการคลิปบอร์ด"
+
+msgid "Command"
+msgstr "คำสั่ง"
+
+msgid "Confirm before clearing history"
+msgstr "ยืนยันก่อนล้างประวัติ"
+
+msgid "Control-click Parcellite's tray icon to use actions,"
+msgstr "กด Control แล้วคลิกไอคอนถาดของ Parcellite เพื่อใช้การกระทำต่าง ๆ"
+
+msgid "Copyright (C) 2007, 2008 Gilberto \"Xyhthyx\" Miralla\nCopyright (C) 2010-2013 Doug Springer"
+msgstr "ลิขสิทธิ์ (C) 2007, 2008 Gilberto \"Xyhthyx\" Miralla\nลิขสิทธิ์ (C) 2010-2013 Doug Springer"
+
+msgid "Couldn't create directory: %s\n"
+msgstr "ไม่สามารถสร้างไดเร็กทอรี: %s\n"
+
+msgid "Current entry on top"
+msgstr "รายการปัจจุบันอยู่ด้านบน"
+
+msgid "DebugUpdate"
+msgstr "ดีบักอัปเดต"
+
+msgid "Display"
+msgstr "การแสดงผล"
+
+msgid "Display Version info"
+msgstr "แสดงข้อมูลเวอร์ชัน"
+
+msgid "Do not use status icon (Ctrl-Alt-P for menu)"
+msgstr "อย่าใช้ไอคอนสถานะ (Ctrl-Alt-P สำหรับเมนู)"
+
+msgid "Dummy desc"
+msgstr "คำอธิบายจำลอง"
+
+msgid "Dummy tip"
+msgstr "เคล็ดลับหุ่น"
+
+msgid "_Edit actions"
+msgstr "แ_ก้ไขการกระทำ"
+
+msgid "_Edit Clipboard"
+msgstr "แ_ก้ไขคลิปบอร์ด"
+
+msgid "Editing Clipboard"
+msgstr "การแก้ไขคลิปบอร์ด"
+
+msgid "Empty"
+msgstr "ว่างเปล่า"
+
+msgid "End"
+msgstr "จบ"
+
+msgid "Executing action..."
+msgstr "กำลังดำเนินการ..."
+
+msgid "Gilberto \"Xyhthyx\" Miralla <xyhthyx@gmail.com>\nDoug Springer <gpib@rickyrockrat.net>"
+msgstr "Gilberto \"Xyhthyx\" Miralla <xyhthyx@gmail.com>\nDoug Springer <gpib@rickyrockrat.net>"
+
+msgid "_History"
+msgstr "_ประวัติ"
+
+msgid "History key combination:"
+msgstr "คีย์ผสมประวัติ:"
+
+msgid ">>$HOME/ptest"
+msgstr ">>$HOME/ptest"
+
+msgid "Hotkeys"
+msgstr "ปุ่มลัด"
+
+msgid "If checked, does a search-as-you-type. Turns red if not found. Goes to top (Alt-E) line when no chars are entered for search"
+msgstr "หากเลือกตัวเลือกนี้ จะทำการค้นหาขณะพิมพ์ หากไม่พบผลลัพธ์ จะเปลี่ยนเป็นสีแดง และจะกลับไปที่บรรทัดบนสุด (Alt-E) เมื่อไม่มีการป้อนอักขระใดๆ สำหรับการค้นหา"
+
+msgid "If checked, does case sensitive search"
+msgstr "หากเลือก จะทำการค้นหาแบบคำนึงถึงตัวพิมพ์เล็กและตัวพิมพ์ใหญ่"
+
+msgid "If checked, edit the history item clicked on."
+msgstr "หากทำเครื่องหมาย ให้แก้ไขรายการประวัติที่คลิก"
+
+msgid "If checked, enables checking multiple concurrent user logic. Use if several different users are logged in at the same time."
+msgstr "หากเลือกตัวเลือกนี้ จะเปิดใช้งานการตรวจสอบตรรกะของผู้ใช้หลายคนพร้อมกัน ใช้ในกรณีที่ผู้ใช้หลายคนเข้าสู่ระบบพร้อมกัน"
+
+msgid "If checked, enables debug prints on clipboard update logic. This only takes effect when enabled at start up, and may be disabled at compile time."
+msgstr "หากเลือกตัวเลือกนี้ จะเปิดใช้งานการพิมพ์ข้อความดีบักในตรรกะการอัปเดตคลิปบอร์ด การตั้งค่านี้จะมีผลเฉพาะเมื่อเปิดใช้งานในระหว่างการเริ่มต้นระบบเท่านั้น และสามารถปิดใช้งานได้ในระหว่างการคอมไพล์"
+
+msgid "If checked, enables the persistent history."
+msgstr "หากเลือก จะเปิดใช้งานประวัติถาวร"
+
+msgid "If checked, places current clipboard entry at top of list. If not checked, history does not get sorted."
+msgstr "หากเลือกตัวเลือกนี้ จะวางรายการคลิปบอร์ดปัจจุบันไว้ที่ด้านบนสุดของรายการ "
+
+msgid "If checked, puts the persistent history at the top of the history list."
+msgstr "หากเลือก ให้วางประวัติถาวรไว้ที่ด้านบนสุดของรายการประวัติ"
+
+msgid "If checked, puts the persistent history in a new list."
+msgstr "หากเลือกตัวเลือกนี้ จะใส่ประวัติถาวรไว้ในรายการใหม่"
+
+msgid "If checked, the current entry will be on the bottom instead of the top."
+msgstr "หากทำเครื่องหมาย รายการปัจจุบันจะอยู่ที่ด้านล่างแทนที่จะเป็นด้านบน"
+
+msgid "If checked, Use the clipboard, which is Ctrl-C, Ctrl-V"
+msgstr "หากทำเครื่องหมายไว้ ให้ใช้คลิปบอร์ดซึ่งก็คือ Ctrl-C, Ctrl-V"
+
+msgid "If checked, Use the primary clipboard (mouse highlight-copy, middle mouse button paste)"
+msgstr "หากทำเครื่องหมาย ให้ใช้คลิปบอร์ดหลัก (คัดลอกไฮไลท์เมาส์ วางปุ่มเมาส์กลาง)"
+
+msgid "If checked, use X, Y to position the history list"
+msgstr "หากทำเครื่องหมาย ให้ใช้ X, Y เพื่อวางตำแหน่งรายการประวัติ"
+
+msgid "If checked, will display tabs with Right arrow (utf8,\\2192), newlines with pharagrph(\\204b), and spaces with square-u(\\2423)."
+msgstr "หากทำเครื่องหมาย จะแสดงแท็บที่มีลูกศรขวา (utf8,\\2192) ขึ้นบรรทัดใหม่ด้วย pharagrph(\\204b) และช่องว่างด้วย square-u(\\2423)"
+
+msgid "If checked, will emit the history entry via the keyboard entry."
+msgstr "หากทำเครื่องหมายไว้ ระบบจะปล่อยรายการประวัติผ่านรายการคีย์บอร์ด"
+
+msgid "If checked, will ignore any clipboard additions that contain only whitespace."
+msgstr "หากทำเครื่องหมาย จะเพิกเฉยต่อการเพิ่มคลิปบอร์ดที่มีเพียงช่องว่าง"
+
+msgid "If checked, will keep both clipboards with the same content. If primary is pasted, then copy will have the same data."
+msgstr "หากเลือกตัวเลือกนี้ จะเก็บเนื้อหาในคลิปบอร์ดทั้งสองไว้เหมือนกัน หากวางข้อมูลในคลิปบอร์ดหลักแล้ว ข้อมูลที่คัดลอกมาก็จะมีข้อมูลเดียวกัน"
+
+msgid "If checked, will replace newlines with spaces."
+msgstr "หากทำเครื่องหมาย จะแทนที่การขึ้นบรรทัดใหม่ด้วยการเว้นวรรค"
+
+msgid "If checked, will restore clipboard entry on application exit."
+msgstr "หากทำเครื่องหมาย จะคืนค่ารายการคลิปบอร์ดเมื่อออกจากแอปพลิเคชัน"
+
+msgid "If checked, will trim whitespace from beginning and end of entry."
+msgstr "หากทำเครื่องหมาย จะตัดช่องว่างตั้งแต่จุดเริ่มต้นและจุดสิ้นสุดของรายการ"
+
+msgid "If checked, will use Ctrl-V paste."
+msgstr "หากทำเครื่องหมายไว้ จะใช้ Ctrl-V วาง"
+
+msgid "If checked, will use middle mouse to paste."
+msgstr "หากเลือกจะใช้เมาส์กลางในการวาง"
+
+msgid "If checked, will use xdotool to paste wherever the mouse is.\nNOTE! Package xdotool MUST BE INSTALLED for this to work."
+msgstr "หากทำเครื่องหมาย จะใช้ xdotool เพื่อวางเมาส์ทุกที่\nหมายเหตุ! ต้องติดตั้ง xdotool สำหรับการทำงานนี้"
+
+msgid "Ignore Whitespace Only"
+msgstr "ละเว้นช่องว่างเท่านั้น"
+
+msgid "Items in history"
+msgstr "รายการในประวัติ"
+
+msgid "Key"
+msgstr "สำคัญ"
+
+msgid "Keyboard Input"
+msgstr "อินพุตคีย์บอร์ด"
+
+msgid "Lightweight GTK+ clipboard manager."
+msgstr "โปรแกรมจัดการคลิปบอร์ด GTK+ น้ำหนักเบา"
+
+msgid "Max Data Size(KB)"
+msgstr "ขนาดข้อมูลสูงสุด(KB)"
+
+msgid "Maximum data size of entire history list"
+msgstr "ขนาดข้อมูลสูงสุดของรายการประวัติทั้งหมด"
+
+msgid "Maximum data size of one item"
+msgstr "ขนาดข้อมูลสูงสุดของหนึ่งรายการ"
+
+msgid "Maximum number of clipboard entries to keep"
+msgstr "จำนวนรายการคลิปบอร์ดสูงสุดที่จะเก็บไว้"
+
+msgid "Max Item Size(KB)"
+msgstr "ขนาดรายการสูงสุด(KB)"
+
+msgid "Menu key combination"
+msgstr "การรวมปุ่มเมนู"
+
+msgid "Middle"
+msgstr "กลาง"
+
+msgid "Mouse"
+msgstr "หนู"
+
+msgid "Multiuser"
+msgstr "ผู้ใช้หลายคน"
+
+msgid "Name of Parcellite icon. If this is mis-typed, icon will not appear."
+msgstr "ชื่อของไอคอน Parcellite "
+
+msgid "Omit items in the:"
+msgstr "ละเว้นรายการใน:"
+
+msgid "Parcellite Icon Name"
+msgstr "ชื่อไอคอน Parcellite"
+
+msgid "Paste All Entry Delimiter"
+msgstr "วางตัวคั่นรายการทั้งหมด"
+
+msgid "Persistent As Separate List"
+msgstr "ประวัติถาวรเป็นรายการแยกต่างหาก"
+
+msgid "Persistent History"
+msgstr "ประวัติถาวร"
+
+msgid "Persistent history key:"
+msgstr "รหัสประวัติถาวร:"
+
+msgid "Persistent On Top"
+msgstr "อยู่ด้านบนอย่างต่อเนื่อง"
+
+msgid "Position history"
+msgstr "ประวัติตำแหน่ง"
+
+msgid "Position in pixels from the top of the screen"
+msgstr "ตำแหน่งเป็นพิกเซลจากด้านบนของหน้าจอ"
+
+msgid "Preferences"
+msgstr "การตั้งค่า"
+
+msgid "Print clipboard contents"
+msgstr "พิมพ์เนื้อหาคลิปบอร์ด"
+
+msgid "Print primary contents"
+msgstr "พิมพ์เนื้อหาหลัก"
+
+msgid "Remove"
+msgstr "ลบ"
+
+msgid "Restore Empty"
+msgstr "คืนค่าว่างเปล่า"
+
+msgid "Right Click Edit"
+msgstr "คลิกขวา แก้ไข"
+
+msgid "Run as daemon"
+msgstr "ทำงานเป็นภูต"
+
+msgid "Save history"
+msgstr "บันทึกประวัติ"
+
+msgid "Save History as a text file. Prepends xHIST_0000 to each entry. x is either P(persistent) or N (normal)"
+msgstr "บันทึกประวัติเป็นไฟล์ข้อความ โดยเพิ่ม xHIST_0000 ไว้ข้างหน้าแต่ละรายการ x คือ P (คงที่) หรือ N (ปกติ)"
+
+msgid "Save history to a file."
+msgstr "บันทึกประวัติเป็นไฟล์"
+
+msgid "Search As You Type"
+msgstr "ค้นหาในขณะที่คุณพิมพ์"
+
+msgid "Show in a single line"
+msgstr "แสดงในบรรทัดเดียว"
+
+msgid "Show in reverse order"
+msgstr "แสดงในลำดับย้อนกลับ"
+
+msgid "> </span>"
+msgstr "> </span>"
+
+msgid "S_ynchronize clipboards"
+msgstr "_ซิงโครไนช์คลิปบอร์ด"
+
+msgid "This is the Action Name. \nDO NOT put commands here."
+msgstr "นี่คือชื่อการดำเนินการ \n ห้ามใส่คำสั่งที่นี่"
+
+msgid "This program is free software; you can redistribute it and/or modify\nit under the terms of the GNU General Public License as published by\nthe Free Software Foundation; either version 3 of the License, or\n(at your option) any later version.\n\nThis program is distributed in the hope that it will be useful,\nbut WITHOUT ANY WARRANTY; without even the implied warranty of\nMERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\nGNU General Public License for more details.\n\nYou should have received a copy of the GNU General Public License\nalong with this program.  If not, see <http://www.gnu.org/licenses/>.;"
+msgstr "This program is free software; you can redistribute it and/or modify\nit under the terms of the GNU General Public License as published by\nthe Free Software Foundation; either version 3 of the License, or\n(at your option) any later version.\n\nThis program is distributed in the hope that it will be useful,\nbut WITHOUT ANY WARRANTY; without even the implied warranty of\nMERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\nGNU General Public License for more details.\n\nYou should have received a copy of the GNU General Public License\nalong with this program.  If not, see <http://www.gnu.org/licenses/>.;"
+
+msgid "This string will be inserted between each line of history for paste all."
+msgstr "สตริงนี้จะถูกแทรกระหว่างแต่ละบรรทัดของประวัติเพื่อวางทั้งหมด"
+
+msgid "Trim Newlines"
+msgstr "ตัดแต่งบรรทัดใหม่"
+
+msgid "Trim Whitespace"
+msgstr "ตัดช่องว่าง"
+
+msgid "Use Alt-E to edit, Alt-C to clear"
+msgstr "ใช้ Alt-E เพื่อแก้ไข Alt-C เพื่อล้าง"
+
+msgid "Use _Copy (Ctrl-C)"
+msgstr "ใช้ _คัดลอก (Ctrl-C)"
+
+msgid "Use %% if you want a literal %. See the man page for gnuC printf (man 2 printf) for more information."
+msgstr "ใช้ %% หากคุณต้องการ % ตามตัวอักษร กรุณาดูที่ gnuC printf (man 2 printf) สำหรับข้อมูลเพิ่มเติม"
+
+msgid "Use _Primary (Selection)"
+msgstr "ใช้_หลัก (การเลือก)"
+
+msgid "Written by Gilberto \"Xyhthyx\" Miralla and Doug Springer.\nReport bugs to <gpib@rickyrockrat.net>."
+msgstr "เขียนโดย Gilberto \"Xyhthyx\" Miralla และ Doug Springer\nรายงานข้อบกพร่องไปที่ <gpib@rickyrockrat.net>"
+
+msgid "xdotool Not Installed"
+msgstr "ไม่ได้ติดตั้ง xdotool"
+
