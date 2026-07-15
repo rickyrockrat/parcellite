@@ -2213,6 +2213,8 @@ GtkWidget *create_parcellite_menu(guint button, guint activate_time)
 /* Called when status icon is right-clicked */
 static void  show_parcellite_menu(GtkStatusIcon *status_icon, guint button, guint activate_time,  gpointer data)
 {
+	if (gtk_grab_get_current())
+		return;
 	create_parcellite_menu(button, activate_time);
 }
 
@@ -2220,6 +2222,8 @@ static void  show_parcellite_menu(GtkStatusIcon *status_icon, guint button, guin
 /* Called when status icon is left-clicked */
 static void status_icon_clicked(GtkStatusIcon *status_icon, gpointer user_data)
 {
+	if (gtk_grab_get_current())
+		return;
   /* Check what type of click was recieved */
   GdkModifierType state;
   gtk_get_current_event_state(&state);
@@ -2289,11 +2293,15 @@ void create_app_indicator(void)
 /* Called when history global hotkey is pressed */
 void history_hotkey(char *keystring, gpointer user_data)
 {
+	if (gtk_grab_get_current())
+		return;
   g_timeout_add(POPUP_DELAY, show_history_menu, GINT_TO_POINTER(figure_histories()));
 }
 /* Called when persistent history global hotkey is pressed */
 void phistory_hotkey(char *keystring, gpointer user_data)
 {
+	if (gtk_grab_get_current())
+		return;
 	if(get_pref_int32("persistent_history") && get_pref_int32("persistent_separate"))
     g_timeout_add(POPUP_DELAY, show_history_menu, GINT_TO_POINTER(HIST_DISPLAY_PERSISTENT));
 }
@@ -2301,12 +2309,16 @@ void phistory_hotkey(char *keystring, gpointer user_data)
 /* Called when actions global hotkey is pressed */
 void actions_hotkey(char *keystring, gpointer user_data)
 {
+	if (gtk_grab_get_current())
+		return;
   g_timeout_add(POPUP_DELAY, show_actions_menu, NULL);
 }
 
 /* Called when actions global hotkey is pressed */
 void menu_hotkey(char *keystring, gpointer user_data)
 {
+	if (gtk_grab_get_current())
+		return;
 #ifdef HAVE_APPINDICATOR
 	/*create_app_indicator(); */
 	create_parcellite_menu(0, gtk_get_current_event_time());
