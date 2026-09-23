@@ -67,6 +67,7 @@ g_signal_connect(clipboard, "owner-change",  G_CALLBACK(handle_owner_change), NU
 #include <ctype.h>
 #include <pthread.h>
 #include <libgen.h>
+#include <gdk/gdkkeysyms.h>
 
 
 /**ACT are actions, and MODE is the mode of the action  */
@@ -90,6 +91,7 @@ g_signal_connect(clipboard, "owner-change",  G_CALLBACK(handle_owner_change), NU
 #define FIFCMD_RUN_CLI "run_cli"
 #define FIFCMD_RUN_ALL "run_all"
 #define FIFCMD_CLEAR_ALL "clear_all"
+#define FIFCMD_SHOW_HISTORY "show_history"
 
 GtkWidget *hmenu;
 /**see parcellite.h for DEBUG defines  */
@@ -573,6 +575,10 @@ void do_command(gchar *buf, gint len)
 		clear_all((gpointer) NULL);
 		goto end;
 	}
+	if(!p_strcmp(p,FIFCMD_SHOW_HISTORY)) {
+		history_hotkey(NULL, NULL);
+		goto end;
+	}
 end:
 	free(news);
 }
@@ -658,8 +664,10 @@ gboolean check_for_appindictor( gpointer data)
 		/*g_printf("Looking for '%s'\n",appindicator_process); */
 		if(get_pref_int32("multi_user"))
 			mode|=PROC_MODE_USER_QUALIFY;
-		
-		if(get_pref_int32("on_unity") || proc_find(appindicator_process,mode,NULL) >0 ){
+		/* Wayland has no XEmbed StatusIcon; use AppIndicator/SNI when built.
+		 * Unity still detected via preference or indicator-messages-service. */
+		if(is_wayland_session() || get_pref_int32("on_unity") ||
+		   proc_find(appindicator_process,mode,NULL) >0 ){
 			have_appindicator=1;
 			if(NULL == indicator && show_icon)
 				create_app_indicator();	
@@ -1116,78 +1124,88 @@ static void clear_selected(GtkMenuItem *menu_item, gpointer user_data)
 }
 
 /* Called when About is selected from right-click menu */
+static gboolean show_about_dialog_idle(gpointer user_data)
+{
+  static int open;
+  const gchar* authors[] = {_("Gilberto \"Xyhthyx\" Miralla <xyhthyx@gmail.com>\nDoug Springer <gpib@rickyrockrat.net>"), NULL};
+  const gchar* license =
+    "This program is free software; you can redistribute it and/or modify\n"
+    "it under the terms of the GNU General Public License as published by\n"
+    "the Free Software Foundation; either version 3 of the License, or\n"
+    "(at your option) any later version.\n\n"
+    "This program is distributed in the hope that it will be useful,\n"
+    "but WITHOUT ANY WARRANTY; without even the implied warranty of\n"
+    "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n"
+    "GNU General Public License for more details.\n\n"
+    "You should have received a copy of the GNU General Public License\n"
+    "along with this program.  If not, see <http://www.gnu.org/licenses/>.";
+  GtkWidget* about_dialog;
+  (void)user_data;
+  if (open)
+    return FALSE;
+  open = 1;
+  about_dialog = gtk_about_dialog_new();
+  gtk_window_set_icon((GtkWindow*)about_dialog,
+                      gtk_widget_render_icon(about_dialog, GTK_STOCK_ABOUT, -1, NULL));
+  gtk_window_set_position(GTK_WINDOW(about_dialog), GTK_WIN_POS_CENTER);
+  gtk_about_dialog_set_name((GtkAboutDialog*)about_dialog, "Parcellite");
+  #ifdef HAVE_CONFIG_H
+  gtk_about_dialog_set_version((GtkAboutDialog*)about_dialog, VERSION);
+  #endif
+  gtk_about_dialog_set_comments((GtkAboutDialog*)about_dialog,
+                              _("Lightweight GTK+ clipboard manager."));
+  gtk_about_dialog_set_website((GtkAboutDialog*)about_dialog,
+                               "http://parcellite.sourceforge.net");
+  gtk_about_dialog_set_copyright((GtkAboutDialog*)about_dialog, _("Copyright (C) 2007, 2008 Gilberto \"Xyhthyx\" Miralla\nCopyright (C) 2010-2013 Doug Springer"));
+  gtk_about_dialog_set_authors((GtkAboutDialog*)about_dialog, authors);
+  gtk_about_dialog_set_translator_credits ((GtkAboutDialog*)about_dialog,
+                                           "Miloš Koutný <milos.koutny@gmail.com>\n"
+                                           "Kim Jensen <reklamepost@energimail.dk>\n"
+                                           "Eckhard M. Jäger <bart@neeneenee.de>\n"
+                                           "Michael Stempin <mstempin@web.de>\n"
+                                           "Benjamin Danon <benjamin@sphax3d.org>\n"
+                                           "Németh Tamás <ntomasz@vipmail.hu>\n"
+                                           "Davide Truffa <davide@catoblepa.org>\n"
+                                           "Jiro Kawada <jiro.kawada@gmail.com>\n"
+                                           "Øyvind Sæther <oyvinds@everdot.org>\n"
+                                           "pankamyk <pankamyk@o2.pl>\n"
+                                           "Tomasz Rusek <tomek.rusek@gmail.com>\n"
+                                           "Phantom X <megaphantomx@bol.com.br>\n"
+                                           "Ovidiu D. Niţan <ov1d1u@sblug.ro>\n"
+                                           "Alexander Kazancev <kazancas@mandriva.ru>\n"
+                                           "Daniel Nylander <po@danielnylander.se>\n"
+                                           "Hedef Türkçe <iletisim@hedefturkce.com>\n"
+                                           "Lyman Li <lymanrb@gmail.com>\n"
+                                           "Gilberto \"Xyhthyx\" Miralla <xyhthyx@gmail.com>");
+  gtk_about_dialog_set_license((GtkAboutDialog*)about_dialog, license);
+  gtk_about_dialog_set_logo_icon_name((GtkAboutDialog*)about_dialog, PARCELLITE_ICON);
+  gtk_dialog_run((GtkDialog*)about_dialog);
+  gtk_widget_destroy(about_dialog);
+  open = 0;
+  return FALSE;
+}
+
 static void show_about_dialog(GtkMenuItem *menu_item, gpointer user_data)
 {
-  /* This helps prevent multiple instances */
-  if (!gtk_grab_get_current())
-  {
-    const gchar* authors[] = {_("Gilberto \"Xyhthyx\" Miralla <xyhthyx@gmail.com>\nDoug Springer <gpib@rickyrockrat.net>"), NULL};
-    const gchar* license =
-      "This program is free software; you can redistribute it and/or modify\n"
-      "it under the terms of the GNU General Public License as published by\n"
-      "the Free Software Foundation; either version 3 of the License, or\n"
-      "(at your option) any later version.\n\n"
-      "This program is distributed in the hope that it will be useful,\n"
-      "but WITHOUT ANY WARRANTY; without even the implied warranty of\n"
-      "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n"
-      "GNU General Public License for more details.\n\n"
-      "You should have received a copy of the GNU General Public License\n"
-      "along with this program.  If not, see <http://www.gnu.org/licenses/>.";
-    
-    /* Create the about dialog */
-    GtkWidget* about_dialog = gtk_about_dialog_new();
-    gtk_window_set_icon((GtkWindow*)about_dialog,
-                        gtk_widget_render_icon(about_dialog, GTK_STOCK_ABOUT, -1, NULL));
-    
-    gtk_about_dialog_set_name((GtkAboutDialog*)about_dialog, "Parcellite");
-    #ifdef HAVE_CONFIG_H	/**VER=555; sed "s#\(.*\)svn.*\".*#\1svn$VER\"#" config.h  */
-    gtk_about_dialog_set_version((GtkAboutDialog*)about_dialog, VERSION);
-    #endif
-    gtk_about_dialog_set_comments((GtkAboutDialog*)about_dialog,
-                                _("Lightweight GTK+ clipboard manager."));
-    
-    gtk_about_dialog_set_website((GtkAboutDialog*)about_dialog,
-                                 "http://parcellite.sourceforge.net");
-    
-    gtk_about_dialog_set_copyright((GtkAboutDialog*)about_dialog, _("Copyright (C) 2007, 2008 Gilberto \"Xyhthyx\" Miralla\nCopyright (C) 2010-2013 Doug Springer"));
-    gtk_about_dialog_set_authors((GtkAboutDialog*)about_dialog, authors);
-    gtk_about_dialog_set_translator_credits ((GtkAboutDialog*)about_dialog,
-                                             "Miloš Koutný <milos.koutny@gmail.com>\n"
-                                             "Kim Jensen <reklamepost@energimail.dk>\n"
-                                             "Eckhard M. Jäger <bart@neeneenee.de>\n"
-                                             "Michael Stempin <mstempin@web.de>\n"
-                                             "Benjamin Danon <benjamin@sphax3d.org>\n" 
-                                             "Németh Tamás <ntomasz@vipmail.hu>\n"
-                                             "Davide Truffa <davide@catoblepa.org>\n"
-                                             "Jiro Kawada <jiro.kawada@gmail.com>\n"
-                                             "Øyvind Sæther <oyvinds@everdot.org>\n"
-                                             "pankamyk <pankamyk@o2.pl>\n"
-                                             "Tomasz Rusek <tomek.rusek@gmail.com>\n"
-                                             "Phantom X <megaphantomx@bol.com.br>\n"
-                                             "Ovidiu D. Niţan <ov1d1u@sblug.ro>\n"
-                                             "Alexander Kazancev <kazancas@mandriva.ru>\n"
-                                             "Daniel Nylander <po@danielnylander.se>\n"
-                                             "Hedef Türkçe <iletisim@hedefturkce.com>\n"
-                                             "Lyman Li <lymanrb@gmail.com>\n"
-                                             "Gilberto \"Xyhthyx\" Miralla <xyhthyx@gmail.com>");
-    
-    gtk_about_dialog_set_license((GtkAboutDialog*)about_dialog, license);
-	  gtk_about_dialog_set_logo_icon_name((GtkAboutDialog*)about_dialog, PARCELLITE_ICON);
-    /* Run the about dialog */
-    gtk_dialog_run((GtkDialog*)about_dialog);
-    gtk_widget_destroy(about_dialog);
-  }
+  (void)menu_item;
+  (void)user_data;
+  /* Idle: AppIndicator/tray menu may still hold a GTK grab on activate */
+  g_idle_add(show_about_dialog_idle, NULL);
 }
 
 /* Called when Preferences is selected from right-click menu */
+static gboolean preferences_selected_idle(gpointer user_data)
+{
+  (void)user_data;
+  show_preferences(0);
+  return FALSE;
+}
+
 static void preferences_selected(GtkMenuItem *menu_item, gpointer user_data)
 {
-  /* This helps prevent multiple instances */
-  if (!gtk_grab_get_current()){
-		 /* Show the preferences dialog */
-    show_preferences(0);
-	}
-
+  (void)menu_item;
+  (void)user_data;
+  g_idle_add(preferences_selected_idle, NULL);
 }
 
 /* Called when Quit is selected from right-click menu */
@@ -1386,12 +1404,17 @@ if user_data is 1, just set x&y to max.
 void postition_history(GtkMenu *menu,gint *x,gint *y,gboolean *push_in, gpointer user_data)
 {
 	GdkScreen *s;
-	gint sx,sy;
+	GdkRectangle mon;
+	GtkRequisition req;
+	gint sx,sy, monitor, px = 1, py = 1;
 	s=gdk_screen_get_default();
 	sx= gdk_screen_get_width(s);
 	sy= gdk_screen_get_height(s);
 	if(NULL !=push_in)
-		*push_in=FALSE;
+		*push_in=TRUE;
+	gdk_display_get_pointer(gdk_display_get_default(), NULL, &px, &py, NULL);
+	monitor = gdk_screen_get_monitor_at_point(s, px, py);
+	gdk_screen_get_monitor_geometry(s, monitor, &mon);
 	if(1 == GPOINTER_TO_INT(user_data)){
 		if(NULL !=x) *x=sx;
 		if(NULL !=y) *y=sy;	
@@ -1399,23 +1422,31 @@ void postition_history(GtkMenu *menu,gint *x,gint *y,gboolean *push_in, gpointer
 		if(get_pref_int32("history_pos")){
 			int xx,yy;
 			xx=get_pref_int32("history_x");
-			if(xx > sx )
-				xx=sx;
-			else if(xx <1 )
-				xx=1;
 			yy=get_pref_int32("history_y");
-			if(yy > sx )
-				yy=sx;
-			else if(yy <1 )
-				yy=1;
-			
+			/* Prefer configured position when it lands on the active monitor;
+			 * otherwise fall back to the pointer (XWayland-safe). */
+			if (xx < mon.x || xx >= mon.x + mon.width ||
+			    yy < mon.y || yy >= mon.y + mon.height) {
+				xx = px;
+				yy = py;
+			}
 			if(NULL !=x) *x=xx;
 			if(NULL !=y) *y=yy;	
 			TRACE(g_fprintf(stderr,"x=%d, y=%d\n",xx,yy));
+		} else {
+			if(NULL !=x) *x=px;
+			if(NULL !=y) *y=py;
 		}
-		
 	}
-	
+	if (NULL != menu && NULL != x && NULL != y) {
+		gtk_widget_size_request(GTK_WIDGET(menu), &req);
+		if (*x + req.width > mon.x + mon.width)
+			*x = mon.x + mon.width - req.width;
+		if (*y + req.height > mon.y + mon.height)
+			*y = mon.y + mon.height - req.height;
+		if (*x < mon.x) *x = mon.x;
+		if (*y < mon.y) *y = mon.y;
+	}
 }
 
 /***************************************************************************/
@@ -1865,24 +1896,236 @@ void destroy_history_menu(GtkMenuShell *menu, gpointer u)
 }
 
 /***************************************************************************/
-/** 
+/** Place popup menus at the current pointer, clamped to that monitor.
 ****************************************************************************/
 void set_menu_xy(GtkMenu *menu, gint *x, gint *y, gboolean *push, gpointer user_data)
 {
   GdkDisplay *dis;
-  if (NULL != (dis=gdk_display_get_default())) {
-    gdk_display_get_pointer(dis, NULL,x,y,NULL);
-    if( NULL == user_data)
-    	*y=1; // history
-    else
-      *y-=120; //icon menu
-    *x-=50;
-    if(*x<=0)
-    	*x=1;
-		if(*y<=0)
-			*y=1;
-  }
+  GdkScreen *screen;
+  GdkRectangle mon;
+  GtkRequisition req;
+  gint px = 1, py = 1, monitor = 0;
+  (void)user_data;
 
+  if (NULL != push)
+    *push = TRUE;
+
+  dis = gdk_display_get_default();
+  if (NULL == dis || NULL == x || NULL == y)
+    return;
+
+  screen = gdk_display_get_default_screen(dis);
+  gdk_display_get_pointer(dis, NULL, &px, &py, NULL);
+  monitor = gdk_screen_get_monitor_at_point(screen, px, py);
+  gdk_screen_get_monitor_geometry(screen, monitor, &mon);
+
+  *x = px;
+  *y = py;
+
+  gtk_widget_size_request(GTK_WIDGET(menu), &req);
+  if (*x + req.width > mon.x + mon.width)
+    *x = mon.x + mon.width - req.width;
+  if (*y + req.height > mon.y + mon.height)
+    *y = mon.y + mon.height - req.height;
+  if (*x < mon.x)
+    *x = mon.x;
+  if (*y < mon.y)
+    *y = mon.y;
+}
+
+/** Wayland: GtkMenu is override-redirect and never receives seat focus from
+ * Sway when a native Wayland client is focused. Use a real toplevel instead. */
+static GtkWidget *hist_popup_win = NULL;
+
+static void hist_popup_clear_ptr(GtkWidget *w, gpointer data)
+{
+	(void)w;
+	(void)data;
+	hist_popup_win = NULL;
+}
+
+static void hist_popup_close(void)
+{
+	if (NULL != hist_popup_win)
+		gtk_widget_destroy(hist_popup_win);
+	hist_popup_win = NULL;
+}
+
+static void hist_popup_apply_index(gint index)
+{
+	GList *element = g_list_nth(history_list, index);
+	gchar *txt;
+	if (NULL == element || NULL == element->data)
+		return;
+	txt = p_strdup(((struct history_item *)(element->data))->text);
+	if (use_copy)
+		update_clipboard(clipboard, txt, H_MODE_LIST);
+	if (use_primary)
+		update_clipboard(primary, txt, H_MODE_LIST);
+	g_free(txt);
+	hist_popup_close();
+}
+
+static void hist_popup_row_activated(GtkTreeView *tv, GtkTreePath *path,
+                                    GtkTreeViewColumn *col, gpointer data)
+{
+	GtkTreeModel *model = gtk_tree_view_get_model(tv);
+	GtkTreeIter iter;
+	gint index = -1;
+	(void)col;
+	(void)data;
+	if (!gtk_tree_model_get_iter(model, &iter, path))
+		return;
+	gtk_tree_model_get(model, &iter, 1, &index, -1);
+	if (index >= 0)
+		hist_popup_apply_index(index);
+}
+
+static gboolean hist_popup_key_press(GtkWidget *w, GdkEventKey *e, gpointer data)
+{
+	GtkTreeView *tv = GTK_TREE_VIEW(data);
+	GtkTreeSelection *sel;
+	GtkTreeModel *model;
+	GtkTreeIter iter;
+	gint index = -1;
+	(void)w;
+
+	switch (e->keyval) {
+	case GDK_Escape:
+		hist_popup_close();
+		return TRUE;
+	case GDK_Return:
+	case GDK_KP_Enter:
+	case GDK_space:
+		sel = gtk_tree_view_get_selection(tv);
+		if (gtk_tree_selection_get_selected(sel, &model, &iter)) {
+			gtk_tree_model_get(model, &iter, 1, &index, -1);
+			if (index >= 0)
+				hist_popup_apply_index(index);
+		}
+		return TRUE;
+	default:
+		return FALSE; /* Up/Down handled by GtkTreeView */
+	}
+}
+
+static gboolean hist_popup_close_idle(gpointer data)
+{
+	(void)data;
+	hist_popup_close();
+	return FALSE;
+}
+
+static gboolean hist_popup_focus_out(GtkWidget *w, GdkEventFocus *e, gpointer data)
+{
+	(void)w;
+	(void)e;
+	(void)data;
+	/* Close when focus leaves (click elsewhere). Defer so activate can run. */
+	g_idle_add(hist_popup_close_idle, NULL);
+	return FALSE;
+}
+
+static gchar *hist_popup_label_for(struct history_item *c)
+{
+	GString *string;
+	gint32 item_length = get_pref_int32("item_length");
+	glong len;
+	if (NULL == c || NULL == c->text)
+		return g_strdup("");
+	string = g_string_new(c->text);
+	if (get_pref_int32("nonprint_disp"))
+		string = convert_string(string);
+	len = g_utf8_strlen(string->str, string->len);
+	if (item_length > 0 && len > item_length) {
+		string = g_string_truncate(string,
+			g_utf8_offset_to_pointer(string->str, item_length) - string->str);
+		string = g_string_append(string, "...");
+	}
+	return g_string_free(string, FALSE);
+}
+
+static gboolean show_history_popup_wayland(gint histno)
+{
+	GtkWidget *win, *scroll, *tv;
+	GtkListStore *store;
+	GtkCellRenderer *rend;
+	GtkTreeViewColumn *col;
+	GtkTreeIter iter;
+	GtkTreePath *path;
+	GList *element;
+	GdkScreen *screen;
+	GdkRectangle mon;
+	gint px = 1, py = 1, monitor = 0, index = 0, w = 420, h = 320;
+
+	if (NULL != hist_popup_win)
+		hist_popup_close();
+
+	win = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+	hist_popup_win = win;
+	gtk_window_set_title(GTK_WINDOW(win), PARCELLITE_PROG_NAME);
+	gtk_window_set_decorated(GTK_WINDOW(win), FALSE);
+	gtk_window_set_skip_taskbar_hint(GTK_WINDOW(win), TRUE);
+	gtk_window_set_skip_pager_hint(GTK_WINDOW(win), TRUE);
+	gtk_window_set_keep_above(GTK_WINDOW(win), TRUE);
+	gtk_window_set_accept_focus(GTK_WINDOW(win), TRUE);
+	gtk_window_set_type_hint(GTK_WINDOW(win), GDK_WINDOW_TYPE_HINT_DIALOG);
+	g_signal_connect(win, "destroy", G_CALLBACK(hist_popup_clear_ptr), NULL);
+	g_signal_connect(win, "focus-out-event", G_CALLBACK(hist_popup_focus_out), NULL);
+
+	store = gtk_list_store_new(2, G_TYPE_STRING, G_TYPE_INT);
+	for (element = history_list; NULL != element; element = element->next, ++index) {
+		struct history_item *c = (struct history_item *)(element->data);
+		gchar *label;
+		if (NULL == c)
+			continue;
+		if (!(HIST_DISPLAY_PERSISTENT & histno) && (c->flags & CLIP_TYPE_PERSISTENT))
+			continue;
+		if (!(HIST_DISPLAY_NORMAL & histno) && !(c->flags & CLIP_TYPE_PERSISTENT))
+			continue;
+		label = hist_popup_label_for(c);
+		gtk_list_store_append(store, &iter);
+		gtk_list_store_set(store, &iter, 0, label, 1, index, -1);
+		g_free(label);
+	}
+
+	tv = gtk_tree_view_new_with_model(GTK_TREE_MODEL(store));
+	g_object_unref(store);
+	gtk_tree_view_set_headers_visible(GTK_TREE_VIEW(tv), FALSE);
+	gtk_tree_view_set_hover_selection(GTK_TREE_VIEW(tv), TRUE);
+	rend = gtk_cell_renderer_text_new();
+	col = gtk_tree_view_column_new_with_attributes("", rend, "text", 0, NULL);
+	gtk_tree_view_append_column(GTK_TREE_VIEW(tv), col);
+	g_signal_connect(tv, "row-activated", G_CALLBACK(hist_popup_row_activated), NULL);
+	g_signal_connect(win, "key-press-event", G_CALLBACK(hist_popup_key_press), tv);
+
+	scroll = gtk_scrolled_window_new(NULL, NULL);
+	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scroll),
+	                               GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
+	gtk_scrolled_window_set_shadow_type(GTK_SCROLLED_WINDOW(scroll), GTK_SHADOW_ETCHED_IN);
+	gtk_container_add(GTK_CONTAINER(scroll), tv);
+	gtk_container_add(GTK_CONTAINER(win), scroll);
+	gtk_widget_set_size_request(win, w, h);
+
+	screen = gdk_screen_get_default();
+	gdk_display_get_pointer(gdk_display_get_default(), NULL, &px, &py, NULL);
+	monitor = gdk_screen_get_monitor_at_point(screen, px, py);
+	gdk_screen_get_monitor_geometry(screen, monitor, &mon);
+	if (px + w > mon.x + mon.width)
+		px = mon.x + mon.width - w;
+	if (py + h > mon.y + mon.height)
+		py = mon.y + mon.height - h;
+	if (px < mon.x) px = mon.x;
+	if (py < mon.y) py = mon.y;
+	gtk_window_move(GTK_WINDOW(win), px, py);
+
+	gtk_widget_show_all(win);
+	gtk_window_present(GTK_WINDOW(win));
+	gtk_widget_grab_focus(tv);
+	path = gtk_tree_path_new_first();
+	gtk_tree_view_set_cursor(GTK_TREE_VIEW(tv), path, NULL, FALSE);
+	gtk_tree_path_free(path);
+	return FALSE;
 }
 
 /***************************************************************************/
@@ -1898,6 +2141,10 @@ static gboolean show_history_menu(gpointer data)
             *menu_image, *item_label;
   static struct history_info h;
 	h.histno=GPOINTER_TO_INT(data);/**persistent or normal history  */
+
+	if (is_wayland_session())
+		return show_history_popup_wayland(h.histno);
+
 	h.change_flag=0;
 	h.element_text=NULL;
 	h.wi.index=-1;
@@ -1919,7 +2166,7 @@ static gboolean show_history_menu(gpointer data)
 	/*g_print("histmen %p\n",menu); */
 	my_item_event(NULL,NULL,(gpointer)&h); /**init our function  */
 	item_selected(NULL,(gpointer)&h);	/**ditto  */
-	gtk_menu_shell_set_take_focus((GtkMenuShell *)menu,TRUE); /**grab keyboard focus  */
+	gtk_menu_shell_set_take_focus((GtkMenuShell *)menu, TRUE);
 	/*g_signal_connect((GObject*)menu, "selection-done", (GCallback)selection_done, gtk_menu_get_attach_widget (menu));  */
 	g_signal_connect((GObject*)menu, "cancel", (GCallback)selection_done, &h); 
 	g_signal_connect((GObject*)menu, "selection-done", (GCallback)selection_done, &h); 
@@ -2122,7 +2369,7 @@ next_loop:
 	g_signal_connect(menu,"selection-done",(GCallback)destroy_history_menu,(gpointer)&h);
   /* Popup the menu... */
   gtk_widget_show_all(menu);
-  gtk_menu_popup((GtkMenu*)menu, NULL, NULL, get_pref_int32("history_pos")?postition_history:set_menu_xy, NULL, 1, gtk_get_current_event_time());
+  gtk_menu_popup((GtkMenu*)menu, NULL, NULL, set_menu_xy, NULL, 1, gtk_get_current_event_time());
 	/**set last entry at first -fixes bug 2974614 */
 	if(get_pref_int32("reverse_history") && NULL != h.clip_item)
 		gtk_menu_shell_select_item((GtkMenuShell*)menu,h.clip_item);
@@ -2333,6 +2580,11 @@ static void parcellite_init()
 	g_mutex_init(&hist_lock);
   
   show_icon=!get_pref_int32("no_icon");
+#ifdef HAVE_APPINDICATOR
+  /* Prefer AppIndicator immediately under Wayland (StatusIcon will not appear) */
+  if(is_wayland_session())
+    have_appindicator=1;
+#endif
   /* Read history */
   if (get_pref_int32("save_history")){
 		gchar *x;
@@ -2357,10 +2609,12 @@ static void parcellite_init()
 	g_timeout_add(CHECK_APPINDICATOR_INTERVAL, check_for_appindictor, NULL);
 #endif
   
-  /* Bind global keys */
-  keybinder_init();
-	for (i=0;NULL != keylist[i].name; ++i)
-		bind_itemkey(keylist[i].name,keylist[i].keyfunc);
+  /* Bind global keys (X11 only; under Wayland use --show-history + compositor bind) */
+  if(!is_wayland_session()){
+    keybinder_init();
+    for (i=0;NULL != keylist[i].name; ++i)
+      bind_itemkey(keylist[i].name,keylist[i].keyfunc);
+  }
   
   /* Create status icon */
   if (show_icon)
@@ -2452,6 +2706,25 @@ int main(int argc, char *argv[])
 	
 	/**get options/cmd line not parsed.  */
 	if( NULL != opts->leftovers)g_fprintf(stderr,"%s\n",opts->leftovers);
+
+	/* Ask running daemon to show history (compositor keybinds under Wayland) */
+	if(opts->show_history && (PROG_MODE_CLIENT & mode)){
+		if(NULL == (fifo=init_fifo(FIFO_MODE_CMD|mode)) || fifo->fifo_cmd < 3){
+			g_fprintf(stderr,"Unable to open command fifo; is parcellite running?\n");
+			close_fifos(fifo);
+			return 1;
+		}
+		if(0 != write_fifo(fifo,FIFO_MODE_CMD,FIFCMD_SHOW_HISTORY,
+		                   (int)strlen(FIFCMD_SHOW_HISTORY))){
+			g_fprintf(stderr,"Failed to request history menu\n");
+			close_fifos(fifo);
+			return 1;
+		}
+		usleep(1000);
+		close_fifos(fifo);
+		return 0;
+	}
+
 	/**init fifo should set up the fifo and the callback (if we are daemon mode)  */
 		if(opts->primary)	{
 			if(NULL == (fifo=init_fifo(FIFO_MODE_PRI|mode))) return 1;
@@ -2520,6 +2793,9 @@ int main(int argc, char *argv[])
   
   /* Init Parcellite */
   parcellite_init();
+  /* First instance launched with --show-history: show menu after startup */
+  if(opts->show_history)
+    history_hotkey(NULL, NULL);
   /*g_printf("Start main loop\n"); */
   /* Run GTK+ loop */
   gtk_main();
@@ -2530,10 +2806,12 @@ int main(int argc, char *argv[])
 #endif
 	
   /* Unbind keys */
-	keybinder_unbind(get_pref_string("phistory_key"), phistory_hotkey);
-  keybinder_unbind(get_pref_string("history_key"), history_hotkey);
-  keybinder_unbind(get_pref_string("actions_key"), actions_hotkey);
-  keybinder_unbind(get_pref_string("menu_key"), menu_hotkey);
+  if(!is_wayland_session()){
+    keybinder_unbind(get_pref_string("phistory_key"), phistory_hotkey);
+    keybinder_unbind(get_pref_string("history_key"), history_hotkey);
+    keybinder_unbind(get_pref_string("actions_key"), actions_hotkey);
+    keybinder_unbind(get_pref_string("menu_key"), menu_hotkey);
+  }
   /* Cleanup */
 	/**  
   g_free(prefs.history_key);

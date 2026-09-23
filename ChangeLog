@@ -1,4 +1,10 @@
 V1.2.6 TBD
+ +Wayland: skip X11 global hotkey grabs; add --show-history / fifo show_history.
+ +Wayland: enable AppIndicator tray without requiring Unity detection.
+ +Wayland: history popup is a focused toplevel (pointer position; Up/Down/Esc/Enter).
+ +Fix menu/dialog placement under XWayland; tray About/Preferences via idle.
+ +Build: detect ayatana-appindicator-0.1 / appindicator-0.1; pass cflags to compile.
+ +Quiet missing preference keys for older parcelliterc files.
  +Changed hardcoded tool paths to discoverable ones with 'which'.
  +Fixed build bug in main.c where parcellite_init() is being called with an arg.
 

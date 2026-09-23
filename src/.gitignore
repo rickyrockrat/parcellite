@@ -1,2 +1,3 @@
 parcellite
 *.o
+config.simple.h

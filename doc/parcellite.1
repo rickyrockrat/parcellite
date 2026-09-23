@@ -30,6 +30,14 @@ Print clipboard contents
 .TP
 .B \-p\fR, \fB\-\-primary
 Print primary contents
+.TP
+.B \-\-show\-history
+Ask the running Parcellite daemon to show the clipboard history menu, then exit.
+Under Wayland, global hotkeys cannot be grabbed by the application; bind a key
+in your compositor instead, for example in Sway:
+
+  bindsym $mod+v exec parcellite \-\-show\-history
+
 .SH ACTIONS
 \fBParcellite's\fR actions perform commands using the contents of your clipboard. "\fB%s\fR" in the command
 is replaced with the clipboard contents. Use double quotes "\fB%s\fR" to expand env variables like $HOME to /home/your_name
@@ -135,9 +143,13 @@ There are some experimental commands to control the clipboard via the fifo in:
  
 .B clear_all
  Clear all items in your normal history.
+
+.B show_history
+ Show the clipboard history menu (same as \fB\-\-show\-history\fR).
  
 .B Example:
  echo 'clear_all' > ~/.local/share/parcellite/fifo_cmd
+ echo 'show_history' > ~/.local/share/parcellite/fifo_cmd
  
 .SH SEE ALSO
 .PP

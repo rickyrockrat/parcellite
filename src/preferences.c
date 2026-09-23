@@ -442,7 +442,8 @@ void unbind_itemkey(char *name, void *fhk )
 		if(dbg)g_printf("pref:null found for %s\n",name);
 		return;
 	}
-	keybinder_unbind(p->cval, fhk);
+	if(!is_wayland_session())
+		keybinder_unbind(p->cval, fhk);
 	g_free(p->cval);
 	p->cval=NULL;
 	
@@ -460,6 +461,9 @@ void bind_itemkey(char *name, void (fhk)(char *, gpointer) )
 		if(dbg)g_printf("pref2:null found for %s\n",name);
 		return;
 	}
+	/* XGrabKey/keybinder cannot register global hotkeys under Wayland */
+	if(is_wayland_session())
+		return;
 	if(NULL != p->cval && 0 != p->cval)
 		keybinder_bind(p->cval, fhk, NULL);
 }
@@ -705,8 +709,12 @@ void read_preferences(int mode)
 					continue;
 					break;
 			}
-			if(NULL != err)
-				g_printf("Unable to load pref '%s'\n",myprefs[i].name);
+			if(NULL != err){
+				/* Missing keys are normal for older RCs; keep compiled-in defaults */
+				if(dbg) g_printf("Unable to load pref '%s'\n",myprefs[i].name);
+				g_error_free(err);
+				err=NULL;
+			}
 			if(dbg)g_printf("rp:Set '%s' to %d (%s)\n",myprefs[i].name, myprefs[i].val, myprefs[i].cval);
 		}
     p=get_pref("type_search");
@@ -1125,6 +1133,7 @@ void show_preferences(gint tab)
   
   gtk_window_set_icon((GtkWindow*)dialog, gtk_widget_render_icon(dialog, GTK_STOCK_PREFERENCES, -1, NULL));
   gtk_window_set_resizable((GtkWindow*)dialog, FALSE);
+  gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);
   
   /* Create notebook */
   GtkWidget* notebook = gtk_notebook_new();

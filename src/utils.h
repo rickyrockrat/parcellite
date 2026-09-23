@@ -30,9 +30,12 @@ struct cmdline_opts {
 	gboolean primary;
 	gboolean exit;
 	gboolean version;
+	gboolean show_history;
 	gchar *leftovers;
 	gint appindicator;
 };
+
+gboolean is_wayland_session(void);
 
 gchar *p_strdup( const gchar *str );
 void check_dirs( void );

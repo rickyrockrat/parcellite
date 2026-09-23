@@ -143,6 +143,17 @@ gboolean is_hyperlink(gchar* text)
 /* Parses the program arguments. Returns TRUE if program needs
  * to exit after parsing is complete
  */
+/***************************************************************************/
+/** Detect Wayland: global X11 key grabs do not work; compositor owns binds.
+\n\b Arguments:
+\n\b Returns: TRUE if WAYLAND_DISPLAY is set
+****************************************************************************/
+gboolean is_wayland_session(void)
+{
+	const gchar *wd = g_getenv("WAYLAND_DISPLAY");
+	return (NULL != wd && wd[0] != '\0');
+}
+
 struct cmdline_opts *parse_options(int argc, char* argv[])
 {
 	struct cmdline_opts *opts=g_malloc0(sizeof(struct cmdline_opts));
@@ -173,6 +184,13 @@ struct cmdline_opts *parse_options(int argc, char* argv[])
       0,
       G_OPTION_ARG_NONE,
       &opts->primary, _("Print primary contents"),
+      NULL
+    },
+    {
+      "show-history", 0,
+      0,
+      G_OPTION_ARG_NONE,
+      &opts->show_history, _("Show clipboard history menu (signals running instance)"),
       NULL
     },
     {
@@ -770,6 +788,10 @@ int write_fifo(struct p_fifo *f, int which, char *buf, int len)
 		case FIFO_MODE_CLI:
 			if(f->dbg) g_fprintf(stderr,"Using cli fifo for write\n");
 			fd=f->fifo_c;
+			break;
+		case FIFO_MODE_CMD:
+			if(f->dbg) g_fprintf(stderr,"Using cmd fifo for write\n");
+			fd=f->fifo_cmd;
 			break;
 		default:
 			g_fprintf(stderr,"Unknown fifo %d!\n",which);

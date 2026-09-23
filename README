@@ -18,6 +18,33 @@ or https://github.com/rickyrockrat/parcellite
 Release 1.2.5 for addition to Alpine Linux. See the Changelog.
 
 
+Wayland / Sway
+-------------------------------------------------------------------------------
+
+Global hotkeys use XGrabKey and do not work under Wayland. When
+WAYLAND_DISPLAY is set, Parcellite skips those grabs. Keep the daemon
+running, and bind a key in the compositor to:
+
+  parcellite --show-history
+
+Example (Sway):
+
+  bindsym $mod+v exec parcellite --show-history
+
+That second process asks the running daemon (via fifo_cmd) to show the
+history menu. Equivalent FIFO form:
+
+  echo show_history > ~/.local/share/parcellite/fifo_cmd
+
+On Wayland the history UI is a small focused window at the pointer (so
+arrow keys and Escape work). On X11 the classic GtkMenu hotkey path is
+unchanged.
+
+Wayland tray icons need AppIndicator (GTK2 StatusIcon is X11-only). Install
+libayatana-appindicator (GTK2 devel package) before building, and use a bar
+that provides a StatusNotifier/tray host (for example Waybar's tray module).
+
+
 How to compile and install parcellite
 -------------------------------------------------------------------------------
 
@@ -25,6 +52,7 @@ Requirements:
 	* gtk+ >= 2.10.0 
 	* intltool
 	* libglib
+	* libayatana-appindicator (GTK2; optional, for Wayland tray)
 
 Download the parcellite source code, then:
 	$ tar zxvf parcellite-x.y.z.tar.gz
