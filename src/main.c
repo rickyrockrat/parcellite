@@ -1891,6 +1891,136 @@ void set_menu_xy(GtkMenu *menu, gint *x, gint *y, gboolean *push, gpointer user_
 \n\b Returns:
 ****************************************************************************/
 
+static gboolean show_history_tooltip(gpointer data)
+{
+  GtkWidget *popup = GTK_WIDGET(data);
+  GtkWidget *item = g_object_get_data(G_OBJECT(popup), "history-item");
+  GtkWidget *label = g_object_get_data(G_OBJECT(popup), "history-label");
+  GtkRequisition size;
+  GdkRectangle monitor;
+  gint x, y, pointer_x, pointer_y, below, above, width, height;
+  GdkDisplay *display = gtk_widget_get_display(item);
+  GdkScreen *screen;
+
+  /* Sample once at appearance, so movement within the row cannot move it. */
+  gdk_display_get_pointer(display, &screen, &pointer_x, &pointer_y, NULL);
+  g_object_set_data(G_OBJECT(popup), "show-timer", NULL);
+  GtkAllocation row;
+  gint origin_x, origin_y;
+  gtk_widget_get_allocation(item, &row);
+  gdk_window_get_origin(gtk_widget_get_window(item), &origin_x, &origin_y);
+  if(pointer_x < origin_x + row.x || pointer_x >= origin_x + row.x + row.width ||
+     pointer_y < origin_y + row.y || pointer_y >= origin_y + row.y + row.height)
+    return FALSE;
+  gint monitor_no = gdk_screen_get_monitor_at_point(screen, pointer_x, pointer_y);
+  gdk_screen_get_monitor_geometry(screen, monitor_no, &monitor);
+  x = pointer_x;
+  y = pointer_y + gdk_display_get_default_cursor_size(display) + 1;
+  below = MAX(0, monitor.y + monitor.height - y);
+  above = MAX(0, pointer_y - monitor.y - 1);
+  /* Cap the preview, never the saved clip, and leave the pointer uncovered. */
+  gtk_label_set_text(GTK_LABEL(label), g_object_get_data(G_OBJECT(label), "full-preview"));
+  PangoLayout *layout = gtk_widget_create_pango_layout(label, gtk_label_get_text(GTK_LABEL(label)));
+  pango_layout_set_wrap(layout, PANGO_WRAP_WORD_CHAR);
+  pango_layout_set_width(layout, MIN(600, monitor.width - 6) * PANGO_SCALE);
+  PangoLayoutIter *lines = pango_layout_get_iter(layout);
+  gint last_fit_start = 0;
+  gint cut_at = -1;
+  do {
+    PangoRectangle bounds;
+    pango_layout_iter_get_line_extents(lines, NULL, &bounds);
+    if(PANGO_PIXELS_CEIL(bounds.y + bounds.height) > MAX(below, above) - 6) {
+      cut_at = last_fit_start;
+      break;
+    }
+    last_fit_start = pango_layout_iter_get_line_readonly(lines)->start_index;
+  } while(pango_layout_iter_next_line(lines));
+  pango_layout_iter_free(lines);
+  if(cut_at >= 0) {
+    gchar *prefix = g_strndup(gtk_label_get_text(GTK_LABEL(label)), cut_at);
+    gchar *shortened = g_strconcat(prefix, "...", NULL);
+    gtk_label_set_text(GTK_LABEL(label), shortened);
+    pango_layout_set_text(layout, shortened, -1);
+    g_free(shortened);
+    g_free(prefix);
+  }
+  pango_layout_get_pixel_size(layout, &width, &height);
+  g_object_unref(layout);
+  gtk_widget_set_size_request(label, MIN(width, monitor.width - 6),
+                             MAX(1, MIN(height, MAX(below, above) - 6)));
+  gtk_widget_size_request(popup, &size);
+  if(y + size.height > monitor.y + monitor.height)
+    y = pointer_y - size.height - 1;
+  x = MAX(monitor.x, MIN(x, monitor.x + monitor.width - size.width));
+  y = MAX(monitor.y, MIN(y, monitor.y + monitor.height - size.height));
+  gtk_window_move(GTK_WINDOW(popup), x, y);
+  gtk_widget_show(popup);
+  return FALSE;
+}
+
+static void hide_history_tooltip(GtkWidget *item, gpointer data)
+{
+  GtkWidget *popup = GTK_WIDGET(data);
+  guint timer = GPOINTER_TO_UINT(g_object_get_data(G_OBJECT(popup), "show-timer"));
+  if(timer)
+    g_source_remove(timer);
+  g_object_set_data(G_OBJECT(popup), "show-timer", NULL);
+  gtk_widget_hide(popup);
+}
+
+static void queue_history_tooltip(GtkWidget *item, gpointer data)
+{
+  hide_history_tooltip(item, data);
+  guint timer = g_timeout_add(500, show_history_tooltip, data);
+  g_object_set_data(G_OBJECT(data), "show-timer", GUINT_TO_POINTER(timer));
+}
+
+static gboolean history_tooltip_crossing(GtkWidget *item, GdkEventCrossing *event, gpointer data)
+{
+  if(event->type == GDK_ENTER_NOTIFY)
+    queue_history_tooltip(item, data);
+  else
+    hide_history_tooltip(item, data);
+  return FALSE;
+}
+
+static void set_history_tooltip(GtkWidget *item, const gchar *text)
+{
+  /* ponytail: 16K characters bounds preview work; saved clips remain unlimited. */
+  const gchar *end = text;
+  gint chars;
+  for(chars = 0; *end && chars < 16384; ++chars)
+    end = g_utf8_next_char(end);
+  gchar *prefix = g_strndup(text, end - text);
+  gchar *preview = g_strconcat(g_strchomp(prefix), *end ? "..." : "", NULL);
+  g_free(prefix);
+  GtkWidget *popup = gtk_window_new(GTK_WINDOW_POPUP);
+  GtkWidget *label = gtk_label_new(preview);
+  GtkWidget *box = gtk_hbox_new(FALSE, 0);
+  gtk_widget_set_name(popup, "gtk-tooltip");
+  gtk_window_set_type_hint(GTK_WINDOW(popup), GDK_WINDOW_TYPE_HINT_TOOLTIP);
+  gtk_window_set_accept_focus(GTK_WINDOW(popup), FALSE);
+  gtk_window_set_resizable(GTK_WINDOW(popup), FALSE);
+  gtk_container_set_border_width(GTK_CONTAINER(popup), 3);
+  gtk_label_set_line_wrap(GTK_LABEL(label), TRUE);
+  gtk_label_set_line_wrap_mode(GTK_LABEL(label), PANGO_WRAP_WORD_CHAR);
+  gtk_misc_set_alignment(GTK_MISC(label), 0, 0);
+  gtk_misc_set_padding(GTK_MISC(label), 0, 0);
+  gtk_container_add(GTK_CONTAINER(popup), box);
+  gtk_box_pack_start(GTK_BOX(box), label, FALSE, FALSE, 0);
+  gtk_widget_show_all(box);
+  g_object_set_data_full(G_OBJECT(label), "full-preview", g_strdup(preview), g_free);
+  g_object_set_data(G_OBJECT(popup), "history-item", item);
+  g_object_set_data(G_OBJECT(popup), "history-label", label);
+  g_signal_connect(item, "select", G_CALLBACK(queue_history_tooltip), popup);
+  g_signal_connect(item, "deselect", G_CALLBACK(hide_history_tooltip), popup);
+  g_signal_connect(item, "enter-notify-event", G_CALLBACK(history_tooltip_crossing), popup);
+  g_signal_connect(item, "leave-notify-event", G_CALLBACK(history_tooltip_crossing), popup);
+  g_signal_connect(item, "destroy", G_CALLBACK(hide_history_tooltip), popup);
+  g_signal_connect_swapped(item, "destroy", G_CALLBACK(gtk_widget_destroy), popup);
+  g_free(preview);
+}
+
 static gboolean show_history_menu(gpointer data)
 {
   /* Declare some variables */
@@ -2003,6 +2133,7 @@ static gboolean show_history_menu(gpointer data)
 			
       /* Make new item with ellipsized text */
       menu_item = gtk_menu_item_new_with_label(string->str);
+			set_history_tooltip(menu_item, hist_text);
 		
   		g_signal_connect((GObject*)menu_item,      "event",
                        (GCallback)my_item_event, GINT_TO_POINTER(element_number));
