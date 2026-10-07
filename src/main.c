@@ -258,9 +258,9 @@ gchar *_update_clipboard (GtkClipboard *clip, gchar *n, gchar **old, int set, in
 		if( set)
 			gtk_clipboard_set_text(clip, n, -1);
 		if(NULL != old ){
-			if( NULL != *old)
-		  	g_free(*old);
-			*old=g_strdup(n);
+			gchar *copy = g_strdup(n);
+			g_free(*old);
+			*old=copy;
 			return *old;
 		}	
 	}else if( NULL != old){
@@ -412,10 +412,11 @@ gchar *update_clipboard(GtkClipboard *clip,gchar *intext,  gint mode)
 		/*gtk_clipboard_set_text(clip, intext, -1); */
 		return intext;
 	}
-	if(H_MODE_LIST == mode && 0 != p_strcmp(intext,*existing)){ /**just set clipboard contents. Already in list  */
+	if(H_MODE_LIST == mode){ /**explicit selection must reclaim the clipboard */
+		gboolean different = 0 != p_strcmp(intext,*existing);
 		DTRACE(g_fprintf(stderr,"%sInList '%s' ex '%s'\n",clip==clipboard?"CLI":"PRI",intext,*existing)); 
 		last=_update_clipboard(clip,intext,existing,1,mode);
-		if( NULL != last){/**maintain persistence, if set  */
+		if( different && NULL != last){/**maintain persistence, if set  */
 			append_item(last,current_on_top?HIST_DEL|HIST_CHECKDUP|HIST_KEEP_FLAGS:0,0,CLIP_TYPE_TEXT);
 		}
 		goto done;
